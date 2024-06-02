@@ -1,0 +1,244 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tổng quan</title>
+    <link rel="stylesheet" href="/css/FE/page/admin/dashboard/style.css">
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+</head>
+<body>
+<div class="wrapper">
+    <div class="top_navbar">
+        <div class="hamburger">
+            <div class="one"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
+        <div class="top_menu">
+            <div class="logo">Wall-E</div>
+            <form action="../search/index.html" class="search">
+                <i class="fa fa-search"></i>
+                <input type="text" placeholder="Tìm kiếm thông báo, tài khoản">
+                <button type="submit">Tìm</button>
+            </form>
+            <!-- Start Modal notification details -->
+            <div id="notificationModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Tiêu đề thông báo</h2>
+                    <p id="notificationDetails">Nội dung thông báo</p>
+                </div>
+            </div>
+            <!-- End Modal notification details -->
+
+            <div class="item-drop-down">
+                <div class="notification">
+                    <div id="bell">
+                        <i class="fas fa-bell"></i>
+                    </div>
+                    <div class="content-notification">
+                        <ul>
+                            <li>
+                                <a
+                                        href="#"
+                                        data-notification="Thông báo chi tiết về lớp học A"
+                                >Thông báo về lớp học A</a
+                                >
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <a
+                                        href="#"
+                                        data-notification="Thông báo chi tiết về lớp học B"
+                                >Thông báo về lớp học B</a
+                                >
+                            </li>
+                        </ul>
+                        <ul>
+                            <li>
+                                <a
+                                        href="#"
+                                        data-notification="Thông báo chi tiết về lớp học C"
+                                >Thông báo về lớp học C</a
+                                >
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="profile-dropdown">
+                    <div class="profile-dropdown-btn">
+                        <div class="profile-img">
+                            <i class="fas fa-circle"></i>
+                        </div>
+
+                        <span
+                        >Victoria
+                  <i class="fas fa-angle-down"></i>
+                </span>
+                    </div>
+
+                    <ul class="profile-dropdown-list">
+                        <li class="profile-dropdown-list-item">
+                            <a href="/profile-admin">
+                                <i class="fas fa-user"></i>
+                                Thông tin cá nhân
+                            </a>
+                        </li>
+                        <li class="profile-dropdown-list-item">
+                            <a href="../changePassword/index.html">
+                                <i class="fas fa-lock"></i>
+                                Đổi mật khẩu
+                            </a>
+                        </li>
+
+                        <hr />
+
+                        <li class="profile-dropdown-list-item">
+                            <a href="#">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Đăng xuất
+                            </a>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li>
+                <a href="admin" class="active">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Trang chủ</span>
+                </a>
+            </li>
+            <li>
+                <a href="/profile-admin">
+                    <span class="icon"><i class="fas fa-user"></i></span>
+                    <span class="title">Thông tin cá nhân</span>
+                </a>
+            </li>
+            <li>
+                <a href="/accountManagement">
+                    <span class="icon"><i class="fas fa-clipboard-list"></i></span>
+                    <span class="title">Quản lý người dùng</span>
+                </a>
+            </li>
+            <li>
+                <a href="/approveManagement">
+                    <span class="icon"><i class="fas fa-check"></i></span>
+                    <span class="title">Duyệt bài</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_container">
+        <section id="content">
+            <main>
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Tổng quan</h1>
+                    </div>
+                </div>
+                <ul class="box-info">
+                    <li>
+                        <i class='bx bxs-calendar-check'></i>
+                        <span class="text">
+                                <h3 th:text = "${userCount}"></h3>
+                                <p>Tài khoản</p>
+                            </span>
+                    </li>
+                    <li>
+                        <i class='bx bxs-group'></i>
+                        <span class="text">
+                                <h3 th:text = "${managementCount}"></h3>
+                                <p>Trung tâm</p>
+                            </span>
+                    </li>
+                    <li>
+                        <i class='bx bxs-dollar-circle'></i>
+                        <span class="text">
+                                <h3>2543</h3>
+                                <p>Quản lý</p>
+                            </span>
+                    </li>
+                </ul>
+
+                <!-- Start: CREATE NOTIFICATION MODAL -->
+                <div id="createNotificationModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2>Tạo Thông Báo</h2>
+                        <form id="notificationForm">
+                            <label for="notificationTitle">Tiêu đề:</label>
+                            <input type="text" id="notificationTitle" name="title" required>
+                            <label for="notificationContent">Nội dung:</label>
+                            <textarea id="notificationContent" name="content" required></textarea>
+                            <button type="submit">Tạo</button>
+
+                        </form>
+                    </div>
+                </div>
+                <!-- End: CREATE NOTIFICATION MODAL -->
+
+                <!-- Start: VIEW NOTIFICATION MODAL -->
+                <div id="viewNotificationModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close">&times;</span>
+                        <h2>Chi Tiết Thông Báo</h2>
+                        <p id="viewNotificationTitle"></p>
+                        <p id="viewNotificationContent"></p>
+                    </div>
+                </div>
+                <!-- End: VIEW NOTIFICATION MODAL -->
+
+                <!-- Start: DELETE MODAL -->
+                <div id="deleteModal" class="modal">
+                    <div class="modal-content">
+                        <p>Có chắc chắn muốn xóa thông báo <span id="userName"></span> không?</p>
+                        <div class="modal-buttons">
+                            <button id="confirmDelete">Xóa</button>
+                            <button id="cancelDelete">Hủy</button>
+                        </div>
+                    </div>
+                </div>
+                <!-- End: DELETE MODAL -->
+
+                <!-- Start: TOAST NOTIFICATIONS -->
+                <div id="toast" class="toast">
+                    <i class="fas fa-check"></i>
+                    <p></p>
+                </div>
+                <!-- End: TOAST NOTIFICATIONS -->
+
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Thông báo</h3>
+                            <button id="createNotificationBtn"><i class="fas fa-plus"></i>Tạo thông báo</button>
+                        </div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Tiêu đề</th>
+                                <th>Ngày</th>
+                                <th>Chi tiết</th>
+                                <th>Thao tác</th>
+                            </tr>
+                            </thead>
+                            <tbody id="notificationTableBody">
+                            <!-- Rows will be generated by JavaScript -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </main>
+        </section>
+    </div>
+</div>
+
+<script src="script.js" type="module"></script>
+</body>
+</html>
