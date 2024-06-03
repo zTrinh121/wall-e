@@ -1,0 +1,208 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Trang chủ</title>
+  <link rel="stylesheet" href="/css/studentFeedbackTeacher.css" />
+  <script th:src="@{/js/studentFragments.js}" type="module"></script>
+  <th:block th:replace="studentFragments :: studenthead"></th:block>
+  <script src="/js/studentFeedbackTeacher.js"></script>
+</head>
+<body>
+<div class="wrapper">
+  <div th:replace="studentFragments :: studentheader"></div>
+
+  <div class="main_container">
+    <section id="content">
+      <!-- MAIN -->
+      <main>
+        <div class="head-title">
+          <div class="left">
+            <h1>Đánh giá giáo viên X</h1>
+            <div>
+              <a class="back" onclick="history.back()"> Quay lại</a>
+            </div>
+          </div>
+        </div>
+        <!-- Start form feedback -->
+        <div class="feedback">
+          <div class="content">
+            <h2>Đánh giá giáo viên</h2>
+            <form id="feedbackForm">
+
+              <div class="form-group">
+                <label>Kiến thức chuyên môn:</label>
+                <div class="rating-group">
+                  <label
+                  ><input
+                          type="radio"
+                          name="subjectKnowledge"
+                          value="1"
+                          required
+                  />Hoàn toàn không đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="subjectKnowledge"
+                          value="2"
+                  />Không đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="subjectKnowledge"
+                          value="3"
+                  />Bình thường</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="subjectKnowledge"
+                          value="4"
+                  />Đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="subjectKnowledge"
+                          value="5"
+                  />Hoàn toàn đồng ý</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Phương pháp giảng dạy:</label>
+                <div class="rating-group">
+                  <label
+                  ><input
+                          type="radio"
+                          name="teachingMethod"
+                          value="1"
+                          required
+                  />Hoàn toàn không đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="teachingMethod"
+                          value="2"
+                  />Không đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="teachingMethod"
+                          value="3"
+                  />Bình thường</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="teachingMethod"
+                          value="4"
+                  />Đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="teachingMethod"
+                          value="5"
+                  />Hoàn toàn đồng ý</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Tương tác và quan hệ:</label>
+                <div class="rating-group">
+                  <label
+                  ><input
+                          type="radio"
+                          name="interaction"
+                          value="1"
+                          required
+                  />Hoàn toàn không đồng ý</label
+                  >
+                  <label
+                  ><input
+                          type="radio"
+                          name="interaction"
+                          value="2"
+                  />Không đồng ý</label
+                  >
+                  <label
+                  ><input type="radio" name="interaction" value="3" />Bình
+                    thường</label
+                  >
+                  <label
+                  ><input type="radio" name="interaction" value="4" />Đồng
+                    ý</label
+                  >
+                  <label
+                  ><input type="radio" name="interaction" value="5" />Hoàn
+                    toàn đồng ý</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label>Định hướng và hỗ trợ:</label>
+                <div class="rating-group">
+                  <label
+                  ><input
+                          type="radio"
+                          name="guidance"
+                          value="1"
+                          required
+                  />Hoàn toàn không đồng ý</label
+                  >
+                  <label
+                  ><input type="radio" name="guidance" value="2" />Không
+                    đồng ý</label
+                  >
+                  <label
+                  ><input type="radio" name="guidance" value="3" />Bình
+                    thường</label
+                  >
+                  <label
+                  ><input type="radio" name="guidance" value="4" />Đồng
+                    ý</label
+                  >
+                  <label
+                  ><input type="radio" name="guidance" value="5" />Hoàn
+                    toàn đồng ý</label
+                  >
+                </div>
+              </div>
+              <div class="form-group">
+                <label for="feedback">Ý kiến phản hồi:</label><br>
+                <textarea
+                        id="feedback"
+                        name="feedback"
+                        rows="4"
+
+                ></textarea>
+              </div>
+              <button type="submit">Gửi đánh giá</button>
+              <button
+                      type="button"
+                      id="updateFeedbackBtn"
+                      style="display: none"
+              >
+                Cập nhật đánh giá
+              </button>
+            </form>
+          </div>
+        </div>
+        <!-- End form feeback -->
+
+        <!-- Start: Toast -->
+        <div id="toast" class="toast"></div>
+        <!-- End: Toast -->
+      </main>
+      <!-- MAIN -->
+    </section>
+  </div>
+</div>
+
+</body>
+</html>
