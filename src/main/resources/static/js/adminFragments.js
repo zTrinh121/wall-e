@@ -19,6 +19,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     bell.addEventListener("click", function () {
         toggleNotificationDropdown();
+        console.log("Trong bell")
     });
 
     profileDropdownBtn.addEventListener("click", function () {
