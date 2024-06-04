@@ -58,6 +58,12 @@ body {
     letter-spacing: 3px;
 }
 
+.item-drop-down{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
 /* Start Search */
 .search {
     display: flex;
