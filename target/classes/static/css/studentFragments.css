@@ -269,9 +269,9 @@ body {
 }
 
 .wrapper .main_container {
-    width: calc(100% - 200px);
-    margin-top: 35px;
-    margin-left: 200px;
+    width: calc(100% - 250px);
+    margin-top: 50px;
+    margin-left: 250px;
     padding: 15px;
     transition: all 0.3s ease;
 }
