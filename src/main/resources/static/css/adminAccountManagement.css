@@ -1,19 +1,5 @@
 
 
-
-/* Start notification modal */
-#notificationModal .modal-content {
-	margin-left: 230px;
-}
-
-/* End notification modal */
-
-/* Start Content */
-.wrapper.collapse .main_container {
-	margin-left: 0;
-	transition: none;
-}
-
 /* End Content */
 
 /* NAVBAR */
@@ -297,46 +283,47 @@
 /* MAIN */
 /* CONTENT */
 
-/* Start: TOAST */
+/* Start: TOAST *//* Toast styles */
+.toast-container {
+	position: fixed;
+	top: 10px;
+	right: 10px;
+	z-index: 1;
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
+	border-radius: 1rem;
+}
+
 .toast {
-	visibility: hidden;
-	min-width: 250px;
-	margin-left: -120px;
+	/*visibility: hidden;*/
+	max-width: 300px;
 	background-color: #fff;
 	color: #333;
 	text-align: center;
-	border-radius: 5px;
-	padding: 16px;
-	position: fixed;
-	z-index: 1;
-	right: 8px;
-	top: 4rem;
-	font-size: 15px;
-	box-shadow: 0 5px 8px rgba(0, 0, 0, 0.08);
-}
-
-.toast #toastMessage {
+	border-radius: 2px;
+	font-size: 17px;
 	display: flex;
-	width: 100%;
-	justify-content: space-between;
 	align-items: center;
-}
+	padding: 10px;
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+	transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out;
+	opacity: 0;
+	transform: translateY(-20px);
+	border-radius: 1rem;
 
-
-.toast #toastMessage i {
-	border: 1px solid #fff;
-	width: 2.5rem;
-	height: 2.5rem;
-	align-content: center;
-	border-radius: 50%;
-	background: #2648ae;
-	color: #fff;
-	margin-right: 0.5rem;
 }
 
 .toast.show {
 	visibility: visible;
-	animation: fadein 0.5s, fadeout 0.5s 2.5s;
+	opacity: 1;
+	transform: translateY(0);
+	border-radius: 1rem;
+}
+
+.toast i {
+	margin-right: 10px;
+	color: #4CAF50;
 }
 
 /* End: TOAST */

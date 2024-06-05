@@ -189,14 +189,6 @@ box-shadow: var(--shadow); */
   box-shadow: 0px 2px 8px 0px rgba(40, 60, 147, 0.2);
 }
 
-.profile-img {
-  position: relative;
-  width: 3rem;
-  height: 3rem;
-  border-radius: 50%;
-  background: url(../../../images/profile-pic.jpg);
-  background-size: cover;
-}
 
 .profile-img i {
   position: absolute;
@@ -319,7 +311,7 @@ box-shadow: var(--shadow); */
 }
 
 .wrapper .main_container {
-  width: (100% - 200px);
+  width: calc(100% - 200px);
   margin-top: 70px;
   margin-left: 200px;
   padding: 15px;
@@ -351,7 +343,7 @@ box-shadow: var(--shadow); */
 }
 
 .wrapper.collapse .main_container {
-  width: (100% - 70px);
+  width: calc(100% - 70px);
   margin-left: 70px;
 }
 

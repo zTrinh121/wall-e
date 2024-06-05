@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', async function() {
     const roleFilter = document.getElementById('role');
     const tableBody = document.getElementById('tableBody');
 
@@ -26,9 +26,16 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: `userId=${userId}&status=${status}`
             });
+            console.log(response);
+
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
+
+            // Display toast notification
+            const username = document.querySelector(`button[data-user-id="${userId}"]`).parentElement.parentElement.querySelector('td p').textContent;
+            showToast(`<i class="fas fa-check"></i> ${username} đã ${status ? 'mở khóa' : 'khóa'} thành công`);
+
         } catch (error) {
             console.error('Error updating user status:', error);
         }
@@ -72,6 +79,61 @@ document.addEventListener('DOMContentLoaded', function() {
             });
         });
     }
+
+    // Start pagination
+    function paginateData(data, pageSize) {
+        const paginatedData = [];
+        for (let i = 0; i < data.length; i += pageSize) {
+            paginatedData.push(data.slice(i, i + pageSize));
+        }
+        return paginatedData;
+    }
+
+    function displayCurrentPage(pageNumber, paginatedData) {
+        const currentPageData = paginatedData[pageNumber - 1];
+        buildTable(currentPageData);
+    }
+
+    function buildPaginationButtons(paginatedData) {
+        const totalPages = paginatedData.length;
+        const paginationControls = document.getElementById('paginationControls');
+        paginationControls.innerHTML = ''; // Clear existing pagination controls
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.addEventListener('click', () => {
+                displayCurrentPage(i, paginatedData);
+            });
+            paginationControls.appendChild(pageButton);
+        }
+    }
+
+    // Fetch all users and paginate data
+    const pageSize = 10; // Số lượng bản ghi trên mỗi trang
+    const allUsers = await fetchUsers();
+    const paginatedData = paginateData(allUsers, pageSize);
+    buildPaginationButtons(paginatedData);
+    displayCurrentPage(1, paginatedData); // Hiển thị trang đầu tiên mặc định
+    // End pagination
+
+    // Start show toast
+    function showToast(message) {
+        const toastContainer = document.getElementById('toastContainer');
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.innerHTML = message;
+        toastContainer.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('show');
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 500);
+            }, 3000);
+        }, 100);
+    }
+    // End show toast
 
     roleFilter.addEventListener('change', filterTable);
 

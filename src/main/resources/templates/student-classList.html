@@ -1,120 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
     <title>Trang chủ</title>
     <link rel="stylesheet" href="/css/studentClassList.css" />
-    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
-    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+    <script th:src="@{/js/studentFragments.js}" type="module"></script>
+    <th:block th:replace="studentFragments :: studenthead"></th:block>
 </head>
 <body>
 <div class="wrapper">
-    <div class="top_navbar">
-        <div class="hamburger">
-            <div class="one"></div>
-            <div class="two"></div>
-            <div class="three"></div>
-        </div>
-        <div class="top_menu">
-            <div class="logo">Wall-E</div>
-            <form action="../search/index.html" class="search">
-                <i class="fa fa-search"></i>
-                <input
-                        type="text"
-                        placeholder="Tìm kiếm khóa học, trung tâm, giáo viên"
-                />
-                <button type="submit">Tìm</button>
-            </form>
-            <!-- Start Modal notification details -->
-            <div id="notificationModal" class="modal">
-                <div class="modal-content">
-                    <span class="close">&times;</span>
-                    <h2>Tiêu đề thông báo</h2>
-                    <p id="notificationDetails">Nội dung thông báo</p>
-                </div>
-            </div>
-            <!-- End Modal notification details -->
-
-            <div class="item-drop-down">
-                <div class="notification">
-                    <div id="bell">
-                        <i class="fas fa-bell"></i>
-                    </div>
-                    <div class="content-notification">
-                        <ul>
-                            <li><a href="#" data-notification="Thông báo chi tiết về lớp học A">Thông báo về lớp học A</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#" data-notification="Thông báo chi tiết về lớp học B">Thông báo về lớp học B</a></li>
-                        </ul>
-                        <ul>
-                            <li><a href="#" data-notification="Thông báo chi tiết về lớp học C">Thông báo về lớp học C</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="profile-dropdown">
-                    <div class="profile-dropdown-btn">
-                        <div class="profile-img">
-                            <i class="fas fa-circle"></i>
-                        </div>
-
-                        <span
-                        >Victoria
-                  <i class="fas fa-angle-down"></i>
-                </span>
-                    </div>
-
-                    <ul class="profile-dropdown-list">
-                        <li class="profile-dropdown-list-item">
-                            <a href="../profile/index.html">
-                                <i class="fas fa-user"></i>
-                                Thông tin cá nhân
-                            </a>
-                        </li>
-                        <li class="profile-dropdown-list-item">
-                            <a href="../changePassword/index.html">
-                                <i class="fas fa-lock"></i>
-                                Đổi mật khẩu
-                            </a>
-                        </li>
-
-                        <hr />
-
-                        <li class="profile-dropdown-list-item">
-                            <a href="#">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Đăng xuất
-                            </a>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="sidebar">
-        <ul>
-            <li>
-                <a href="/student-dashboard">
-                    <span class="icon"><i class="fas fa-home"></i></span>
-                    <span class="title">Trang chủ</span></a
-                >
-            </li>
-            <li>
-                <a href="/profile-student">
-                    <span class="icon"><i class="fas fa-user"></i></span>
-                    <span class="title">Thông tin cá nhân</span></a
-                >
-            </li>
-            <li>
-                <a href="/student-classList" class="active">
-                    <span class="icon"><i class="fas fa-clipboard-list"></i></span>
-                    <span class="title">Lớp học của tôi</span>
-                </a>
-            </li>
-        </ul>
-    </div>
+    <div th:replace="studentFragments :: studentheader"></div>
 
     <div class="main_container">
         <section id="content">
@@ -123,13 +17,11 @@
                 <div class="head-title">
                     <div class="left">
                         <h1>Lớp học của tôi</h1>
-                        <button onclick="window.location.href='../material/index.html'"><i class="fas fa-plus"></i>Tìm tài liệu</button>
+                        <button onclick="window.location.href='../material/index.html'"><i class="fas fa-search"></i>Tìm tài liệu</button>
 
-                        <!-- <select id="year-select"></select>
-                        <select id="week-select"></select> -->
                     </div>
                 </div>
-                <!-- Start timetable -->
+                <!-- Start class list -->
 
                 <div class="table-data">
                     <div class="order">
@@ -152,7 +44,7 @@
                                 </td>
                                 <td>Toán</td>
                                 <td>Giáo viên A - Trung tâm Start</td>
-                                <td><a href="">Xem</a></td>
+                                <td><a href="student-classListDetails.html">Xem</a></td>
                             </tr>
                             <tr>
                                 <td>
@@ -182,6 +74,5 @@
     </div>
 </div>
 
-<script src="/js/dropdown.js"></script>
 </body>
 </html>

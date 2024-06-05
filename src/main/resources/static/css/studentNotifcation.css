@@ -1,0 +1,138 @@
+
+/* NAVBAR */
+#content nav {
+  height: 56px;
+  background: #F9F9F9;
+  padding: 0 24px;
+  display: flex;
+  align-items: center;
+  grid-gap: 24px;
+  font-family: 'Lato', sans-serif;
+  position: sticky;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+}
+
+#content nav::before {
+  content: '';
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  bottom: -40px;
+  left: 0;
+  border-radius: 50%;
+  box-shadow: -20px -20px 0 #F9F9F9;
+}
+
+#content nav a {
+  color: #342E37;
+}
+
+#content nav .profile img {
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+
+
+/* MAIN */
+#content {
+  margin-top: 1rem;
+}
+
+#content main {
+  width: 100%;
+  padding: 10px 24px;
+  font-family: 'Poppins', sans-serif;
+  max-height: calc(100vh - 56px);
+}
+
+#content main .head-title {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  grid-gap: 16px;
+  flex-wrap: wrap;
+}
+
+#content main .head-title .left h1 {
+  font-size: 36px;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #342E37;
+}
+
+#content main .head-title .left {
+  display: flex;
+  justify-content: space-between;
+  width: -webkit-fill-available;
+  align-items: center;
+}
+
+#content main .head-title .left button {
+  width: 7rem;
+  height: 2rem;
+  border: none;
+  border-radius: 1rem;
+  color: #fff;
+  background-color: #2648ae;
+  cursor: pointer;
+}
+
+#content main .head-title .left button:hover{
+  color: #2648ae;
+  background-color: #fff;
+  border: 1px solid #2648ae;
+}
+
+#content main .head-title .left button i {
+  margin-right: 0.5rem;
+}
+
+
+/* MAIN */
+/* CONTENT */
+
+/*Start: Notification button*/
+
+.notification-buttons {
+  display: flex;
+  position: relative;
+}
+
+.notification-buttons #showPersonalNotifications,
+.notification-buttons #showGeneralNotifications {
+  width: 50%;
+  border: none;
+  background-color: #fff;
+  cursor: pointer;
+}
+
+.notification-buttons #showPersonalNotifications:hover,
+.notification-buttons #showGeneralNotifications:hover {
+  background-color: #ccc;
+}
+
+.notification-buttons #showPersonalNotifications {
+  border-top-left-radius: 1rem;
+  border-bottom-left-radius: 1rem;
+}
+
+.notification-buttons #showGeneralNotifications {
+  border-top-right-radius: 1rem;
+  border-bottom-right-radius: 1rem;
+}
+
+.notification-buttons::before {
+  content: "";
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 1px;
+  background-color: #ccc;
+}
+/*End: Notification button*/

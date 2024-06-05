@@ -23,14 +23,10 @@
             </div>
             <input type="password" required placeholder="Nhập mật khẩu" name="password">
             <input type="password" required placeholder="Xác nhận mật khẩu" name="confirmPassword">
-            <input type="date" required placeholder="Ngày sinh" name="dob">
-            <select name="gender" required>
-                <option value="true">Nam</option>
-                <option value="false">Nữ</option>
-            </select>
+
             <input type="text" required placeholder="Số điện thoại" name="phone">
-            <input type="text" required placeholder="Địa chỉ" name="address">
-            <input type="number" required placeholder="Mã người dùng" name="code">
+
+            <input type="text" required placeholder="Mã người dùng" name="code">
             <select name="roleId" required>
                 <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
             </select>

@@ -1,140 +1,257 @@
-// Start: Drop down
-document.addEventListener("DOMContentLoaded", function () {
-  const bell = document.getElementById("bell");
-  const contentNotification = document.querySelector(".content-notification");
-  const profileDropdownList = document.querySelector(".profile-dropdown-list");
-  const profileDropdownBtn = document.querySelector(".profile-dropdown-btn");
+document.addEventListener("DOMContentLoaded", () => {
+    const calendar = document.querySelector(".calendar");
+    const date = document.querySelector(".date");
+    const daysContainer = document.querySelector(".days");
+    const prev = document.querySelector(".prev");
+    const next = document.querySelector(".next");
+    const todayBtn = document.querySelector(".today-btn");
+    const gotoBtn = document.querySelector(".goto-btn");
+    const dateInput = document.querySelector(".date-input");
+    const eventDay = document.querySelector(".event-day");
+    const eventDate = document.querySelector(".event-date");
+    const eventsContainer = document.querySelector(".events");
 
-  function toggleProfileDropdown() {
-    profileDropdownList.classList.toggle("active");
-    contentNotification.style.display = "none"; // Hide notification dropdown
-  }
+    let today = new Date();
+    let activeDay;
+    let month = today.getMonth();
+    let year = today.getFullYear();
 
-  function toggleNotificationDropdown() {
-    contentNotification.style.display =
-      contentNotification.style.display === "block" ? "none" : "block";
-    profileDropdownList.classList.remove("active"); // Hide profile dropdown
-  }
+    const months = [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+    ];
 
-  bell.addEventListener("click", function () {
-    toggleNotificationDropdown();
-  });
+    const eventsArr = [];
+    getEvents();
+    console.log(eventsArr);
 
-  profileDropdownBtn.addEventListener("click", function () {
-    toggleProfileDropdown();
-  });
+    function initCalendar() {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const prevLastDay = new Date(year, month, 0);
+        const prevDays = prevLastDay.getDate();
+        const lastDate = lastDay.getDate();
+        const day = firstDay.getDay();
+        const nextDays = 7 - lastDay.getDay() - 1;
 
-  // Close both dropdowns if the user clicks outside of them
-  window.addEventListener("click", function (event) {
-    if (
-      !bell.contains(event.target) &&
-      !contentNotification.contains(event.target)
-    ) {
-      contentNotification.style.display = "none";
+        date.innerHTML = months[month] + " " + year;
+
+        let days = "";
+
+        for (let x = day; x > 0; x--) {
+            days += `<div class="day prev-date">${prevDays - x + 1}</div>`;
+        }
+
+        for (let i = 1; i <= lastDate; i++) {
+            let event = false;
+            eventsArr.forEach((eventObj) => {
+                if (
+                    eventObj.day === i &&
+                    eventObj.month === month + 1 &&
+                    eventObj.year === year
+                ) {
+                    event = true;
+                }
+            });
+            if (
+                i === new Date().getDate() &&
+                year === new Date().getFullYear() &&
+                month === new Date().getMonth()
+            ) {
+                activeDay = i;
+                getActiveDay(i);
+                updateEvents(i);
+                if (event) {
+                    days += `<div class="day today active event">${i}</div>`;
+                } else {
+                    days += `<div class="day today active">${i}</div>`;
+                }
+            } else {
+                if (event) {
+                    days += `<div class="day event">${i}</div>`;
+                } else {
+                    days += `<div class="day ">${i}</div>`;
+                }
+            }
+        }
+
+        for (let j = 1; j <= nextDays; j++) {
+            days += `<div class="day next-date">${j}</div>`;
+        }
+        daysContainer.innerHTML = days;
+        addListener();
     }
-    if (
-      !profileDropdownBtn.contains(event.target) &&
-      !profileDropdownList.contains(event.target)
-    ) {
-      profileDropdownList.classList.remove("active");
+
+    function prevMonth() {
+        month--;
+        if (month < 0) {
+            month = 11;
+            year--;
+        }
+        initCalendar();
     }
-  });
-});
 
-// Start: Drop down
+    function nextMonth() {
+        month++;
+        if (month > 11) {
+            month = 0;
+            year++;
+        }
+        initCalendar();
+    }
 
-// Start: Hamburger
-$(document).ready(function () {
-  $(".hamburger").click(function () {
-    $(".wrapper").toggleClass("collapse");
-  });
-});
-// End: Hamburger
+    if (prev) prev.addEventListener("click", prevMonth);
+    if (next) next.addEventListener("click", nextMonth);
 
-// Start modal notification detail
-document.addEventListener("DOMContentLoaded", function () {
-  // Function to open the modal
-  function openModal(notificationText) {
-    const modal = document.getElementById("notificationModal");
-    const notificationDetails = document.getElementById("notificationDetails");
-    notificationDetails.innerText = notificationText;
-    modal.style.display = "block";
-  }
+    initCalendar();
 
-  // Function to close the modal
-  function closeModal() {
-    const modal = document.getElementById("notificationModal");
-    modal.style.display = "none";
-  }
+    function addListener() {
+        const days = document.querySelectorAll(".day");
+        days.forEach((day) => {
+            day.addEventListener("click", (e) => {
+                getActiveDay(e.target.innerHTML);
+                updateEvents(Number(e.target.innerHTML));
+                activeDay = Number(e.target.innerHTML);
 
-  // Event listener for notification clicks
-  const notificationLinks = document.querySelectorAll(
-    ".content-notification ul li a"
-  );
-  notificationLinks.forEach((link) => {
-    link.addEventListener("click", function (event) {
-      event.preventDefault(); // Prevent default anchor behavior
-      const notificationText = this.getAttribute("data-notification");
-      openModal(notificationText);
+                days.forEach((day) => {
+                    day.classList.remove("active");
+                });
+
+                if (e.target.classList.contains("prev-date")) {
+                    prevMonth();
+                    setTimeout(() => {
+                        const days = document.querySelectorAll(".day");
+                        days.forEach((day) => {
+                            if (
+                                !day.classList.contains("prev-date") &&
+                                day.innerHTML === e.target.innerHTML
+                            ) {
+                                day.classList.add("active");
+                            }
+                        });
+                    }, 100);
+                } else if (e.target.classList.contains("next-date")) {
+                    nextMonth();
+                    setTimeout(() => {
+                        const days = document.querySelectorAll(".day");
+                        days.forEach((day) => {
+                            if (
+                                !day.classList.contains("next-date") &&
+                                day.innerHTML === e.target.innerHTML
+                            ) {
+                                day.classList.add("active");
+                            }
+                        });
+                    }, 100);
+                } else {
+                    e.target.classList.add("active");
+                }
+            });
+        });
+    }
+
+    if (todayBtn) todayBtn.addEventListener("click", () => {
+        today = new Date();
+        month = today.getMonth();
+        year = today.getFullYear();
+        initCalendar();
     });
-  });
 
-  // Event listener for close button
-  const closeButton = document.querySelector(".modal .close");
-  closeButton.addEventListener("click", closeModal);
+    if (dateInput) dateInput.addEventListener("input", (e) => {
+        dateInput.value = dateInput.value.replace(/[^0-9/]/g, "");
+        if (dateInput.value.length === 2) {
+            dateInput.value += "/";
+        }
+        if (dateInput.value.length > 7) {
+            dateInput.value = dateInput.value.slice(0, 7);
+        }
+        if (e.inputType === "deleteContentBackward") {
+            if (dateInput.value.length === 3) {
+                dateInput.value = dateInput.value.slice(0, 2);
+            }
+        }
+    });
 
+    if (gotoBtn) gotoBtn.addEventListener("click", gotoDate);
 
-  // Close modal when clicking outside of the modal content
-  window.addEventListener("click", function (event) {
-    const modal = document.getElementById("notificationModal");
-    if (event.target === modal) {
-      closeModal();
+    function gotoDate() {
+        const dateArr = dateInput.value.split("/");
+        if (dateArr.length === 2) {
+            if (dateArr[0] > 0 && dateArr[0] < 13 && dateArr[1].length === 4) {
+                month = dateArr[0] - 1;
+                year = dateArr[1];
+                initCalendar();
+                return;
+            }
+        }
+        alert("Invalid Date");
     }
-  });
-});
-// End modal notification detail
 
-// Start change timetable
-document.addEventListener('DOMContentLoaded', (event) => {
-  const modal = document.getElementById("changeTimetableModal");
-  const btn = document.getElementById("changeTimetableBtn");
-  const span = document.getElementById("closeChangeTimetable");
-
-
-  // Khi bấm nút, hiển thị modal
-  btn.onclick = function() {
-    modal.style.display = "block";
-  }
-
-  // Khi bấm vào dấu X, đóng modal
-  span.onclick = function() {
-    modal.style.display = "none";
-  }
-
-  // Khi bấm ra ngoài modal, đóng modal
-  window.onclick = function(event) {
-    if (event.target == modal) {
-      modal.style.display = "none";
+    function getActiveDay(date) {
+        const day = new Date(year, month, date);
+        // const dayName = day.toString().split(" ")[0];
+        // eventDay.innerHTML = dayName;
+        eventDate.innerHTML = date + " " + months[month] + " " + year;
     }
-  }
 
-  // Xử lý form submit
-  const form = document.getElementById("changeTimetableForm");
-  form.onsubmit = function(event) {
-    event.preventDefault();
-    // Lấy giá trị từ form
-    const reason = document.getElementById("reason").value;
-    const notes = document.getElementById("notes").value;
+    function updateEvents(date) {
+        let events = "";
+        eventsArr.forEach((event) => {
+            if (
+                date === event.day &&
+                month + 1 === event.month &&
+                year === event.year
+            ) {
+                event.events.forEach((event) => {
+                    events += `<div class="event">
+                        <div class="title">
+                          <i class="fas fa-circle"></i>
+                          <h3 class="event-title">${event.title}</h3>
+                        </div>
+                        <div class="event-time">
+                          <span class="event-time">${event.time}</span>
+                        </div>
+                    </div>`;
+                });
+            }
+        });
+        if (events === "") {
+            events = `<div class="no-event">
+                <h3>No Events</h3>
+            </div>`;
+        }
+        eventsContainer.innerHTML = events;
+        saveEvents();
+    }
 
-    // Thực hiện xử lý gửi yêu cầu ở đây
-    // Ví dụ: Gửi AJAX request tới server
+    function saveEvents() {
+        localStorage.setItem("events", JSON.stringify(eventsArr));
+    }
 
-    console.log("Lý do đổi:", reason);
-    console.log("Ghi chú:", notes);
+    function getEvents() {
+        if (localStorage.getItem("events") === null) {
+            return;
+        }
+        eventsArr.push(...JSON.parse(localStorage.getItem("events")));
+    }
 
-    // Đóng modal sau khi gửi yêu cầu
-    modal.style.display = "none";
-  }
+    function convertTime(time) {
+        let timeArr = time.split(":");
+        let timeHour = timeArr[0];
+        let timeMin = timeArr[1];
+        let timeFormat = timeHour >= 12 ? "PM" : "AM";
+        timeHour = timeHour % 12 || 12;
+        time = timeHour + ":" + timeMin + " " + timeFormat;
+        return time;
+    }
 });
-
-// End change timetable

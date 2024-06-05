@@ -2,9 +2,10 @@
 <html lang="en">
 <head>
     <title>Quản lý người dùng</title>
-    <link rel="stylesheet" href="/css/adminAccountManagement.css">
     <script th:src="@{/js/adminFragments.js}" type="module"></script>
     <th:block th:replace="adminFragments :: adminhead"></th:block>
+    <link rel="stylesheet" href="/css/adminAccountManagement.css">
+    <script src="/js/adminAccountManagement.js"></script>
 </head>
 <body>
 <div class="wrapper collapse">
@@ -42,9 +43,8 @@
                             </thead>
                             <tbody id="tableBody"></tbody>
                         </table>
-                        <div id="toast" class="toast">
-                            <div id="toastMessage"></div>
-                        </div>
+                        <div id="paginationControls" class="pagination-controls"></div>
+                        <div id="toastContainer" class="toast-container"></div>
                     </div>
                 </div>
             </main>
@@ -53,6 +53,3 @@
 </div>
 </body>
 </html>
-
-
-
