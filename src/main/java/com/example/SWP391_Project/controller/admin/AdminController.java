@@ -25,7 +25,7 @@ public class AdminController {
     @Autowired
     AdminService adminService;
 
-    @GetMapping("/admin-dashboard")
+    @GetMapping("/admin")
     public String adminDashboard(Model model) {
         long userCount = adminService.getUserCount();
         long managementCount = adminService.getManagement();
