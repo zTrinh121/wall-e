@@ -63,8 +63,26 @@ body {
     align-items: center;
     gap: 1rem;
 }
+.item-drop-down .notification .fixed-icon {
+    position: fixed;
+    top: 20px; /* Vị trí từ phía trên của trang */
+    right: 20px; /* Vị trí từ phía phải của trang */
+    z-index: 999; /* Đảm bảo nó hiển thị trên tất cả các phần tử khác */
+    cursor: pointer;
+}
 
-/* Start Search */
+.item-drop-down .notification{
+
+}
+
+.item-drop-down .content-notification{
+    position: relative;
+    top: 3rem;
+    left: -6rem;
+}
+
+
+    /* Start Search */
 .search {
     display: flex;
     border: 1px solid #ccc;

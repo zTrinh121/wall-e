@@ -4,6 +4,8 @@
     <title>Duyệt bài</title>
     <script th:src="@{/js/adminFragments.js}" type="module"></script>
     <th:block th:replace="adminFragments :: adminhead"></th:block>
+    <script src="/js/adminApproveManagement.js"></script>
+    <link rel="stylesheet" href="/css/adminApproveManagement.css" />
 </head>
 <body>
 <div class="wrapper collapse">
@@ -39,64 +41,47 @@
                             <thead>
                             <tr>
                                 <th><p>Tiêu đề</p></th>
+                                <th><p>Trung tâm</p></th>
                                 <th><p>Ngày</p></th>
                                 <th><p>Chi tiết</p></th>
                                 <th><p>Hành động</p></th>
                             </tr>
                             </thead>
                             <tbody id="tableBody">
-                            <tr th:each="media : ${mediaPage.content}">
-                                <td><p th:text="${media.title}"></p></td>
-                                <td><p th:text="${#dates.format(media.publishedDate, 'dd/MM/yyyy')}"></p></td>
-                                <td>
-                                    <a class="view-post"
-                                       th:data-id="${media.id}"
-                                       th:data-title="${media.title}"
-                                       th:data-content="${media.content}"
-                                       th:data-publisheddate="${#dates.format(media.publishedDate, 'dd/MM/yyyy')}">
-                                        Xem
-                                    </a>
-                                </td>
-                                <td>
-                                    <button class="approve-btn" th:data-id="${media.id}">Duyệt</button>
-                                    <button class="reject-btn" th:data-id="${media.id}">Từ chối</button>
-                                </td>
-                            </tr>
+
                             </tbody>
 
                         </table>
-                        <div id="no-result">There's no result</div>
-                        <div th:if="${mediaPage.totalPages > 0}" class="pagination">
-                            <div th:each="pageNumber : ${pageNumbers}">
-                                <a th:href="@{/admin/managerPostsPagination(size=${mediaPage.size}, page=${pageNumber})}"
-                                   th:text="${pageNumber}"
-                                   th:classappend="${pageNumber == mediaPage.number + 1} ? ' active' : ''"></a>
-                            </div>
-                        </div>
+                        <div id="no-result">No result</div>
                     </div>
                 </div>
-
             </main>
-
-            <!-- MAIN -->
         </section>
     </div>
-    <!--End: Content-->
 </div>
 
 <!-- Start modal view detail post -->
 <div id="viewPostModal" class="modal">
     <div class="modal-content">
-        <span class="close">&times;</span>
+        <span id="closeViewPostModal" class="close">&times;</span>
         <h2 id="postTitleViewModal"></h2>
         <p id="postContentViewModal"></p>
         <p id="postPublishedDateViewModal"></p>
+        <p id="postCenterNameViewModal"></p>
+        <p id="postManagerNameViewModal"></p>
+        <p id="postFileURLViewModal"></p>
+        <div class="button-groups">
+            <button id="approvePostButton">Duyệt</button>
+            <button id="rejectPostButton">Từ chối</button>
+        </div>
+
     </div>
 </div>
-<!-- End modal view detail posy -->
+<!-- End modal view detail post-->
 
 <!-- Start toast successfull information -->
-<div id="toastContainer" class="toast-container"></div>
+<div id="toastContainer" class="toast-container">
+</div>
 
 </body>
 </html>

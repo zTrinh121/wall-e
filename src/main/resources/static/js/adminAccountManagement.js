@@ -80,41 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         });
     }
 
-    // Start pagination
-    function paginateData(data, pageSize) {
-        const paginatedData = [];
-        for (let i = 0; i < data.length; i += pageSize) {
-            paginatedData.push(data.slice(i, i + pageSize));
-        }
-        return paginatedData;
-    }
 
-    function displayCurrentPage(pageNumber, paginatedData) {
-        const currentPageData = paginatedData[pageNumber - 1];
-        buildTable(currentPageData);
-    }
-
-    function buildPaginationButtons(paginatedData) {
-        const totalPages = paginatedData.length;
-        const paginationControls = document.getElementById('paginationControls');
-        paginationControls.innerHTML = ''; // Clear existing pagination controls
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.addEventListener('click', () => {
-                displayCurrentPage(i, paginatedData);
-            });
-            paginationControls.appendChild(pageButton);
-        }
-    }
-
-    // Fetch all users and paginate data
-    const pageSize = 10; // Số lượng bản ghi trên mỗi trang
-    const allUsers = await fetchUsers();
-    const paginatedData = paginateData(allUsers, pageSize);
-    buildPaginationButtons(paginatedData);
-    displayCurrentPage(1, paginatedData); // Hiển thị trang đầu tiên mặc định
-    // End pagination
 
     // Start show toast
     function showToast(message) {

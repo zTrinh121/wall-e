@@ -216,6 +216,25 @@
 
 }
 
+.order .buttonNotifcations{
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.order .buttonNotifcations button{
+  width: 50%;
+  font-size: 16px;
+  border: none;
+  background: #f9f9f9;
+  cursor: pointer;
+  height: 2rem;
+}
+
+.order .buttonNotifcations button:hover{
+  background: #eae9e9;
+
+}
 
 
 #content main .table-data .head .bx {
@@ -321,14 +340,43 @@
   margin-bottom: 0;
 }
 
+.view-details{
+  border: none;
+  background: #f9f9f9;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.pagination{
+  display: flex;
+  /* width: 100%; */
+  justify-content: center;
+  gap: 10px;
+}
+
+.pagination button{
+  color: #fff;
+  width: 5rem;
+  height: 2rem;
+  font-size: 1rem;
+  border: none;
+  background: #2e4ead;
+  border-radius: 0.5rem;
+}
 /* MAIN */
 /* CONTENT */
 
+#deleteModal .modal-content p{
+  margin-bottom: 1rem;
+}
 
 #confirmDelete {
   background-color: rgb(239, 19, 19);
   color: white;
   border: none;
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 0.5rem;
 }
 
 #confirmDelete:hover {
@@ -341,6 +389,9 @@
   background-color: gray;
   color: white;
   border: none;
+  width: 3rem;
+  height: 1.5rem;
+  border-radius: 0.5rem;
 }
 
 #cancelDelete:hover {
@@ -349,6 +400,41 @@
   border: 1px solid gray;
 }
 
+
+#editModal .modal-content form{
+  display: flex;
+  flex-direction: column;
+  gap: 10px
+}
+
+#editTitle, #editContent{
+  font-size: 16px;
+}
+
+#editTitle{
+  height: 2rem;
+}
+
+#editContent{
+  height: 5rem;
+}
+
+#confirmEdit{
+  height: 2rem;
+  font-size: 16px;
+  width: 6rem;
+  border-radius: 0.5rem;
+  border: none;
+  color: #fff;
+  background: #2e4ead;
+  cursor: pointer;
+}
+
+#confirmEdit:hover{
+  background: #fff;
+  border: 1px solid #2e4ead ;
+  color: #2e4ead;
+}
 /* End: MODAL */
 /* Start notifcation modal */
 #notificationModal .modal-content{
@@ -360,7 +446,7 @@
 
 /* Start modal create */
 #createNotificationModal .modal-content{
-  padding-top: 0.3rem;
+  padding-top: 2rem;
 }
 
 #createNotificationModal .close{
@@ -377,6 +463,10 @@
  #notificationForm{
   display: flex;
   flex-direction: column;
+}
+
+#notificationForm input, #notificationForm select, #notificationForm textarea {
+  padding: 0.3rem;
 }
 
 #notificationForm label{
@@ -410,22 +500,20 @@
 
 /* Start delete TOAST */
 #toast {
-  visibility: hidden;
-  width: 18vw;
-  height: 7vh;
+  display: none;
+  width: 20rem;
+  height: 10vh;
   margin-left: -125px;
   margin-top: -165px;
   background-color: #4caf50;
   text-align: center;
-  border-radius: 2px;
   position: fixed;
   z-index: 1;
   top: 36%;
   right: 35px;
-  font-size: 15px;
+  font-size: 14px;
   border-radius: 0.5rem;
   box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
-  display: flex;
   gap: 10px;
   align-items: center;
   padding: 1rem;
@@ -443,15 +531,13 @@
 }
 
 #toast  p {
-  align-content: space-around;
+  display: flex;
+  font-size: 16px;
+  align-items: center;
   color: #fff;
-  font-size: 18px;
 }
 
-#toast.show {
-  visibility: visible;
-  max-width: 250px;
-}
+
 
 
 /* End TOAST */

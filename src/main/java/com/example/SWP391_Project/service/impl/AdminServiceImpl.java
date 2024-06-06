@@ -12,6 +12,8 @@ import com.example.SWP391_Project.service.AdminService;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -55,6 +57,11 @@ public class AdminServiceImpl implements AdminService {
     }
 
     @Override
+    public Page<SystemNotification> getAllSystemNotifications(Pageable pageable) {
+        return systemNotificationRepository.findAll(pageable);
+    }
+
+    @Override
     public SystemNotification createSystemNotification(SystemNotificationDto systemNotificationDto) {
         SystemNotification system = SystemNotification.builder()
                 .title(systemNotificationDto.getTitle())
@@ -95,6 +102,9 @@ public class AdminServiceImpl implements AdminService {
     public List<CenterPostResponse> getCenterPosts() {
         return centerPostRepository.findAllCenterPostsAndManagerDetails();
     }
+
+
+
 
     @Override
     public void approveCenterPost(int id) {
