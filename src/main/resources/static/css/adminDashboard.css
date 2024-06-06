@@ -347,22 +347,22 @@
   font-size: 16px;
 }
 
-.pagination{
+/*Start pagination*/
+#paginationControls{
   display: flex;
-  /* width: 100%; */
   justify-content: center;
-  gap: 10px;
+  gap: 4px;
 }
 
-.pagination button{
-  color: #fff;
-  width: 5rem;
-  height: 2rem;
-  font-size: 1rem;
-  border: none;
-  background: #2e4ead;
-  border-radius: 0.5rem;
+#paginationControls .active{
+  text-decoration: underline;
 }
+
+#paginationControls button{
+  border: none;
+  font-size: 18px;
+}
+/*End paginartion*/
 /* MAIN */
 /* CONTENT */
 
