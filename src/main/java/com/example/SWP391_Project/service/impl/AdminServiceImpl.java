@@ -56,10 +56,6 @@ public class AdminServiceImpl implements AdminService {
                 .findAll(Sort.by(Sort.Direction.DESC, "id"));
     }
 
-    @Override
-    public Page<SystemNotification> getAllSystemNotifications(Pageable pageable) {
-        return systemNotificationRepository.findAll(pageable);
-    }
 
     @Override
     public SystemNotification createSystemNotification(SystemNotificationDto systemNotificationDto) {

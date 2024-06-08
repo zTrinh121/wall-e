@@ -491,6 +491,12 @@ public class UserController {
         return "approveManagement";
     }
 
+    @GetMapping("/centerManagement")
+    public String centerManagement(HttpSession session) {
+        session.invalidate();
+        return "adminCenterManagement";
+    }
+
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
         session.invalidate();
