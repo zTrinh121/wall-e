@@ -15,30 +15,17 @@ document.addEventListener("DOMContentLoaded", function () {
     var searchForm = document.getElementById("searchForm");
     var searchInput = document.getElementById("searchInput");
     var noResultDiv = document.getElementById("no-result");
-    var paginationControls = document.getElementById("paginationControls");
 
     var allPosts = [];
-    var itemsPerPage = 5; // Number of posts per page
-    var currentPage = 1; // Current page number
 
     function fetchPosts() {
         fetch("/admin-centerPosts")
             .then(response => response.json())
             .then(data => {
                 allPosts = data.filter(post => post.status === "Wait_to_process");
-                currentPage = 1; // Reset to first page
-                renderTable();
+                displayPosts(allPosts);
             })
             .catch(error => console.error("Error fetching posts:", error));
-    }
-
-    function renderTable() {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const postsToDisplay = allPosts.slice(start, end);
-
-        displayPosts(postsToDisplay);
-        renderPaginationControls();
     }
 
     function displayPosts(posts) {
@@ -63,25 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
                 tableBody.insertAdjacentHTML("beforeend", row);
             });
-        }
-    }
-
-    function renderPaginationControls() {
-        const totalPages = Math.ceil(allPosts.length / itemsPerPage);
-        paginationControls.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('page-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
-            pageButton.addEventListener('click', () => {
-                currentPage = i;
-                renderTable();
-            });
-            paginationControls.appendChild(pageButton);
         }
     }
 
@@ -116,9 +84,12 @@ document.addEventListener("DOMContentLoaded", function () {
                     throw new Error("Network response was not ok");
                 }
                 // Remove the post from the allPosts array
-                allPosts = allPosts.filter(post => String(post.id) !== id);
-                // Re-render the table
-                renderTable();
+                allPosts = allPosts.filter(post => post.id !== id);
+                // Remove the post row from the table
+                var postRow = document.getElementById(id);
+                if (postRow) {
+                    postRow.remove();
+                }
                 showToast(`Post ${status === 'approve' ? 'approved' : 'rejected'} successfully!`);
                 // Check if no posts left to display
                 if (allPosts.length === 0) {
@@ -147,9 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
             post.title.toLowerCase().includes(query) ||
             post.centerName.toLowerCase().includes(query)
         );
-        currentPage = 1; // Reset to first page
         displayPosts(filteredPosts);
-        renderPaginationControls();
     });
 
     tableBody.addEventListener("click", function (event) {

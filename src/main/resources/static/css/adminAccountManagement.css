@@ -142,24 +142,6 @@
 
 /* NAVBAR */
 
-/*Start pagination*/
-#paginationControls{
-	display: flex;
-	justify-content: center;
-	gap: 4px;
-}
-
-#paginationControls .active{
-	text-decoration: underline;
-}
-
-#paginationControls button{
-	border: none;
-	font-size: 18px;
-}
-/*End paginartion*/
-
-
 /* MAIN */
 #content {
 	margin-top: 1rem;

@@ -3,8 +3,14 @@ package com.example.SWP391_Project.controller.user;
 import com.example.SWP391_Project.model.Role;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.service.UserService;
+import jakarta.mail.*;
+
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
+import jakarta.validation.constraints.Email;
 import org.apache.catalina.Group;
+
 import org.apache.catalina.UserDatabase;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,8 +20,10 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+
 import java.util.Iterator;
 import java.util.List;
+import java.util.Properties;
 
 @Controller
 public class UserController {
@@ -29,6 +37,70 @@ public class UserController {
         model.addAttribute("roles", roles);
         return "login";
     }
+
+//    public boolean sendEmail(Email email) {
+//        boolean test = false;
+//
+//        String toEmail = "";    //lấy email người dùng ra
+//        String code = "rendom ra";
+//        String fromEmail = "thanhdhde170795@fpt.edu.vn";
+//        String password = "redm djng jorn pqcv";
+//
+//
+//        try {
+//
+//            // your host email smtp server details
+//            Properties pr = new Properties();
+////            pr.put("mail.smtp.host", "smtp.gmail.com");
+////            pr.put("mail.smtp.port", "587");
+////            pr.put("mail.smtp.auth", "true");
+////            pr.put("mail.smtp.starttls.enable", "true");
+////            pr.put("mail.smtp.socketFactory.port", "587");
+////            pr.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//            pr.put("mail.smtp.host", "smtp.gmail.com");
+//            pr.put("mail.smtp.port", "465");
+//            pr.put("mail.smtp.auth", "true");
+//            pr.put("mail.smtp.starttls.enable", "true");
+//            pr.put("mail.smtp.ssl.protocols", "TLSv1.2");
+//            pr.put("mail.smtp.socketFactory.port", "465");
+//            pr.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+//
+//
+//            //get session to authenticate the host email address and password
+//
+//            Session session = Session.getInstance(pr, new Authenticator() {
+//
+//                @Override
+//                protected PasswordAuthentication getPasswordAuthentication() {
+//                    return new PasswordAuthentication(fromEmail, password);
+//                }
+//            });
+//
+//
+//            //set email message details
+//            Message mess = new MimeMessage(session);
+//
+//
+//            //set from email address
+//            mess.setFrom(new InternetAddress(fromEmail));
+//            //set to email address or destination email address
+//            mess.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+//            mess.setSubject("Verify Email");
+//            mess.setContent("This is verify code: " + code, "text/plain");
+//
+//            Transport.send(mess);
+//
+//            test = true;
+//
+//
+//        } catch (Exception e) {
+//            System.out.println(e);
+//        }
+//
+//        return test;
+//    }
+
+
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, @RequestParam int roleId, Model model, HttpSession session) {
@@ -74,7 +146,7 @@ public class UserController {
         return "dashboard";
     }
 
-    @GetMapping("/profile")
+    @GetMapping("/profile-admin")
     public String profile(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         //   String test = session.getId();
@@ -82,8 +154,20 @@ public class UserController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "profile";
+        return "profile-admin";
     }
+
+//    @GetMapping("/profile")
+//    public String profile(Model model, HttpSession session)
+//    {
+//      User user = (User) session.getAttribute("user");
+//           String test = session.getId();
+//           if (user == null) { return "redirect:/login";
+//           }
+//           model.addAttribute("user", user);
+//           return "profile";
+//           }
+
 
     @PostMapping("/profile-image")
     public String updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session) {
@@ -472,12 +556,12 @@ public class UserController {
         session.invalidate();
         return "redirect:/login";
     }
-
-    @GetMapping("/profile-admin")
-    public String profile(HttpSession session) {
-        session.invalidate();
-        return "profile-admin";
-    }
+//
+//    @GetMapping("/profile-admin")
+//    public String profile(HttpSession session) {
+//        session.invalidate();
+//        return "profile-admin";
+//    }
 
     @GetMapping("/accountManagement")
     public String accountManagement(HttpSession session) {
@@ -489,12 +573,6 @@ public class UserController {
     public String approveManagement(HttpSession session) {
         session.invalidate();
         return "approveManagement";
-    }
-
-    @GetMapping("/centerManagement")
-    public String centerManagement(HttpSession session) {
-        session.invalidate();
-        return "adminCenterManagement";
     }
 
     @GetMapping("/profile-student")
