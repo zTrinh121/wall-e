@@ -159,12 +159,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (!response.ok) {
                             throw new Error("Network response was not ok");
                         }
-                        toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Xóa thông báo riêng tư thành công';
-                        toast.style.backgroundColor = "#4caf50";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Xóa thông báo cá nhân thành công!", "#4caf50", "check-circle");
                         var row = document.getElementById(notificationId);
                         if (row) {
                             row.remove();
@@ -172,12 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .catch(function (error) {
                         console.error("Error deleting notification:", error);
-                        toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Notification deletion failed';
-                        toast.style.backgroundColor = "red";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Xóa thông báo cá nhân thất bại!", "#4caf50", "times-circle");
                     });
 
                 deleteModal.style.display = "none";
@@ -195,12 +185,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         if (!response.ok) {
                             throw new Error("Network response was not ok");
                         }
-                        toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Xóa thông báo chung thành công';
-                        toast.style.backgroundColor = "#4caf50";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Xóa thông báo chung thành công!", "#4caf50", "check-circle");
                         var row = document.getElementById(notificationId);
                         if (row) {
                             row.remove();
@@ -208,12 +193,7 @@ document.addEventListener("DOMContentLoaded", function () {
                     })
                     .catch(function (error) {
                         console.error("Error deleting notification:", error);
-                        toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Notification deletion failed';
-                        toast.style.backgroundColor = "red";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Xóa thông báo cá nhân thất bại!", "#4caf50", "times-circle");
                     });
 
                 deleteModal.style.display = "none";
@@ -310,22 +290,12 @@ document.addEventListener("DOMContentLoaded", function () {
                         return response.json();
                     })
                     .then(function (data) {
-                        toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Cập nhật thông báo riêng tư thành công';
-                        toast.style.backgroundColor = "#4caf50";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
-                        fetchAndDisplayPrivateNotifications(); // Fetch the updated notifications list
+                        showToast("Cập nhật thông báo cá nhân thành công!", "#4caf50", "check-circle");
+                        fetchAndDisplayPrivateNotifications();
                     })
                     .catch(function (error) {
                         console.error("Error updating public notification:", error);
-                        toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Notification update failed';
-                        toast.style.backgroundColor = "red";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Cập nhật thông báo cá nhân thất bại!", "red", "times-circle");
                     });
             }else{
                 fetch(`/admin-publicNotification/update/${updatedNotification.id}`, {
@@ -342,26 +312,14 @@ document.addEventListener("DOMContentLoaded", function () {
                         return response.json();
                     })
                     .then(function (data) {
-                        toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Cập nhật thông báo chung thành công';
-                        toast.style.backgroundColor = "#4caf50";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Cập nhật thông báo chung thành công!", "#4caf50", "check-circle");
                         fetchAndDisplayPublicNotifications(); // Fetch the updated notifications list
                     })
                     .catch(function (error) {
                         console.error("Error updating public notification:", error);
-                        toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Notification update failed';
-                        toast.style.backgroundColor = "red";
-                        toast.style.display = "block";
-                        setTimeout(function () {
-                            toast.style.display = "none";
-                        }, 3000);
+                        showToast("Cập nhật thông báo cá nhân thất bại!", "red", "check-circle");
                     });
             }
-
-
 
             editModal.style.display = "none";
             editConfirmBtn.removeEventListener("click", handleEditConfirm); // Remove the event listener after handling
@@ -386,6 +344,15 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleSendToField();
     }
 
+    function showToast(message, backgroundColor, icon) {
+        toastInfo.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+        toast.style.backgroundColor = backgroundColor;
+        toast.style.display = "block";
+        setTimeout(function () {
+            toast.style.display = "none";
+        }, 3000);
+    }
+
     closeButton.addEventListener("click", function () {
         createNotificationModal.style.display = "none";
     });
@@ -406,45 +373,45 @@ document.addEventListener("DOMContentLoaded", function () {
             type: formData.get("notificationType"),
             sendTo: formData.get("send-to").toUpperCase()
         };
+
+        const recipients = data.sendTo.split(',').map(email => email.trim());
+        console.log(data)
+        console.log(recipients)
         var isValid = validateFormData(data);
 
         if(data.type === 'private' && isValid){
-            var url = "/admin-privateNotification/create";
-            try {
-                const centersValid = await fetchCentersAndCompareSendTo(data.sendTo);
-                if (!centersValid) {
-                    showError("notificationSendTo", "Người nhận không hợp lệ.");
-                    return;
-                }
+            for (const recipient of recipients){
+                const newData = { ...data, sendTo: recipient };
+                var url = "/admin-privateNotification/create";
+                try {
 
-                const response = await fetch(url, {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json"
-                    },
-                    body: JSON.stringify(data)
-                });
-                if (!response.ok) {
-                    throw new Error("Network response was not ok");
+                    const centersValid = await fetchCentersAndCompareSendTo(newData.sendTo);
+                    console.log(centersValid)
+                    if (!centersValid) {
+                        showError("notificationSendTo", "Người nhận không hợp lệ.");
+                        return;
+                    }
+
+                    const response = await fetch(url, {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json"
+                        },
+                        body: JSON.stringify(newData)
+                    });
+                    if (!response.ok) {
+                        throw new Error("Network response was not ok");
+                    }
+                    const responseData = await response.json();
+                    showToast("Tạo thông báo cá nhân thành công!", "#4caf50", "check-circle");
+                    createNotificationModal.style.display = "none";
+                    fetchAndDisplayPrivateNotifications();
+                } catch (error) {
+                    console.error("Error creating notification:", error);
+                    showToast("Lỗi khi tạo thông báo cá nhân!", "red", "times-circle");
                 }
-                const responseData = await response.json();
-                toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Tạo thông báo thành công';
-                toast.style.backgroundColor = "#4caf50";
-                toast.style.display = "block";
-                setTimeout(function () {
-                    toast.style.display = "none";
-                }, 3000);
-                createNotificationModal.style.display = "none";
-                fetchAndDisplayPrivateNotifications();
-            } catch (error) {
-                console.error("Error creating notification:", error);
-                toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Lỗi khi tạo thông báo';
-                toast.style.backgroundColor = "red";
-                toast.style.display = "block";
-                setTimeout(function () {
-                    toast.style.display = "none";
-                }, 3000);
             }
+
         }else if(data.type === 'public' && isValid){
             fetch("/admin-publicNotification/create", {
                 method: "POST",
@@ -460,28 +427,15 @@ document.addEventListener("DOMContentLoaded", function () {
                     return response.json();
                 })
                 .then(function (data) {
-                    toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Tạo thông báo chung thành công';
-                    toast.style.backgroundColor = "#4caf50";
-                    toast.style.display = "block";
-                    setTimeout(function () {
-                        toast.style.display = "none";
-                    }, 3000);
+                    showToast("Tạo thông báo chung thành công!", "#4caf50", "check-circle");
                     createNotificationModal.style.display = "none";
                     fetchAndDisplayPublicNotifications(); // Fetch the updated notifications list
                 })
                 .catch(function (error) {
                     console.error("Error creating notification:", error);
-                    toastInfo.innerHTML = '<i class="fas fa-times-circle"></i> Notification creation failed';
-                    toast.style.backgroundColor = "red";
-                    toast.style.display = "block";
-                    setTimeout(function () {
-                        toast.style.display = "none";
-                    }, 3000);
+                    showToast("Lỗi khi tạo thông báo chung!", "red", "times-circle");
                 });
         }
-
-       
-
     });
     function validateFormData(data) {
         var isValid = true;

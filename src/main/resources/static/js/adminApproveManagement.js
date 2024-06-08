@@ -27,18 +27,18 @@ document.addEventListener("DOMContentLoaded", function () {
             .then(data => {
                 allPosts = data.filter(post => post.status === "Wait_to_process");
                 currentPage = 1; // Reset to first page
-                renderTable();
+                renderTable(allPosts);
             })
             .catch(error => console.error("Error fetching posts:", error));
     }
 
-    function renderTable() {
+    function renderTable(postList) {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        const postsToDisplay = allPosts.slice(start, end);
+        const postsToDisplay = postList.slice(start, end);
 
         displayPosts(postsToDisplay);
-        renderPaginationControls();
+        renderPaginationControls(postList);
     }
 
     function displayPosts(posts) {
@@ -66,8 +66,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function renderPaginationControls() {
-        const totalPages = Math.ceil(allPosts.length / itemsPerPage);
+    function renderPaginationControls(postList) {
+        const totalPages = Math.ceil(postList.length / itemsPerPage);
         paginationControls.innerHTML = '';
 
         for (let i = 1; i <= totalPages; i++) {
@@ -79,7 +79,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             pageButton.addEventListener('click', () => {
                 currentPage = i;
-                renderTable();
+                renderTable(postList);
             });
             paginationControls.appendChild(pageButton);
         }
@@ -118,7 +118,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 // Remove the post from the allPosts array
                 allPosts = allPosts.filter(post => String(post.id) !== id);
                 // Re-render the table
-                renderTable();
+                renderTable(allPosts);
                 showToast(`Post ${status === 'approve' ? 'approved' : 'rejected'} successfully!`);
                 // Check if no posts left to display
                 if (allPosts.length === 0) {
@@ -143,13 +143,18 @@ document.addEventListener("DOMContentLoaded", function () {
     searchForm.addEventListener("submit", function (event) {
         event.preventDefault();
         var query = searchInput.value.toLowerCase();
-        var filteredPosts = allPosts.filter(post =>
-            post.title.toLowerCase().includes(query) ||
-            post.centerName.toLowerCase().includes(query)
-        );
+        var filteredPosts
+        if(!query.trim()){
+            filteredPosts = allPosts;
+        }else{
+            filteredPosts = allPosts.filter(post =>
+                post.title.toLowerCase().includes(query) ||
+                post.centerName.toLowerCase().includes(query)
+            );
+        }
+
         currentPage = 1; // Reset to first page
-        displayPosts(filteredPosts);
-        renderPaginationControls();
+        renderTable(filteredPosts)
     });
 
     tableBody.addEventListener("click", function (event) {

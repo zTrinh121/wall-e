@@ -366,6 +366,15 @@
 /* MAIN */
 /* CONTENT */
 
+#viewNotificationTitle{
+  margin-bottom: 10px;
+  font-size: 21px;
+}
+
+#viewNotificationModal .modal-content p {
+  margin: 10px 0;
+}
+
 #deleteModal .modal-content p{
   margin-bottom: 1rem;
 }
