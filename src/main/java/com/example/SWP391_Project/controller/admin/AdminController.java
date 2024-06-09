@@ -87,7 +87,6 @@ public class AdminController {
     // -----------------------------------------------------------------------------------------
 
     @PatchMapping("admin-approveCenterPost/{id}")
-    @ResponseBody
     public ResponseEntity<?> approveCenterPost(@PathVariable int id) {
         try {
             adminService.approveCenterPost(id);
@@ -99,7 +98,6 @@ public class AdminController {
     }
 
     @PatchMapping("admin-rejectCenterPost/{id}")
-    @ResponseBody
     public ResponseEntity<?> rejectCenterPost(@PathVariable int id) {
         try {
             adminService.rejectCenterPost(id);
@@ -111,7 +109,6 @@ public class AdminController {
     }
 
     @PatchMapping("admin-approveCenter/{id}")
-    @ResponseBody
     public ResponseEntity<?> approveCenter(@PathVariable int id) {
         try {
             adminService.approveCenterApply(id);
@@ -123,7 +120,6 @@ public class AdminController {
     }
 
     @PatchMapping("admin-rejectCenter/{id}")
-    @ResponseBody
     public ResponseEntity<?> rejectCenter(@PathVariable int id) {
         try {
             adminService.rejectCenterApply(id);
@@ -142,14 +138,12 @@ public class AdminController {
     }
 
     @PostMapping("/admin-privateNotification/create")
-    @ResponseBody
     public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
         PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
         return ResponseEntity.ok().body(createdNotification);
     }
 
     @PutMapping("/admin-privateNotification/update/{id}")
-    @ResponseBody
     public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
                                                                          @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
         PrivateNotification updatedNotification = adminService.updatePrivateNotification(id, privateNotificationDto);
@@ -161,7 +155,6 @@ public class AdminController {
     }
 
     @DeleteMapping("/admin-privateNotification/delete/{id}")
-    @ResponseBody
     public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
         boolean deleted = adminService.deletePrivateNotification(id);
         if (deleted) {

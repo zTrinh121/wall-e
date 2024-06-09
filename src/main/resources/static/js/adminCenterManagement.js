@@ -33,18 +33,18 @@ document.addEventListener("DOMContentLoaded", function () {
                     allPosts = searchResults;
                 }
                 currentPage = 1; // Reset to first page
-                renderTable(allPosts);
+                renderTable();
             })
             .catch(error => console.error("Error fetching posts:", error));
     }
 
-    function renderTable(postList) {
+    function renderTable() {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        const postsToDisplay = postList.slice(start, end);
+        const postsToDisplay = allPosts.slice(start, end);
 
         displayPosts(postsToDisplay);
-        renderPaginationControls(postList);
+        renderPaginationControls();
     }
 
     function displayPosts(posts) {
@@ -74,8 +74,8 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function renderPaginationControls(postList) {
-        const totalPages = Math.ceil(postList.length / itemsPerPage);
+    function renderPaginationControls() {
+        const totalPages = Math.ceil(allPosts.length / itemsPerPage);
         paginationControls.innerHTML = '';
 
         for (let i = 1; i <= totalPages; i++) {
@@ -87,11 +87,18 @@ document.addEventListener("DOMContentLoaded", function () {
             }
             pageButton.addEventListener('click', () => {
                 currentPage = i;
-                renderTable(postList);
+                renderTable();
             });
             paginationControls.appendChild(pageButton);
         }
     }
+
+    paginationControls.addEventListener("click", function (event) {
+        if (event.target.classList.contains("page-button")) {
+            currentPage = parseInt(event.target.textContent); // Lấy số trang từ nội dung của nút
+            renderTable(); // Render lại bảng khi chuyển trang
+        }
+    });
 
     function displayPostDetails(postId) {
         var postRow = document.getElementById(postId);
@@ -144,15 +151,16 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 allPosts = allPosts.filter(post => String(post.id) !== id);
+                console.log("POst sau khi thay doi" + allPosts.name);
                 var postRow = document.getElementById(id);
                 if (postRow) {
                     postRow.remove();
                 }
-                showToast(`${status === 'approve' ? 'Duyệt' : 'Từ chối'} bài đăng thành công!`);
+                showToast(`Post ${status === 'approve' ? 'approved' : 'rejected'} successfully!`);
                 if (allPosts.length === 0) {
                     noResultDiv.style.display = "block";
                 }
-                renderTable(allPosts);
+                renderTable();
             })
 
             .catch(error => {
@@ -173,19 +181,11 @@ document.addEventListener("DOMContentLoaded", function () {
     searchForm.addEventListener("submit", function (event) {
         event.preventDefault();
         var query = searchInput.value.toLowerCase();
-        var filteredPosts
-        console.log(allPosts)
-        console.log(query)
-        if(!query.trim()){
-            filteredPosts = allPosts;
-        }else{
-            filteredPosts = allPosts.filter(post =>
-                post.name.toLowerCase().includes(query)
-            );
-        }
-
+        var searchResults  = allPosts.filter(post =>
+            post.name.toLowerCase().includes(query)
+        );
         currentPage = 1; // Reset to first page
-        displayPosts(filteredPosts);
+        displayPosts(searchResults);
     });
 
     tableBody.addEventListener("click", function (event) {

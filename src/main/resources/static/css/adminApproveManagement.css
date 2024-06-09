@@ -385,7 +385,7 @@
 	height: 2rem;
 }
 
- #approvePostButton, #rejectPostButton{
+#approvePostButton, #rejectPostButton{
 	width: 5rem;
 	border-radius: 0.5rem;
 	border: none;
