@@ -10,9 +10,6 @@ import com.example.SWP391_Project.service.AdminService;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -59,15 +56,6 @@ public class AdminController {
         return ResponseEntity.ok().body(system);
     }
 
-    @GetMapping("/admin-publicNotificationsPage")
-    @ResponseBody
-    public ResponseEntity<Page<SystemNotification>> getAllSystemNotifications(@RequestParam(defaultValue = "0") int page,
-                                                                              @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<SystemNotification> systemNotificationsPage = adminService.getAllSystemNotifications(pageable);
-        return ResponseEntity.ok().body(systemNotificationsPage);
-    }
-
     @PostMapping("/admin-publicNotification/create")
     @ResponseBody
     public SystemNotification createSystemNotification(@RequestBody @Valid SystemNotificationDto systemNotificationDto) {
@@ -99,6 +87,7 @@ public class AdminController {
     // -----------------------------------------------------------------------------------------
 
     @PatchMapping("admin-approveCenterPost/{id}")
+    @ResponseBody
     public ResponseEntity<?> approveCenterPost(@PathVariable int id) {
         try {
             adminService.approveCenterPost(id);
@@ -110,6 +99,7 @@ public class AdminController {
     }
 
     @PatchMapping("admin-rejectCenterPost/{id}")
+    @ResponseBody
     public ResponseEntity<?> rejectCenterPost(@PathVariable int id) {
         try {
             adminService.rejectCenterPost(id);
@@ -121,6 +111,7 @@ public class AdminController {
     }
 
     @PatchMapping("admin-approveCenter/{id}")
+    @ResponseBody
     public ResponseEntity<?> approveCenter(@PathVariable int id) {
         try {
             adminService.approveCenterApply(id);
@@ -132,6 +123,7 @@ public class AdminController {
     }
 
     @PatchMapping("admin-rejectCenter/{id}")
+    @ResponseBody
     public ResponseEntity<?> rejectCenter(@PathVariable int id) {
         try {
             adminService.rejectCenterApply(id);
@@ -150,12 +142,14 @@ public class AdminController {
     }
 
     @PostMapping("/admin-privateNotification/create")
+    @ResponseBody
     public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
         PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
         return ResponseEntity.ok().body(createdNotification);
     }
 
     @PutMapping("/admin-privateNotification/update/{id}")
+    @ResponseBody
     public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
                                                                          @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
         PrivateNotification updatedNotification = adminService.updatePrivateNotification(id, privateNotificationDto);
@@ -167,6 +161,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/admin-privateNotification/delete/{id}")
+    @ResponseBody
     public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
         boolean deleted = adminService.deletePrivateNotification(id);
         if (deleted) {
