@@ -1,96 +1,157 @@
+// Define toast and toastInfo in the global scope
+var toast = document.getElementById("toast");
+var toastInfo = document.getElementById("toast-info");
+
+//Start: Create notification form
+function toggleSendToField() {
+    var notificationTypeSelect = document.getElementById("notificationType");
+    var notificationType = notificationTypeSelect.value; // Lấy giá trị của select
+
+    var sendToInput = document.getElementById("notificationSendTo");
+    var sendToLabel = document.getElementById("notifcationLabelSendTo");
+
+    if (notificationType === "private") {
+        sendToInput.style.display = "block";
+        sendToLabel.style.display = "block";
+        sendToInput.setAttribute("required", true);
+    } else {
+        sendToInput.style.display = "none";
+        sendToLabel.style.display = "none";
+        sendToInput.removeAttribute("required");
+    }
+}
+
+//End: Create notification form
+
+//Start: Modal create/delete/pdate notification
 document.addEventListener("DOMContentLoaded", function () {
-    var toast = document.getElementById("toast");
-    var toastInfo = document.getElementById("toast-info");
     var createNotificationBtn = document.getElementById("createNotificationBtn");
     var createNotificationModal = document.getElementById("createNotificationModal");
     var closeButton = createNotificationModal.querySelector(".close");
     var notificationForm = document.getElementById("notificationForm");
     var notificationTypeSelect = notificationForm.querySelector("select");
-    var publicNotificationBtn = document.getElementById("publicNotificationBtn");
-    var privateNotificationBtn = document.getElementById("privateNotificationBtn");
-    var currentPage = 1;
-    var itemsPerPage = 5;
+
+    createNotificationBtn.addEventListener("click", function () {
+        createNotificationModal.style.display = "block";
+    });
+
+    closeButton.addEventListener("click", function () {
+        createNotificationModal.style.display = "none";
+    });
+
+    window.addEventListener("click", function (event) {
+        if (event.target == createNotificationModal) {
+            createNotificationModal.style.display = "none";
+        }
+    });
+
+    notificationForm.addEventListener("submit", function (event) {
+        event.preventDefault();
+
+        var notificationData = {
+            title: notificationForm.querySelector("#notificationTitle").value,
+            content: notificationForm.querySelector("#notificationContent").value,
+            createdAt: new Date().toISOString()
+        };
+
+        var endpoint = "/admin-publicNotification/create";
+
+        if (notificationTypeSelect.value === "private") {
+            endpoint = "/admin-privateNotification/create";
+        }
+
+        fetch(endpoint, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(notificationData)
+        })
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                toastInfo.innerHTML = '<i class="fas fa-check-circle"></i> Notification created successfully';
+                toast.style.backgroundColor = "#4caf50";
+                toast.style.display = "block";
+                setTimeout(function () {
+                    toast.style.display = "none";
+                }, 3000); // ẩn toast sau 3 giây
+                return response.json();
+            })
+            .then(function (data) {
+                console.log("Notification created successfully:", data);
+                var newNotificationRow = `
+                <tr id="${data.id}">
+                    <td>${data.title}</td>
+                    <td>${new Date(data.createdAt).toLocaleDateString('en-GB')}</td>
+                    <td><button class="view-details" data-title="${data.title}" data-content="${data.content}" data-createdat="${data.createdAt}">Xem</button></td>
+                    <td>
+                        <i class="fas fa-edit" data-id="${data.id}"></i>
+                        <i class="fas fa-trash" data-id="${data.id}"></i>
+                    </td>
+                </tr>
+                `;
+                notificationTableBody.insertAdjacentHTML("beforeend", newNotificationRow);
+            })
+            .catch(function (error) {
+                console.error("Error creating notification:", error);
+            });
+
+        createNotificationModal.style.display = "none";
+    });
+});
+//End: Modal create notification
+
+//Start: Button notification public/private
+document.addEventListener("DOMContentLoaded", function () {
+    var currentPage = 0;
+    var itemsPerPage = 10;
     var modal = document.getElementById('viewNotificationModal');
+    var closeBtnNotification = modal.querySelector('.close');
     var viewNotificationTitle = modal.querySelector('#viewNotificationTitle');
     var viewNotificationContent = modal.querySelector('#viewNotificationContent');
     var viewNotificationCreatedAt = modal.querySelector('#viewNotificationCreatedAt');
-    var viewNotificationSendTo = modal.querySelector('#viewNotificationSendTo');
     var notificationTableBody = document.getElementById("notificationTableBody");
-    var allPublicNotifications = [];
-    var allPrivateNotifications = [];
-    var paginationControls = document.getElementById("paginationControls");
 
-    publicNotificationBtn.addEventListener("click", function () {
-        fetchAndDisplayPublicNotifications();
-    });
-
-    privateNotificationBtn.addEventListener("click", function () {
-        fetchAndDisplayPrivateNotifications();
-    });
-
-    function fetchAndDisplayPublicNotifications() {
-        fetch("/admin-publicNotifications")
-            .then(response => response.json())
-            .then(data => {
-                allPublicNotifications = data;
-                currentPage = 1;
-                renderTable(allPublicNotifications);
+    function fetchNotifications(page) {
+        var url = `/admin-publicNotificationsPage?page=${page}&size=${itemsPerPage}`;
+        fetch(url)
+            .then(function (response) {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
             })
-            .catch(error => console.error("Error fetching public notifications:", error));
-    }
-
-    function fetchAndDisplayPrivateNotifications() {
-        fetch("/admin-privateNotifications")
-            .then(response => response.json())
-            .then(data => {
-                allPrivateNotifications = data;
-                currentPage = 1;
-                renderTable(allPrivateNotifications);
+            .then(function (data) {
+                var totalPages = data.totalPages;
+                document.getElementById("totalPages").textContent = totalPages;
+                if (currentPage >= totalPages - 1) {
+                    document.getElementById("nextPageBtn").disabled = true;
+                } else {
+                    document.getElementById("nextPageBtn").disabled = false;
+                }
+                // Hiển thị dữ liệu lên giao diện
+                displayNotifications(data.content);
+                document.getElementById("currentPage").textContent = data.number + 1;
             })
-            .catch(error => console.error("Error fetching private notifications:", error));
-    }
-
-    function renderTable(notificationsList) {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const postsToDisplay = notificationsList.slice(start, end);
-        displayNotifications(postsToDisplay);
-        renderPaginationControls(notificationsList);
+            .catch(function (error) {
+                console.error("Error fetching notifications:", error);
+            });
     }
 
     function displayNotifications(notifications) {
         notificationTableBody.innerHTML = "";
-        var tableHeader = document.querySelector("#notificationTable thead tr");
-
-        var isPrivate = notifications.length && (notifications[0].centerSendTo || notifications[0].userSendTo);
-
-        if (isPrivate) {
-            tableHeader.innerHTML = `
-            <th>Tiêu đề</th>
-            <th>Ngày tạo</th>
-            <th>Gửi tới</th>
-            <th>Chi tiết</th>
-            <th>Thao tác</th>
-        `;
-        } else {
-            tableHeader.innerHTML = `
-            <th>Tiêu đề</th>
-            <th>Ngày tạo</th>
-            <th>Chi tiết</th>
-            <th>Thao tác</th>
-        `;
-        }
 
         notifications.forEach(function (notification) {
             var row = `
             <tr id="${notification.id}">
                 <td>${notification.title}</td>
                 <td>${new Date(notification.createdAt).toLocaleDateString('en-GB')}</td>
-                ${isPrivate ? `<td>${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}</td>` : ''}
-                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}>Xem</button></td>
+                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}">Xem</button></td>
                 <td>
-                    <i class="fas fa-edit" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}></i>
-                    <i class="fas fa-trash" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}></i>
+                    <i class="fas fa-edit" data-id="${notification.id}"></i>
+                    <i class="fas fa-trash" data-id="${notification.id}"></i>
                 </td>
             </tr>
         `;
@@ -98,40 +159,19 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     }
 
-    function displayNotificationDetails(title, content, createdAt, sendTo) {
-        viewNotificationTitle.textContent = "Tiêu đề: " +title;
-        viewNotificationContent.textContent = "Nội dung: " + content;
-        viewNotificationCreatedAt.textContent = "Ngày tạo: " + new Date(createdAt).toLocaleDateString('en-GB');
-        if(sendTo !== null){
-            viewNotificationSendTo.style.display = "block";
-            viewNotificationSendTo.textContent = "Gửi đến " + sendTo;
-        }
-        else viewNotificationSendTo.style.display = "none"
+    function displayNotificationDetails(title, content, createdAt) {
+        // Set the title, content, and created date of the notification in the modal
+        viewNotificationTitle.textContent = title;
+        viewNotificationContent.textContent = content;
+        viewNotificationCreatedAt.textContent = new Date(createdAt).toLocaleDateString('en-GB');
+        // Display the modal
         modal.style.display = "block";
-    }
-
-    function renderPaginationControls(notificationsList) {
-        const totalPages = Math.ceil(notificationsList.length / itemsPerPage);
-        paginationControls.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('page-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
-            pageButton.addEventListener('click', () => {
-                currentPage = i;
-                renderTable(notificationsList);
-            });
-            paginationControls.appendChild(pageButton);
-        }
     }
 
     document.getElementById('closeViewNotification').addEventListener('click', function () {
         modal.style.display = "none";
     });
+
 
     window.addEventListener('click', function (event) {
         if (event.target == modal) {
@@ -139,14 +179,12 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-
-
-    function displayDeleteModal(notification) {
+    function displayDeleteModal(notificationId, notificationTitle) {
         var deleteModal = document.getElementById("deleteModal");
         var deleteConfirmBtn = deleteModal.querySelector("#confirmDelete");
         var deleteCancelBtn = deleteModal.querySelector("#cancelDelete");
         var userName = deleteModal.querySelector("#userName");
-        userName.textContent = notification.title;
+        userName.textContent = notificationTitle;
         deleteModal.style.display = "block";
         var notificationId = notification.id;
 
@@ -196,29 +234,20 @@ document.addEventListener("DOMContentLoaded", function () {
                         showToast("Xóa thông báo cá nhân thất bại!", "#4caf50", "times-circle");
                     });
 
-                deleteModal.style.display = "none";
-            });
+            // Đóng modal sau khi xóa
+            deleteModal.style.display = "none";
+        });
 
-            deleteCancelBtn.addEventListener("click", function () {
-                deleteModal.style.display = "none";
-            });
-        }
-
-
+        deleteCancelBtn.addEventListener("click", function() {
+            deleteModal.style.display = "none";
+        });
     }
 
-    notificationTableBody.addEventListener("click", function (event) {
+    notificationTableBody.addEventListener("click", function(event) {
         if (event.target.classList.contains("fa-trash")) {
             var notificationId = event.target.getAttribute("data-id");
-            var notificationRow = event.target.closest("tr");
-            var notification = {
-                id: notificationId,
-                title: notificationRow.querySelector("td:first-of-type").textContent,
-                content: notificationRow.querySelector(".view-details").getAttribute("data-content"),
-                sendTo: notificationRow.querySelector(".view-details").getAttribute("data-sendto")
-            };
-            console.log(notification)
-            displayDeleteModal(notification);
+            var notificationTitle = event.target.closest("tr").querySelector("td:first-of-type").textContent;
+            displayDeleteModal(notificationId, notificationTitle);
         }
 
         if (event.target.classList.contains("fa-edit")) {
@@ -228,10 +257,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 id: notificationId,
                 title: notificationRow.querySelector("td:first-of-type").textContent,
                 content: notificationRow.querySelector(".view-details").getAttribute("data-content"),
-                sendTo: notificationRow.querySelector(".view-details").getAttribute("data-sendto")
             };
-            console.log(notification)
-
             displayEditModal(notification);
         }
 
@@ -239,40 +265,27 @@ document.addEventListener("DOMContentLoaded", function () {
             var title = event.target.getAttribute("data-title");
             var content = event.target.getAttribute("data-content");
             var createdAt = event.target.getAttribute("data-createdat");
-            var sendTo = event.target.getAttribute("data-sendto");
-            displayNotificationDetails(title, content, createdAt, sendTo);
+            displayNotificationDetails(title, content, createdAt);
         }
     });
 
+    //Edit notification
     function displayEditModal(notification) {
         var editModal = document.getElementById("editModal");
         var editConfirmBtn = editModal.querySelector("#confirmEdit");
         var editCancelBtn = editModal.querySelector("#cancelEdit");
         var editTitle = editModal.querySelector("#editTitle");
         var editContent = editModal.querySelector("#editContent");
-        var editSendTo = editModal.querySelector("#editSendTo");
-        var editSendToLabel = editModal.querySelector("#editSendToLabel");
 
         editTitle.value = notification.title;
         editContent.value = notification.content;
 
-        if (notification.sendTo) {
-            editSendTo.style.display = "block";
-            editSendToLabel.style.display = "block";
-            editSendTo.value = notification.sendTo;
-        } else {
-            editSendTo.style.display = "none";
-            editSendToLabel.style.display = "none";
-        }
-
         editModal.style.display = "block";
 
-        function handleEditConfirm() {
+        editConfirmBtn.addEventListener("click", function () {
             var updatedNotification = {
-                id: notification.id,
                 title: editTitle.value,
                 content: editContent.value,
-                sendTo: notification.sendTo
             };
 
             if(notification.sendTo){
@@ -322,16 +335,11 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
             editModal.style.display = "none";
-            editConfirmBtn.removeEventListener("click", handleEditConfirm); // Remove the event listener after handling
-        }
-
-        editConfirmBtn.addEventListener("click", handleEditConfirm);
+        });
 
         editCancelBtn.addEventListener("click", function () {
             editModal.style.display = "none";
-            editConfirmBtn.removeEventListener("click", handleEditConfirm); // Ensure no duplicate listeners
         });
-    }
 
     createNotificationBtn.addEventListener("click", function () {
         resetFormFields();

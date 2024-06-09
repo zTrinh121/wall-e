@@ -347,22 +347,22 @@
   font-size: 16px;
 }
 
-/*Start pagination*/
-#paginationControls{
+.pagination{
   display: flex;
+  /* width: 100%; */
   justify-content: center;
-  gap: 4px;
+  gap: 10px;
 }
 
-#paginationControls .active{
-  text-decoration: underline;
-}
-
-#paginationControls button{
+.pagination button{
+  color: #fff;
+  width: 5rem;
+  height: 2rem;
+  font-size: 1rem;
   border: none;
-  font-size: 18px;
+  background: #2e4ead;
+  border-radius: 0.5rem;
 }
-/*End paginartion*/
 /* MAIN */
 /* CONTENT */
 
@@ -377,9 +377,6 @@
 
 #deleteModal .modal-content p{
   margin-bottom: 1rem;
-}
-.error-message{
-  color: red;
 }
 
 #confirmDelete {
@@ -539,6 +536,7 @@
   border: none;
   color: #fff;
   font-size: 20px;
+  background-color: #4caf50;
 }
 
 #toast  p {
