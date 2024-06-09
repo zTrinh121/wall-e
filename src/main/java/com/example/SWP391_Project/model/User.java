@@ -1,10 +1,12 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.time.LocalDate;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "t14_user")
@@ -61,7 +63,11 @@ public class User {
     Role role;
 
     @ManyToOne
-    @JoinColumn(name = "C14_PARENT_ID")
+    @JoinColumn(name = "C14_PARENT_ID", referencedColumnName = "C14_USER_ID")
     User parent;
+
+    @OneToMany(mappedBy = "student")
+    @JsonBackReference
+    List<Enrollment> enrollments;
 
 }

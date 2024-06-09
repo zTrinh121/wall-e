@@ -15,7 +15,7 @@ public interface CenterRepository extends JpaRepository<Center, Integer> {
             "FROM Center c LEFT JOIN c.manager m")
     List<CenterDetailResponse> findAllCentersWithManagerDetails();
 
-    List<Center> findByManager(User user);
+    Optional<List<Center>> findByManager(User user);
 
     Optional<Center> findByCode(String code);
 }

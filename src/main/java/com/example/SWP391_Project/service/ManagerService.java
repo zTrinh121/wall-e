@@ -1,15 +1,18 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.*;
-import com.example.SWP391_Project.enums.RoleDescription;
+import com.example.SWP391_Project.enums.PaymentMethodEnum;
+import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.model.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
+import java.time.Month;
+import java.time.Year;
+import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public interface ManagerService {
@@ -53,13 +56,15 @@ public interface ManagerService {
     List<Center> getCenters(HttpSession httpSession);
 
     // View chi tiết thông tin của trung tâm
-    Optional<Center> findCenterById(int centerId);
+    Center findCenterById(int centerId);
 
     /*
         Tạo một trung tâm trên hệ thống
         --> Task này phải thông Admin duyệt
      */
     Center createCenter(CenterDto centerDto, HttpSession session);
+
+    Center updateCenterInfo(int id, CenterDto centerDto);
 
     boolean deleteCenter(int id);
     // -------------------------------------------------
@@ -91,7 +96,7 @@ public interface ManagerService {
 
     // ----------------- Manage the teacher ------------------
     // View all teacher in center
-    List<User> getTeachersInCenter(int centerId, RoleDescription role);
+    List<User> getTeachersInCenter(int centerId);
 
     // Approve teacher's apply form
     void approveTeacherApply(int id);
@@ -106,7 +111,7 @@ public interface ManagerService {
 
     // ----------------- Manage the student ------------------
     // View all student in center
-    List<User> getStudentsInCenter(int centerId, RoleDescription role);
+    List<User> getStudentsInCenter(int centerId);
 
     // View all student in a certain course
     List<User> getStudentsInCertainCourse(int courseId);
@@ -119,6 +124,9 @@ public interface ManagerService {
     // ----------------- Manage the slot ---------------------
     // view course's slot
     List<Slot> findSlotsInCourse(int courseId);
+
+    // view slots in certain day
+    List<Slot> findSlotInCertainDay(Date date);
 
     // createNewSlot
     Slot createNewSlot(SlotDto slotDto);
@@ -140,8 +148,67 @@ public interface ManagerService {
 
 
     // ----------------- Manage the revenue ------------------
-    // View lương của teacher ??
+    // --> Vẫn chưa xử lí task quản lí lương cho giáo viên
+    // --> Teamwork thống nhất lại 1 lần !
+
+    // code vậy chứ ko biết FE cần hàm này không !
+    List<Bill> getAllBills();
+
+    /*
+    Find bills with succeeded payments in a specific month.
+    @param status Payment status
+    @param date Month and year
+    */
+    List<Bill> findSucceededBills(Year year, Month month);
+
+    /*
+        Find bills with failed payments in a specific month.
+        @param status Payment status
+        @param date Month and year
+    */
+    List<Bill> findFailedBills(Year year, Month month);
+
+    /*
+        Find bills paid by cash in a specific month.
+        @param method Payment method
+        @param date Month and year
+    */
+    List<Bill> findBillsPaidByCash(Year year, Month month);
+
+    /*
+        Find bills paid by E-Banking in a specific month.
+        @param method Payment method
+        @param date Month and year
+    */
+    List<Bill> findBillsPaidByEBanking(Year year, Month month);
+
+    /*
+       Đứng ở giao diện của 1 khóa học cụ thể
+       --> Có nút view ra danh sách học sinh đã đóng/chưa đóng
+           học phí trong 1 tháng nhất định.
+       -- * <Input truyền vào kiểu Date chỉ cần tháng và năm>
+     */
+    List<User> findStudentsWithUnpaidFeesInCourse(
+            Year year, Month month, int courseId);
+
+    List<User> findStudentsWithPaidFeesInCourse(
+            Year year, Month month, int courseId);
+
+    /*
+       Đứng ở giao diện của 1 trung tâm cụ thể
+       --> Có nút view ra danh sách học sinh đã đóng/chưa đóng
+           học phí trong 1 tháng nhất định.
+       -- * <Input truyền vào kiểu Date chỉ cần tháng và năm>
+     */
+    List<User> findStudentsWithUnpaidFeesInCenter(
+            Year year, Month month, int centerId);
+
+    List<User> findStudentsWithPaidFeesInCenter(
+            Year year, Month month, int centerId);
+
     // -------------------------------------------------------
 
     // View feedback --> maybe bỏ qua Media Controller
+    List<Feedback> getAllFeedbacks();
+
 }

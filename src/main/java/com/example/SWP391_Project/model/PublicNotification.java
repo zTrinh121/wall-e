@@ -30,11 +30,11 @@ public class PublicNotification {
     @Column(name = "C20_CREATED_AT", nullable = false)
     Date createdAt;
 
-    @Column(name = "C20_UPDATED_AT", nullable = false)
+    @Column(name = "C20_UPDATED_AT")
     Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "C20_CENTER_ID")
+    @JoinColumn(name = "C20_SEND_TO_CENTER", referencedColumnName = "C03_CENTER_CODE")
     @JsonManagedReference
     Center center;
 

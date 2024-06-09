@@ -2,7 +2,7 @@ package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.SystemNotificationDto;
 import com.example.SWP391_Project.model.PrivateNotification;
-import com.example.SWP391_Project.model.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.model.SystemNotification;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;

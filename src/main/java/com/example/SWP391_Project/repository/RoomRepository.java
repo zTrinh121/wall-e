@@ -18,11 +18,9 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
     @Query("SELECT COUNT(s) > 0 " +
             "FROM Slot s JOIN s.room r " +
             "WHERE r = :room " +
-            "AND s.slotDate = :slotDate " +
             "AND s.slotStartTime < :slotEndTime " +
             "AND s.slotEndTime > :slotStartTime")
     boolean existsSlotOccurring(@Param("room") Room room,
-                                @Param("slotDate") Date slotDate,
                                 @Param("slotStartTime") Date slotStartTime,
                                 @Param("slotEndTime") Date slotEndTime);
 
@@ -32,15 +30,14 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             "   SELECT s " +
             "   FROM Slot s " +
             "   WHERE s.room = r " +
-            "   AND s.slotDate = :slotDate " +
             "   AND s.slotStartTime < :slotEndTime " +
             "   AND s.slotEndTime > :slotStartTime " +
             "   AND s.course.center.id = :centerId" +
             ")")
-    List<Room> findEmptyRooms(@Param("slotDate") Date slotDate,
-                              @Param("slotStartTime") Date slotStartTime,
-                              @Param("slotEndTime") Date slotEndTime,
-                              @Param("centerId") int centerId);
+    List<Room> findEmptyRooms(
+            @Param("slotStartTime") Date slotStartTime,
+            @Param("slotEndTime") Date slotEndTime,
+            @Param("centerId") int centerId);
 
 
 

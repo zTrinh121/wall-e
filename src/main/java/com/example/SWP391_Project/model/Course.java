@@ -7,6 +7,7 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
 
+
 @Entity
 @Table(name = "t01_course")
 @Data

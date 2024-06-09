@@ -10,7 +10,6 @@ import java.util.Date;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class SlotDto {
 
-    Date slotDate;
     Date slotStartTime;
     Date slotEndTime;
 

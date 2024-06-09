@@ -1,10 +1,10 @@
 package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.dto.SystemNotificationDto;
-import com.example.SWP391_Project.enums.Actor;
+import com.example.SWP391_Project.enums.RoleDescription;
 import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.model.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
@@ -176,7 +176,8 @@ public class AdminServiceImpl implements AdminService {
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                        .actor(Actor.ADMIN)
+                      //  .actor(Actor.ADMIN)
+                        .actor(RoleDescription.ADMIN)
                         .userSendTo(userCode.get())
                         .centerSendTo(null)
                         .build();
@@ -191,7 +192,8 @@ public class AdminServiceImpl implements AdminService {
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                        .actor(Actor.ADMIN)
+                       // .actor(Actor.ADMIN)
+                        .actor(RoleDescription.ADMIN)
                         .userSendTo(null)
                         .centerSendTo(centerOptional.get())
                         .build();
