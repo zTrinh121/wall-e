@@ -3,8 +3,9 @@ package com.example.SWP391_Project.controller.manager;
 import com.example.SWP391_Project.dto.CenterPostDto;
 import com.example.SWP391_Project.dto.PublicNotificationDto;
 import com.example.SWP391_Project.model.CenterPost;
+import com.example.SWP391_Project.model.Feedback;
 import com.example.SWP391_Project.model.PrivateNotification;
-import com.example.SWP391_Project.model.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.model.PublicNotification;
 import com.example.SWP391_Project.service.ManagerService;
 import jakarta.validation.Valid;
@@ -88,7 +89,7 @@ public class ManagerMediaController {
             return ResponseEntity.notFound().build();
         }
     }
-    // ---------------------------------------------------------------------
+    // --------------------------------------------------------------------
 
 
     // --------------------------- CENTER POST -----------------------------
@@ -125,5 +126,12 @@ public class ManagerMediaController {
     }
     // ---------------------------------------------------------------------
 
+
+    // --------------------------- FEEDBACKS -----------------------------
+    @GetMapping("/feedbacks")
+    public ResponseEntity<List<Feedback>> getAllFeedbacks() {
+        List<Feedback> feedbacks = managerService.getAllFeedbacks();
+        return ResponseEntity.ok().body(feedbacks);
+    }
 }
 

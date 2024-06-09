@@ -1,11 +1,12 @@
 package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.dto.*;
-import com.example.SWP391_Project.enums.Actor;
+import com.example.SWP391_Project.enums.PaymentMethodEnum;
+import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.enums.RoleDescription;
 import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.model.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
@@ -16,10 +17,9 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
-import java.util.Optional;
+import java.time.Month;
+import java.time.Year;
+import java.util.*;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
@@ -57,6 +57,12 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private RoomRepository roomRepository;
 
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private BillRepository billRepository;
+
 
     // ----------------------- Private notification ----------------------------
     @Override
@@ -75,7 +81,8 @@ public class ManagerServiceImpl implements ManagerService {
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                        .actor(Actor.MANAGER)
+                        //.actor(Actor.MANAGER)
+                        .actor(RoleDescription.MANAGER)
                         .userSendTo(userCode.get())
                         .centerSendTo(null)
                         .build();
@@ -90,7 +97,8 @@ public class ManagerServiceImpl implements ManagerService {
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                        .actor(Actor.MANAGER)
+                       // .actor(Actor.MANAGER)
+                        .actor(RoleDescription.MANAGER)
                         .userSendTo(null)
                         .centerSendTo(centerOptional.get())
                         .build();
@@ -136,10 +144,17 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto) {
+        Optional<Center> centerOtp = centerRepository.findByCode(publicNotificationDto.getCenterSendTo());
+        if (!centerOtp.isPresent()) {
+            throw new IllegalArgumentException("Center not found when finding by code !");
+        }
+        Center center = centerOtp.get();
+
         PublicNotification publicNotification = PublicNotification.builder()
                 .title(publicNotificationDto.getTitle())
                 .content(publicNotificationDto.getContent())
                 .createdAt(new Date())
+                .center(center)
                 .build();
         return publicNotificationRepository.save(publicNotification);
     }
@@ -181,11 +196,18 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public CenterPost createCenterPost(CenterPostDto centerPostDto) {
+        Optional<Center> centerOtp = centerRepository.findByCode(centerPostDto.getCenterSendTo());
+        if (!centerOtp.isPresent()) {
+            throw new IllegalArgumentException("Center not found when finding by code !");
+        }
+        Center center = centerOtp.get();
+
         CenterPost centerPost = CenterPost.builder()
                 .title(centerPostDto.getTitle())
                 .content(centerPostDto.getContent())
                 .createdAt(new Date())
                 .file_url(centerPostDto.getFile_url())
+                .center(center)
                 .build();
         return centerPostRepository.save(centerPost);
     }
@@ -218,17 +240,33 @@ public class ManagerServiceImpl implements ManagerService {
     }
     // ------------------------------------------------------------------------
 
+    // ----------------------------- Feedback --------------------------------
+    @Override
+    public List<Feedback> getAllFeedbacks() {
+        return feedbackRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
+    // -----------------------------------------------------------------------
+
 
     // ------------------------- Manager center ----------------------------
     @Override
     public List<Center> getCenters(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
-        return centerRepository.findByManager(user);
+        Optional<User> optionalUser = Optional.ofNullable(user);
+
+        if (optionalUser.isPresent()) {
+            Optional<List<Center>> optionalCenters = centerRepository.findByManager(optionalUser.get());
+            return optionalCenters.orElseThrow(() -> new RuntimeException("Centers not found for the manager!"));
+        } else {
+            throw new RuntimeException("User not found in session!");
+        }
     }
 
     @Override
-    public Optional<Center> findCenterById(int centerId) {
-        return centerRepository.findById(centerId);
+    public Center findCenterById(int centerId) {
+        return centerRepository.findById(centerId)
+                .orElseThrow(() -> new IllegalStateException("Center hasn't been existed with ID: " + centerId));
     }
 
     @Override
@@ -257,6 +295,22 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public Center updateCenterInfo(int id, CenterDto centerDto) {
+        Center center = centerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The center hasn't been existed"));
+
+        center.setName(centerDto.getName());
+        center.setDescription((centerDto.getDescription()));
+        center.setAddress(centerDto.getAddress());
+        center.setPhone(centerDto.getPhone());
+        center.setEmail(centerDto.getEmail());
+        center.setRegulation(centerDto.getRegulation());
+        center.setImagePath(centerDto.getImagePath());
+
+        return centerRepository.save(center);
+    }
+
+    @Override
     public boolean deleteCenter(int id) {
         try {
             centerRepository.deleteById(id);
@@ -271,7 +325,9 @@ public class ManagerServiceImpl implements ManagerService {
     // ------------------------- Manager course ----------------------------
     @Override
     public List<Course> getCoursesByCenterId(int centerId) {
-        return courseRepository.findByCenter_Id(centerId);
+        Optional<List<Course>> optionalCourses = courseRepository.findByCenter_Id(centerId);
+        return optionalCourses.isPresent()
+                ? optionalCourses.get() : Collections.emptyList();
     }
 
     @Override
@@ -391,9 +447,9 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     // -------------------------- Manager teacher -----------------------------
-    @Override
-    public List<User> getTeachersInCenter(int centerId, RoleDescription role) {
-        return userCenterRepository.getUsersInCenter(centerId, RoleDescription.TEACHER);
+    public List<User> getTeachersInCenter(int centerId) {
+        Optional<List<User>> teachers = userCenterRepository.getTeachersInCenter(centerId);
+        return teachers.orElse(Collections.emptyList());
     }
 
     @Override
@@ -434,13 +490,15 @@ public class ManagerServiceImpl implements ManagerService {
 
     // -------------------------- Manager student -----------------------------
     @Override
-    public List<User> getStudentsInCenter(int centerId, RoleDescription role) {
-        return userCenterRepository.getUsersInCenter(centerId, RoleDescription.STUDENT);
+    public List<User> getStudentsInCenter(int centerId) {
+        Optional<List<User>> students = userCenterRepository.getStudentsInCenter(centerId);
+        return students.orElse(Collections.emptyList());
     }
 
     @Override
     public List<User> getStudentsInCertainCourse(int courseId) {
-        return courseRepository.getStudentsInCertainCourse(courseId);
+        Optional<List<User>> students = courseRepository.getStudentsInCertainCourse(courseId);
+        return students.orElse(Collections.emptyList());
     }
 
     @Override
@@ -458,7 +516,17 @@ public class ManagerServiceImpl implements ManagerService {
     // ----------------------------- Manage slot ------------------------------
     @Override
     public List<Slot> findSlotsInCourse(int courseId) {
-        return slotRepository.findSlotByCourse_Id(courseId);
+        Optional<List<Slot>> slots = slotRepository.findSlotByCourse_Id(courseId);
+        return slots.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Slot> findSlotInCertainDay(Date date) {
+        Optional<List<Slot>> slots = slotRepository.findBySlotDate(date);
+        if(!slots.isPresent()) {
+            throw new IllegalArgumentException("Do not exist the slot in" + date);
+        }
+        return slots.get();
     }
 
     @Override
@@ -478,7 +546,6 @@ public class ManagerServiceImpl implements ManagerService {
         Course course = courseOtp.get();
 
         Slot slot = Slot.builder()
-                .slotDate(slotDto.getSlotDate())
                 .slotStartTime(slotDto.getSlotStartTime())
                 .slotEndTime(slotDto.getSlotEndTime())
                 .course(course)
@@ -490,13 +557,14 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public List<Room> getListEmptyRooms(Slot slot) {
         int centerId = slot.getCourse().getCenter().getId();
-        Date slotDate = slot.getSlotDate();
         Date slotStartTime = slot.getSlotStartTime();
         Date slotEndTime = slot.getSlotEndTime();
 
-        return roomRepository.findEmptyRooms(slotDate, slotStartTime, slotEndTime, centerId);
+        return roomRepository.findEmptyRooms(slotStartTime, slotEndTime, centerId);
     }
 
+    // cái này còn thiếu view ra thời khóa biểu của giáo viên và học sinh
+    // trong trường hợp giáo viên muốn đổi slot đó qua ngày khác
     @Override
     public Slot updateSlot(int slotId, SlotDto slotDto) {
         Optional<Slot> slotOpt = slotRepository.findById(slotId);
@@ -520,12 +588,11 @@ public class ManagerServiceImpl implements ManagerService {
         Room room = roomOpt.get();
 
         // Kiểm tra xem phòng có slot diễn ra vào thời gian mới cập nhật hay không
-        boolean isSlotOccurring = roomRepository.existsSlotOccurring(room, slotDto.getSlotDate(), slotDto.getSlotStartTime(), slotDto.getSlotEndTime());
+        boolean isSlotOccurring = roomRepository.existsSlotOccurring(room, slotDto.getSlotStartTime(), slotDto.getSlotEndTime());
         if (isSlotOccurring) {
             throw new IllegalArgumentException("Room has slot occurring now");
         }
 
-        slot.setSlotDate(slotDto.getSlotDate());
         slot.setSlotStartTime(slotDto.getSlotStartTime());
         slot.setSlotEndTime(slotDto.getSlotEndTime());
         slot.setRoom(room);
@@ -542,20 +609,71 @@ public class ManagerServiceImpl implements ManagerService {
             return false;
         }
     }
-
-
     // ------------------------------------------------------------------------
 
 
     // ---------------------------- Manage the revenue ------------------------
-    // View lương của teacher ??
-    // ------------------------------------------------------------------------
+    @Override
+    public List<Bill> getAllBills() {
+        return billRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
 
-    // Task thêm: tìm phòng trống !
+    @Override
+    public List<Bill> findSucceededBills(Year year, Month month) {
+        Optional<List<Bill>> optionalBills =
+                billRepository.findByStatusAndCreatedAt(PaymentStatus.Succeeded, year, month);
+        return optionalBills.orElse(Collections.emptyList());
+    }
 
-    // --------------------------- View feedback -------------------------------
-    // -------------------------------------------------------------------------
+    @Override
+    public List<Bill> findFailedBills(Year year, Month month) {
+        Optional<List<Bill>> optionalBills =
+                billRepository.findByStatusAndCreatedAt(PaymentStatus.Failed, year, month);
+        return optionalBills.orElse(Collections.emptyList());
+    }
 
+    @Override
+    public List<Bill> findBillsPaidByCash(Year year, Month month) {
+        Optional<List<Bill>> optionalBills =
+                billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.Cash, year, month);
+        return optionalBills.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Bill> findBillsPaidByEBanking(Year year, Month month) {
+        Optional<List<Bill>> optionalBills =
+                billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.E_Banking, year, month);
+        return optionalBills.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithPaidFeesInCourse(Year year, Month month, int courseId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCourse(PaymentStatus.Succeeded, year, month, courseId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithUnpaidFeesInCourse(Year year, Month month, int courseId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCourse(PaymentStatus.Failed, year, month, courseId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithPaidFeesInCenter(Year year, Month month, int centerId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Failed, year, month, centerId);
+        return users.orElse(Collections.emptyList());
+    }
 }
 
 

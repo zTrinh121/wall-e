@@ -19,4 +19,6 @@ public class CenterPostDto {
     String file_url;
 
     Date updatedAt;
+
+    String centerSendTo;
 }
