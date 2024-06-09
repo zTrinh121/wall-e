@@ -29,53 +29,56 @@ INSERT INTO t14_user (C14_USER_USERNAME, C14_USER_PASSWORD, C14_ACC_STATUS, C14_
 ('parent_username_4', 'parent_password_4', 1, 'USER20004', 'Parent 4', '123456789', '123 Street, City', '1970-01-01', 0, 'parent4@example.com', 2, NULL),
 ('teacher_username_4', 'teacher_password_4', 1, 'USER30004', 'Teacher 4', '123456789', '123 Street, City', '1980-01-01', 1, 'teacher4@example.com', 3, NULL),
 ('manager_username_4', 'manager_password_4', 1, 'USER40004', 'Manager 4', '123456789', '123 Street, City', '1990-01-01', 1, 'manager4@example.com', 4, NULL);
+
+
+INSERT INTO t13_subject (C13_SUBJECT_CODE, C13_SUBJECT_NAME, C13_SUBJECT_DESC) VALUES
+('SWP391', 'Subject 1', 'Description of Subject 1'),
+('SWP392', 'Subject 2', 'Description of Subject 2'),
+('SWP393', 'Subject 3', 'Description of Subject 3'),
+('SWP394', 'Subject 4', 'Description of Subject 4'),
+('SWP395', 'Subject 5', 'Description of Subject 5'),
+('SWP396', 'Subject 6', 'Description of Subject 6'),
+('SWP397', 'Subject 7', 'Description of Subject 7'),
+('SWP398', 'Subject 8', 'Description of Subject 8'),
+('SWP399', 'Subject 9', 'Description of Subject 9'),
+('SWP3100', 'Subject 10', 'Description of Subject 10'),
+('SWP3101', 'Subject 11', 'Description of Subject 11'),
+('SWP3102', 'Subject 12', 'Description of Subject 12'),
+('SWP3103', 'Subject 13', 'Description of Subject 13'),
+('SWP3104', 'Subject 14', 'Description of Subject 14'),
+('SWP3105', 'Subject 15', 'Description of Subject 15'),
+('SWP3106', 'Subject 16', 'Description of Subject 16'),
+('SWP3107', 'Subject 17', 'Description of Subject 17'),
+('SWP3108', 'Subject 18', 'Description of Subject 18'),
+('SWP3109', 'Subject 19', 'Description of Subject 19'),
+('SWP3110', 'Subject 20', 'Description of Subject 20');
+
+
+
+INSERT INTO t03_center (C03_CENTER_CODE, C03_CENTER_NAME, C03_CENTER_DESC, C03_CENTER_ADDRESS, C03_CENTER_PHONE, C03_CENTER_EMAIL, C03_CENTER_REGULATIONS, C03_IMAGE_PATH, C03_MANAGER_ID, C03_CENTER_STATUS)
+VALUES
+('CENTER1001', 'Center 1', 'Description of Center 1', '123 Street, City', '123456789', 'center1@example.com', 'Regulations of Center 1', 'path_to_image1', 3, 3),
+('CENTER1002', 'Center 2', 'Description of Center 2', '456 Street, City', '987654321', 'center2@example.com', 'Regulations of Center 2', 'path_to_image2', 3, 3),
+('CENTER1003', 'Center 3', 'Description of Center 3', '789 Street, City', '111223344', 'center3@example.com', 'Regulations of Center 3', 'path_to_image3', 3, 3),
+('CENTER1004', 'Center 4', 'Description of Center 4', '1011 Street, City', '998877665', 'center4@example.com', 'Regulations of Center 4', 'path_to_image4', 3, 3),
+('CENTER1005', 'Center 5', 'Description of Center 5', '1213 Street, City', '554433221', 'center5@example.com', 'Regulations of Center 5', 'path_to_image5', 3, 3),
+('CENTER1006', 'Center 6', 'Description of Center 6', '1415 Street, City', '667788990', 'center6@example.com', 'Regulations of Center 6', 'path_to_image6', 3, 3),
+('CENTER1007', 'Center 7', 'Description of Center 7', '1617 Street, City', '112233445', 'center7@example.com', 'Regulations of Center 7', 'path_to_image7', 2, 3),
+('CENTER1008', 'Center 8', 'Description of Center 8', '1819 Street, City', '998877665', 'center8@example.com', 'Regulations of Center 8', 'path_to_image8', 2, 3),
+('CENTER1009', 'Center 9', 'Description of Center 9', '2021 Street, City', '554433221', 'center9@example.com', 'Regulations of Center 9', 'path_to_image9', 2, 3),
+('CENTER1010', 'Center 10', 'Description of Center 10', '2223 Street, City', '667788990', 'center10@example.com', 'Regulations of Center 10', 'path_to_image10', 1, 3),
+('CENTER1011', 'Center 11', 'Description of Center 11', '2425 Street, City', '112233445', 'center11@example.com', 'Regulations of Center 11', 'path_to_image11', 1, 3),
+('CENTER1012', 'Center 12', 'Description of Center 12', '2627 Street, City', '998877665', 'center12@example.com', 'Regulations of Center 12', 'path_to_image12', 1, 3),
+('CENTER1013', 'Center 13', 'Description of Center 13', '2829 Street, City', '554433221', 'center13@example.com', 'Regulations of Center 13', 'path_to_image13', 1, 3),
+('CENTER1014', 'Center 14', 'Description of Center 14', '3031 Street, City', '667788990', 'center14@example.com', 'Regulations of Center 14', 'path_to_image14', 1, 3),
+('CENTER1015', 'Center 15', 'Description of Center 15', '3233 Street, City', '112233445', 'center15@example.com', 'Regulations of Center 15', 'path_to_image15', 1, 3),
+('CENTER1016', 'Center 16', 'Description of Center 16', '3435 Street, City', '998877665', 'center16@example.com', 'Regulations of Center 16', 'path_to_image16', 1, 3),
+('CENTER1017', 'Center 17', 'Description of Center 17', '3637 Street, City', '554433221', 'center17@example.com', 'Regulations of Center 17', 'path_to_image17', 1, 3),
+('CENTER1018', 'Center 18', 'Description of Center 18', '3839 Street, City', '667788990', 'center18@example.com', 'Regulations of Center 18', 'path_to_image18', 1, 3),
+('CENTER1019', 'Center 19', 'Description of Center 19', '4041 Street, City', '112233445', 'center19@example.com', 'Regulations of Center 19', 'path_to_image19', 1, 3),
+('CENTER1020', 'Center 20', 'Description of Center 20', '4243 Street, City', '998877665', 'center20@example.com', 'Regulations of Center 20', 'path_to_image20', 1, 3);
+
 SELECT * FROM t14_user;
-
-
-INSERT INTO t13_subject (C13_SUBJECT_NAME, C13_SUBJECT_DESC) VALUES
-('Subject 1', 'Description of Subject 1'),
-('Subject 2', 'Description of Subject 2'),
-('Subject 3', 'Description of Subject 3'),
-('Subject 4', 'Description of Subject 4'),
-('Subject 5', 'Description of Subject 5'),
-('Subject 6', 'Description of Subject 6'),
-('Subject 7', 'Description of Subject 7'),
-('Subject 8', 'Description of Subject 8'),
-('Subject 9', 'Description of Subject 9'),
-('Subject 10', 'Description of Subject 10'),
-('Subject 11', 'Description of Subject 11'),
-('Subject 12', 'Description of Subject 12'),
-('Subject 13', 'Description of Subject 13'),
-('Subject 14', 'Description of Subject 14'),
-('Subject 15', 'Description of Subject 15'),
-('Subject 16', 'Description of Subject 16'),
-('Subject 17', 'Description of Subject 17'),
-('Subject 18', 'Description of Subject 18'),
-('Subject 19', 'Description of Subject 19'),
-('Subject 20', 'Description of Subject 20');
-
-
-INSERT INTO t03_center (C03_CENTER_CODE, C03_CENTER_NAME, C03_CENTER_DESC, C03_CENTER_ADDRESS, C03_CENTER_PHONE, C03_CENTER_EMAIL, C03_CENTER_REGULATIONS, C03_IMAGE_PATH, C03_MANAGER_ID) VALUES
-('CENTER1001', 'Center 1', 'Description of Center 1', '123 Street, City', '123456789', 'center1@example.com', 'Regulations of Center 1', 'path_to_image1', 4),
-('CENTER1002', 'Center 2', 'Description of Center 2', '456 Street, City', '987654321', 'center2@example.com', 'Regulations of Center 2', 'path_to_image2', 4),
-('CENTER1003', 'Center 3', 'Description of Center 3', '789 Street, City', '111223344', 'center3@example.com', 'Regulations of Center 3', 'path_to_image3', 4),
-('CENTER1004', 'Center 4', 'Description of Center 4', '1011 Street, City', '998877665', 'center4@example.com', 'Regulations of Center 4', 'path_to_image4', 9),
-('CENTER1005', 'Center 5', 'Description of Center 5', '1213 Street, City', '554433221', 'center5@example.com', 'Regulations of Center 5', 'path_to_image5', 9),
-('CENTER1006', 'Center 6', 'Description of Center 6', '1415 Street, City', '667788990', 'center6@example.com', 'Regulations of Center 6', 'path_to_image6', 9),
-('CENTER1007', 'Center 7', 'Description of Center 7', '1617 Street, City', '112233445', 'center7@example.com', 'Regulations of Center 7', 'path_to_image7', 9),
-('CENTER1008', 'Center 8', 'Description of Center 8', '1819 Street, City', '998877665', 'center8@example.com', 'Regulations of Center 8', 'path_to_image8', 9),
-('CENTER1009', 'Center 9', 'Description of Center 9', '2021 Street, City', '554433221', 'center9@example.com', 'Regulations of Center 9', 'path_to_image9', 9),
-('CENTER1010', 'Center 10', 'Description of Center 10', '2223 Street, City', '667788990', 'center10@example.com', 'Regulations of Center 10', 'path_to_image10', 14),
-('CENTER1011', 'Center 11', 'Description of Center 11', '2425 Street, City', '112233445', 'center11@example.com', 'Regulations of Center 11', 'path_to_image11', 14),
-('CENTER1012', 'Center 12', 'Description of Center 12', '2627 Street, City', '998877665', 'center12@example.com', 'Regulations of Center 12', 'path_to_image12', 14),
-('CENTER1013', 'Center 13', 'Description of Center 13', '2829 Street, City', '554433221', 'center13@example.com', 'Regulations of Center 13', 'path_to_image13', 14),
-('CENTER1014', 'Center 14', 'Description of Center 14', '3031 Street, City', '667788990', 'center14@example.com', 'Regulations of Center 14', 'path_to_image14', 19),
-('CENTER1015', 'Center 15', 'Description of Center 15', '3233 Street, City', '112233445', 'center15@example.com', 'Regulations of Center 15', 'path_to_image15', 19),
-('CENTER1016', 'Center 16', 'Description of Center 16', '3435 Street, City', '998877665', 'center16@example.com', 'Regulations of Center 16', 'path_to_image16', 19),
-('CENTER1017', 'Center 17', 'Description of Center 17', '3637 Street, City', '554433221', 'center17@example.com', 'Regulations of Center 17', 'path_to_image17', 19),
-('CENTER1018', 'Center 18', 'Description of Center 18', '3839 Street, City', '667788990', 'center18@example.com', 'Regulations of Center 18', 'path_to_image18', 19),
-('CENTER1019', 'Center 19', 'Description of Center 19', '4041 Street, City', '112233445', 'center19@example.com', 'Regulations of Center 19', 'path_to_image19', 19),
-('CENTER1020', 'Center 20', 'Description of Center 20', '4243 Street, City', '998877665', 'center20@example.com', 'Regulations of Center 20', 'path_to_image20', 19);
 SELECT * FROM t03_center;
 
 
@@ -97,7 +100,7 @@ VALUES
 ('Course 14', 'COURSE1014', 'Description of Class 14', '2024-02-14', '2024-07-14', 38, 250.00, DATEDIFF('2024-02-14', '2024-07-14') / 30.4375 * 250.00, 5, 2, 8),
 ('Course 15', 'COURSE1015', 'Description of Class 15', '2024-01-15', '2024-08-15', 39, 200.00, DATEDIFF('2024-01-15', '2024-08-15') / 30.4375 * 200.00, 5, 3, 13);
 
-
+SELECT * FROM t01_course;
 
 
 INSERT INTO t18_room (C18_ROOM_NAME, C18_CENTER_ID) VALUES
@@ -262,38 +265,8 @@ INSERT INTO t11_system_notification (C11_TITLE, C11_CONTENT, C11_CREATED_AT, C11
 ('New Dashboard', 'The new dashboard layout is now live. Enjoy the enhanced user experience.', '2024-06-19 10:00:00', NULL),
 ('System Health Check', 'A system health check will be performed tonight. Some services may be temporarily unavailable.', '2024-06-20 11:00:00', NULL);
 
+-- T19
 
-INSERT INTO t19_private_notifications (C19_TITLE, C19_CONTENT, C19_CREATED_AT, C19_UPDATED_AT, C19_SEND_TO, C19_CENTER_ID) VALUES
-('Welcome Message', 'Welcome to our new system. We are excited to have you!', '2024-06-01 08:00:00', NULL, 1, 5),
-('Maintenance Alert', 'Scheduled maintenance will take place this Saturday at 2 AM.', '2024-06-02 09:00:00', NULL, 2, 8),
-('Feature Release', 'New features have been added to enhance your experience.', '2024-06-03 10:00:00', NULL, 3, 15),
-('System Update', 'A system update is scheduled for tonight at midnight.', '2024-06-04 11:00:00', NULL, 4, 3),
-('Security Notice', 'A new security patch has been applied. Please restart your system.', '2024-06-05 12:00:00', NULL, 5, 10),
-('Weekly Newsletter', 'Our weekly newsletter is here with the latest updates.', '2024-06-06 13:00:00', NULL, 6, 18),
-('Feedback Request', 'We value your feedback. Please take a moment to complete our survey.', '2024-06-07 14:00:00', NULL, 7, 2),
-('Event Invitation', 'You are invited to our annual company event.', '2024-06-08 15:00:00', NULL, 8, 7),
-('System Downtime', 'The system will be down for maintenance on Sunday.', '2024-06-09 16:00:00', NULL, 9, 13),
-('Holiday Schedule', 'Please note our holiday schedule for the upcoming week.', '2024-06-10 17:00:00', NULL, 10, 1),
-('Bug Fixes', 'Several bugs have been fixed in the latest release.', '2024-06-11 18:00:00', NULL, 11, 14),
-('Account Update', 'Your account information has been updated successfully.', '2024-06-12 19:00:00', NULL, 12, 6),
-('Reminder', 'This is a friendly reminder to submit your reports by Friday.', '2024-06-13 20:00:00', NULL, 13, 9),
-('New Policy', 'Please review our updated privacy policy.', '2024-06-14 21:00:00', NULL, 14, 12),
-('Service Interruption', 'There will be a brief service interruption tonight.', '2024-06-15 22:00:00', NULL, 15, 19),
-('Thank You', 'Thank you for your continued support.', '2024-06-16 23:00:00', NULL, 16, 4),
-('Training Session', 'Join our training session to learn more about new features.', '2024-06-17 08:00:00', NULL, 17, 17),
-('Upgrade Notice', 'An upgrade will be performed on the system tonight.', '2024-06-18 09:00:00', NULL, 18, 11),
-('Survey Participation', 'We appreciate your participation in our recent survey.', '2024-06-19 10:00:00', NULL, 19, 20),
-('Outage Notification', 'A power outage is expected in the building tonight.', '2024-06-20 11:00:00', NULL, 20, 16),
-('Product Launch', 'We are excited to announce the launch of our new product.', '2024-06-21 12:00:00', NULL, 21, 14),
-('Service Enhancement', 'We have enhanced our services for better performance.', '2024-06-22 13:00:00', NULL, 22, 6),
-('Customer Support', 'Our customer support team is now available 24/7.', '2024-06-23 14:00:00', NULL, 23, 11),
-('System Health Check', 'A system health check will be performed tonight.', '2024-06-24 15:00:00', NULL, 24, 19),
-('Holiday Greetings', 'Wishing you happy holidays and a prosperous new year.', '2024-06-25 16:00:00', NULL, 25, 8),
-('Performance Improvement', 'System performance has been significantly improved.', '2024-06-26 17:00:00', NULL, 26, 3),
-('User Guide', 'Check out our new user guide for helpful tips.', '2024-06-27 18:00:00', NULL, 27, 10),
-('System Alert', 'A system alert has been issued for scheduled maintenance.', '2024-06-28 19:00:00', NULL, 28, 18),
-('New Integration', 'We have integrated new tools to enhance your workflow.', '2024-06-29 20:00:00', NULL, 29, 2),
-('Thank You', 'Thank you for attending our recent webinar.', '2024-06-30 21:00:00', NULL, 30, 7);
 
 INSERT INTO t20_public_notifications (C20_TITLE, C20_CONTENT, C20_CREATED_AT, C20_UPDATED_AT, C20_CENTER_ID) VALUES
 ('New Course Announcement', 'We are excited to introduce a new course on Data Science starting next month.', '2024-06-01 08:00:00', NULL, 1),
