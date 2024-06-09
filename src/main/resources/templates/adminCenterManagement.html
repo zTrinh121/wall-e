@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <title>Duyệt bài</title>
+    <title>Duyệt Trung tâm</title>
     <script th:src="@{/js/adminFragments.js}" type="module"></script>
     <th:block th:replace="adminFragments :: adminhead"></th:block>
-    <script src="/js/adminApproveManagement.js"></script>
-    <link rel="stylesheet" href="/css/adminApproveManagement.css" />
+    <script src="/js/adminCenterManagement.js"></script>
+    <link rel="stylesheet" href="/css/adminCenterManagement.css" />
 </head>
 <body>
 <div class="wrapper collapse">
@@ -17,21 +17,21 @@
             <main>
                 <div class="head-title">
                     <div class="left">
-                        <h1>Duyệt bài</h1>
+                        <h1>Duyệt trung tâm</h1>
                     </div>
                 </div>
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
-                            <h3>Danh sách bài đăng</h3>
+                            <h3>Danh sách trung tâm</h3>
                             <div class="filter">
                                 <!-- Form tìm kiếm -->
                                 <form id="searchForm">
                                     <input
                                             type="text"
                                             id="searchInput"
-                                            placeholder="Tìm bài đăng theo tên"
-
+                                            placeholder="Tìm trung tâm theo tên"
+                                            required
                                     />
                                     <button type="submit">Tìm</button>
                                 </form>
@@ -40,9 +40,9 @@
                         <table>
                             <thead>
                             <tr>
-                                <th><p>Tiêu đề</p></th>
                                 <th><p>Trung tâm</p></th>
-                                <th><p>Ngày</p></th>
+                                <th><p>Địa chỉ</p></th>
+                                <th><p>Quản lý</p></th>
                                 <th><p>Chi tiết</p></th>
                                 <th><p>Hành động</p></th>
                             </tr>
@@ -54,7 +54,6 @@
                         </table>
                         <div id="no-result">No result</div>
                         <div id="paginationControls" class="pagination-controls"></div>
-
                     </div>
                 </div>
             </main>
