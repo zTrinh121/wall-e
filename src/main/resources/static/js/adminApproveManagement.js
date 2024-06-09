@@ -15,8 +15,11 @@ document.addEventListener("DOMContentLoaded", function () {
     var searchForm = document.getElementById("searchForm");
     var searchInput = document.getElementById("searchInput");
     var noResultDiv = document.getElementById("no-result");
+    var paginationControls = document.getElementById("paginationControls");
 
     var allPosts = [];
+    var itemsPerPage = 5; // Number of posts per page
+    var currentPage = 1; // Current page number
 
     function fetchPosts() {
         fetch("/admin-centerPosts")
