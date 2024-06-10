@@ -1,28 +1,31 @@
 document.addEventListener("DOMContentLoaded", () => {
-    var currentPage = 1;
-    var itemsPerPage = 2;
-    var allCourses = [];
+    const teacherId = 3; // example teacher ID
+    const apiUrl = `http://localhost:8080/api/teachers/${teacherId}/courses`;
 
-    var paginationControls = document.getElementById("paginationControls");
+    fetch(apiUrl)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data[0])
+            const courseContainer = document.getElementById('courseContainer');
+            courseContainer.innerHTML = ''; // Clear any existing content
 
-    function fetchAndDisplayCourses() {
-        Promise.all([
-            fetch("/api/teachers/notifications/system").then(response => response.json()),
-            fetch("/api/teachers/notifications/public").then(response => response.json())
-        ])
-            .then(data => {
-                allPublicNotifications = data[0].concat(data[1]);
-                allPublicNotifications.sort((a, b) => {
-                    let dateA = new Date(a.createdAt);
-                    let dateB = new Date(b.createdAt);
-                    if (dateA < dateB) return 1;
-                    if (dateA > dateB) return -1;
-                    return a.id - b.id;
-                });
-                currentPage = 1; // Reset to first page
-                console.log(allPublicNotifications)
-                renderTable(allPublicNotifications);
-            })
-            .catch(error => console.error("Error fetching notifications:", error));
-    }
+            data.forEach(courseString => {
+                const courseArray = courseString.split(',');
+                const courseName = courseArray[0];
+                const courseDescription = courseArray[3];
+
+                const courseBox = document.createElement('div');
+                courseBox.className = 'box';
+                courseBox.innerHTML = `
+                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
+                    <h3>${courseName}</h3>
+                    <p>${courseDescription}</p>
+                    <a href="#" class="btn">read more</a>
+                `;
+                courseContainer.appendChild(courseBox);
+            });
+        })
+        .catch(error => {
+            console.error('Error fetching course data:', error);
+        });
 });
