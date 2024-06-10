@@ -2,6 +2,13 @@
 USE swp391_db_releasee;
 
 
+INSERT INTO t05_role (C05_ROLE_ID, C05_ROLE_DESC) VALUES
+(1, 'STUDENT'),
+(2, 'PARENT'),
+(3, 'TEACHER'),
+(4, 'MANAGER'),
+(5, 'ADMIN');
+
 INSERT INTO t14_user (C14_USER_USERNAME, C14_USER_PASSWORD, C14_ACC_STATUS, C14_USER_CODE, C14_USER_NAME, C14_USER_PHONE, C14_USER_ADDRESS, C14_USER_DOB, C14_USER_GENDER, C14_USER_EMAIL, C14_ROLE_ID, C14_PARENT_ID) VALUES
 ('student_username_1', 'student_password_1', 1, 'USER10001', 'Student 1', '123456789', '123 Street, City', '2000-01-01', 1, 'student1@example.com', 1, NULL),
 ('parent_username_1', 'parent_password_1', 1, 'USER20001', 'Parent 1', '123456789', '123 Street, City', '1970-01-01', 0, 'parent1@example.com', 2, NULL),
@@ -195,6 +202,29 @@ INSERT INTO t11_system_notification (C11_TITLE, C11_CONTENT, C11_CREATED_AT, C11
 ('System Health Check', 'A system health check will be performed tonight. Some services may be temporarily unavailable.', '2024-06-20 11:00:00', NULL);
 
 -- T19
+INSERT INTO t19_private_notifications (C19_TITLE, C19_CONTENT, C19_CREATED_AT, C19_UPDATED_AT, C19_SEND_TO_CENTER) VALUES
+('Default Title', 'Default Content', '2024-06-09 14:30:35', NULL, 4),
+('Default Title', 'Default Content', '2024-06-06 14:30:35', NULL, 4),
+('Default Title', 'Another Content', '2024-06-10 08:15:00', NULL, 4),
+('Special Title', 'Special Content', '2024-06-11 12:45:20', NULL, 4),
+('Event Notification', 'Event Content', '2024-06-12 09:30:15', NULL, 4),
+('Reminder', 'Reminder Content', '2024-06-13 07:00:00', NULL, 4),
+('Alert', 'Alert Content', '2024-06-14 10:20:05', NULL, 4),
+('Meeting Reminder', 'Meeting Content', '2024-06-15 13:50:25', NULL, 4),
+('Task Update', 'Task Content', '2024-06-16 11:40:30', NULL, 4),
+('Weekly Summary', 'Summary Content', '2024-06-17 15:10:45', NULL, 4);
+
+INSERT INTO t19_private_notifications (C19_TITLE, C19_CONTENT, C19_CREATED_AT, C19_UPDATED_AT, C19_SEND_TO_CENTER, c19_actor) VALUES
+('Default Title', 'Default Content', '2024-06-09 14:30:35', NULL, 'CENTER1001',1),
+('Default Title', 'Default Content', '2024-06-06 14:30:35', NULL, 'CENTER1001',2),
+('Default Title', 'Another Content', '2024-06-10 08:15:00', NULL, 'CENTER1001',1),
+('Special Title', 'Special Content', '2024-06-11 12:45:20', NULL, 'CENTER1001',1),
+('Event Notification', 'Event Content', '2024-06-12 09:30:15', NULL, 'CENTER1001',1),
+('Reminder', 'Reminder Content', '2024-06-13 07:00:00', NULL, 'CENTER1001',1),
+('Alert', 'Alert Content', '2024-06-14 10:20:05', NULL, 'CENTER1001',1),
+('Meeting Reminder', 'Meeting Content', '2024-06-15 13:50:25', NULL, 'CENTER1001',1),
+('Task Update', 'Task Content', '2024-06-16 11:40:30', NULL, 'CENTER1001',3),
+('Weekly Summary', 'Summary Content', '2024-06-17 15:10:45', NULL, 'CENTER1001',1);
 
 
 INSERT INTO t20_public_notifications (C20_TITLE, C20_CONTENT, C20_CREATED_AT, C20_UPDATED_AT, C20_SEND_TO_CENTER) VALUES
