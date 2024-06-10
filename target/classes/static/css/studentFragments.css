@@ -97,7 +97,9 @@ body {
 }
 
 .search button:hover {
-    background: #2648ae;
+    background: #fff;
+    color: #2648ae;
+    border: 1px solid #2e4ead;
 }
 
 /* End Search */
@@ -305,6 +307,18 @@ body {
     margin-left: 70px;
 }
 
+.content-notification .notification-item{
+    border-bottom: 1px solid;
+    padding: 6px 0px;
+    cursor: pointer;
+}
+
+.more-button{
+    color: #2e4ead;
+    text-decoration: underline;
+    text-align: center;
+    border-bottom: none !important;
+}
 
 
 /* Start: MODAL */

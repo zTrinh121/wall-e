@@ -9,4 +9,14 @@ public class StudentController {
     public String studentDashboard() {
         return "student-dashboard";
     }
+
+    @GetMapping("/student-timetable")
+    public String studentTimetable() {
+        return "student-timetable";
+    }
+
+    @GetMapping("/student-notification")
+    public String studentNotification() {
+        return "studentNotification";
+    }
 }

@@ -8,7 +8,7 @@ import org.springframework.data.repository.query.Param;
 import java.util.List;
 
 public interface TeacherRepository extends JpaRepository<Course, Long> {
-    @Query("SELECT c.name FROM Course c WHERE c.teacher.id = :teacherId")
+    @Query("SELECT c.name, c.id, c.code, c.description, c.startDate, c.endDate, c.amountOfStudents FROM Course c WHERE c.teacher.id = :teacherId")
     List<String> findCourseNamesByTeacherId(@Param("teacherId") Long teacherId);
 
     @Query("SELECT e.student FROM Enrollment e WHERE e.course.id = :courseId")
