@@ -230,7 +230,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 content: notificationRow.querySelector(".view-details").getAttribute("data-content"),
                 sendTo: notificationRow.querySelector(".view-details").getAttribute("data-sendto")
             };
-            console.log(notification)
 
             displayEditModal(notification);
         }

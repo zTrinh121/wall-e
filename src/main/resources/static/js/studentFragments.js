@@ -5,6 +5,10 @@ document.addEventListener("DOMContentLoaded", function () {
     const contentNotification = document.querySelector(".content-notification");
     const profileDropdownList = document.querySelector(".profile-dropdown-list");
     const profileDropdownBtn = document.querySelector(".profile-dropdown-btn");
+    const notificationModal = document.getElementById("notificationModal");
+    const notificationTitle = document.getElementById("notificationTitle");
+    const notificationDetails = document.getElementById("notificationDetails");
+    const closeModal = document.getElementById("viewNotificationModalClose");
 
     function toggleProfileDropdown() {
         profileDropdownList.classList.toggle("active");
@@ -12,9 +16,13 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function toggleNotificationDropdown() {
-        contentNotification.style.display =
-            contentNotification.style.display === "block" ? "none" : "block";
-        profileDropdownList.classList.remove("active"); // Hide profile dropdown
+        if (contentNotification.style.display === "block") {
+            contentNotification.style.display = "none";
+        } else {
+            contentNotification.style.display = "block";
+            fetchNotifications();
+        }
+        profileDropdownList.classList.remove("active");
     }
 
     bell.addEventListener("click", function () {
@@ -40,11 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
             profileDropdownList.classList.remove("active");
         }
     });
-});
-// End: Drop down
 
-// Start: Hamburger
-document.addEventListener('DOMContentLoaded', function () {
     const hamburger = document.querySelector('.hamburger');
     const wrapper = document.querySelector('.wrapper');
     const search = document.querySelector('.search');
@@ -55,54 +59,57 @@ document.addEventListener('DOMContentLoaded', function () {
             search.classList.toggle('show-search');
         }
     });
-});
-// End: Hamburger
 
-// Start view notification
-// $(document).ready(function () {
-//     // Khi trang được tải, thực hiện AJAX để lấy dữ liệu từ endpoint
-//     $.ajax({
-//         url: '/admin/notifications',
-//         method: 'GET',
-//         success: function (data) {
-//             // Xóa nội dung cũ của content-notification
-//             $('.content-notification').empty();
-//             data.forEach(function (notification) {
-//                 if (notification.sendTo === "All" || notification.sendTo === "admin1@example.com") {
-//                     var originalDate = new Date(notification.publishedDate);
-//                     var formattedDate = originalDate.toISOString().split('T')[0];
-//
-//                     var notificationHtml = '<ul><li><a href="#" id="' + notification.id + '" data-title="' + notification.title + '" data-content="' + notification.content + '" data-publishedDate="' + formattedDate + '">' + notification.title + '</a></li></ul>';
-//                     $('.content-notification').append(notificationHtml);
-//
-//                 }
-//
-//             });
-//             $('.content-notification a').click(function (event) {
-//                 var title = $(this).data('title');
-//                 var content = $(this).data('content');
-//                 var publishedDate = $(this).data('publisheddate');
-//
-//                 $('#notificationTitleViewModal').text(title);
-//                 $('#notificationContentViewModal').text(content);
-//                 $('#notificationPublishedDateViewModal').text(publishedDate);
-//                 $('#viewNotificationModal').css('display', 'block');
-//             });
-//
-//             $('#viewNotificationModal .close').click(function () {
-//                 $('#viewNotificationModal').css('display', 'none');
-//             });
-//
-//             $(window).click(function (event) {
-//                 if (event.target == $('#viewNotificationModal')[0]) {
-//                     $('#viewNotificationModal').css('display', 'none');
-//                 }
-//             });
-//
-//         },
-//         error: function (error) {
-//             console.log('Error:', error);
-//         }
-//     });
-// });
-// End view notification
+    function fetchNotifications() {
+        fetch('api/teachers/notifications/system')
+            .then(response => response.json())
+            .then(data => {
+
+                displayNotifications(data); // Assuming response contains notifications array
+            })
+            .catch(error => console.error('Error fetching notifications:', error));
+    }
+
+    function displayNotifications(notifications) {
+        contentNotification.innerHTML = ''; // Clear existing notifications
+
+        const maxDisplay = 5;
+        const displayedNotifications = notifications.slice(0, maxDisplay);
+
+        displayedNotifications.forEach(notification => {
+            const notificationItem = document.createElement('div');
+            notificationItem.classList.add('notification-item');
+            notificationItem.textContent = notification.title; // Adjust based on your notification structure
+            notificationItem.addEventListener('click', () => {
+                showNotificationDetails(notification);
+            });
+            contentNotification.appendChild(notificationItem);
+        });
+
+        if (notifications.length > maxDisplay) {
+            const moreButton = document.createElement('div');
+            moreButton.classList.add('notification-item', 'more-button');
+            moreButton.textContent = 'More';
+            moreButton.addEventListener('click', () => {
+                window.location.href = '/student-notification'; // Replace with the actual URL of your notifications list page
+            });
+            contentNotification.appendChild(moreButton);
+        }
+    }
+
+    function showNotificationDetails(notification) {
+        notificationTitle.textContent = notification.title;
+        notificationDetails.textContent = notification.content; // Adjust based on your notification structure
+        notificationModal.style.display = "block";
+    }
+
+    closeModal.addEventListener('click', () => {
+        notificationModal.style.display = "none";
+    });
+
+    window.addEventListener('click', (event) => {
+        if (event.target === notificationModal) {
+            notificationModal.style.display = "none";
+        }
+    });
+});
