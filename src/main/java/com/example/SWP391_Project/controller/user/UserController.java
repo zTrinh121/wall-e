@@ -100,8 +100,6 @@ public class UserController {
 //        return test;
 //    }
 
-
-
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, @RequestParam int roleId, Model model, HttpSession session) {
         if (userService.authenticateUser(username, password, roleId)) {
@@ -591,6 +589,11 @@ public class UserController {
     public String studentDashboard(HttpSession session) {
         session.invalidate();
         return "student-dashboard";
+    }
+    @GetMapping("/manager-dashboard")
+    public String managerDashboard(HttpSession session) {
+        session.invalidate();
+        return "managerHome";
     }
 
     @GetMapping("/student-classList")

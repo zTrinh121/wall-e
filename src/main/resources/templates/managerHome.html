@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/managerHome.css" />
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="top_navbar">
+        <div class="nva">
+            <div class="one"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
+        <div class="top_menu">
+            <div class="logo">
+                <a href="/templates/managerHome.html">Wall-E</a>
+            </div>
+            <form action="../search/index.html" class="search">
+                <i class="bx bxs-calendar-check">
+                    <i class="fa fa-search"></i>
+                </i>
+                <input type="text" placeholder="Tìm kiếm thông báo tài khoản">
+                <button onclick="" type="submit">Tìm</button>
+            </form>
+            <div class="profile-dropdown">
+                <div onclick="toggle()" class="profile-dropdown-btn">
+                    <div class="profile-img">
+                        <i class="fas fa-circle"></i>
+                    </div>
+
+                    <span>Victoria
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                </div>
+
+                <ul class="profile-dropdown-list">
+                    <li class="profile-dropdown-list-item">
+                        <a href="../profile/index.html">
+                            <i class="bx bxs-calendar-check">
+
+                                <i class="fas fa-user"></i>
+                            </i>
+                            Thông tin cá nhân
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="#">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-bell"></i>
+                            </i>
+                            Thông báo
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/change-password">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-lock"></i>
+                            </i>
+                            Đổi mật khẩu
+                        </a>
+                    </li>
+
+                    <hr />
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/guest">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </i>
+                            Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <ul>
+            <li>
+                <a href="/manager" class="active">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Trang chủ</span></a>
+            </li>
+            <li>
+                <a href="../9notificationDetail/index.html">
+                    <span class="icon"><i class="fas fa-bell"></i></span>
+                    <span class="title">Thông báo</span></a>
+            </li>
+            <li>
+                <a href="../15Revenue/index.html">
+                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+                    <span class="title">Doanh thu</span>
+                </a>
+            </li>
+            <li>
+                <a href="../11postDetail/index.html">
+                    <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
+                    <span class="title">Bài đăng</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_container">
+        <section id="content">
+
+            <!-- MAIN -->
+            <main>
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Danh sách trung tâm</h1>
+                        <div class="runline">
+                            <p>Hôm nay là:
+                                <span id="currentDate"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Danh sách trung tâm</h3>
+                            <form action="" class="search">
+                                <i class="bx bxs-calendar-check">
+                                    <i class="fa fa-search"></i>
+                                </i>
+                                <input type="text" placeholder="Tìm kiếm trung tâm">
+                                <button type="submit">Tìm</button>
+                            </form>
+                            <div class="filter" style="display: none;">
+                                <select name="codeids" id="codeid">
+                                </select>
+                            </div>
+                        </div>
+                        <table id="teacher-centre-manage">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <p>Tên trung tâm</p>
+                                </th>
+                                <th>
+                                    <p>Ngày tạo</p>
+                                </th>
+                                <th>
+                                    <p>Mã trung tâm</p>
+                                </th>
+                                <th>
+                                    <p>Hành động</p>
+                                </th>
+                                <th>
+                                    <p>Thông tin chi tiết</p>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <p>John Doe</p>
+                                </td>
+                                <td>
+                                    <p>12/11/2023</p>
+                                </td>
+                                <td>
+                                    <p>ABC</p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <a class="delete-user"><i class="fas fa-trash"></i></a>
+                                    </p>
+                                </td>
+                                <td><button class="openModalBtn">Xem</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Jane Smith</p>
+                                </td>
+                                <td>
+                                    <p>12/11/2023</p>
+                                </td>
+                                <td>
+                                    <p>XYZ</p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <a class="delete-user"><i class="fas fa-trash"></i></a>
+                                    </p>
+                                </td>
+                                <td><button class="openModalBtn">Xem</button></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Will Smith</p>
+                                </td>
+                                <td>
+                                    <p>12/12/2003</p>
+                                </td>
+                                <td>
+                                    <p>DDD</p>
+                                </td>
+                                <td>
+                                    <p>
+                                        <a class="delete-user"><i class="fas fa-trash"></i></a>
+                                    </p>
+                                </td>
+                                <td><button class="openModalBtn">Xem</button></td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                                </td>
+                            </tr>
+                            </tbody>
+                        </table>
+                        <!-- Toast Notification -->
+                        <div id="toast" class="toast">
+                            <div id="toastMessage"></div>
+                        </div>
+                    </div>
+                    <!--  -->
+                </div>
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+
+</div>
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe src="/centerHome" width="1250" height="500" frameborder="0"
+                scrolling="auto"></iframe>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
+        <button id="confirmDelete">Xác nhận</button>
+        <button id="cancelDeleteButton">Huỷ</button>
+        <!-- nên css lại nút xác nhân vs huỷ cách xa xa ra -->
+    </div>
+</div>
+
+<!-- Add Center Modal -->
+<div id="addCentreModal" class="modal">
+    <div class="add-modal-content">
+        <span id="cancelAdd" class="close">&times;</span>
+        <h4 style="text-align:center">Thêm Trung Tâm</h4>
+        <p>Nhập thông tin của trung tâm mới:</p>
+        <!-- Add Centre Form -->
+        <form id="addCentreForm">
+            <div>
+                <label for="centreName">Tên trung tâm:</label>
+                <input type="text" id="centreName" name="centreName" required>
+            </div>
+            <div>
+                <label for="centreAddress">Địa chỉ trung tâm:</label>
+                <input type="text" id="centreAddress" name="centreAddress" required>
+            </div>
+            <div>
+                <label for="centreDesc">Mô tả:</label>
+                <input type="text" id="centreDesc" name="centreDesc" required>
+            </div>
+            <div>
+                <label for="fileInput">File đính kèm:</label>
+                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt">
+                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+            </div>
+            <button type="submit" id="confirmAdd">Xác nhận</button>
+        </form>
+
+    </div>
+</div>
+
+<script src="/js/managerHome.js" type="module"></script>
+<script src="/js/dropdown.js"></script>
+<!-- nếu không cmt dòng trên thì code của phần iframe-modal sẽ không chạy đc :) -->
+<!-- ADDING CENTER -->
+<script>
+    const addCentreBtn = document.getElementById('addCentreBtn');
+    const addCentreModal = document.getElementById('addCentreModal');
+    const cancelAddButton = document.getElementById('cancelAdd');
+    const confirmAddButton = document.getElementById('confirmAdd');
+    const addCentreForm = document.getElementById('addCentreForm');
+
+    // Modal-show-up
+    addCentreBtn.addEventListener('click', () => {
+        addCentreModal.style.display = 'block';
+    });
+
+    // Hide-modal
+    cancelAddButton.addEventListener('click', () => {
+        addCentreModal.style.display = 'none';
+    });
+
+    // Confirm button
+    addCentreForm.addEventListener('submit', (event) => {
+        event.preventDefault();
+        const centreName = document.getElementById('centreName').value;
+        // thêm luôn vào db nếu admin nhấn từ chối -> xoá khỏi db hoặc admin confirm mới thêm vào db
+        // cần hiện thông báo đã được thêm thành công hay gì đó hmm chắc là gửi về manager
+        addCentreModal.style.display = 'none';
+        showToast(`Đã gửi yêu cầu thêm trung tâm "${centreName}" thành công!`);
+    });
+
+</script>
+
+<!-- modal-up-detail-infor -->
+<script>
+    var modal = document.getElementById("myModal");
+    var modalButtons = document.getElementsByClassName("openModalBtn");
+    var span = document.getElementsByClassName("close")[0];
+    // Rà hết class 'openModalBtn'
+    for (var i = 0; i < modalButtons.length; i++) {
+        modalButtons[i].addEventListener("click", function () {
+            modal.style.display = "block";
+        });
+    }
+    // hide-modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>
+
+<!-- DELETING CENTER  -->
+<script>
+    // get by => '.delete-user'
+    const deleteButtons = document.querySelectorAll('.delete-user');
+    const deleteModal = document.getElementById('deleteModal');
+    const confirmDeleteButton = document.getElementById('confirmDelete');
+    const cancelDeleteButton = document.getElementById('cancelDeleteButton');
+    const centerNameElement = document.getElementById('centerName');
+    let deleteTarget = null;
+
+    deleteButtons.forEach(button => {
+        button.addEventListener('click', (event) => {
+            event.preventDefault(); // né tag của <a></a>
+            const row = event.target.closest('tr');
+            const centerName = row.querySelector('td:nth-child(1) p').textContent; // Adjusted to target
+            centerNameElement.textContent = centerName;
+            deleteModal.style.display = 'block';
+            deleteTarget = row;
+        });
+    });
+
+
+    confirmDeleteButton.addEventListener('click', () => {
+        if (deleteTarget) {
+            const centerName = deleteTarget.querySelector('td:nth-child(1) p').textContent;//lấy cột 1 vì on query
+            deleteTarget.remove();
+            deleteModal.style.display = 'none';
+            showToast('Xóa thành công trung tâm ' + centerName);
+        }
+    });
+
+    cancelDeleteButton.addEventListener('click', () => {
+        deleteModal.style.display = 'none';
+    });
+    // hide modal
+    var spanDelete = document.getElementsByClassName("closeD")[0];
+    spanDelete.onclick = function () {
+        deleteModal.style.display = "none";
+    }
+    window.addEventListener('click', (event) => {
+        if (event.target == deleteModal) {
+            deleteModal.style.display = 'none';
+        }
+    });
+    // Show toast message
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+    //end-confirm
+</script>
+
+<!-- test-file-input -->
+<script>
+    //try-file-input
+    // function chooseFile() {
+    //   // Kích hoạt sự kiện click cho input type file
+    //   document.getElementById('fileInput').click();
+    // }
+
+    // Xử lý sự kiện khi người dùng chọn file
+    // document.getElementById('fileInput').addEventListener('change', function(event) {
+    //   // Lấy thông tin của file
+    //   const file = event.target.files[0];
+    //   console.log('File đã chọn:', file);
+    // });
+</script>
+
+<!-- dropdown for profile -->
+
+</body>
+
+</html>
