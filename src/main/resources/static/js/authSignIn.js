@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const form = document.getElementById('registrationForm');
-    
+
     form.addEventListener('submit', function(event) {
         event.preventDefault(); // Prevent the default form submission
         const role = document.getElementById('roles').value;

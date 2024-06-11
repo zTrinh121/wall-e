@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.AllNotificationResponse;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public interface TeacherService {
     List<PublicNotification> getAllPublicNotifications();
     List<SystemNotification> getAllSystemNotifications();
     // In ra car 3
-    NotificationResponse getAllNotifications();
+    AllNotificationResponse getAllNotifications();
 
 
     // tạo thông báo private

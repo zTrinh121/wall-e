@@ -11,7 +11,7 @@ import java.util.Optional;
 
 public interface CourseRepository extends JpaRepository<Course, Integer> {
 
-    Optional<List<Course>> findByCenter_Id(int centerId);
+    List<Course> findByCenter_Id(int centerId);
 
     @Query("SELECT NEW com.example.SWP391_Project.response.CourseDetailResponse(" +
             "c.name, c.code, c.description, c.startDate, c.endDate, " +
@@ -28,7 +28,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "JOIN ss.slot s " +
             "JOIN s.course c " +
             "WHERE c.id = :courseId")
-    Optional<List<User>> getStudentsInCertainCourse(int courseId);
+    List<User> getStudentsInCertainCourse(int courseId);
 
     Optional<Course> findByCode(String code);
 

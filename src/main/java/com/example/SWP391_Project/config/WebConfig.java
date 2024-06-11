@@ -26,4 +26,6 @@ public class WebConfig implements WebMvcConfigurer {
             return DateTimeFormatter.ofPattern("yyyy-MM-dd").format(object);
         }
     }
+
+
 }

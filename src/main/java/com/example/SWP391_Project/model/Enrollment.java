@@ -1,12 +1,8 @@
 package com.example.SWP391_Project.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-
-import java.util.List;
 
 @Entity
 @Table(name = "t15_enrollment")
@@ -20,19 +16,13 @@ public class Enrollment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "C15_ENROLLMENT_ID")
-    int enrollmentId;
+    int id;
 
     @ManyToOne
-    @JoinColumn(name = "C15_STUDENT_ID")
-    @JsonManagedReference
+    @JoinColumn(name = "C15_STUDENT_ID", nullable = false)
     User student;
 
     @ManyToOne
-    @JoinColumn(name = "C15_COURSE_ID")
-    @JsonManagedReference
+    @JoinColumn(name = "C15_COURSE_ID", nullable = false)
     Course course;
-
-    @OneToMany(mappedBy = "enrollment")
-    @JsonBackReference
-    List<Bill> bills;
 }

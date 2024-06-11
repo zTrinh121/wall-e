@@ -8,13 +8,6 @@
         <script th:src="@{/js/studentFragments.js}" type="module"></script>
         <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
         <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
-        <link
-                rel="stylesheet"
-                href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
-                integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
-                crossorigin="anonymous"
-                referrerpolicy="no-referrer"
-        />
     </th:block>
 </head>
 <body>
@@ -28,7 +21,7 @@
         </div>
         <div class="top_menu">
             <div
-                    onclick="window.location.href='/student-dashboard'"
+                    onclick="window.location.href='adminDashboard.html'"
                     class="logo"
             >
                 Wall-E
@@ -43,7 +36,15 @@
                 <button onclick="" type="submit">Tìm</button>
             </form>
 
-
+            <!-- Start Modal notification details -->
+            <div id="notificationModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <h2>Tiêu đề thông báo</h2>
+                    <p id="notificationDetails">Nội dung thông báo</p>
+                </div>
+            </div>
+            <!-- End Modal notification details -->
 
             <div class="item-drop-down">
                 <div class="notification">
@@ -108,15 +109,20 @@
                     <span class="title">Thông tin cá nhân</span></a
                 >
             </li>
-
             <li>
-                <a href="/student-timetable">
+                <a href="/student-classList">
+                    <span class="icon"><i class="fas fa-chalkboard"></i></span>
+                    <span class="title">Lớp học của tôi</span>
+                </a>
+            </li>
+            <li>
+                <a href="">
                     <span class="icon"><i class="fas fa-calendar-days"></i></span>
                     <span class="title">Thời khóa biểu</span>
                 </a>
             </li>
             <li>
-                <a href="/student-notification">
+                <a href="">
                     <span class="icon"><i class="fas fa-envelope"></i></span>
                     <span class="title">Thông báo</span>
                 </a>
@@ -124,15 +130,18 @@
         </ul>
     </div>
 
-    <!-- Start Modal notification details -->
-    <div id="notificationModal" class="modal">
+    <!-- Start modal view notification detail -->
+    <div id="viewNotificationModal" class="modal">
         <div class="modal-content">
-            <span class="close" id="viewNotificationModalClose">&times;</span>
-            <h2 id="notificationTitle">Tiêu đề thông báo</h2>
-            <p id="notificationDetails">Nội dung thông báo</p>
+            <span class="close">&times;</span>
+            <h2 id="notificationTitleViewModal"></h2>
+            <p id="notificationContentViewModal"></p>
+            <p id="notificationPublishedDateViewModal"></p>
+            <p id="notificationSendToViewModal"></p>
+
         </div>
     </div>
-    <!-- End Modal notification details -->
+    <!-- End modal view notification detail -->
 </div>
 
 </body>

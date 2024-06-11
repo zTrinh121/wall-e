@@ -13,6 +13,12 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleProfileDropdown();
     });
 
+
+});
+// End: Drop down
+
+// Start: Hamburger
+document.addEventListener('DOMContentLoaded', function () {
     const hamburger = document.querySelector('.hamburger');
     const wrapper = document.querySelector('.wrapper');
     const search = document.querySelector('.search');
@@ -23,8 +29,5 @@ document.addEventListener("DOMContentLoaded", function () {
             search.classList.toggle('show-search');
         }
     });
-
-
-
-
 });
+// End: Hamburger

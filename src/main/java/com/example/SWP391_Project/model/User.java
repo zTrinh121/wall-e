@@ -1,6 +1,5 @@
 package com.example.SWP391_Project.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,6 +15,20 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
+
+
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "ScheduleMapping",
+                columns = {
+                        @ColumnResult(name = "courseId"),
+                        @ColumnResult(name = "courseDate"),
+                        @ColumnResult(name = "startTime"),
+                        @ColumnResult(name = "endTime"),
+                        @ColumnResult(name = "studentId")
+                }
+        )
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -63,11 +76,23 @@ public class User {
     Role role;
 
     @ManyToOne
-    @JoinColumn(name = "C14_PARENT_ID", referencedColumnName = "C14_USER_ID")
+    @JoinColumn(name = "C14_PARENT_ID")
     User parent;
 
-    @OneToMany(mappedBy = "student")
-    @JsonBackReference
-    List<Enrollment> enrollments;
+//    @ManyToMany
+//    @JoinTable(
+//            name = "student_courses",
+//            joinColumns = @JoinColumn(name = "student_id"),
+//            inverseJoinColumns = @JoinColumn(name = "course_id")
+//    )
+
+    @ManyToMany
+    @JoinTable(
+            name = "t15_enrollment",
+            joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
+    )
+
+    private List<Course> courses;
 
 }

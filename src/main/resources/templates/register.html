@@ -27,6 +27,8 @@
             <input type="text" required placeholder="Số điện thoại" name="phone">
 
             <input type="text" required placeholder="Mã người dùng" name="code">
+
+
             <select name="roleId" required>
                 <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
             </select>
