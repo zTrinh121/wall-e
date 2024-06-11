@@ -1,32 +1,41 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
-@Table(name = "t16_feedback")
-@Getter
-@Setter
-@NoArgsConstructor
+@Table(name = "t06_feedback")
+@Data
 @AllArgsConstructor
-@FieldDefaults(level = AccessLevel.PRIVATE)
+@NoArgsConstructor
 @Builder(toBuilder = true)
+@FieldDefaults(level = AccessLevel.PRIVATE)
 public class Feedback {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "C16_FEEDBACK_ID")
+    @Column(name = "C06_FEEDBACK_ID")
     int id;
 
-    @Column(name = "C16_DESC", nullable = false, columnDefinition = "TEXT")
+    @Column(name = "C06_FEEDBACK_DESC", columnDefinition = "TEXT", nullable = false)
     String description;
 
-    @ManyToOne
-    @JoinColumn(name = "C16_TEACHER_ID", nullable = false)
-    User teacher;
+    @Column(name = "C06_CREATED_AT", nullable = false)
+    Date createdAt;
+
+    @Column(name = "C06_UPDATED_AT")
+    Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "C16_COURSE_ID", nullable = false)
-    Course course;
+    @JoinColumn(name = "C06_ACTOR_ID", referencedColumnName = "C14_USER_ID")
+    @JsonManagedReference
+    User actor;
+
+    @ManyToOne
+    @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USER_CODE")
+    User sendToUser;
 }

@@ -548,14 +548,67 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     // ---------------------------- Manage the revenue ------------------------
-    // View lương của teacher ??
-    // ------------------------------------------------------------------------
+    @Override
+    public List<Bill> getAllBills() {
+        return billRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
 
-    // Task thêm: tìm phòng trống !
+    @Override
+    public List<Bill> findSucceededBills(Year year, Month month) {
+        Optional<List<Bill>> bills =
+                billRepository.findByStatusAndCreatedAt(PaymentStatus.Succeeded, year, month);
+        return bills.orElse(Collections.emptyList());
+    }
 
-    // --------------------------- View feedback -------------------------------
-    // -------------------------------------------------------------------------
+    @Override
+    public List<Bill> findFailedBills(Year year, Month month) {
+        Optional<List<Bill>> bills =
+                billRepository.findByStatusAndCreatedAt(PaymentStatus.Failed, year, month);
+        return bills.orElse(Collections.emptyList());
+    }
 
+    @Override
+    public List<Bill> findBillsPaidByCash(Year year, Month month) {
+        Optional<List<Bill>> bills =
+                billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.Cash, year, month);
+        return bills.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Bill> findBillsPaidByEBanking(Year year, Month month) {
+        Optional<List<Bill>> bills =
+                billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.E_Banking, year, month);
+        return bills.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithPaidFeesInCourse(Year year, Month month, int courseId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCourse(PaymentStatus.Succeeded, year, month, courseId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithUnpaidFeesInCourse(Year year, Month month, int courseId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCourse(PaymentStatus.Failed, year, month, courseId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithPaidFeesInCenter(Year year, Month month, int centerId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
+        return users.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
+        Optional<List<User>> users =
+                userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Failed, year, month, centerId);
+        return users.orElse(Collections.emptyList());
+    }
 }
 
 
