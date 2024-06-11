@@ -318,24 +318,6 @@
 	display: none;
 }
 
-/*Start pagination*/
-#paginationControls{
-	display: flex;
-	justify-content: center;
-	gap: 4px;
-}
-
-#paginationControls .active{
-	text-decoration: underline;
-}
-
-#paginationControls button{
-	border: none;
-	font-size: 18px;
-}
-/*End paginartion*/
-
-
 /* MAIN */
 /* CONTENT */
 
@@ -385,7 +367,7 @@
 	height: 2rem;
 }
 
-#approvePostButton, #rejectPostButton{
+ #approvePostButton, #rejectPostButton{
 	width: 5rem;
 	border-radius: 0.5rem;
 	border: none;

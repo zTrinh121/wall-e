@@ -1,6 +1,6 @@
 package com.example.SWP391_Project.model;
 
-import com.example.SWP391_Project.enums.RoleDescription;
+import com.example.SWP391_Project.enums.Actor;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -36,7 +36,7 @@ public class PrivateNotification {
 
     @Column(name = "C19_ACTOR", nullable = false)
     @Enumerated(EnumType.ORDINAL)
-    RoleDescription actor;
+    Actor actor;
 
     @ManyToOne
     @JoinColumn(name = "C19_SEND_TO_USER", referencedColumnName = "C14_USER_CODE")

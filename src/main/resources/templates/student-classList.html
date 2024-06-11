@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/studentClassList.css" />
+    <script th:src="@{/js/studentFragments.js}" type="module"></script>
+    <th:block th:replace="studentFragments :: studenthead"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="studentFragments :: studentheader"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <!-- MAIN -->
+            <main>
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Lớp học của tôi</h1>
+                        <button onclick="window.location.href='../material/index.html'"><i class="fas fa-search"></i>Tìm tài liệu</button>
+
+                    </div>
+                </div>
+                <!-- Start class list -->
+
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Danh sách lớp học</h3>
+                        </div>
+                        <table>
+                            <thead>
+                            <tr>
+                                <th>Tên lớp</th>
+                                <th>Môn học</th>
+                                <th>Giáo viên</th>
+                                <th>Chi tiết</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td>
+                                    <p>Lớp ABC</p>
+                                </td>
+                                <td>Toán</td>
+                                <td>Giáo viên A - Trung tâm Start</td>
+                                <td><a href="student-classListDetails.html">Xem</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Lớp XYZ</p>
+                                </td>
+                                <td>Văn</td>
+                                <td>Giáo viên B - Trung tâm Y</td>
+                                <td><a href="">Xem</a></td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <p>Thông báo 1</p>
+                                </td>
+                                <td>Hóa</td>
+                                <td>Giáo viên C - Trung tâm X</td>
+                                <td><a href="">Xem</a></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!--  -->
+                </div>
+                <!-- End classlist -->
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+</div>
+
+</body>
+</html>

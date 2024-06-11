@@ -4,6 +4,7 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.EnrollmentRepository;
 import com.example.SWP391_Project.repository.PrivateNotificationRepository;
 import com.example.SWP391_Project.repository.ResultRepository;
+import com.example.SWP391_Project.response.AllNotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.repository.TeacherRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -103,11 +104,11 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
     }
 // in ra cả 3
     @Override
-    public NotificationResponse getAllNotifications() {
+    public AllNotificationResponse getAllNotifications() {
         List<PrivateNotification> privateNotifications = getAllPrivateNotifications();
         List<PublicNotification> publicNotifications = getAllPublicNotifications();
         List<SystemNotification> systemNotifications = getAllSystemNotifications();
-        return new NotificationResponse(privateNotifications, publicNotifications, systemNotifications);
+        return new AllNotificationResponse(privateNotifications, publicNotifications, systemNotifications);
     }
 
     // tạo thông báo private

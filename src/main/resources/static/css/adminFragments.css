@@ -39,17 +39,6 @@ body {
     border-radius: 5px;
 }
 
-.notification #bell {
-    position: relative;
-    display: inline-block;
-}
-
-.notification #bell i {
-    font-size: 1.2rem;
-    cursor: pointer;
-}
-
-
 .wrapper .top_navbar .top_menu {
     width: calc(100% - 70px);
     height: 100%;

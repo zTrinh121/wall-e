@@ -1,11 +1,6 @@
 document.addEventListener('DOMContentLoaded', async function() {
     const roleFilter = document.getElementById('role');
     const tableBody = document.getElementById('tableBody');
-    const paginationControls = document.getElementById('paginationControls');
-    let allUsers = []; // Store all fetched users
-    const itemsPerPage = 5; // Number of users per page
-    let currentPage = 1; // Current page number
-    let selectedRole = 0; // Selected role filter
 
     async function fetchUsers(roleId = 0) {
         try {
@@ -14,76 +9,12 @@ document.addEventListener('DOMContentLoaded', async function() {
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            allUsers = await response.json();
-            renderTable();
+            const data = await response.json();
+            console.log('Fetched data:', data); // Log fetched data
+            buildTable(data);
         } catch (error) {
             console.error('Error fetching users:', error);
         }
-    }
-
-    function renderTable() {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const usersToDisplay = allUsers.slice(start, end);
-
-        buildTable(usersToDisplay);
-        renderPaginationControls();
-    }
-
-    function buildTable(data) {
-        tableBody.innerHTML = ''; // Clear existing table rows
-        data.forEach((e) => {
-            let lock = e.status ? "Khóa" : "Mở khóa";
-            let row = `<tr>
-                <td><p>${e.username}</p></td>
-                <td><p>${e.role.description}</p></td>
-                <td><p>${e.status ? 'Hoạt động' : 'Không hoạt động'}</p></td>
-                <td><button class="action-button" data-user-id="${e.id}" data-status="${!e.status}">${lock}</button></td>
-            </tr>`;
-            tableBody.innerHTML += row;
-        });
-        addEventListenersToButtons();
-    }
-
-    function addEventListenersToButtons() {
-        const buttons = document.querySelectorAll('.action-button');
-        buttons.forEach(button => {
-            button.addEventListener('click', async function () {
-                const userId = button.getAttribute('data-user-id');
-                const newStatus = button.getAttribute('data-status') === 'true';
-                await updateUserStatus(userId, newStatus);
-                fetchUsers(selectedRole); // Refresh the table after updating status with current role filter
-            });
-        });
-    }
-
-    function renderPaginationControls() {
-        const totalPages = Math.ceil(allUsers.length / itemsPerPage);
-        paginationControls.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('page-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
-            }
-            pageButton.addEventListener('click', () => {
-                currentPage = i;
-                renderTable();
-            });
-            paginationControls.appendChild(pageButton);
-        }
-    }
-
-    function filterTable() {
-        const selectedRoleValue = roleFilter.value;
-        selectedRole = 0; // Default to 'all'
-        if (selectedRoleValue === 'teacher') { selectedRole = 3; }
-        else if (selectedRoleValue === 'student') { selectedRole = 1; }
-        else if (selectedRoleValue === 'parent') { selectedRole = 2; }
-        else if (selectedRoleValue === 'manager') { selectedRole = 4; }
-        fetchUsers(selectedRole);
     }
 
     async function updateUserStatus(userId, status) {
@@ -95,6 +26,7 @@ document.addEventListener('DOMContentLoaded', async function() {
                 },
                 body: `userId=${userId}&status=${status}`
             });
+            console.log(response);
 
             if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
@@ -108,6 +40,47 @@ document.addEventListener('DOMContentLoaded', async function() {
             console.error('Error updating user status:', error);
         }
     }
+
+    function buildTable(data) {
+        tableBody.innerHTML = ''; // Clear existing table rows
+        data.forEach((e) => {
+            let lock = e.status ? "Khóa" : "Mở khóa";
+            let row = `<tr>
+                    <td><p>${e.username}</p></td>
+                    <td><p>${e.role.description}</p></td>
+                    <td><p>${e.status ? 'Hoạt động' : 'Không hoạt động'}</p></td>
+                    <td><button class="action-button" data-user-id="${e.id}" data-status="${!e.status}">${lock}</button></td>
+                 </tr>`;
+            tableBody.innerHTML += row;
+        });
+        addEventListenersToButtons();
+    }
+
+    function filterTable() {
+        const selectedRole = roleFilter.value;
+        let roleEnum = 0; // Default to 'all'
+        if (selectedRole === 'teacher') { roleEnum = 2; }
+        else if (selectedRole === 'student') { roleEnum = 1; }
+        else if (selectedRole === 'parent') { roleEnum = 3; }
+        else if (selectedRole === 'manager') { roleEnum = 4; }
+        else if (selectedRole === 'admin') { roleEnum = 5; }
+
+        fetchUsers(roleEnum);
+    }
+
+    function addEventListenersToButtons() {
+        const buttons = document.querySelectorAll('.action-button');
+        buttons.forEach(button => {
+            button.addEventListener('click', async function () {
+                const userId = button.getAttribute('data-user-id');
+                const newStatus = button.getAttribute('data-status') === 'true';
+                await updateUserStatus(userId, newStatus);
+                fetchUsers(); // Refresh the table after updating status
+            });
+        });
+    }
+
+
 
     // Start show toast
     function showToast(message) {
