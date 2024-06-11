@@ -1,6 +1,5 @@
 package com.example.SWP391_Project.model;
 
-import com.example.SWP391_Project.enums.RoleDescription;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;

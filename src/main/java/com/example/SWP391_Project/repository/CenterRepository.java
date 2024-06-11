@@ -18,4 +18,7 @@ public interface CenterRepository extends JpaRepository<Center, Integer> {
     Optional<List<Center>> findByManager(User user);
 
     Optional<Center> findByCode(String code);
+
+    Optional<List<Center>> findByAddressContaining(String address);
+
 }
