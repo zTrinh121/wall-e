@@ -621,30 +621,30 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public List<Bill> findSucceededBills(Year year, Month month) {
-        Optional<List<Bill>> optionalBills =
+        Optional<List<Bill>> bills =
                 billRepository.findByStatusAndCreatedAt(PaymentStatus.Succeeded, year, month);
-        return optionalBills.orElse(Collections.emptyList());
+        return bills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findFailedBills(Year year, Month month) {
-        Optional<List<Bill>> optionalBills =
+        Optional<List<Bill>> bills =
                 billRepository.findByStatusAndCreatedAt(PaymentStatus.Failed, year, month);
-        return optionalBills.orElse(Collections.emptyList());
+        return bills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findBillsPaidByCash(Year year, Month month) {
-        Optional<List<Bill>> optionalBills =
+        Optional<List<Bill>> bills =
                 billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.Cash, year, month);
-        return optionalBills.orElse(Collections.emptyList());
+        return bills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findBillsPaidByEBanking(Year year, Month month) {
-        Optional<List<Bill>> optionalBills =
+        Optional<List<Bill>> bills =
                 billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.E_Banking, year, month);
-        return optionalBills.orElse(Collections.emptyList());
+        return bills.orElse(Collections.emptyList());
     }
 
     @Override
