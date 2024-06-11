@@ -142,24 +142,6 @@
 
 /* NAVBAR */
 
-/*Start pagination*/
-#paginationControls{
-	display: flex;
-	justify-content: center;
-	gap: 4px;
-}
-
-#paginationControls .active{
-	text-decoration: underline;
-}
-
-#paginationControls button{
-	border: none;
-	font-size: 18px;
-}
-/*End paginartion*/
-
-
 /* MAIN */
 #content {
 	margin-top: 1rem;
@@ -418,17 +400,17 @@
 
 	#content main .head-title .left h1{
 		text-align: center;
-		font-size: 48px;
+        font-size: 48px;
 	}
 
 	#content main .table-data .head{
 		flex-direction: column;
 		align-items: normal;
 	}
-
+	
 	#content main .table-data .head h3{
 		font-size: 32px;
-		text-align: left;
+        text-align: left;
 	}
 
 	#content main .table-data .head .filter select{
@@ -444,7 +426,7 @@
 	#content main .table-data .order table th p{
 		font-size: 14px;
 	}
-
+	
 	/* End main */
 
 	/* Start modal */

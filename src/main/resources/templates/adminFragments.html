@@ -21,11 +21,20 @@
         </div>
         <div class="top_menu">
             <div
-                    onclick=""
+                    onclick="window.location.href='adminDashboard.html'"
                     class="logo"
             >
                 Wall-E
             </div>
+            <form action="" class="search">
+                <i class="fa fa-search"></i>
+                <input
+                        type="text"
+                        required
+                        placeholder="Tìm kiếm thông báo/tài khoản"
+                />
+                <button onclick="" type="submit">Tìm</button>
+            </form>
 
             <!-- Start Modal notification details -->
             <div id="notificationModal" class="modal">
@@ -81,19 +90,19 @@
 
     <div class="sidebar">
         <ul>
-<!--            <li>-->
-<!--                <form action="" class="search">-->
-<!--                    <i class="fa fa-search"></i>-->
-<!--                    <input-->
-<!--                            type="text"-->
-<!--                            required-->
-<!--                            placeholder="Tìm kiếm thông báo tài khoản"-->
-<!--                    />-->
-<!--                    <button onclick="" type="submit">Tìm</button>-->
-<!--                </form>-->
-<!--            </li>-->
             <li>
-                <a href="admin">
+                <form action="" class="search">
+                    <i class="fa fa-search"></i>
+                    <input
+                            type="text"
+                            required
+                            placeholder="Tìm kiếm thông báo tài khoản"
+                    />
+                    <button onclick="" type="submit">Tìm</button>
+                </form>
+            </li>
+            <li>
+                <a href="admin-dashboard">
                     <span class="icon"><i class="fas fa-home"></i></span>
                     <span class="title">Trang chủ</span></a
                 >
@@ -113,14 +122,8 @@
 
             <li>
                 <a href="approveManagement">
-                    <span class="icon"><i class="fas fa-newspaper"></i></span>
-                    <span class="title">Quản lý bài đăng</span>
-                </a>
-            </li>
-            <li>
-                <a href="centerManagement">
-                    <span class="icon"><i class="fas fa-building"></i></span>
-                    <span class="title">Quản lý trung tâm</span>
+                    <span class="icon"><i class="fas fa-check"></i></span>
+                    <span class="title">Danh sách bài đăng</span>
                 </a>
             </li>
         </ul>

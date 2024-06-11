@@ -3,7 +3,6 @@ package com.example.SWP391_Project.dto;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
-import org.intellij.lang.annotations.Pattern;
 
 import java.util.Date;
 
@@ -12,9 +11,7 @@ import java.util.Date;
 public class CenterDto {
 
     // course's detail
-    // format must be "CENTER%"
     String code;
-
     String name;
     String description;
     String address;

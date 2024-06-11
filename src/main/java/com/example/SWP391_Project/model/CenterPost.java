@@ -22,27 +22,27 @@ public class CenterPost {
     @Column(name = "C21_ID")
     int id;
 
-    @Column(name = "C21_TITLE", nullable = false)
+    @Column(name = "C21_TITLE")
     String title;
 
-    @Column(name = "C21_CONTENT", nullable = false)
+    @Column(name = "C21_CONTENT")
     String content;
 
-    @Column(name = "C21_POST_STATUS", nullable = false)
+    @Column(name = "C21_POST_STATUS")
     @Enumerated(EnumType.ORDINAL)
     Status status;
 
     @Column(name = "C21_FILE_URL")
     String file_url; // sẽ xử lí file sau
 
-    @Column(name = "C21_CREATED_AT", nullable = false)
+    @Column(name = "C21_CREATED_AT")
     Date createdAt;
 
     @Column(name = "C21_UPDATED_AT")
     Date updatedAt;
 
     @ManyToOne
-    @JoinColumn(name = "C21_SEND_TO_CENTER", referencedColumnName = "C03_CENTER_CODE")
+    @JoinColumn(name = "C21_CENTER_ID")
     @JsonManagedReference
     Center center;
 

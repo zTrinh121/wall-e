@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.controller.teacher;
 
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.AllNotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -100,8 +101,8 @@ public class TeacherController {
 
     // in ra cả 3
     @GetMapping("/notifications/all")
-    public ResponseEntity<NotificationResponse> getAllNotifications() {
-        NotificationResponse notifications = teacherService.getAllNotifications();
+    public ResponseEntity<AllNotificationResponse> getAllNotifications() {
+        AllNotificationResponse notifications = teacherService.getAllNotifications();
         return ResponseEntity.ok(notifications);
     }
 
@@ -111,4 +112,5 @@ public class TeacherController {
         teacherService.addPrivateNotification(notification);
         return ResponseEntity.ok().build();
     }
+
 }

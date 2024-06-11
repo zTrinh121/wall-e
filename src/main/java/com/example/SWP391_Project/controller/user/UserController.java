@@ -38,6 +38,8 @@ public class UserController {
         return "login";
     }
 
+
+
 //    public boolean sendEmail(Email email) {
 //        boolean test = false;
 //
@@ -554,6 +556,25 @@ public class UserController {
         session.invalidate();
         return "redirect:/login";
     }
+
+//    @GetMapping("/manager-dashboard")
+//    public String managerdashboard(HttpSession session) {
+//        session.invalidate();
+//        return "redirect:/manager-dashboard";
+//    }
+
+
+    @GetMapping("/manager-dashboard")
+    public String managerDashboard(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "manager-dashboard";
+    }
+
+
 //
 //    @GetMapping("/profile-admin")
 //    public String profile(HttpSession session) {
@@ -573,12 +594,6 @@ public class UserController {
         return "approveManagement";
     }
 
-    @GetMapping("/centerManagement")
-    public String centerManagement(HttpSession session) {
-        session.invalidate();
-        return "adminCenterManagement";
-    }
-
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
         session.invalidate();
@@ -595,6 +610,7 @@ public class UserController {
         session.invalidate();
         return "managerHome";
     }
+
 
     @GetMapping("/student-classList")
     public String studentClassList(HttpSession session) {
@@ -613,5 +629,45 @@ public class UserController {
     public void updateUserStatus(@RequestParam int userId, @RequestParam boolean status) {
         userService.updateUserStatus(userId, status);
     }
+
+
+    
+
+//    public String registerUser(@RequestParam String fullname, @RequestParam String username,
+//                               @RequestParam String email, @RequestParam String password,
+//                               @RequestParam String confirmPassword, @RequestParam String phone,
+//                               @RequestParam String userCode, @RequestParam int roleId, Model model) {
+//        if (!password.equals(confirmPassword)) {
+//            model.addAttribute("error", "Mật khẩu xác nhận không khớp.");
+//            List<Role> roles = userService.findAllRoles();
+//            model.addAttribute("roles", roles);
+//            return "login";
+//        }
+//        if (userService.findByUsername(username) != null) {
+//            model.addAttribute("error", "Tên người dùng đã tồn tại.");
+//            List<Role> roles = userService.findAllRoles();
+//            model.addAttribute("roles", roles);
+//            return "login";
+//        }
+//        if (userService.findByEmail(email) != null) {
+//            model.addAttribute("error", "Email đã tồn tại.");
+//            List<Role> roles = userService.findAllRoles();
+//            model.addAttribute("roles", roles);
+//            return "login";
+//        }
+//        Role role = userService.findRoleById(roleId);
+//        User user = new User();
+//        user.setName(fullname);
+//        user.setUsername(username);
+//        user.setEmail(email);
+//        user.setPassword(password); // Hash password if needed
+//        user.setPhone(phone);
+//        user.setCode(userCode);
+//        user.setRole(role);
+//        user.setStatus(true);  // Skip email verification
+//        userService.saveUser(user);
+//        return "redirect:/login";  // Redirect to login after registration
+//    }
+
 
 }
