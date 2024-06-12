@@ -81,6 +81,7 @@ public class User {
     @OneToMany(mappedBy = "student")
     @JsonBackReference
     List<Enrollment> enrollments;
+
     @ManyToMany
     @JoinTable(
             name = "t15_enrollment",

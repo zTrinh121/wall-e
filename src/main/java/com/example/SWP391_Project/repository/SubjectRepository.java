@@ -7,5 +7,5 @@ import java.util.Optional;
 
 public interface SubjectRepository extends JpaRepository<Subject, Integer> {
 
-    Optional<Subject> findByCode(int code);
+    Optional<Subject> findByCode(String code);
 }
