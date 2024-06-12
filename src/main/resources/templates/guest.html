@@ -1,22 +1,38 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guest Page</title>
     <link rel="stylesheet" th:href="@{/css/guest.css}"/>
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">\
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+            integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
 </head>
 <body>
 <div class="wrapper">
     <div class="top_navbar">
-
-
         <div class="top_menu">
             <div class="logo">Wall-E</div>
             <form class="search">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Tìm kiếm lớp học, trung tâm, ...">
-                <button type="submit">Tìm</button>
+                <select id="searchType">
+                    <option value="all">Tất cả</option>
+                    <option value="center">Trung tâm</option>
+                    <option value="teacher">Giáo viên</option>
+                    <option value="course">Khóa học</option>
+                    <option value="center-post">Bài đăng trung tâm</option>
+                </select>
+                <div class="search-content">
+                    <i class="fa fa-search"></i>
+                    <input type="text" placeholder="Tìm kiếm lớp học, trung tâm, ...">
+                    <button type="submit">Tìm</button>
+                </div>
+
             </form>
             <ul>
 
@@ -101,7 +117,7 @@
         </div>
     </section> -->
 
-<!-- Card Slider Section start -->
+
 <section id="tranding">
     <div class="container_swiper">
         <h3 class="text-center section-subheading">- Trung tâm nổi bật -</h3>
@@ -109,132 +125,10 @@
     </div>
     <div class="container">
         <div class="swiper tranding-slider">
-            <div class="swiper-wrapper">
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
+            <div class="swiper-wrapper" id="swiper-wrapper">
+                <!-- Slides will be injected here dynamically -->
 
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
 
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
-
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
-
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
-
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
-
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
-
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
-
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
-
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
-
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
-
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
-
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
-
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
-
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
-
-                <!-- Slide-start -->
-                <div class="swiper-slide tranding-slide">
-
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="Tranding">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title" >Tên trung tâm</h1>
-
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>- Chúng tôi cam kết mang đến cho bạn một trải nghiệm giáo dục tối ưu. Với đội ngũ giáo viên chất lượng cao và hệ thống quản lý tiên tiến</li>
-                                <li>- Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế.</li>
-                            </ul>
-                        </div>
-
-                    </div>
-                </div>
-                <!-- Slide-end -->
             </div>
 
             <div class="tranding-slider-control">
@@ -246,7 +140,6 @@
                 </div>
                 <div class="swiper-pagination"></div>
             </div>
-
         </div>
     </div>
 </section>
@@ -263,11 +156,7 @@
                 <p>Quản lý giáo dục tối ưu: Quản lý dễ dàng, đăng ký thuận tiện, kết nối tương lai của bạn hôm nay.</p>
                 <h5></h5>
                 <a href="#">example@mail.com</a>
-                <div class="social">
-                    <a href="#"><i class="fa-brands fa-linkedin"></i></a>
-                    <a href="#"><i class="fa-brands fa-facebook"></i></a>
-                    <a href="#"><i class="fa-brands fa-twitter"></i></a>
-                </div>
+
             </div>
             <div class="about-us">
                 <h4>About us</h4>
@@ -296,12 +185,22 @@
 </footer>
 <!-- footer section ends here  -->
 
+<!--Modal start-->
+<div id="courses-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('courses-modal').style.display = 'none'">&times;</span>
+        <div id="modal-content"></div>
+    </div>
+</div>
+<!--Modal end-->
+
+
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 <script src="/js/guest.js"></script>
-<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
 
 </body>
 </html>

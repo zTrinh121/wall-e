@@ -1,31 +1,85 @@
 document.addEventListener("DOMContentLoaded", () => {
-    const teacherId = 3; // example teacher ID
-    const apiUrl = `http://localhost:8080/api/teachers/${teacherId}/courses`;
+    // var currentUrl = window.location.href;
+    // var urlParams = new URLSearchParams(currentUrl);
+    // console.log('URL Params:', urlParams);
+    var userId = 1;
+    // urlParams.forEach(function(value, key) {
+    //     userId = value;
+    // });
+    // console.log(userId)
+    const boxCourses = document.getElementById("courseBoxes");
+    const apiUrl = `/api/students/${userId}/courses`;
+    var itemsPerPage = 4; // Number of posts per page
+    var currentPage = 1;
+    var noResultDiv = document.getElementById("no-result");
+    var paginationControls = document.getElementById("paginationControls");
 
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            console.log(data[0])
-            const courseContainer = document.getElementById('courseContainer');
-            courseContainer.innerHTML = ''; // Clear any existing content
+    function fetchPosts() {
+        fetch(apiUrl)
+            .then(response => response.json())
+            .then(data => {
+                currentPage = 1; // Reset to first page
+                console.log(data)
+                renderTable(data);
+            })
+            .catch(error => console.error("Error fetching posts:", error));
+    }
 
-            data.forEach(courseString => {
-                const courseArray = courseString.split(',');
-                const courseName = courseArray[0];
-                const courseDescription = courseArray[3];
+    function displayPosts(posts) {
+        boxCourses.innerHTML = "";
 
-                const courseBox = document.createElement('div');
-                courseBox.className = 'box';
-                courseBox.innerHTML = `
-                    <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
-                    <h3>${courseName}</h3>
-                    <p>${courseDescription}</p>
-                    <a href="#" class="btn">read more</a>
+        if (posts.length === 0) {
+            noResultDiv.style.display = "block";
+        } else {
+            noResultDiv.style.display = "none";
+            posts.forEach(post => {
+                var row = `      
+                    <div class="box" id="${post.courseId}">
+                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
+                        <h3>${post.courseCode}</h3>
+                        <p>Giáo viên: ${post.teacherName} tại trung tâm ${post.centerName}</p>
+                        <p>Số lượng học sinh: ${post.amountOfStudents}</p>
+                        <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId} data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode} data-amountOfStudents={post.amountOfStudents} data-startTime={post.startTime} data-endTime={post.endTime} data-centerName={post.centerName} >Xem chi tiết</a>
+                    </div>
                 `;
-                courseContainer.appendChild(courseBox);
+                boxCourses.insertAdjacentHTML("beforeend", row);
             });
-        })
-        .catch(error => {
-            console.error('Error fetching course data:', error);
-        });
+        }
+    }
+
+    function renderTable(postList) {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const postsToDisplay = postList.slice(start, end);
+
+        displayPosts(postsToDisplay);
+        renderPaginationControls(postList);
+    }
+
+    function renderPaginationControls(postList) {
+        const totalPages = Math.ceil(postList.length / itemsPerPage);
+        paginationControls.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.classList.add('page-button');
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                renderTable(postList);
+            });
+            paginationControls.appendChild(pageButton);
+        }
+    }
+
+    fetchPosts();
+
+
 });
+
+
+
+

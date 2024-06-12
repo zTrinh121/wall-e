@@ -9,6 +9,7 @@ import jakarta.mail.*;
 
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Email;
 import org.apache.catalina.Group;
@@ -109,26 +110,39 @@ public class UserController {
 
 
 //-----------------------------
+
+    @GetMapping("/getSessionId")
+    public String getSessionId(HttpServletRequest request, Model model) {
+        HttpSession session = request.getSession();
+        String sessionId = session.getId();
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("It in session page: " + sessionId + " " + userId);
+        model.addAttribute("sessionId", sessionId);
+        model.addAttribute("userId", userId);
+        return "sessionInfo";
+    }
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, @RequestParam int roleId, Model model, HttpSession session) {
         if (userService.authenticateUser(username, password, roleId)) {
             User user = userService.findByUsername(username);
             session.setAttribute("user", user);
+            session.setAttribute("userId", user.getId());
 
             String roleDesc = user.getRole().getDescription().name();
             System.out.println("Role Description: " + roleDesc);
+            System.out.println("User ID " + user.getId());
 
             switch (roleDesc) {
                 case "ADMIN":
                     return "redirect:/admin";
                 case "STUDENT":
-                    return "redirect:/student-dashboard";
+                    return "redirect:/student-dashboard?userId=" + user.getId();
                 case "PARENT":
                     return "redirect:/parent-dashboard";
                 case "TEACHER":
-                    return "redirect:/teacher-dashboard";
+                    return "/teacher-dashboard";
                 case "MANAGER":
-                    return "redirect:/manager-dashboard";
+                    return "/manager-dashboard";
                 default:
                     return "redirect:/login";
             }
@@ -559,13 +573,19 @@ public class UserController {
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
         session.invalidate();
-        return "profile-student";
+        return "student-details";
     }
 
     @GetMapping("/student-dashboard")
     public String studentDashboard(HttpSession session) {
         session.invalidate();
         return "student-dashboard";
+    }
+
+    @GetMapping("/teacher-dashboard")
+    public String teacherDashboard(HttpSession session) {
+        session.invalidate();
+        return "teacher-dashboard";
     }
 
     @GetMapping("/student-classList")
@@ -584,6 +604,24 @@ public class UserController {
     @ResponseBody
     public void updateUserStatus(@RequestParam int userId, @RequestParam boolean status) {
         userService.updateUserStatus(userId, status);
+    }
+
+    @GetMapping("/course-details")
+    public String detailCourse(HttpSession session) {
+        session.invalidate();
+        return "student-classListDetails";
+    }
+
+    @GetMapping("/student-timetable")
+    public String viewTimetable(HttpSession session) {
+        session.invalidate();
+        return "student-timetable";
+    }
+
+    @GetMapping("/student-notification")
+    public String viewNotification(HttpSession session) {
+        session.invalidate();
+        return "studentNotification";
     }
 
 }
