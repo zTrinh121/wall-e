@@ -384,7 +384,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 var url = "/admin-privateNotification/create";
                 try {
 
-                    const centersValid = await fetchCentersAndCompareSendTo(newData.sendTo);
+                    const centersValid = await fetchCentersAndUsersAndCompareSendTo(newData.sendTo);
                     console.log(centersValid)
                     if (!centersValid) {
                         showError("notificationSendTo", "Người nhận không hợp lệ.");
@@ -479,25 +479,32 @@ document.addEventListener("DOMContentLoaded", function () {
 
     toggleSendToField();
 
-    function fetchCentersAndCompareSendTo(sendTo) {
-        return fetch("/admin-centers")
-            .then(response => response.json())
-            .then(centers => {
-                // Lấy mã của tất cả các center và lưu vào một mảng
+    function fetchCentersAndUsersAndCompareSendTo(sendTo) {
+        return Promise.all([
+            fetch("/admin-centers").then(response => response.json()),
+            fetch("/api/users").then(response => response.json())
+        ])
+            .then(([centers, users]) => {
+                // Extract center codes
                 const centerCodes = centers.map(center => center.code);
 
-                // Kiểm tra giá trị "send to" của thông báo
-                if (!centerCodes.includes(sendTo)) {
-                    // Nếu giá trị "send to" không tồn tại trong danh sách mã của center,
-                    // trả về false
+                // Extract user codes
+                const userCodes = users.map(user => user.code);
+
+                // Check if sendTo exists in either center codes or user codes
+                if (!centerCodes.includes(sendTo) && !userCodes.includes(sendTo)) {
+                    // If sendTo doesn't exist in either, return false
                     return false;
                 }
                 return true;
             })
             .catch(error => {
-                console.error("Error fetching centers:", error);
+                console.error("Error fetching centers and users:", error);
                 return false;
             });
     }
+
+
+
 });
 
