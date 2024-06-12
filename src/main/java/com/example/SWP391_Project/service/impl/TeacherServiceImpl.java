@@ -115,4 +115,7 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
     public void addPrivateNotification(PrivateNotification notification) {
         privateNotificationRepository.save(notification); // Lưu private notification vào database
     }
+
+
+
 }

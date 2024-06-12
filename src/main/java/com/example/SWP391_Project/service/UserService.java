@@ -41,4 +41,14 @@ public interface UserService {
 
     static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
     }
+
+
+    User authenticateUser(String username, String password);
+
+    boolean sendEmail(String toEmail, String verificationCode);
+
+    String generateVerificationCode();
+
+    //int getVerificationCode();
+
 }
