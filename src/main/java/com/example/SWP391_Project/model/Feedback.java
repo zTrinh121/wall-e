@@ -40,10 +40,6 @@ public class Feedback {
     User sendToUser;
 
     @ManyToOne
-    @JoinColumn(name = "C06_TEACHER_ID", nullable = false)
-    User teacher;
-
-    @ManyToOne
     @JoinColumn(name = "C06_COURSE_ID", nullable = false)
     Course course;
 
