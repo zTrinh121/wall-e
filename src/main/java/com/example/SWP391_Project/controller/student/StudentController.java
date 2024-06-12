@@ -70,7 +70,6 @@ public class StudentController {
         
 
         feedback.setCourse(course);
-        feedback.setTeacher(course.getTeacher());
         Feedback savedFeedback = studentService.createFeedback(feedback);
         return ResponseEntity.ok(savedFeedback);
     }
