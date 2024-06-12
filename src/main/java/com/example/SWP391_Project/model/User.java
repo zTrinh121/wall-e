@@ -16,6 +16,18 @@ import java.util.List;
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 @Builder(toBuilder = true)
+@SqlResultSetMappings({
+        @SqlResultSetMapping(
+                name = "ScheduleMapping",
+                columns = {
+                        @ColumnResult(name = "courseId"),
+                        @ColumnResult(name = "courseDate"),
+                        @ColumnResult(name = "startTime"),
+                        @ColumnResult(name = "endTime"),
+                        @ColumnResult(name = "studentId")
+                }
+        )
+})
 public class User {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -69,5 +81,13 @@ public class User {
     @OneToMany(mappedBy = "student")
     @JsonBackReference
     List<Enrollment> enrollments;
+    @ManyToMany
+    @JoinTable(
+            name = "t15_enrollment",
+            joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
+            inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
+    )
+
+    private List<Course> courses;
 
 }

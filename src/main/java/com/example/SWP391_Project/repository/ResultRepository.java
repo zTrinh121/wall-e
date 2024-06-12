@@ -7,8 +7,7 @@ import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 
-public interface ResultRepository extends JpaRepository<Result, Integer> {
-
-    @Query("SELECT r FROM Result r JOIN r.student u WHERE u.parent.id = :parentId")
-    List<Result> findAllResultsWithParentUserId(@Param("parentId") int parentId);
+public interface ResultRepository extends JpaRepository<Result, Long> {
+    @Query("SELECT r FROM Result r WHERE r.course.id = :courseId AND r.student.id = :studentId")
+    List<Result> findByCourseIdAndStudentId(@Param("courseId") Long courseId, @Param("studentId") Long studentId);
 }

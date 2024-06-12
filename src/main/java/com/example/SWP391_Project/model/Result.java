@@ -2,15 +2,15 @@ package com.example.SWP391_Project.model;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Entity
 @Table(name = "t10_result")
-@Getter
-@Setter
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class Result {
 
@@ -19,19 +19,19 @@ public class Result {
     @Column(name = "C10_RESULT_ID")
     int id;
 
-    @Column(name = "C10_RESULT_TYPE")
-    int resultType;
+    @Column(name = "C10_RESULT_TYPE", nullable = false)
+    int type;
 
-    @Column(name = "C10_RESULT_VAL")
-    int resultValue;
+    @Column(name = "C10_RESULT_VAL", nullable = false)
+    int value;
 
     @ManyToOne
-    @JoinColumn(name = "C10_STUDENT_ID")
+    @JoinColumn(name = "C10_STUDENT_ID", nullable = false)
     @JsonManagedReference
     User student;
 
     @ManyToOne
-    @JoinColumn(name = "C10_COURSE_ID")
+    @JoinColumn(name = "C10_COURSE_ID", nullable = false)
     @JsonManagedReference
     Course course;
 }

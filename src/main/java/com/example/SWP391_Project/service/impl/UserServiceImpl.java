@@ -6,6 +6,9 @@ import com.example.SWP391_Project.repository.RoleRepository;
 import com.example.SWP391_Project.repository.UserRepository;
 import com.example.SWP391_Project.service.UserService;
 
+import jakarta.mail.*;
+import jakarta.mail.internet.InternetAddress;
+import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,7 +20,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Properties;
 import java.util.Random;
 
 @Service
@@ -32,6 +37,8 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JavaMailSender mailSender;
 
+    private int verificationCode;
+
     @Override
     public void saveUser(User user) {
         user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
@@ -45,6 +52,8 @@ public class UserServiceImpl implements UserService {
 //    public User findById(int id){
 //        return userRepository.findById(id);
 //    }
+
+
 
     @Override
     public User findByEmail(String email) {
@@ -72,37 +81,12 @@ public class UserServiceImpl implements UserService {
         return userRepository.findAll();
     }
 
-    @Override
-    public void sendVerificationCode(User user) {
-        String code = generateVerificationCode();
-        user.setVerificationCode(code);
-        userRepository.save(user);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Your Verification Code");
-        message.setText("Your verification code is: " + code);
-        mailSender.send(message);
-    }
 
-    @Override
-    public void sendPasswordResetCode(User user) {
-        String code = generateVerificationCode();
-        user.setVerificationCode(code);
-        userRepository.save(user);
 
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Your Password Reset Code");
-        message.setText("Your password reset code is: " + code);
-        mailSender.send(message);
-    }
 
-    private String generateVerificationCode() {
-        Random random = new Random();
-        int code = 100000 + random.nextInt(900000);
-        return String.valueOf(code);
-    }
+
+
 
     @Override
     public void updateProfileImage(User user, MultipartFile image) throws IOException {
@@ -154,4 +138,89 @@ public class UserServiceImpl implements UserService {
     public void updateUserStatus(int userId, boolean status) {
         userRepository.updateUserStatus(userId, status);
     }
+
+    @Override
+    public User authenticateUser(String username, String password) {
+        User user = userRepository.findByUsername(username);
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            return user;
+        }
+        return null;
+    }
+
+    @Override
+    public boolean sendEmail(String toEmail, String verificationCode) {
+        boolean test = false;
+        String fromEmail = "thanhdhde170795@fpt.edu.vn";
+        String password = "redm djng jorn pqcv";
+
+        try {
+            Properties pr = new Properties();
+            pr.put("mail.smtp.host", "smtp.gmail.com");
+            pr.put("mail.smtp.port", "465");
+            pr.put("mail.smtp.auth", "true");
+            pr.put("mail.smtp.starttls.enable", "true");
+            pr.put("mail.smtp.ssl.protocols", "TLSv1.2");
+            pr.put("mail.smtp.socketFactory.port", "465");
+            pr.put("mail.smtp.socketFactory.class", "javax.net.ssl.SSLSocketFactory");
+
+            Session session = Session.getInstance(pr, new Authenticator() {
+                @Override
+                protected PasswordAuthentication getPasswordAuthentication() {
+                    return new PasswordAuthentication(fromEmail, password);
+                }
+            });
+
+            Message mess = new MimeMessage(session);
+            mess.setFrom(new InternetAddress(fromEmail));
+            mess.setRecipient(Message.RecipientType.TO, new InternetAddress(toEmail));
+            mess.setSubject("Verify Email");
+            mess.setContent("This is your verification code: " + verificationCode, "text/plain");
+
+            Transport.send(mess);
+            test = true;
+
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+
+        return test;
+    }
+    @Override
+    public String generateVerificationCode() {
+        Random random = new Random();
+        int code = 100000 + random.nextInt(900000);
+        return String.valueOf(code);
+    }
+
+    @Override
+    public void sendVerificationCode(User user) {
+        String code = generateVerificationCode();
+        user.setVerificationCode(code);
+        userRepository.save(user);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Your Verification Code");
+        message.setText("Your verification code is: " + code);
+        mailSender.send(message);
+    }
+
+    @Override
+    public void sendPasswordResetCode(User user) {
+        String code = generateVerificationCode();
+        user.setVerificationCode(code);
+        userRepository.save(user);
+
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("Your Password Reset Code");
+        message.setText("Your password reset code is: " + code);
+        mailSender.send(message);
+    }
+
+//    @Override
+//    public int getVerificationCode() {
+//        return verificationCode;
+//    }
 }

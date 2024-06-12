@@ -15,17 +15,30 @@ document.addEventListener("DOMContentLoaded", function () {
     var searchForm = document.getElementById("searchForm");
     var searchInput = document.getElementById("searchInput");
     var noResultDiv = document.getElementById("no-result");
+    var paginationControls = document.getElementById("paginationControls");
 
     var allPosts = [];
+    var itemsPerPage = 5; // Number of posts per page
+    var currentPage = 1; // Current page number
 
     function fetchPosts() {
         fetch("/admin-centerPosts")
             .then(response => response.json())
             .then(data => {
                 allPosts = data.filter(post => post.status === "Wait_to_process");
-                displayPosts(allPosts);
+                currentPage = 1; // Reset to first page
+                renderTable(allPosts);
             })
             .catch(error => console.error("Error fetching posts:", error));
+    }
+
+    function renderTable(postList) {
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const postsToDisplay = postList.slice(start, end);
+
+        displayPosts(postsToDisplay);
+        renderPaginationControls(postList);
     }
 
     function displayPosts(posts) {
@@ -50,6 +63,25 @@ document.addEventListener("DOMContentLoaded", function () {
                 `;
                 tableBody.insertAdjacentHTML("beforeend", row);
             });
+        }
+    }
+
+    function renderPaginationControls(postList) {
+        const totalPages = Math.ceil(postList.length / itemsPerPage);
+        paginationControls.innerHTML = '';
+
+        for (let i = 1; i <= totalPages; i++) {
+            const pageButton = document.createElement('button');
+            pageButton.textContent = i;
+            pageButton.classList.add('page-button');
+            if (i === currentPage) {
+                pageButton.classList.add('active');
+            }
+            pageButton.addEventListener('click', () => {
+                currentPage = i;
+                renderTable(postList);
+            });
+            paginationControls.appendChild(pageButton);
         }
     }
 
@@ -84,12 +116,9 @@ document.addEventListener("DOMContentLoaded", function () {
                     throw new Error("Network response was not ok");
                 }
                 // Remove the post from the allPosts array
-                allPosts = allPosts.filter(post => post.id !== id);
-                // Remove the post row from the table
-                var postRow = document.getElementById(id);
-                if (postRow) {
-                    postRow.remove();
-                }
+                allPosts = allPosts.filter(post => String(post.id) !== id);
+                // Re-render the table
+                renderTable(allPosts);
                 showToast(`Post ${status === 'approve' ? 'approved' : 'rejected'} successfully!`);
                 // Check if no posts left to display
                 if (allPosts.length === 0) {
@@ -114,11 +143,18 @@ document.addEventListener("DOMContentLoaded", function () {
     searchForm.addEventListener("submit", function (event) {
         event.preventDefault();
         var query = searchInput.value.toLowerCase();
-        var filteredPosts = allPosts.filter(post =>
-            post.title.toLowerCase().includes(query) ||
-            post.centerName.toLowerCase().includes(query)
-        );
-        displayPosts(filteredPosts);
+        var filteredPosts
+        if(!query.trim()){
+            filteredPosts = allPosts;
+        }else{
+            filteredPosts = allPosts.filter(post =>
+                post.title.toLowerCase().includes(query) ||
+                post.centerName.toLowerCase().includes(query)
+            );
+        }
+
+        currentPage = 1; // Reset to first page
+        renderTable(filteredPosts)
     });
 
     tableBody.addEventListener("click", function (event) {

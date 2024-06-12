@@ -10,9 +10,6 @@ import com.example.SWP391_Project.service.AdminService;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -57,15 +54,6 @@ public class AdminController {
     public ResponseEntity<List<SystemNotification>> getAllSystemNotifications() {
         List<SystemNotification> system = adminService.getAllSystemNotifications();
         return ResponseEntity.ok().body(system);
-    }
-
-    @GetMapping("/admin-publicNotificationsPage")
-    @ResponseBody
-    public ResponseEntity<Page<SystemNotification>> getAllSystemNotifications(@RequestParam(defaultValue = "0") int page,
-                                                                              @RequestParam(defaultValue = "10") int size) {
-        Pageable pageable = PageRequest.of(page, size, Sort.by(Sort.Direction.DESC, "id"));
-        Page<SystemNotification> systemNotificationsPage = adminService.getAllSystemNotifications(pageable);
-        return ResponseEntity.ok().body(systemNotificationsPage);
     }
 
     @PostMapping("/admin-publicNotification/create")

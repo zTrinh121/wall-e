@@ -6,8 +6,6 @@ import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.model.SystemNotification;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,8 +24,6 @@ public interface AdminService {
 
     // ------------- System Notifications --------------
     List<SystemNotification> getAllSystemNotifications();
-
-    public Page<SystemNotification> getAllSystemNotifications(Pageable pageable);
 
     SystemNotification createSystemNotification(SystemNotificationDto systemNotificationDto);
 
