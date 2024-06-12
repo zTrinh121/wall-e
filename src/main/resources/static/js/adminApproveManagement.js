@@ -21,7 +21,7 @@ document.addEventListener("DOMContentLoaded", function () {
     var itemsPerPage = 5; // Number of posts per page
     var currentPage = 1; // Current page number
 
-    function fetchPosts() {
+    function fetchPostsfetchPosts() {
         fetch("/admin-centerPosts")
             .then(response => response.json())
             .then(data => {

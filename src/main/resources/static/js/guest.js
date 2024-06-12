@@ -1,15 +1,22 @@
 async function fetchCenters() {
     try {
         const response = await fetch('/centers');
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
         const centers = await response.json();
-
 
         const filteredCenters = centers.filter(center => center.status !== 'Wait_to_process');
         const sortedCenters = filteredCenters.sort((a, b) => new Date(a.time) - new Date(b.time));
         const limitedCenters = sortedCenters.slice(0, 7);
-
+        console.log(limitedCenters)
 
         const swiperWrapper = document.getElementById('swiper-wrapper');
+        if (!swiperWrapper) {
+            throw new Error('Swiper wrapper element not found');
+        }
+
+        swiperWrapper.innerHTML = ''; // Clear existing slides
 
         for (const center of limitedCenters) {
             const courseCount = await fetchCourseCount(center.id);
@@ -17,30 +24,30 @@ async function fetchCenters() {
             slide.classList.add('swiper-slide', 'tranding-slide');
 
             slide.innerHTML = `
-                    <div class="tranding-slide-content">
-                        <div class="tranding-slide-img">
-                            <img src="images/edudesc.jpg" alt="${center.name}">
-                        </div>
-                        <div class="content-detail">
-                            <h1 class="center-title">${center.name}</h1>
-                            <ul class="center-desc">
-                                <h2>Mô tả trung tâm</h2>
-                                <li>${center.description}</li>
-                                <li>Địa chỉ: ${center.address}</li>
-                                <li>Điện thoại: ${center.phone}</li>
-                                <li>Email: ${center.email}</li>
-                                ${courseCount > 0 ? `<li>Số lượng khóa học: ${courseCount}</li>` : ''}
-                            </ul>
-                        </div>
-                        ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Xem chi tiết danh sách khóa học</button>` : ''}
+                <div class="tranding-slide-content">
+                    <div class="tranding-slide-img">
+                        <img src="images/edudesc.jpg" alt="${center.name}">
                     </div>
-                `;
+                    <div class="content-detail">
+                        <h1 class="center-title">${center.name}</h1>
+                        <ul class="center-desc">
+                            <h2>Mô tả trung tâm</h2>
+                            <li>${center.description}</li>
+                            <li>Địa chỉ: ${center.address}</li>
+                            <li>Điện thoại: ${center.phone}</li>
+                            <li>Email: ${center.email}</li>
+                            ${courseCount > 0 ? `<li>Số lượng khóa học: ${courseCount}</li>` : ''}
+                        </ul>
+                    </div>
+                    ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Xem chi tiết danh sách khóa học</button>` : ''}
+                </div>
+            `;
 
             swiperWrapper.appendChild(slide);
         }
 
         // Initialize Swiper after content is loaded
-        var TrandingSlider = new Swiper('.tranding-slider', {
+        const TrandingSlider = new Swiper('.tranding-slider', {
             effect: 'coverflow',
             grabCursor: true,
             centeredSlides: true,
@@ -68,7 +75,7 @@ async function fetchCenters() {
 
 async function fetchCourseCount(centerId) {
     try {
-        const response = await fetch(`http://localhost:8080/courses-in-center/${centerId}`);
+        const response = await fetch(`/courses-in-center/${centerId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -82,7 +89,7 @@ async function fetchCourseCount(centerId) {
 
 async function fetchCourses(centerId) {
     try {
-        const response = await fetch(`http://localhost:8080/courses-in-center/${centerId}`);
+        const response = await fetch(`/courses-in-center/${centerId}`);
         if (!response.ok) {
             throw new Error('Network response was not ok');
         }
@@ -96,6 +103,10 @@ async function fetchCourses(centerId) {
 async function displayCoursesModal(centerId) {
     const courses = await fetchCourses(centerId);
     const modalContent = document.getElementById('modal-content');
+    if (!modalContent) {
+        console.error('Modal content element not found');
+        return;
+    }
     modalContent.innerHTML = '';
 
     courses.forEach(course => {
@@ -113,7 +124,11 @@ async function displayCoursesModal(centerId) {
     });
 
     const modal = document.getElementById('courses-modal');
-    modal.style.display = 'block';
+    if (modal) {
+        modal.style.display = 'block';
+    } else {
+        console.error('Courses modal element not found');
+    }
 }
 
 function registerCourse(courseId) {
@@ -123,7 +138,7 @@ function registerCourse(courseId) {
 
 window.onclick = function(event) {
     const modal = document.getElementById('courses-modal');
-    if (event.target === modal) {
+    if (modal && event.target === modal) {
         modal.style.display = 'none';
     }
 }
@@ -132,13 +147,18 @@ fetchCenters();
 
 document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.querySelector('.search');
-    searchForm.addEventListener('submit', function (event) {
-        event.preventDefault();
-        const searchType = document.getElementById('searchType').value;
-        const searchInput = document.getElementById('searchInput').value;
-        performSearch(searchType, searchInput);
-    });
+    if (searchForm) {
+        searchForm.addEventListener('submit', function (event) {
+            event.preventDefault();
+            const searchType = document.getElementById('searchType').value;
+            const searchInput = document.getElementById('searchInput').value;
+            performSearch(searchType, searchInput);
+        });
+    } else {
+        console.error('Search form element not found');
+    }
 });
+
 
 function performSearch(searchType, searchInput) {
     let apiUrl = '';

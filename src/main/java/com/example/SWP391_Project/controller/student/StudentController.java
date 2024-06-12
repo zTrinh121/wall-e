@@ -28,13 +28,13 @@ public class StudentController {
             return "redirect:/login";
         }
 
-        int studentId = user.getId(); // Lấy ID của sinh viên từ session
-        model.addAttribute("studentId", studentId); // Đưa studentId vào model
+        int userId = (int) session.getAttribute("userId");
+        model.addAttribute("studentId", userId); // Đưa studentId vào model
         model.addAttribute("user", user);
         return "student-dashboard";
     }
 
-    @GetMapping("/student-details")
+        @GetMapping("/student-details")
     public String getStudentDetails(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
@@ -66,6 +66,8 @@ public class StudentController {
         if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
             return ResponseEntity.badRequest().build();
         }
+
+        
 
         feedback.setCourse(course);
         feedback.setTeacher(course.getTeacher());
@@ -113,6 +115,14 @@ public class StudentController {
         List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
         return ResponseEntity.ok(notifications);
     }
+
+    @GetMapping("/{studentId}/attendance")
+    public ResponseEntity<List<Map<String, Object>>> getStudentAttendance(@PathVariable int studentId) {
+        List<Map<String, Object>> attendance = studentService.getStudentAttendance(studentId);
+        return ResponseEntity.ok(attendance);
+    }
+
+
 }
 
 
