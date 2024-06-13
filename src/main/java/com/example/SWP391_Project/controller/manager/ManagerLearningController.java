@@ -6,6 +6,7 @@ import com.example.SWP391_Project.dto.SlotDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
@@ -14,10 +15,13 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -29,14 +33,46 @@ public class ManagerLearningController {
 
     // --------------------------- MANAGER CENTER ------------------------------
     @GetMapping("/centers")
-    public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
-        List<Center> centers = managerService.getCenters(httpSession);
-        if (centers.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+    public ResponseEntity<?> getCenters(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // Don't create a new session if one doesn't exist
+        if (session == null) {
+            throw new RuntimeException("Session not found!");
         }
-        return new ResponseEntity<>(centers, HttpStatus.OK);
+
+        String sessionId = session.getId();
+        Integer userId = (Integer) session.getAttribute("userId");
+        System.out.println("It in session page: " + sessionId + " " + userId);
+
+        try {
+            User user = (User) session.getAttribute("user");
+            if (user == null) {
+                throw new RuntimeException("User not found in session!");
+            }
+            System.out.println("Manager validate: " + user);
+
+            // Pass the HttpServletRequest to the service method
+            List<Center> centers = managerService.getCenters(request);
+            if (centers.isEmpty()) {
+                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+            }
+
+            return new ResponseEntity<>(centers, HttpStatus.OK);
+        } catch (RuntimeException e) {
+            // Log the exception (use a logger in real applications)
+            System.err.println(e.getMessage());
+
+            // Return a custom error response
+            Map<String, Object> errorResponse = new HashMap<>();
+            errorResponse.put("timestamp", LocalDateTime.now());
+            errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
+            errorResponse.put("error", "Internal Server Error");
+            errorResponse.put("message", e.getMessage());
+            errorResponse.put("path", "/centers");
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
     }
+
 
     @GetMapping("/center/{centerId}")
     public ResponseEntity<Center> getCenterById(@PathVariable int centerId) {

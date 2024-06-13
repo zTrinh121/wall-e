@@ -67,7 +67,7 @@ public class StudentController {
             return ResponseEntity.badRequest().build();
         }
 
-        
+        feedback.getActor();
 
         feedback.setCourse(course);
         Feedback savedFeedback = studentService.createFeedback(feedback);

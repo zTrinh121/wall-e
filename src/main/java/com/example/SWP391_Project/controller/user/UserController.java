@@ -121,14 +121,18 @@ public class UserController {
         model.addAttribute("userId", userId);
         return "sessionInfo";
     }
+
+
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, @RequestParam int roleId, Model model, HttpSession session) {
         if (userService.authenticateUser(username, password, roleId)) {
             User user = userService.findByUsername(username);
             session.setAttribute("user", user);
             session.setAttribute("userId", user.getId());
-
+            System.out.println("Get user: " + user);
             String roleDesc = user.getRole().getDescription().name();
+            System.out.println("Session: " + session);
+            System.out.println("Session id" + session.getId());
             System.out.println("Role Description: " + roleDesc);
             System.out.println("User ID " + user.getId());
 

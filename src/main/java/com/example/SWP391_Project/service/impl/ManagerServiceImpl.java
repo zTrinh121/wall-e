@@ -10,6 +10,7 @@ import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,8 +252,14 @@ public class ManagerServiceImpl implements ManagerService {
 
     // ------------------------- Manager center ----------------------------
     @Override
-    public List<Center> getCenters(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
+    public List<Center> getCenters(HttpServletRequest request) {
+        HttpSession session = request.getSession(false); // Don't create a new session if one doesn't exist
+        if (session == null) {
+            throw new RuntimeException("Session not found!");
+        }
+
+        Integer userId = (Integer) session.getAttribute("userId");
+        User user = (User) session.getAttribute("user");
         Optional<User> optionalUser = Optional.ofNullable(user);
 
         if (optionalUser.isPresent()) {
@@ -262,6 +269,7 @@ public class ManagerServiceImpl implements ManagerService {
             throw new RuntimeException("User not found in session!");
         }
     }
+
 
     @Override
     public Center findCenterById(int centerId) {

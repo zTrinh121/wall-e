@@ -4,6 +4,7 @@ import com.example.SWP391_Project.dto.*;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
@@ -51,7 +52,7 @@ public interface ManagerService {
 
     // View tất cả những center mà manager hiện tại quản lí
     // Trong này có cả các trung tâm đang đợi admin duyệt
-    List<Center> getCenters(HttpSession httpSession);
+    List<Center> getCenters(HttpServletRequest request);
 
     // View chi tiết thông tin của trung tâm
     Center findCenterById(int centerId);
