@@ -5,6 +5,7 @@ async function fetchCenters() {
             throw new Error('Network response was not ok');
         }
         const centers = await response.json();
+        console.log(centers)
 
         const filteredCenters = centers.filter(center => center.status !== 'Wait_to_process');
         const sortedCenters = filteredCenters.sort((a, b) => new Date(a.time) - new Date(b.time));

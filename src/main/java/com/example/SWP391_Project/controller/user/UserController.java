@@ -134,19 +134,18 @@ public class UserController {
             System.out.println("Session: " + session);
             System.out.println("Session id" + session.getId());
             System.out.println("Role Description: " + roleDesc);
-            System.out.println("User ID " + user.getId());
 
             switch (roleDesc) {
                 case "ADMIN":
                     return "redirect:/admin";
                 case "STUDENT":
-                    return "redirect:/student-dashboard?userId=" + user.getId();
+                    return "redirect:/student-dashboard";
                 case "PARENT":
                     return "redirect:/parent-dashboard";
                 case "TEACHER":
-                    return "/teacher-dashboard";
+                    return "redirect:/teacher-dashboard";
                 case "MANAGER":
-                    return "/manager-dashboard";
+                    return "redirect:/manager-dashboard";
                 default:
                     return "redirect:/login";
             }
@@ -577,19 +576,13 @@ public class UserController {
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
         session.invalidate();
-        return "student-details";
+        return "profile-student";
     }
 
     @GetMapping("/student-dashboard")
     public String studentDashboard(HttpSession session) {
         session.invalidate();
         return "student-dashboard";
-    }
-
-    @GetMapping("/teacher-dashboard")
-    public String teacherDashboard(HttpSession session) {
-        session.invalidate();
-        return "teacher-dashboard";
     }
 
     @GetMapping("/student-classList")
@@ -627,5 +620,6 @@ public class UserController {
         session.invalidate();
         return "studentNotification";
     }
+
 
 }

@@ -262,6 +262,7 @@ public class ManagerServiceImpl implements ManagerService {
         User user = (User) session.getAttribute("user");
         Optional<User> optionalUser = Optional.ofNullable(user);
 
+        System.out.println("User in seesion ID: "+ user.getId());
         if (optionalUser.isPresent()) {
             Optional<List<Center>> optionalCenters = centerRepository.findByManager(optionalUser.get());
             return optionalCenters.orElseThrow(() -> new RuntimeException("Centers not found for the manager!"));
