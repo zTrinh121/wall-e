@@ -1,22 +1,19 @@
 package com.example.SWP391_Project.controller.parent;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
-import com.example.SWP391_Project.model.Attendance;
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Result;
-import com.example.SWP391_Project.model.Slot;
+import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.service.ParentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/parent")
 public class ParentController {
+
     @GetMapping("/parent")
     public String parentDashboard() {
         return "parent-dashboard";
@@ -25,34 +22,51 @@ public class ParentController {
     @Autowired
     private ParentService parentService;
 
-    @GetMapping("/results")
+    @GetMapping("parent/results")
     public ResponseEntity<List<Result>> getStudentResults(HttpSession session) {
-        List<Result> results = parentService.getStudentResults(session);
-        return ResponseEntity.ok(results);
+        int parentId = (int) session.getAttribute("authid");
+        List<Result> results = parentService.getStudentResults(parentId);
+        if (results.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @GetMapping("/slots")
+    @GetMapping("parent/slots")
     public ResponseEntity<List<Slot>> getStudentSlots(HttpSession session) {
-        List<Slot> slots = parentService.getStudentSlots(session);
-        return ResponseEntity.ok(slots);
+        int parentId = (int) session.getAttribute("authid");
+        List<Slot> slots = parentService.getStudentSlots(parentId);
+        if (slots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(slots, HttpStatus.OK);
     }
 
-    @GetMapping("/courses")
+    @GetMapping("parent/courses")
     public ResponseEntity<List<Course>> getStudentCourses(HttpSession session) {
-        List<Course> courses = parentService.getStudentCourses(session);
-        return ResponseEntity.ok(courses);
+        int parentId = (int) session.getAttribute("authid");
+        List<Course> courses = parentService.getStudentCourses(parentId);
+        if (courses.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
-    @GetMapping("/attendances")
+    @GetMapping("parent/attendances")
     public ResponseEntity<List<Attendance>> getStudentAttendances(HttpSession session) {
-        List<Attendance> attendances = parentService.getStudentAttendances(session);
-        return ResponseEntity.ok(attendances);
+        int parentId = (int) session.getAttribute("authid");
+        List<Attendance> attendances = parentService.getStudentAttendances(parentId);
+        if (attendances.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(attendances, HttpStatus.OK);
     }
 
-    @PostMapping("/enrollment")
+    @PostMapping("parent/enrollment")
     public ResponseEntity<String> enrollStudentInCourse(@RequestBody EnrollmentDto enrollmentDto, HttpSession session) {
         try {
-            parentService.enrollStudentInCourse(enrollmentDto, session);
+            int parentId = (int) session.getAttribute("authid");
+            parentService.enrollStudentInCourse(enrollmentDto, parentId);
             return ResponseEntity.ok("Student enrolled successfully.");
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());

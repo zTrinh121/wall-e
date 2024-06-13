@@ -21,6 +21,6 @@ public interface SlotRepository extends JpaRepository<Slot, Integer> {
             "JOIN StudentSlot ss ON s.id = ss.slot.id " +
             "JOIN User u ON ss.student.id = u.id " +
             "WHERE u.parent.id = :parentId")
-    List<Slot> findAllSlotsWithParentUserId(@Param("parentId") int parentId);
+    Optional<List<Slot>> findAllSlotsWithParentUserId(@Param("parentId") int parentId);
 
 }

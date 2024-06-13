@@ -56,7 +56,4 @@ public interface UserService {
     List<Map<String, Object>> getUsersByRoleId(int roleId);
     List<Map<String, Object>> getAllUsersWithSpecificAttributes();
 
-
-
-
 }

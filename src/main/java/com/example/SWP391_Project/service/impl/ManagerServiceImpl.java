@@ -10,6 +10,7 @@ import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -251,18 +252,11 @@ public class ManagerServiceImpl implements ManagerService {
 
     // ------------------------- Manager center ----------------------------
     @Override
-    public List<Center> getCenters(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
-        Optional<User> optionalUser = Optional.ofNullable(user);
-
-        System.out.println("User in seesion ID: "+ user.getId());
-        if (optionalUser.isPresent()) {
-            Optional<List<Center>> optionalCenters = centerRepository.findByManager(optionalUser.get());
-            return optionalCenters.orElseThrow(() -> new RuntimeException("Centers not found for the manager!"));
-        } else {
-            throw new RuntimeException("User not found in session!");
-        }
+    public List<Center> getCenters(int managerId) {
+        Optional<List<Center>> centers = centerRepository.findByManager_Id(managerId);
+        return centers.orElse(Collections.emptyList());
     }
+
 
     @Override
     public Center findCenterById(int centerId) {
@@ -622,30 +616,30 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public List<Bill> findSucceededBills(Year year, Month month) {
-        Optional<List<Bill>> bills =
+        Optional<List<Bill>> optionalBills =
                 billRepository.findByStatusAndCreatedAt(PaymentStatus.Succeeded, year, month);
-        return bills.orElse(Collections.emptyList());
+        return optionalBills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findFailedBills(Year year, Month month) {
-        Optional<List<Bill>> bills =
+        Optional<List<Bill>> optionalBills =
                 billRepository.findByStatusAndCreatedAt(PaymentStatus.Failed, year, month);
-        return bills.orElse(Collections.emptyList());
+        return optionalBills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findBillsPaidByCash(Year year, Month month) {
-        Optional<List<Bill>> bills =
+        Optional<List<Bill>> optionalBills =
                 billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.Cash, year, month);
-        return bills.orElse(Collections.emptyList());
+        return optionalBills.orElse(Collections.emptyList());
     }
 
     @Override
     public List<Bill> findBillsPaidByEBanking(Year year, Month month) {
-        Optional<List<Bill>> bills =
+        Optional<List<Bill>> optionalBills =
                 billRepository.findByPaymentMethodAndCreatedAt(PaymentMethodEnum.E_Banking, year, month);
-        return bills.orElse(Collections.emptyList());
+        return optionalBills.orElse(Collections.emptyList());
     }
 
     @Override
@@ -668,7 +662,7 @@ public class ManagerServiceImpl implements ManagerService {
                 userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
         return users.orElse(Collections.emptyList());
     }
-
+//bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
     @Override
     public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
         Optional<List<User>> users =
