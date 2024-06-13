@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class GuestController {
@@ -34,11 +35,11 @@ public class GuestController {
         return centers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(centers);
     }
 
-    @GetMapping("/courses-in-center/{centerId}")
-    public ResponseEntity<List<Course>> getCoursesInCertainCenter(@PathVariable int centerId) {
-        List<Course> courses = guestService.getCoursesInCertainCenter(centerId);
-        return courses.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(courses);
-    }
+//    @GetMapping("/courses-in-center/{centerId}")
+//    public ResponseEntity<List<Course>> getCoursesInCertainCenter(@PathVariable int centerId) {
+//        List<Course> courses = guestService.getCoursesInCertainCenter(centerId);
+//        return courses.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(courses);
+//    }
 
     @GetMapping("/teachers-in-center/{centerId}")
     public ResponseEntity<List<User>> getTeachersInCertainCenter(@PathVariable int centerId) {
@@ -56,5 +57,13 @@ public class GuestController {
     public ResponseEntity<List<Slot>> getSlotsInCertainCourse(@PathVariable int courseId) {
         List<Slot> slots = guestService.getSlotsInCertainCourse(courseId);
         return slots.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(slots);
+    }
+
+
+
+    @GetMapping("/courses-in-center/{centerId}")
+    public ResponseEntity<List<Map<String, Object>>> getCoursesInCenter(@PathVariable int centerId) {
+        List<Map<String, Object>> courses = guestService.getCoursesInCenter(centerId);
+        return ResponseEntity.ok().body(courses);
     }
 }

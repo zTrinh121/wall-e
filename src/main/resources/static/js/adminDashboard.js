@@ -500,7 +500,7 @@ document.addEventListener("DOMContentLoaded", function () {
             })
             .catch(error => {
                 console.error("Error fetching centers and users:", error);
-                return false;
+                return true;
             });
     }
 

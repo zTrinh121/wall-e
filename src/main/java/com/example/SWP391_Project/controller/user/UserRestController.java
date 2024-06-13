@@ -3,9 +3,11 @@ package com.example.SWP391_Project.controller.user;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/users")
@@ -15,13 +17,14 @@ public class UserRestController {
     private UserService userService;
 
     @GetMapping
-    public List<User> getAllUsers(@RequestParam(required = false) Integer role) {
+    public ResponseEntity<List<Map<String, Object>>> getAllUsers(@RequestParam(required = false) Integer role) {
+        List<Map<String, Object>> users;
         if (role != null) {
-            return userService.findUsersByRole(role);
+            users = userService.getUsersByRoleId(role);
         } else {
-            return userService.getAllUsers();
+            users = userService.getAllUsersWithSpecificAttributes();
         }
-
+        return ResponseEntity.ok().body(users);
     }
 
     @GetMapping("/countByRole")

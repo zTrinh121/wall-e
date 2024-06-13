@@ -164,13 +164,12 @@ public class AdminServiceImpl implements AdminService {
     public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
         String sendTo = privateNotificationDto.getSendTo();
         if (sendTo.startsWith("USER")) {
-            Optional<User> userCode = userRepository.findByCode(privateNotificationDto.getSendTo());
+            Optional<User> userCode = userRepository.findByCode(sendTo);
             if (userCode.isPresent()) {
                 PrivateNotification privateNotification = PrivateNotification.builder()
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                      //  .actor(Actor.ADMIN)
                         .actor(RoleDescription.ADMIN)
                         .userSendTo(userCode.get())
                         .centerSendTo(null)
@@ -180,13 +179,12 @@ public class AdminServiceImpl implements AdminService {
                 throw new IllegalArgumentException("User not found");
             }
         } else if (sendTo.startsWith("CENTER")) {
-            Optional<Center> centerOptional = centerRepository.findByCode(privateNotificationDto.getSendTo());
+            Optional<Center> centerOptional = centerRepository.findByCode(sendTo);
             if (centerOptional.isPresent()) {
                 PrivateNotification privateNotification = PrivateNotification.builder()
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                       // .actor(Actor.ADMIN)
                         .actor(RoleDescription.ADMIN)
                         .userSendTo(null)
                         .centerSendTo(centerOptional.get())
