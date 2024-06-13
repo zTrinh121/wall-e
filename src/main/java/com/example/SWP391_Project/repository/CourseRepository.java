@@ -39,5 +39,6 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "WHERE s.parent.id = :parentId")
     Optional<List<Course>> findAllCoursesWithParentUserId(@Param("parentId") int parentId);
 
+
 }
 

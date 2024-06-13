@@ -67,8 +67,11 @@ public class User {
     @Column(name = "C14_VERIFICATION_CODE", nullable = false)
     String verificationCode;
 
-    @Column(name = "C14_PROFILE_IMAGE", nullable = false)
+    @Column(name = "C14_PROFILE_IMAGE")
     String profileImage;
+
+    @Column(name = "C14_CLOUDINARY_IMAGE_ID")
+    String cloudinaryImageId;
 
     @ManyToOne
     @JoinColumn(name = "C14_ROLE_ID")
@@ -89,5 +92,4 @@ public class User {
             inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
     )
     private List<Course> courses;
-
 }
