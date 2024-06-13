@@ -26,4 +26,5 @@ public interface GuestService {
     // View slots in a certain course
     List<Slot> getSlotsInCertainCourse(int courseId);
 
+
 }

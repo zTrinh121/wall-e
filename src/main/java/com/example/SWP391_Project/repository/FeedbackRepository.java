@@ -12,6 +12,6 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
     @Query("SELECT f FROM Feedback f " +
             "JOIN f.sendToUser u " +
             "JOIN u.role r " +
-            "WHERE r.description = 'TEACHER'")
+            "WHERE r.description = com.example.SWP391_Project.enums.RoleDescription.TEACHER")
     Optional<List<Feedback>> findFeedbacksToTeacher();
 }

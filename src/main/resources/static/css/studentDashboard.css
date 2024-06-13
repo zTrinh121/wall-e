@@ -554,3 +554,26 @@ main .header{
   margin-left: 230px;
 }
 /* End notification modal */
+
+
+#no-result{
+  display: none;
+}
+
+/*Start pagination*/
+#paginationControls{
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+  margin-top: 1rem;
+}
+
+#paginationControls .active{
+  text-decoration: underline;
+}
+
+#paginationControls button{
+  border: none;
+  font-size: 18px;
+}
+/*End paginartion*/
