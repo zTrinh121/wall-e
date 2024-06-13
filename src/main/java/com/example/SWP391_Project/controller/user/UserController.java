@@ -116,7 +116,11 @@ public class UserController {
             session.setAttribute("user", user);
 
             String roleDesc = user.getRole().getDescription().name();
+            int a = user.getId();
+            String b = user.getCode();
             System.out.println("Role Description: " + roleDesc);
+            System.out.println("User's ID in session: "+ a);
+            System.out.println("User's code in session: "+ b);
 
             switch (roleDesc) {
                 case "ADMIN":

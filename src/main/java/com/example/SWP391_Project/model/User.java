@@ -88,7 +88,6 @@ public class User {
             joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
             inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
     )
-
     private List<Course> courses;
 
 }
