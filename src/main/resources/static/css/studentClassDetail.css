@@ -193,7 +193,7 @@ box-shadow: var(--shadow); */
   width: 3rem;
   height: 3rem;
   border-radius: 50%;
-  background: url("/static/images/profile-pic.jpg");
+  background: url(../../../images/profile-pic.jpg);
   background-size: cover;
 }
 
@@ -318,7 +318,7 @@ box-shadow: var(--shadow); */
 }
 
 .wrapper .main_container {
-  width: calc(100% - 200px);
+  width: (100% - 200px);
   margin-top: 70px;
   margin-left: 200px;
   padding: 15px;
@@ -350,7 +350,7 @@ box-shadow: var(--shadow); */
 }
 
 .wrapper.collapse .main_container {
-  width: calc(100% - 70px);
+  width: (100% - 70px);
   margin-left: 70px;
 }
 
@@ -603,65 +603,3 @@ tr:hover {
 }
 
 /* End table in modal */
-#feedbackForm .nameTeacher{
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  justify-content: space-between;
-}
-
-#feedbackForm input, #feedbackForm textarea{
-  width: 52vw;
-
-}
-
-
-#feedbackForm .feedbackDetail{
-  display: flex;
-  gap: 0.5rem;
-  margin-top: 0.5rem;
-  justify-content: space-between;
-}
-
-#feedbackForm button{
-  width: 4rem;
-  height: 1.8rem;
-  border-radius: 1rem;
-  border: none;
-  color: #fff;
-  background: #2e4ead;
-}
-
-/* Start: TOAST */
-.toast-container {
-  position: fixed;
-  top: 3.2rem;
-  right: 1.2rem;
-  z-index: 1000;
-  background: #4CAF50;
-  color: #fff;
-  height: 3rem;
-  border-radius: 0.5rem;
-  transition: opacity 0.5s ease-in-out;
-  padding-top: 0.8rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
-  opacity: 0;
-  visibility: hidden; /* Để ẩn khi không hiển thị */
-}
-
-.toast-container.show {
-  opacity: 1;
-  visibility: visible;
-}
-
-
-.toast .icon {
-  margin-right: 10px;
-}
-
-
-.toast i {
-  color: #fff;
-  margin-right: 0.5rem;
-}

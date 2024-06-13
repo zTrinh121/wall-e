@@ -19,7 +19,7 @@ public class Subject {
     int id;
 
     @Column(name = "C13_SUBJECT_CODE", nullable = false, unique = true)
-    String code;
+    int code;
 
     @Column(name = "C13_SUBJECT_NAME", nullable = false, unique = true)
     String name;

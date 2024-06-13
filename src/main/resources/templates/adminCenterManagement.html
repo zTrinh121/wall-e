@@ -1,10 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
 <head>
     <title>Duyệt Trung tâm</title>
     <script th:src="@{/js/adminFragments.js}" type="module"></script>
     <th:block th:replace="adminFragments :: adminhead"></th:block>
     <script src="/js/adminCenterManagement.js"></script>
+    var currentPage = 1; // Current page number
     <link rel="stylesheet" href="/css/adminCenterManagement.css" />
 </head>
 <body>

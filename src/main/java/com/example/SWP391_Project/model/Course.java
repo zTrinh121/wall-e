@@ -6,7 +6,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.List;
 
 
 @Entity
@@ -61,8 +60,5 @@ public class Course {
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
     @JsonManagedReference
     User teacher;
-
-    @ManyToMany(mappedBy = "courses")
-    private List<User> students;
 }
 

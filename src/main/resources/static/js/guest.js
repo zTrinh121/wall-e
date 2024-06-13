@@ -1,195 +1,112 @@
-async function fetchCenters() {
-    try {
-        const response = await fetch('/centers');
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const centers = await response.json();
+const bars = document.querySelector(".bar"),
+close = document.querySelector(".close"),
+menu = document.querySelector(".menu");
 
-        const filteredCenters = centers.filter(center => center.status !== 'Wait_to_process');
-        const sortedCenters = filteredCenters.sort((a, b) => new Date(a.time) - new Date(b.time));
-        const limitedCenters = sortedCenters.slice(0, 7);
-        console.log(limitedCenters)
+bars.addEventListener("click", () => {
+    menu.classList.add("active");
+    gsap.from(".menu", {
+        opacity: 0,
+        duration: .3
+    })
 
-        const swiperWrapper = document.getElementById('swiper-wrapper');
-        if (!swiperWrapper) {
-            throw new Error('Swiper wrapper element not found');
-        }
-
-        swiperWrapper.innerHTML = ''; // Clear existing slides
-
-        for (const center of limitedCenters) {
-            const courseCount = await fetchCourseCount(center.id);
-            const slide = document.createElement('div');
-            slide.classList.add('swiper-slide', 'tranding-slide');
-
-            slide.innerHTML = `
-                <div class="tranding-slide-content">
-                    <div class="tranding-slide-img">
-                        <img src="images/edudesc.jpg" alt="${center.name}">
-                    </div>
-                    <div class="content-detail">
-                        <h1 class="center-title">${center.name}</h1>
-                        <ul class="center-desc">
-                            <h2>Mô tả trung tâm</h2>
-                            <li>${center.description}</li>
-                            <li>Địa chỉ: ${center.address}</li>
-                            <li>Điện thoại: ${center.phone}</li>
-                            <li>Email: ${center.email}</li>
-                            ${courseCount > 0 ? `<li>Số lượng khóa học: ${courseCount}</li>` : ''}
-                        </ul>
-                    </div>
-                    ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Xem chi tiết danh sách khóa học</button>` : ''}
-                </div>
-            `;
-
-            swiperWrapper.appendChild(slide);
-        }
-
-        // Initialize Swiper after content is loaded
-        const TrandingSlider = new Swiper('.tranding-slider', {
-            effect: 'coverflow',
-            grabCursor: true,
-            centeredSlides: true,
-            loop: true,
-            slidesPerView: 'auto',
-            coverflowEffect: {
-                rotate: 0,
-                stretch: 0,
-                depth: 100,
-                modifier: 2.5,
-            },
-            pagination: {
-                el: '.swiper-pagination',
-                clickable: true,
-            },
-            navigation: {
-                nextEl: '.swiper-button-next',
-                prevEl: '.swiper-button-prev',
-            }
-        });
-    } catch (error) {
-        console.error('Error fetching centers:', error);
-    }
-}
-
-async function fetchCourseCount(centerId) {
-    try {
-        const response = await fetch(`/courses-in-center/${centerId}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        const courses = await response.json();
-        return Array.isArray(courses) ? courses.length : 0;
-    } catch (error) {
-        console.error(`Error fetching courses for center ${centerId}:`, error);
-        return 0;
-    }
-}
-
-async function fetchCourses(centerId) {
-    try {
-        const response = await fetch(`/courses-in-center/${centerId}`);
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return await response.json();
-    } catch (error) {
-        console.error(`Error fetching courses for center ${centerId}:`, error);
-        return [];
-    }
-}
-
-async function displayCoursesModal(centerId) {
-    const courses = await fetchCourses(centerId);
-    const modalContent = document.getElementById('modal-content');
-    if (!modalContent) {
-        console.error('Modal content element not found');
-        return;
-    }
-    modalContent.innerHTML = '';
-
-    courses.forEach(course => {
-        const card = document.createElement('div');
-        card.classList.add('course-card');
-
-        card.innerHTML = `
-            <h3>${course.name}</h3>
-            <p>${course.description}</p>
-            <p>Course Fee: ${course.courseFee}</p>
-            <button onclick="registerCourse(${course.id})">Register</button>
-        `;
-
-        modalContent.appendChild(card);
-    });
-
-    const modal = document.getElementById('courses-modal');
-    if (modal) {
-        modal.style.display = 'block';
-    } else {
-        console.error('Courses modal element not found');
-    }
-}
-
-function registerCourse(courseId) {
-    // Implement registration logic here
-    console.log(`Registered for course ${courseId}`);
-}
-
-window.onclick = function(event) {
-    const modal = document.getElementById('courses-modal');
-    if (modal && event.target === modal) {
-        modal.style.display = 'none';
-    }
-}
-
-fetchCenters();
-
-document.addEventListener("DOMContentLoaded", function () {
-    const searchForm = document.querySelector('.search');
-    if (searchForm) {
-        searchForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const searchType = document.getElementById('searchType').value;
-            const searchInput = document.getElementById('searchInput').value;
-            performSearch(searchType, searchInput);
-        });
-    } else {
-        console.error('Search form element not found');
-    }
+    gsap.from(".menu ul", {
+        opacity: 0,
+        x: -300
+    })
 });
 
+close.addEventListener("click", () => {
+    menu.classList.remove("active")
+});
 
-function performSearch(searchType, searchInput) {
-    let apiUrl = '';
-    console.log(searchType + "" + searchInput)
-    switch (searchType) {
-        case 'all':
-            apiUrl = '/api/search?all=' + encodeURIComponent(searchInput);
-            break;
-        case 'center':
-            apiUrl = '/api/centers?name=' + encodeURIComponent(searchInput);
-            break;
-        case 'teacher':
-            apiUrl = '/api/users?role=3&name=' + encodeURIComponent(searchInput);
-            break;
-        case 'course':
-            apiUrl = '/api/courses?name=' + encodeURIComponent(searchInput);
-            break;
-        case 'center-post':
-            apiUrl = '/api/center-posts?title=' + encodeURIComponent(searchInput);
-            break;
-        default:
-            console.error('Invalid search type');
-            return;
-    }
-
-    // Perform API request using apiUrl
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Handle search results
-            console.log(data);
-        })
-        .catch(error => console.error('Error performing search:', error));
+function animateContent(selector) {
+    selector.forEach((selector) => {
+        gsap.to(selector, {
+            y: 30,
+            duration: 0.1,
+            opacity: 1,
+            delay: 0.2,
+            stagger: 0.2,
+            ease: "power2.out",
+        });
+    });
 }
+
+function scrollTirggerAnimation(triggerSelector, boxSelectors) {
+    const timeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: triggerSelector,
+            start: "top 50%",
+            end: "top 80%",
+            scrub: 1,
+        },
+    });
+
+    boxSelectors.forEach((boxSelector) => {
+        timeline.to(boxSelector, {
+            y: 0,
+            duration: 1,
+            opacity: 1,
+        });
+    })
+}
+
+function swipeAnimation(triggerSelector, boxSelectors) {
+    const timeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: triggerSelector,
+            start: "top 50%",
+            end: "top 100%",
+            scrub: 3,
+        },
+    });
+
+    boxSelectors.forEach((boxSelector) => {
+        timeline.to(boxSelector, {
+            x: 0,
+            duration: 1,
+            opacity:1,
+        });
+    });
+}
+
+function galleryAnimation(triggerSelector, boxSelectors) {
+    const timeline = gsap.timeline({
+        scrollTrigger: {
+            trigger: triggerSelector,
+            start: "top 100%",
+            end: "bottom 100%",
+            scrub: 1,
+        },
+    });
+
+    boxSelectors.forEach((boxSelector) => {
+        timeline.to(boxSelector, {
+            y: 0,
+            opacity: 1,
+            duration: 1,
+        });
+    });
+}
+
+
+
+
+animateContent([".home .content h5, .home .content h1, .home .content p, .home .content .search"]);
+
+scrollTirggerAnimation(".travel", [".travel .box1", ".travel .box2", ".travel .box3"]);
+
+scrollTirggerAnimation(".feedback .container", [".feedback .label", ".feedback .heading", ".feedback .paragraph"]);
+
+scrollTirggerAnimation(".article", [".article .label", ".article .heading"]);
+
+swipeAnimation(".destinations", [".destinations .heading", ".destinations .content"])
+
+swipeAnimation(".article", [".article .latest-article", ".article .box1", ".article .box2", ".article .box3", ".article .box4"])
+
+galleryAnimation(".destinations .gallery", [".destinations .gallery .box1",".destinations .gallery .box2",".destinations .gallery .box3",".destinations .gallery .box4",".destinations .gallery .box5"])
+
+galleryAnimation(".featured .gallery", [".featured .gallery .box1",".featured .gallery .box2",".featured .gallery .box3",".featured .gallery .box4"])
+
+galleryAnimation(".feedback .voices", [".feedback .voices .box1",".feedback .voices .box2",".feedback .voices .box3",".feedback .voices .box4",".feedback .voices .box5",".feedback .voices .box6"])
+

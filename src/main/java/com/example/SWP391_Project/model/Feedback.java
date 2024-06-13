@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.example.SWP391_Project.enums.RoleDescription;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -37,12 +38,5 @@ public class Feedback {
 
     @ManyToOne
     @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USER_CODE")
-    @JsonManagedReference
     User sendToUser;
-
-    @ManyToOne
-    @JoinColumn(name = "C06_COURSE_ID", nullable = false)
-    @JsonManagedReference
-    Course course;
-
 }

@@ -1,85 +1,257 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // var currentUrl = window.location.href;
-    // var urlParams = new URLSearchParams(currentUrl);
-    // console.log('URL Params:', urlParams);
-    var userId = 1;
-    // urlParams.forEach(function(value, key) {
-    //     userId = value;
-    // });
-    // console.log(userId)
-    const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
-    var itemsPerPage = 4; // Number of posts per page
-    var currentPage = 1;
-    var noResultDiv = document.getElementById("no-result");
-    var paginationControls = document.getElementById("paginationControls");
+    const calendar = document.querySelector(".calendar");
+    const date = document.querySelector(".date");
+    const daysContainer = document.querySelector(".days");
+    const prev = document.querySelector(".prev");
+    const next = document.querySelector(".next");
+    const todayBtn = document.querySelector(".today-btn");
+    const gotoBtn = document.querySelector(".goto-btn");
+    const dateInput = document.querySelector(".date-input");
+    const eventDay = document.querySelector(".event-day");
+    const eventDate = document.querySelector(".event-date");
+    const eventsContainer = document.querySelector(".events");
 
-    function fetchPosts() {
-        fetch(apiUrl)
-            .then(response => response.json())
-            .then(data => {
-                currentPage = 1; // Reset to first page
-                console.log(data)
-                renderTable(data);
-            })
-            .catch(error => console.error("Error fetching posts:", error));
-    }
+    let today = new Date();
+    let activeDay;
+    let month = today.getMonth();
+    let year = today.getFullYear();
 
-    function displayPosts(posts) {
-        boxCourses.innerHTML = "";
+    const months = [
+        "T1",
+        "T2",
+        "T3",
+        "T4",
+        "T5",
+        "T6",
+        "T7",
+        "T8",
+        "T9",
+        "T10",
+        "T11",
+        "T12",
+    ];
 
-        if (posts.length === 0) {
-            noResultDiv.style.display = "block";
-        } else {
-            noResultDiv.style.display = "none";
-            posts.forEach(post => {
-                var row = `      
-                    <div class="box" id="${post.courseId}">
-                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
-                        <h3>${post.courseCode}</h3>
-                        <p>Giáo viên: ${post.teacherName} tại trung tâm ${post.centerName}</p>
-                        <p>Số lượng học sinh: ${post.amountOfStudents}</p>
-                        <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId} data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode} data-amountOfStudents={post.amountOfStudents} data-startTime={post.startTime} data-endTime={post.endTime} data-centerName={post.centerName} >Xem chi tiết</a>
-                    </div>
-                `;
-                boxCourses.insertAdjacentHTML("beforeend", row);
-            });
+    const eventsArr = [];
+    getEvents();
+    console.log(eventsArr);
+
+    function initCalendar() {
+        const firstDay = new Date(year, month, 1);
+        const lastDay = new Date(year, month + 1, 0);
+        const prevLastDay = new Date(year, month, 0);
+        const prevDays = prevLastDay.getDate();
+        const lastDate = lastDay.getDate();
+        const day = firstDay.getDay();
+        const nextDays = 7 - lastDay.getDay() - 1;
+
+        date.innerHTML = months[month] + " " + year;
+
+        let days = "";
+
+        for (let x = day; x > 0; x--) {
+            days += `<div class="day prev-date">${prevDays - x + 1}</div>`;
         }
-    }
 
-    function renderTable(postList) {
-        const start = (currentPage - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const postsToDisplay = postList.slice(start, end);
-
-        displayPosts(postsToDisplay);
-        renderPaginationControls(postList);
-    }
-
-    function renderPaginationControls(postList) {
-        const totalPages = Math.ceil(postList.length / itemsPerPage);
-        paginationControls.innerHTML = '';
-
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('page-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
+        for (let i = 1; i <= lastDate; i++) {
+            let event = false;
+            eventsArr.forEach((eventObj) => {
+                if (
+                    eventObj.day === i &&
+                    eventObj.month === month + 1 &&
+                    eventObj.year === year
+                ) {
+                    event = true;
+                }
+            });
+            if (
+                i === new Date().getDate() &&
+                year === new Date().getFullYear() &&
+                month === new Date().getMonth()
+            ) {
+                activeDay = i;
+                getActiveDay(i);
+                updateEvents(i);
+                if (event) {
+                    days += `<div class="day today active event">${i}</div>`;
+                } else {
+                    days += `<div class="day today active">${i}</div>`;
+                }
+            } else {
+                if (event) {
+                    days += `<div class="day event">${i}</div>`;
+                } else {
+                    days += `<div class="day ">${i}</div>`;
+                }
             }
-            pageButton.addEventListener('click', () => {
-                currentPage = i;
-                renderTable(postList);
-            });
-            paginationControls.appendChild(pageButton);
         }
+
+        for (let j = 1; j <= nextDays; j++) {
+            days += `<div class="day next-date">${j}</div>`;
+        }
+        daysContainer.innerHTML = days;
+        addListener();
     }
 
-    fetchPosts();
+    function prevMonth() {
+        month--;
+        if (month < 0) {
+            month = 11;
+            year--;
+        }
+        initCalendar();
+    }
 
+    function nextMonth() {
+        month++;
+        if (month > 11) {
+            month = 0;
+            year++;
+        }
+        initCalendar();
+    }
 
+    if (prev) prev.addEventListener("click", prevMonth);
+    if (next) next.addEventListener("click", nextMonth);
+
+    initCalendar();
+
+    function addListener() {
+        const days = document.querySelectorAll(".day");
+        days.forEach((day) => {
+            day.addEventListener("click", (e) => {
+                getActiveDay(e.target.innerHTML);
+                updateEvents(Number(e.target.innerHTML));
+                activeDay = Number(e.target.innerHTML);
+
+                days.forEach((day) => {
+                    day.classList.remove("active");
+                });
+
+                if (e.target.classList.contains("prev-date")) {
+                    prevMonth();
+                    setTimeout(() => {
+                        const days = document.querySelectorAll(".day");
+                        days.forEach((day) => {
+                            if (
+                                !day.classList.contains("prev-date") &&
+                                day.innerHTML === e.target.innerHTML
+                            ) {
+                                day.classList.add("active");
+                            }
+                        });
+                    }, 100);
+                } else if (e.target.classList.contains("next-date")) {
+                    nextMonth();
+                    setTimeout(() => {
+                        const days = document.querySelectorAll(".day");
+                        days.forEach((day) => {
+                            if (
+                                !day.classList.contains("next-date") &&
+                                day.innerHTML === e.target.innerHTML
+                            ) {
+                                day.classList.add("active");
+                            }
+                        });
+                    }, 100);
+                } else {
+                    e.target.classList.add("active");
+                }
+            });
+        });
+    }
+
+    if (todayBtn) todayBtn.addEventListener("click", () => {
+        today = new Date();
+        month = today.getMonth();
+        year = today.getFullYear();
+        initCalendar();
+    });
+
+    if (dateInput) dateInput.addEventListener("input", (e) => {
+        dateInput.value = dateInput.value.replace(/[^0-9/]/g, "");
+        if (dateInput.value.length === 2) {
+            dateInput.value += "/";
+        }
+        if (dateInput.value.length > 7) {
+            dateInput.value = dateInput.value.slice(0, 7);
+        }
+        if (e.inputType === "deleteContentBackward") {
+            if (dateInput.value.length === 3) {
+                dateInput.value = dateInput.value.slice(0, 2);
+            }
+        }
+    });
+
+    if (gotoBtn) gotoBtn.addEventListener("click", gotoDate);
+
+    function gotoDate() {
+        const dateArr = dateInput.value.split("/");
+        if (dateArr.length === 2) {
+            if (dateArr[0] > 0 && dateArr[0] < 13 && dateArr[1].length === 4) {
+                month = dateArr[0] - 1;
+                year = dateArr[1];
+                initCalendar();
+                return;
+            }
+        }
+        alert("Invalid Date");
+    }
+
+    function getActiveDay(date) {
+        const day = new Date(year, month, date);
+        // const dayName = day.toString().split(" ")[0];
+        // eventDay.innerHTML = dayName;
+        eventDate.innerHTML = date + " " + months[month] + " " + year;
+    }
+
+    function updateEvents(date) {
+        let events = "";
+        eventsArr.forEach((event) => {
+            if (
+                date === event.day &&
+                month + 1 === event.month &&
+                year === event.year
+            ) {
+                event.events.forEach((event) => {
+                    events += `<div class="event">
+                        <div class="title">
+                          <i class="fas fa-circle"></i>
+                          <h3 class="event-title">${event.title}</h3>
+                        </div>
+                        <div class="event-time">
+                          <span class="event-time">${event.time}</span>
+                        </div>
+                    </div>`;
+                });
+            }
+        });
+        if (events === "") {
+            events = `<div class="no-event">
+                <h3>No Events</h3>
+            </div>`;
+        }
+        eventsContainer.innerHTML = events;
+        saveEvents();
+    }
+
+    function saveEvents() {
+        localStorage.setItem("events", JSON.stringify(eventsArr));
+    }
+
+    function getEvents() {
+        if (localStorage.getItem("events") === null) {
+            return;
+        }
+        eventsArr.push(...JSON.parse(localStorage.getItem("events")));
+    }
+
+    function convertTime(time) {
+        let timeArr = time.split(":");
+        let timeHour = timeArr[0];
+        let timeMin = timeArr[1];
+        let timeFormat = timeHour >= 12 ? "PM" : "AM";
+        timeHour = timeHour % 12 || 12;
+        time = timeHour + ":" + timeMin + " " + timeFormat;
+        return time;
+    }
 });
-
-
-
-

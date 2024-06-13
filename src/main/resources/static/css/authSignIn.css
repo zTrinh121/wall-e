@@ -1,393 +1,87 @@
-@import url('https://fonts.googleapis.com/css?family=Poppins:400,500,600,700&display=swap');
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap');
 
-* {
+*{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Poppins', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
-
-html, body {
-  display: grid;
-  height: 100%;
-  width: 100%;
-  place-items: center;
-  background: #ccc;
+body{
+  background: #dfe9f5;
 }
-
-::selection {
-  background: #000000;
-  color: #fff;
-}
-
-.wrapper {
-  overflow: hidden;
-  max-width: 390px;
+.wrapper{
+  width: 330px;
+  padding: 2rem 0 1rem 0;
+  margin: 50px auto;
   background: #fff;
-  padding: 30px;
   border-radius: 10px;
-  box-shadow: 0 15px 20px rgba(0, 0, 0, 0.1);
-}
-
-.wrapper .title-text {
-  display: flex;
-  width: 200%;
-}
-
-.wrapper .title {
-  width: 50%;
-  font-size: 35px;
-  font-weight: 600;
   text-align: center;
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
-
-.wrapper .slide-controls {
-  position: relative;
-  display: flex;
-  height: 50px;
-  width: 100%;
-  overflow: hidden;
-  margin: 30px 0 10px 0;
-  justify-content: space-between;
-  border: 1px solid lightgrey;
-  border-radius: 10px;
+h1{
+  font-size: 2rem;
+  color: #07001f;
 }
-
-.slide-controls .slide {
-  height: 100%;
-  width: 100%;
-  color: #fff;
-  font-size: 18px;
-  font-weight: 500;
-  text-align: center;
-  line-height: 48px;
-  cursor: pointer;
-  z-index: 1;
-  transition: all 0.6s ease;
+p{
+  margin-top: 1rem;
+  margin-bottom: 1.7rem;
 }
-
-.slide-controls label.signup {
-  color: #000;
-}
-
-.slide-controls .slider-tab {
-  position: absolute;
-  height: 100%;
-  width: 50%;
-  left: 0;
-  z-index: 0;
-  border-radius: 10px;
-  background: linear-gradient(to right, #2e4ead, #2e4ead, #2e4ead, #2e4ead);
-  transition: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-input[type="radio"] {
-  display: none;
-}
-
-#signup:checked ~ .slider-tab {
-  left: 50%;
-}
-
-#signup:checked ~ label.signup {
-  color: #fff;
-  cursor: default;
-  user-select: none;
-}
-
-#signup:checked ~ label.login {
-  color: #000;
-}
-
-#login:checked ~ label.signup {
-  color: #000;
-}
-
-#login:checked ~ label.login {
-  cursor: default;
-  user-select: none;
-}
-
-.wrapper .form-container {
-  width: 100%;
-  overflow: hidden;
-}
-
-.form-container .form-inner {
-  display: flex;
-  width: 200%;
-}
-
-.form-container .form-inner form {
-  width: 50%;
-  transition: all 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-}
-
-.form-inner form .field {
-  height: 50px;
-  width: 100%;
-  margin-top: 20px;
-}
-
-.form-inner form .field input {
-  height: 100%;
-  width: 100%;
+form input, form select{
+  width: 85%;
   outline: none;
-  padding-left: 15px;
+  border: none;
+  background: #e1ecf2;
+  padding: 12px 14px;
+  margin-bottom: 10px;
   border-radius: 10px;
-  border: 1px solid lightgrey;
-  border-bottom-width: 2px;
-  font-size: 17px;
-  transition: all 0.3s ease;
+}
+.recover{
+  text-align: right;
+  font-size: 0.8rem;
+  margin: 0.2rem 1.7rem 0 0;
+}
+.recover a{
+  text-decoration: none;
+  color: #07001f;
+  cursor: pointer;
 }
 
-.form-inner form .field input:focus {
-  border-color: #000000;
+.recover a:hover{
+  text-decoration: none;
+  color: #2e4ead;
+}
+.button{
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  padding: 8px 0;
+  border-radius: 5px;
+  outline: none;
+  border: none;
+  width: 85%;
+  background: rgb(46, 78, 173);
+  color: #fff;
+  cursor: pointer;
+}
+.button:hover{
+  background: rgba(46, 78, 173, 0.767);
+}
+.or{
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
 }
 
-.form-inner form .field input::placeholder {
-  color: #000000;
-  transition: all 0.3s ease;
+.icons svg:hover{
+  cursor: pointer;
 }
 
-form .field input:focus::placeholder {
-  color: #000000;
+.not-member{
+  font-size: 0.8rem;
+  margin-top: 1.4rem;
 }
-
-.form-inner form .pass-link {
-  margin-top: 5px;
-}
-
-.form-inner form .signup-link {
-  text-align: center;
-  margin-top: 30px;
-}
-
-.form-inner form .pass-link a,
-.form-inner form .signup-link a {
-  color: #000000;
+.not-member a{
+  color: #2e4ead;
   text-decoration: none;
 }
-
-.form-inner form .pass-link a:hover,
-.form-inner form .signup-link a:hover {
+a:hover{
   text-decoration: underline;
 }
-
-form .btn {
-  height: 50px;
-  width: 100%;
-  border-radius: 10px;
-  position: relative;
-  overflow: hidden;
-}
-
-form .btn .btn-layer {
-  height: 100%;
-  width: 300%;
-  position: absolute;
-  left: -100%;
-  background: linear-gradient(to right, #2e4ead, #2e4ead, #2e4ead, #2e4ead);
-  border-radius: 15px;
-  transition: all 0.4s ease;
-}
-
-form .btn:hover .btn-layer {
-  left: 0;
-}
-
-form .btn input[type="submit"] {
-  height: 100%;
-  width: 100%;
-  z-index: 1;
-  position: relative;
-  background: none;
-  border: none;
-  color: #fff;
-  padding-left: 0;
-  border-radius: 10px;
-  font-size: 20px;
-  font-weight: 500;
-  cursor: pointer;
-}
-
-* {
-  margin: 0;
-  padding: 0;
-  box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
-}
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
-}
-
-.container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  width: 100%;
-}
-
-.form-container {
-  background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
-  max-width: 400px;
-  width: 100%;
-  text-align: center;
-}
-
-.form-header h1 {
-  font-size: 24px;
-  margin-bottom: 10px;
-}
-
-.form-header p {
-  color: #666;
-  margin-bottom: 20px;
-}
-
-.otp-field {
-  display: flex;
-  justify-content: center;
-  gap: 10px;
-  margin-bottom: 20px;
-}
-
-.otp-field input {
-  height: 45px;
-  width: 42px;
-  border-radius: 6px;
-  outline: none;
-  font-size: 18px;
-  text-align: center;
-  border: 1px solid #ddd;
-}
-
-.otp-field input:focus {
-  border-color: #007bff;
-  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.25);
-}
-
-.otp-field input::-webkit-inner-spin-button,
-.otp-field input::-webkit-outer-spin-button {
-  display: none;
-}
-
-.field {
-  margin-top: 20px;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
-  cursor: pointer;
-  font-size: 16px;
-}
-
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  margin-top: 20px;
-  color: red;
-}
-
-.countdown {
-  font-size: 14px;
-  color: #555;
-  margin-top: 10px;
-}
-.otp-field input {
-  height: 45px;
-  width: 150px; /* Điều chỉnh độ rộng phù hợp */
-  border-radius: 6px;
-  outline: none;
-  font-size: 1.125rem;
-  text-align: center;
-  border: 1px solid #ddd;
-  padding: 5px; /* Thêm padding nếu cần */
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgb(0, 0, 0);
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%; /* Thu nhỏ modal lại */
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
-  cursor: pointer;
-}
-
-/* Countdown Circle */
-.countdown {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
-}
-
-.circle {
-  width: 100px;
-  height: 100px;
-  border: 5px solid red;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  animation: rotate 2s linear infinite;
-}
-
-.timer {
-  font-size: 1.5rem;
-  color: red;
-  position: absolute;
-}
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
-}
-

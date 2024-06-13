@@ -18,6 +18,6 @@ public class CourseDto {
     float courseFee;
     float totalCourseFee;
     String centerCode;
-    String subjectCode;
+    int subjectCode;
     String teacherCode;
 }

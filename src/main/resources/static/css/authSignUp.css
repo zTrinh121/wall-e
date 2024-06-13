@@ -1,153 +1,87 @@
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap');
 
-* {
+*{
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: 'Montserrat', sans-serif;
+  font-family: "Poppins", sans-serif;
 }
-
-body {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100vh;
-  background-color: #f0f2f5;
+body{
+  background: #dfe9f5;
 }
-
-.wrapper {
-  width: 400px;
+.wrapper{
+  width: 500px;
+  padding: 2rem 0 1rem 0;
+  margin: 50px auto;
   background: #fff;
-  padding: 30px;
-  border-radius: 8px;
-  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
   text-align: center;
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
 }
-
-.title-text .title {
-  font-size: 24px;
+h1{
+  font-size: 2rem;
+  color: #07001f;
+}
+p{
+  margin-top: 1rem;
+  margin-bottom: 1.7rem;
+}
+form input, select{
+  width: 85%;
+  outline: none;
+  border: none;
+  background: #e1ecf2;
+  padding: 12px 14px;
   margin-bottom: 10px;
+  border-radius: 10px;
+}
+.recover{
+  text-align: right;
+  font-size: 0.8rem;
+  margin: 0.2rem 1.7rem 0 0;
+}
+.recover a{
+  text-decoration: none;
+  color: #07001f;
+  cursor: pointer;
 }
 
-.form-container {
-  position: relative;
-  width: 100%;
-  overflow: hidden;
+.recover a:hover{
+  text-decoration: none;
+  color: #2e4ead;
 }
-
-.form-inner {
-  display: flex;
-  width: 200%;
-}
-
-.form-inner form {
-  width: 50%;
-  padding: 30px;
-}
-
-.field {
-  width: 100%;
-  margin-bottom: 10px;
-}
-
-.field input, .field select {
-  width: 100%;
-  padding: 10px;
-  border: 1px solid #ccc;
+.button{
+  font-size: 1.1rem;
+  margin-top: 1rem;
+  padding: 8px 0;
   border-radius: 5px;
   outline: none;
-  font-size: 16px;
-}
-
-.field .btn {
-  margin-top: 20px;
-}
-
-.btn-primary {
-  background-color: #007bff;
-  color: #fff;
   border: none;
-  padding: 10px 20px;
-  border-radius: 5px;
+  width: 85%;
+  background: rgb(46, 78, 173);
+  color: #fff;
   cursor: pointer;
-  font-size: 16px;
+}
+.button:hover{
+  background: rgba(46, 78, 173, 0.767);
+}
+.or{
+  font-size: 0.8rem;
+  margin-top: 1.5rem;
 }
 
-.btn-primary:hover {
-  background-color: #0056b3;
-}
-
-.error {
-  margin-top: 20px;
-  color: red;
-}
-
-.modal {
-  display: none;
-  position: fixed;
-  z-index: 1;
-  left: 0;
-  top: 0;
-  width: 100%;
-  height: 100%;
-  overflow: auto;
-  background-color: rgba(0, 0, 0, 0.4);
-}
-
-.modal-content {
-  background-color: #fefefe;
-  margin: 15% auto;
-  padding: 20px;
-  border: 1px solid #888;
-  width: 50%;
-  border-radius: 8px;
-  text-align: center;
-}
-
-.close {
-  color: #aaa;
-  float: right;
-  font-size: 28px;
-  font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-  color: black;
-  text-decoration: none;
+.icons svg:hover{
   cursor: pointer;
 }
 
-.countdown {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  margin-top: 20px;
+.not-member{
+  font-size: 0.8rem;
+  margin-top: 1.4rem;
 }
-
-.circle {
-  width: 100px;
-  height: 100px;
-  border: 5px solid #2e4ead;
-  border-radius: 50%;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  position: relative;
-  animation: rotate 2s linear infinite;
-}
-
-.timer {
-  font-size: 1.5rem;
+.not-member a{
   color: #2e4ead;
-  position: absolute;
+  text-decoration: none;
 }
-
-@keyframes rotate {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+a:hover{
+  text-decoration: underline;
 }

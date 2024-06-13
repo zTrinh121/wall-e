@@ -13,22 +13,11 @@ public class EmailServiceImpl implements EmailService {
     private JavaMailSender mailSender;
 
     @Override
-    public void sendSimpleEmail(String toEmail, String body, String subject) {
+    public void sendEmail(String to, String subject, String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        message.setFrom("your-email@gmail.com");
-        message.setTo(toEmail);
-        message.setText(body);
+        message.setTo(to);
         message.setSubject(subject);
-
+        message.setText(body);
         mailSender.send(message);
-
-        System.out.println("Mail sent successfully...");
-    }
-
-    @Override
-    public void sendVerificationEmail(String toEmail, String verificationCode) {
-        String subject = "Verify Email";
-        String body = "This is your verification code: " + verificationCode;
-        sendSimpleEmail(toEmail, body, subject);
     }
 }

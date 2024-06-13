@@ -3,7 +3,9 @@ package com.example.SWP391_Project.dto;
 import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
+import org.intellij.lang.annotations.Pattern;
 
+import java.util.Date;
 
 @Data
 @FieldDefaults(level = AccessLevel.PRIVATE)

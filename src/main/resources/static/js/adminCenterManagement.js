@@ -38,6 +38,7 @@ document.addEventListener("DOMContentLoaded", function () {
             .catch(error => console.error("Error fetching posts:", error));
     }
 
+
     function renderTable() {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;

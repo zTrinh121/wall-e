@@ -7,24 +7,24 @@ spring:
   datasource:
     url: "jdbc:mysql://localhost:3306/swp391_db_releasee"
     username: root
-    password: Thanh20032003@
+    password: 123456789
   jpa:
     hibernate:
       ddl-auto: update
     show-sql: true
+
+  mvc:
+    converters:
+      preferred-json-mapper=gson:
+
   mail:
     host: smtp.gmail.com
-    port: 465
-    username: thanhdhde170795@fpt.edu.vn
-    password: pwpi acpp wcqr hion
+    port: 587
+    username: thanhdhde170795@gmail.com
+    password: thanh20032003
     properties:
       mail:
         smtp:
           auth: true
           starttls:
-            enable: true,
-            required: true
-          ssl:
             enable: true
-
-
