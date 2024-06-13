@@ -251,8 +251,6 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     // ------------------------- Manager center ----------------------------
-
-
     @Override
     public List<Center> getCenters(int managerId) {
         Optional<List<Center>> centers = centerRepository.findByManager_Id(managerId);

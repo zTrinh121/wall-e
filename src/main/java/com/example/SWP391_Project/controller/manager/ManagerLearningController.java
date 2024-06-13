@@ -33,9 +33,8 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER CENTER ------------------------------
-    //cần phải truyền vào là /centers/{managerId} mới chu
-    @GetMapping("/centers")
 
+    @GetMapping("/centers")
     public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
         String id =  httpSession.getAttribute("authid").toString();
         int managerId = (int)httpSession.getAttribute("authid");
