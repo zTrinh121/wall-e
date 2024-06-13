@@ -766,3 +766,24 @@ footer .footer .copyright a {
     cursor: pointer;
 }
 /*Modal end*/
+
+/*Start autocomplete search*/
+.autocomplete-suggestions {
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+}
+
+.autocomplete-suggestion {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.autocomplete-suggestion:hover {
+    background-color: #f0f0f0;
+}
+
+/*End autocomplete search*/

@@ -4,6 +4,7 @@ import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.SlotDto;
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,47 +33,23 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER CENTER ------------------------------
+    //cần phải truyền vào là /centers/{managerId} mới chu
     @GetMapping("/centers")
-    public ResponseEntity<?> getCenters(HttpServletRequest request) {
-        HttpSession session = request.getSession(false); // Don't create a new session if one doesn't exist
-        if (session == null) {
-            throw new RuntimeException("Session not found!");
+
+    public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
+        String id =  httpSession.getAttribute("authid").toString();
+        int managerId = (int)httpSession.getAttribute("authid");
+        List<Center> centers = managerService.getCenters(managerId);
+        if (centers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
-
-        String sessionId = session.getId();
-        Integer userId = (Integer) session.getAttribute("userId");
-        System.out.println("It in session page: " + sessionId + " " + userId);
-
-        try {
-            User user = (User) session.getAttribute("user");
-            if (user == null) {
-                throw new RuntimeException("User not found in session!");
-            }
-            System.out.println("Manager validate: " + user);
-
-            // Pass the HttpServletRequest to the service method
-            List<Center> centers = managerService.getCenters(request);
-            if (centers.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-            }
-
-            return new ResponseEntity<>(centers, HttpStatus.OK);
-        } catch (RuntimeException e) {
-            // Log the exception (use a logger in real applications)
-            System.err.println(e.getMessage());
-
-            // Return a custom error response
-            Map<String, Object> errorResponse = new HashMap<>();
-            errorResponse.put("timestamp", LocalDateTime.now());
-            errorResponse.put("status", HttpStatus.INTERNAL_SERVER_ERROR.value());
-            errorResponse.put("error", "Internal Server Error");
-            errorResponse.put("message", e.getMessage());
-            errorResponse.put("path", "/centers");
-
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
-        }
+        return new ResponseEntity<>(centers, HttpStatus.OK);
     }
-
+//    @GetMapping("/centerHome")
+//    public ResponseEntity<List<CenterDetailResponse>> getCenterInfo() {
+//        List<CenterDetailResponse> centers = managerService.getCenters();
+//        return ResponseEntity.ok().body(centers);
+//    }
 
     @GetMapping("/center/{centerId}")
     public ResponseEntity<Center> getCenterById(@PathVariable int centerId) {
@@ -82,8 +59,15 @@ public class ManagerLearningController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }@GetMapping("/manager/{managerId}")
+    public ResponseEntity<Center> getMangerById(@PathVariable int centerId) {
+        Center center = managerService.findCenterById(centerId);
+        if (center != null) {
+            return ResponseEntity.ok(center);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
     @PostMapping("/center/create")
     public Center createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession session) {
         return managerService.createCenter(centerDto, session);
@@ -156,7 +140,7 @@ public class ManagerLearningController {
     // --------------------------------------------------------------------------
 
     // --------------------------- MANAGER TEACHER ------------------------------
-    @GetMapping("/getTeachers")
+    @GetMapping("/getTeachers/{centerId}")
     public ResponseEntity<List<User>> getTeachersInCenter(@PathVariable int centerId) {
         List<User> teachers = managerService.getTeachersInCenter(centerId);
         if (teachers.isEmpty()) {
@@ -254,7 +238,7 @@ public class ManagerLearningController {
         return managerService.createNewSlot(slotDto);
     }
 
-    @GetMapping("/emptyRooms")
+    @GetMapping("/emptyRooms") //truyền vào centers
     public List<Room> getEmptyRooms(
             @RequestParam("centerId") int centerId,
             @RequestParam("slotStartTime") Date slotStartTime,

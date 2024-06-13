@@ -84,7 +84,7 @@ public class GuestServiceImpl implements GuestService {
         String query = "SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_NAME as courseName, " +
                 "c.C01_COURSE_CODE as courseCode, c.C01_COURSE_DESC as description, " +
                 "c.C01_COURSE_START_DATE as startDate, c.C01_COURSE_END_DATE as endDate, " +
-                "c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, " +
+                "c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, c.C01_COURSE_FEE as courseFee, " +
                 "center.C03_CENTER_NAME as centerName, " +
                 "center.C03_CENTER_ID as centerId, teacher.C14_USER_NAME as teacherName, " +
                 "teacher.C14_USER_ID as teacherId " +
