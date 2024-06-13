@@ -1,6 +1,8 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.*;
+import com.example.SWP391_Project.enums.PaymentMethodEnum;
+import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
@@ -51,7 +53,7 @@ public interface ManagerService {
 
     // View tất cả những center mà manager hiện tại quản lí
     // Trong này có cả các trung tâm đang đợi admin duyệt
-    List<Center> getCenters(User user);
+    List<Center> getCenters(int managerId);
 
     // View chi tiết thông tin của trung tâm
     Center findCenterById(int centerId);

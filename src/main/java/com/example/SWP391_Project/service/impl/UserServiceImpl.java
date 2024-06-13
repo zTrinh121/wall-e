@@ -10,10 +10,12 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,6 +24,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -84,7 +87,25 @@ public class UserServiceImpl implements UserService {
 
 
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
+    @Override
+    @Transactional
+    public List<Map<String, Object>> getUsersByRoleId(int roleId) {
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_USER_CODE as userCode,  u.c14_acc_status as accStatus " +
+                "FROM t14_user u " +
+                "WHERE u.C14_ROLE_ID = ?";
+        return jdbcTemplate.queryForList(query, roleId);
+    }
+
+    @Override
+    @Transactional
+    public List<Map<String, Object>> getAllUsersWithSpecificAttributes() {
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_USER_CODE as userCode,  u.c14_acc_status as accStatus " +
+                "FROM t14_user u";
+        return jdbcTemplate.queryForList(query);
+    }
 
 
 

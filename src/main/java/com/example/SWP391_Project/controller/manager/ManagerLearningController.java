@@ -4,6 +4,7 @@ import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.SlotDto;
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import jakarta.servlet.http.HttpSession;
@@ -28,17 +29,23 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER CENTER ------------------------------
+    //cần phải truyền vào là /centers/{managerId} mới chu
     @GetMapping("/centers")
+
     public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
-        System.out.println("User in controller: " + user.getId());
-        System.out.println("User Name in session at controller: "+ user.getName());
-        List<Center> centers = managerService.getCenters(user);
+        String id =  httpSession.getAttribute("authid").toString();
+        int managerId = (int)httpSession.getAttribute("authid");
+        List<Center> centers = managerService.getCenters(managerId);
         if (centers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(centers, HttpStatus.OK);
     }
+//    @GetMapping("/centerHome")
+//    public ResponseEntity<List<CenterDetailResponse>> getCenterInfo() {
+//        List<CenterDetailResponse> centers = managerService.getCenters();
+//        return ResponseEntity.ok().body(centers);
+//    }
 
     @GetMapping("/center/{centerId}")
     public ResponseEntity<Center> getCenterById(@PathVariable int centerId) {
@@ -48,8 +55,15 @@ public class ManagerLearningController {
         } else {
             return ResponseEntity.notFound().build();
         }
+    }@GetMapping("/manager/{managerId}")
+    public ResponseEntity<Center> getMangerById(@PathVariable int centerId) {
+        Center center = managerService.findCenterById(centerId);
+        if (center != null) {
+            return ResponseEntity.ok(center);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
     }
-
     @PostMapping("/center/create")
     public Center createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession session) {
         return managerService.createCenter(centerDto, session);
@@ -122,7 +136,7 @@ public class ManagerLearningController {
     // --------------------------------------------------------------------------
 
     // --------------------------- MANAGER TEACHER ------------------------------
-    @GetMapping("/getTeachers")
+    @GetMapping("/getTeachers/{centerId}")
     public ResponseEntity<List<User>> getTeachersInCenter(@PathVariable int centerId) {
         List<User> teachers = managerService.getTeachersInCenter(centerId);
         if (teachers.isEmpty()) {
@@ -220,7 +234,7 @@ public class ManagerLearningController {
         return managerService.createNewSlot(slotDto);
     }
 
-    @GetMapping("/emptyRooms")
+    @GetMapping("/emptyRooms") //truyền vào centers
     public List<Room> getEmptyRooms(
             @RequestParam("centerId") int centerId,
             @RequestParam("slotStartTime") Date slotStartTime,

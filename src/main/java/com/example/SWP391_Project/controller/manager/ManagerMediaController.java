@@ -104,6 +104,8 @@ public class ManagerMediaController {
         return managerService.createCenterPost(centerPostDto);
     }
 
+    //pathvariable => id bị ảnh hưởng ngay trên fe
+    //requestbody ... => do ảnh hưởng của dữ liệu người dùng nhập vào
     @PutMapping("/centerPosts/update/{id}")
     public ResponseEntity<CenterPost> updatePublicNotification(@PathVariable int id,
                                                                @RequestBody @Valid CenterPostDto centerPostDto) {
