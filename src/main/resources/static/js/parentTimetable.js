@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(eventsArr);
 
     function fetchEvents() {
-        fetch('/api/students/52/slots')
+        fetch('/parent/slots')
             .then(response => response.json())
             .then(data => {
                 console.log(data)

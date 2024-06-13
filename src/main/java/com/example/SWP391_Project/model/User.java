@@ -82,12 +82,12 @@ public class User {
     @JsonBackReference
     List<Enrollment> enrollments;
 
-    @ManyToMany
-    @JoinTable(
-            name = "t15_enrollment",
-            joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
-            inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
-    )
-    private List<Course> courses;
+//    @ManyToMany(fetch = FetchType.LAZY)
+//    @JoinTable(
+//            name = "t15_enrollment",
+//            joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
+//            inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
+//    )
+//    private List<Course> courses;
 
 }

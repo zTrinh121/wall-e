@@ -1,20 +1,14 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // var currentUrl = window.location.href;
-    // var urlParams = new URLSearchParams(currentUrl);
-    // console.log('URL Params:', urlParams);
-    var userId = 27;
-    // urlParams.forEach(function(value, key) {
-    //     userId = value;
-    // });
-    // console.log(userId)
+
     const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
+    const apiUrl = `/parent/courses`;
     var itemsPerPage = 4; // Number of posts per page
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
     var paginationControls = document.getElementById("paginationControls");
 
     function fetchPosts() {
+        console.log("API url trang parent: "+ apiUrl)
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
@@ -32,24 +26,32 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
         } else {
             noResultDiv.style.display = "none";
+            console.log(posts)
             posts.forEach(post => {
                 var row = `      
-                    <div class="box" id="${post.courseId}">
+                    <div class="box" id="${post.id}">
                         <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
-                        <h3>${post.courseCode}</h3>
-                        <p>Giáo viên: ${post.teacherName} tại trung tâm ${post.centerName}</p>
+                        <h3>${post.code}</h3>
+                        <p>Trung tâm: ${post.center.code}</p>
+                        <p>Địa chỉ: ${post.center.address}</p>
                         <p>Số lượng học sinh: ${post.amountOfStudents}</p>
-                        <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId} data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode} data-amountOfStudents={post.amountOfStudents} data-startTime={post.startTime} data-endTime={post.endTime} data-centerName={post.centerName} >Xem chi tiết</a>
                     </div>
                 `;
                 boxCourses.insertAdjacentHTML("beforeend", row);
             });
+
+            // <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId}
+            //    data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode}
+            //    data-amountOfStudents={post.amountOfStudents} data-startTime={post.startTime} data-endTime={post.endTime}
+            //    data-centerName={post.centerName}>Xem chi tiết</a>
+            //
         }
     }
 
     function renderTable(postList) {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
+        console.log(postList)
         const postsToDisplay = postList.slice(start, end);
 
         displayPosts(postsToDisplay);
