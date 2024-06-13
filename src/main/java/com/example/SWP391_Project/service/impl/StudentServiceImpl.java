@@ -2,9 +2,11 @@ package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.model.Course;
 import com.example.SWP391_Project.model.Feedback;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.repository.CourseRepository;
 import com.example.SWP391_Project.repository.FeedbackRepository;
+import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.StudentRepository;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
@@ -39,6 +41,8 @@ public class StudentServiceImpl implements StudentService {
 
     @PersistenceContext
     private EntityManager entityManager;
+    @Autowired
+    private SlotRepository slotRepository;
 
     @Override
     public User getStudentById(int studentId) {
@@ -341,5 +345,43 @@ public class StudentServiceImpl implements StudentService {
 
         return attendanceList;
     }
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
+        String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
+                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName " +
+                "FROM t02_slot s " +
+                "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
+                "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
+                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
+                "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
+                "WHERE u.C14_USER_ID = :studentId";
+
+        System.out.println("Query: " + query);
+        System.out.println("CourseId: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> slots = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> slotMap = new HashMap<>();
+            slotMap.put("slotDate", result[0]);
+            slotMap.put("slotStartTime", result[1]);
+            slotMap.put("slotEndTime", result[2]);
+            slotMap.put("courseName", result[3]);
+            slotMap.put("roomName", result[4]);
+
+            slots.add(slotMap);
+        }
+
+        return slots;
+    }
+
+
+
 
 }

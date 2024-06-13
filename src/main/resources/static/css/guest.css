@@ -179,6 +179,7 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    align-items: center;
 }
 
 .main_container .content .guest-intro .image img{
@@ -515,8 +516,8 @@ footer .footer .copyright a {
 }
 
 .tranding-slide .tranding-slide-img img {
-    width: 40rem;
-    height: 29rem;
+    width: 20rem;
+    height: 20rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
     object-fit: cover;
@@ -561,9 +562,9 @@ footer .footer .copyright a {
 }
 
 .swiper-slide .tranding-slide-content{
-    width: 70rem;
+    width: 50rem;
     border: 1px solid;
-    height: 29rem;
+    height: 20rem;
     position: absolute;
     top: 0;
     left: 12%;
@@ -766,3 +767,24 @@ footer .footer .copyright a {
     cursor: pointer;
 }
 /*Modal end*/
+
+/*Start autocomplete search*/
+.autocomplete-suggestions {
+    border: 1px solid #ddd;
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    z-index: 1000;
+    background-color: #fff;
+}
+
+.autocomplete-suggestion {
+    padding: 10px;
+    cursor: pointer;
+}
+
+.autocomplete-suggestion:hover {
+    background-color: #f0f0f0;
+}
+
+/*End autocomplete search*/

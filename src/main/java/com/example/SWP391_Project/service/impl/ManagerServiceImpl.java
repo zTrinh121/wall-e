@@ -12,6 +12,7 @@ import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;

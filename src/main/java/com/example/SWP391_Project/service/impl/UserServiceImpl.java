@@ -2,8 +2,10 @@ package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.model.Center;
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.repository.RoleRepository;
+import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.UserRepository;
 import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.service.UserService;
@@ -47,6 +49,8 @@ public class UserServiceImpl implements UserService {
     private CloudinaryService cloudinaryService;
 
     private int verificationCode;
+    @Autowired
+    private SlotRepository slotRepository;
 
     @Override
     public void saveUser(User user) {
@@ -82,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticateUser(String username, String password, int roleId) {
         User user = findByUsername(username);
-        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId;
+        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId && user.isStatus();
     }
 
     @Override
@@ -244,6 +248,10 @@ public class UserServiceImpl implements UserService {
         message.setText("Your password reset code is: " + code);
         mailSender.send(message);
     }
+
+
+
+
 
 //    @Override
 //    public int getVerificationCode() {

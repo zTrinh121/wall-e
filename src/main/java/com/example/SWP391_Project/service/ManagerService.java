@@ -6,6 +6,7 @@ import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;

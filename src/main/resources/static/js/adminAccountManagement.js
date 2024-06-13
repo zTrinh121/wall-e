@@ -30,20 +30,32 @@ document.addEventListener('DOMContentLoaded', async function() {
         renderPaginationControls();
     }
 
+    // Giả sử bạn có một đối tượng ánh xạ ID vai trò sang mô tả vai trò
+    const roleDescriptions = {
+        1: 'Quản trị viên',
+        2: 'Học sinh',
+        3: 'Giáo viên',
+        4: 'Phụ huynh',
+        5: 'Quản lý'
+    };
+
     function buildTable(data) {
         tableBody.innerHTML = ''; // Clear existing table rows
+
         data.forEach((e) => {
-            let lock = e.status ? "Khóa" : "Mở khóa";
+            let lock = e.accStatus ? "Khóa" : "Mở khóa";
+            let roleDescription = roleDescriptions[e.roleId] || 'Không xác định'; // Sử dụng ánh xạ để lấy mô tả vai trò
             let row = `<tr>
-                <td><p>${e.username}</p></td>
-                <td><p>${e.role.description}</p></td>
-                <td><p>${e.status ? 'Hoạt động' : 'Không hoạt động'}</p></td>
-                <td><button class="action-button" data-user-id="${e.id}" data-status="${!e.status}">${lock}</button></td>
-            </tr>`;
+            <td><p>${e.userCode}</p></td>
+            <td><p>${roleDescription}</p></td>
+            <td><p>${e.accStatus ? 'Hoạt động' : 'Không hoạt động'}</p></td>
+            <td><button class="action-button" data-user-id="${e.userId}" data-status="${!e.accStatus}">${lock}</button></td>
+        </tr>`;
             tableBody.innerHTML += row;
         });
         addEventListenersToButtons();
     }
+
 
     function addEventListenersToButtons() {
         const buttons = document.querySelectorAll('.action-button');
