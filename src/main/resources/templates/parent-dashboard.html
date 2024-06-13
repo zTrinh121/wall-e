@@ -1,12 +1,46 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Parent Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="/css/studentDashboard.css"/>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/studentDashboard.css" />
+
+    <script src="/js/studentDashboard.js"></script>
+    <script th:src="@{/js/parentFragments.js}" type="module"></script>
+    <th:block th:replace="parentFragments :: parenthead"></th:block>
 </head>
 <body>
-    <h1>Welcome to the Parent Dashboard</h1>
-    <p>Content for parents goes here.</p>
-    <a th:href="@{/logout}">Logout</a>
+<div class="wrapper">
+    <div th:replace="parentFragments :: parentheader"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <!-- MAIN -->
+            <main>
+                <div class="header">Khóa học của con</div>
+                <div class="box-container" id="courseBoxes">
+
+                    <div class="box" id="courseBox">
+                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
+                        <h3>HTML 5</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, commodi?</p>
+                        <a href="#" class="btn">read more</a>
+                    </div>
+
+                    <div class="box">
+                        <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
+                        <h3>CSS 3</h3>
+                        <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus, commodi?</p>
+                        <a href="#" class="btn">read more</a>
+                    </div>
+
+                </div>
+                <div id="paginationControls" class="pagination-controls"></div>
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+</div>
+
+
 </body>
 </html>

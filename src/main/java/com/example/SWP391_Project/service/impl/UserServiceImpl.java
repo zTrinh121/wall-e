@@ -1,8 +1,10 @@
 package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.repository.RoleRepository;
+import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.UserRepository;
 import com.example.SWP391_Project.service.UserService;
 
@@ -10,10 +12,12 @@ import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 import org.mindrot.jbcrypt.BCrypt;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
@@ -22,6 +26,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.security.SecureRandom;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 
@@ -38,6 +43,8 @@ public class UserServiceImpl implements UserService {
     private JavaMailSender mailSender;
 
     private int verificationCode;
+    @Autowired
+    private SlotRepository slotRepository;
 
     @Override
     public void saveUser(User user) {
@@ -73,7 +80,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticateUser(String username, String password, int roleId) {
         User user = findByUsername(username);
-        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId;
+        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId && user.isStatus();
     }
 
     @Override
@@ -84,7 +91,25 @@ public class UserServiceImpl implements UserService {
 
 
 
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
 
+    @Override
+    @Transactional
+    public List<Map<String, Object>> getUsersByRoleId(int roleId) {
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_USER_CODE as userCode,  u.c14_acc_status as accStatus " +
+                "FROM t14_user u " +
+                "WHERE u.C14_ROLE_ID = ?";
+        return jdbcTemplate.queryForList(query, roleId);
+    }
+
+    @Override
+    @Transactional
+    public List<Map<String, Object>> getAllUsersWithSpecificAttributes() {
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_USER_CODE as userCode,  u.c14_acc_status as accStatus " +
+                "FROM t14_user u";
+        return jdbcTemplate.queryForList(query);
+    }
 
 
 
@@ -218,6 +243,10 @@ public class UserServiceImpl implements UserService {
         message.setText("Your password reset code is: " + code);
         mailSender.send(message);
     }
+
+
+
+
 
 //    @Override
 //    public int getVerificationCode() {

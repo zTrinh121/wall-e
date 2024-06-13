@@ -4,6 +4,7 @@ import com.example.SWP391_Project.model.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface GuestService {
@@ -26,4 +27,6 @@ public interface GuestService {
     // View slots in a certain course
     List<Slot> getSlotsInCertainCourse(int courseId);
 
+// lấy ra các khóa học trong center
+    List<Map<String, Object>> getCoursesInCenter(int centerId);
 }

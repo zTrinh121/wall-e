@@ -12,8 +12,6 @@ import com.example.SWP391_Project.service.AdminService;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -166,13 +164,12 @@ public class AdminServiceImpl implements AdminService {
     public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
         String sendTo = privateNotificationDto.getSendTo();
         if (sendTo.startsWith("USER")) {
-            Optional<User> userCode = userRepository.findByCode(privateNotificationDto.getSendTo());
+            Optional<User> userCode = userRepository.findByCode(sendTo);
             if (userCode.isPresent()) {
                 PrivateNotification privateNotification = PrivateNotification.builder()
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                      //  .actor(Actor.ADMIN)
                         .actor(RoleDescription.ADMIN)
                         .userSendTo(userCode.get())
                         .centerSendTo(null)
@@ -182,13 +179,12 @@ public class AdminServiceImpl implements AdminService {
                 throw new IllegalArgumentException("User not found");
             }
         } else if (sendTo.startsWith("CENTER")) {
-            Optional<Center> centerOptional = centerRepository.findByCode(privateNotificationDto.getSendTo());
+            Optional<Center> centerOptional = centerRepository.findByCode(sendTo);
             if (centerOptional.isPresent()) {
                 PrivateNotification privateNotification = PrivateNotification.builder()
                         .title(privateNotificationDto.getTitle())
                         .content(privateNotificationDto.getContent())
                         .createdAt(new Date())
-                       // .actor(Actor.ADMIN)
                         .actor(RoleDescription.ADMIN)
                         .userSendTo(null)
                         .centerSendTo(centerOptional.get())

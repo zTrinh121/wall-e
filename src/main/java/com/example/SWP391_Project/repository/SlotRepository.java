@@ -13,6 +13,8 @@ public interface SlotRepository extends JpaRepository<Slot, Integer> {
 
     Optional<List<Slot>> findSlotByCourse_Id(int id);
 
+    List<Slot> findByStudentId(int studentId);
+
     Optional<List<Slot>> findBySlotDate(Date date);
 
     @Query("SELECT s FROM Slot s " +

@@ -37,14 +37,12 @@ public class Feedback {
 
     @ManyToOne
     @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USER_CODE")
+    @JsonManagedReference
     User sendToUser;
 
     @ManyToOne
-    @JoinColumn(name = "C06_TEACHER_ID", nullable = false)
-    User teacher;
-
-    @ManyToOne
     @JoinColumn(name = "C06_COURSE_ID", nullable = false)
+    @JsonManagedReference
     Course course;
 
 }

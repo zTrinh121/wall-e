@@ -1,11 +1,13 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -50,5 +52,11 @@ public interface UserService {
     String generateVerificationCode();
 
     //int getVerificationCode();
+
+    List<Map<String, Object>> getUsersByRoleId(int roleId);
+    List<Map<String, Object>> getAllUsersWithSpecificAttributes();
+
+
+
 
 }

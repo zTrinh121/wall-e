@@ -116,6 +116,7 @@ public class UserController {
             session.setAttribute("user", user);
 
             String roleDesc = user.getRole().getDescription().name();
+
             System.out.println("Role Description: " + roleDesc);
 
             switch (roleDesc) {
@@ -584,6 +585,24 @@ public class UserController {
     @ResponseBody
     public void updateUserStatus(@RequestParam int userId, @RequestParam boolean status) {
         userService.updateUserStatus(userId, status);
+    }
+
+    @GetMapping("/course-details")
+    public String detailCourse(HttpSession session) {
+        session.invalidate();
+        return "student-classListDetails";
+    }
+
+    @GetMapping("/student-timetable")
+    public String viewTimetable(HttpSession session) {
+        session.invalidate();
+        return "student-timetable";
+    }
+
+    @GetMapping("/student-notification")
+    public String viewNotification(HttpSession session) {
+        session.invalidate();
+        return "studentNotification";
     }
 
 }

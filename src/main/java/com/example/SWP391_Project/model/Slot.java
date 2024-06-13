@@ -6,6 +6,9 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.Date;
 
+// Import lớp Student
+import com.example.SWP391_Project.model.StudentSlot;
+
 @Entity
 @Table(name = "t02_slot",
         uniqueConstraints = {@UniqueConstraint(
@@ -43,4 +46,8 @@ public class Slot {
     @JsonManagedReference
     Room room;
 
+    @ManyToOne
+    @JoinColumn(name = "C02_STUDENT_ID")
+    @JsonManagedReference
+    StudentSlot student;  // Add this line
 }
