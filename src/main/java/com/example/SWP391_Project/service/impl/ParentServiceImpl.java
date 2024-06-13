@@ -4,12 +4,12 @@ import com.example.SWP391_Project.dto.EnrollmentDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.service.ParentService;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -34,58 +34,37 @@ public class ParentServiceImpl implements ParentService {
 
 
     @Override
-    public List<Result> getStudentResults(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user != null && user.getParent() != null) {
-            int parentId = user.getParent().getId();
-            List<Result> results = resultRepository.findAllResultsWithParentUserId(parentId);
-            return results != null ? results : Collections.emptyList();
-        }
-        return Collections.emptyList();
+    public List<Result> getStudentResults(int parentId) {
+        Optional<List<Result>> results = resultRepository.findAllResultsWithParentUserId(parentId);
+        return results.orElse(Collections.emptyList());
     }
 
     @Override
-    public List<Slot> getStudentSlots(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user != null && user.getParent() != null) {
-            int parentId = user.getParent().getId();
-            List<Slot> slots = slotRepository.findAllSlotsWithParentUserId(parentId);
-            return slots != null ? slots : Collections.emptyList();
-        }
-        return Collections.emptyList();
+    public List<Slot> getStudentSlots(int parentId) {
+        Optional<List<Slot>> slots = slotRepository.findAllSlotsWithParentUserId(parentId);
+        return slots.orElse(Collections.emptyList());
     }
 
     @Override
-    public List<Course> getStudentCourses(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user != null && user.getParent() != null) {
-            int parentId = user.getParent().getId();
-            List<Course> courses = courseRepository.findAllCoursesWithParentUserId(parentId);
-            return courses != null ? courses : Collections.emptyList();
-        }
-        return Collections.emptyList();
+    public List<Course> getStudentCourses(int parentId) {
+        Optional<List<Course>> courses = courseRepository.findAllCoursesWithParentUserId(parentId);
+        return courses.orElse(Collections.emptyList());
     }
 
     @Override
-    public List<Attendance> getStudentAttendances(HttpSession session) {
-        User user = (User) session.getAttribute("user");
-
-        if (user != null && user.getParent() != null) {
-            int parentId = user.getParent().getId();
-            List<Attendance> attendances = attendanceRepository.findAllAttendanceByParentId(parentId);
-            return attendances != null ? attendances : Collections.emptyList();
-        }
-        return Collections.emptyList();
+    public List<Attendance> getStudentAttendances(int parentId) {
+        Optional<List<Attendance>> attendances = attendanceRepository.findAllAttendanceByParentId(parentId);
+        return attendances.orElse(Collections.emptyList());
     }
 
     @Override
-    public void enrollStudentInCourse(EnrollmentDto enrollmentDto, HttpSession session) {
-        User user = (User) session.getAttribute("user");
+    public void enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId) {
+        User parent = userRepository.findById(parentId).orElse(null);
 
-        int parentId = user.getParent().getId();
+        if (parent == null) {
+            throw new IllegalArgumentException("Parent with ID " + parentId + " does not exist.");
+        }
+
         int studentId = enrollmentDto.getStudentId();
         User student = userRepository.findById(studentId).orElse(null);
 
@@ -103,7 +82,8 @@ public class ParentServiceImpl implements ParentService {
                 throw new IllegalArgumentException("Course with ID " + courseId + " does not exist.");
             }
         } else {
-            throw new IllegalArgumentException("Student with ID " + studentId + " is not a child of the parent.");
+            throw new IllegalArgumentException("Student with ID " + studentId + " is not a child of the parent with ID " + parentId + ".");
         }
     }
+
 }

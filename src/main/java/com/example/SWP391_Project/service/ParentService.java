@@ -13,15 +13,15 @@ import java.util.List;
 @Service
 public interface ParentService {
     // Register class
-    void enrollStudentInCourse(EnrollmentDto enrollmentDto, HttpSession session);
+    void enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId);
 
     // View student progress, info (result, slot, course, attendance)
-    List<Result> getStudentResults(HttpSession session);
+    List<Result> getStudentResults(int parentId);
 
-    List<Slot> getStudentSlots(HttpSession session);
+    List<Slot> getStudentSlots(int parentId);
 
-    List<Course> getStudentCourses(HttpSession session);
+    List<Course> getStudentCourses(int parentId);
 
-    List<Attendance> getStudentAttendances(HttpSession session);
+    List<Attendance> getStudentAttendances(int parentId);
 
 }

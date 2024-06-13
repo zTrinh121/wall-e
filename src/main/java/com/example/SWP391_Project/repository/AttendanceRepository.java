@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface AttendanceRepository extends JpaRepository<Attendance, Integer> {
 
@@ -13,5 +14,5 @@ public interface AttendanceRepository extends JpaRepository<Attendance, Integer>
             "JOIN a.student u " +
             "JOIN a.slot s " +
             "WHERE u.parent.id = :parentId")
-    List<Attendance> findAllAttendanceByParentId(@Param("parentId") int parentId);
+    Optional<List<Attendance>> findAllAttendanceByParentId(@Param("parentId") int parentId);
 }
