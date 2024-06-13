@@ -8,14 +8,18 @@ import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
+import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import com.example.SWP391_Project.utils.FileUploadUtil;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Month;
 import java.time.Year;
@@ -62,6 +66,9 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
     private BillRepository billRepository;
+
+    @Autowired
+    private CloudinaryService cloudinaryService;
 
 
     // ----------------------- Private notification ----------------------------
@@ -264,6 +271,17 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public void uploadCenterImage(final int id, final MultipartFile file) {
+        final Center center = findCenterById(id);
+        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        center.setImagePath(response.getUrl());
+        center.setCloudinaryImageId(response.getPublicId());
+        this.centerRepository.save(center);
+    }
+
+    @Override
     public Center createCenter(CenterDto centerDto, HttpSession session) {
         if (centerDto == null) {
             return null;
@@ -289,6 +307,7 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    @Transactional
     public Center updateCenterInfo(int id, CenterDto centerDto) {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("The center hasn't been existed"));
