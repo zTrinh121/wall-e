@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
