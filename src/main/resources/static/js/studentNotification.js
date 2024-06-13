@@ -44,16 +44,16 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch(error => console.error("Error fetching notifications:", error));
     }
 
-    // function fetchAndDisplayPrivateNotifications() {
-    //     fetch("/api/teachers/notifications/private")
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             allPrivateNotifications = data;
-    //             currentPage = 1;
-    //             renderTable(allPrivateNotifications);
-    //         })
-    //         .catch(error => console.error("Error fetching private notifications:", error));
-    // }
+    function fetchAndDisplayPrivateNotifications() {
+        fetch("/api/teachers/notifications/private")
+            .then(response => response.json())
+            .then(data => {
+                allPrivateNotifications = data;
+                currentPage = 1;
+                renderTable(allPrivateNotifications);
+            })
+            .catch(error => console.error("Error fetching private notifications:", error));
+    }
 
 
     function renderTable(notificationsList) {

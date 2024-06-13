@@ -34,10 +34,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     Optional<Course> findByCode(String code);
 
     @Query("SELECT c FROM Course c " +
-            "JOIN c.teacher t " +
-            "JOIN c.subject s " +
-            "JOIN c.center cn " +
-            "WHERE t.parent.id = :parentId")
+            "JOIN c.students s " +
+            "JOIN s.enrollments e " +
+            "WHERE s.parent.id = :parentId")
     Optional<List<Course>> findAllCoursesWithParentUserId(@Param("parentId") int parentId);
 
 }

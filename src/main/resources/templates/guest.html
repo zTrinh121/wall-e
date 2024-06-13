@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guest Page</title>
     <link rel="stylesheet" th:href="@{/css/guest.css}"/>
-    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">\
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link
             rel="stylesheet"
             href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
@@ -28,18 +28,15 @@
                     <option value="center-post">Bài đăng trung tâm</option>
                 </select>
                 <div class="search-content">
-                    <i class="fa fa-search"></i>
-                    <input type="text" placeholder="Tìm kiếm lớp học, trung tâm, ...">
+                    <input type="text" autocomplete="off" id="searchInput" placeholder="Tìm kiếm lớp học, trung tâm, ...">
                     <button type="submit">Tìm</button>
                 </div>
-
+                <div class="result-box"></div>
             </form>
             <ul>
-
                 <li>
                     <a class="btn btn-sign-up" href="/register">
                         Đăng ký
-                    </a>
                     </a>
                 </li>
                 <li>
@@ -50,9 +47,6 @@
             </ul>
         </div>
     </div>
-
-
-
     <div class="main_container">
         <div class="content">
             <h3>Wall-E</h3>
@@ -65,18 +59,9 @@
                     <img src="images/school-suppliers.png" />
                 </div>
             </div>
-
-
-            <!-- <div class="search">
-                <i class="fa fa-search"></i>
-                <input type="text" placeholder="Tìm kiếm lớp học, trung tâm, ...">
-                <button>Tìm</button>
-            </div> -->
-
         </div>
     </div>
 </div>
-<!-- travel section starts here  -->
 <section class="travel">
     <div class="container">
         <div class="box box1">
@@ -90,7 +75,7 @@
             <img src="../../images/education.png" alt="">
             <div class="content">
                 <h4>Dễ dàng và linh hoạt</h4>
-                <p> Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế. Từ việc tạo lịch học cho đến quản lý thông tin học sinh, mọi thứ đều được tổ chức một cách dễ dàng và thuận tiện</p>
+                <p>Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế. Từ việc tạo lịch học cho đến quản lý thông tin học sinh, mọi thứ đều được tổ chức một cách dễ dàng và thuận tiện.</p>
             </div>
         </div>
         <div class="box box3">
@@ -102,22 +87,6 @@
         </div>
     </div>
 </section>
-<!-- travel section ends here  -->
-<!-- <section class="destinations">
-        <h4 class="label">Classes</h4>
-        <div class="container">
-            <div class="container-box">
-                <h2 class="heading">High-quality with excellect teachers</h2>
-                <div class="content">
-                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero culpa pariatur iusto sequi, ut expedita soluta nihil est quaerat itaque corporis maiores in, at id officiis tempore. Harum vitae fugit itaque expedita asperiores vero delectus?</p>
-                    <a href="#">explore more <i class="fa fa-arrow-right"></i></a>
-                </div>
-            </div>
-
-        </div>
-    </section> -->
-
-
 <section id="tranding">
     <div class="container_swiper">
         <h3 class="text-center section-subheading">- Trung tâm nổi bật -</h3>
@@ -127,10 +96,7 @@
         <div class="swiper tranding-slider">
             <div class="swiper-wrapper" id="swiper-wrapper">
                 <!-- Slides will be injected here dynamically -->
-
-
             </div>
-
             <div class="tranding-slider-control">
                 <div class="swiper-button-prev slider-arrow">
                     <ion-icon name="arrow-back-outline"></ion-icon>
@@ -143,11 +109,6 @@
         </div>
     </div>
 </section>
-
-
-<!-- Card Slider Section end -->
-
-<!-- footer section starts here -->
 <footer>
     <section class="footer">
         <div class="container">
@@ -156,22 +117,17 @@
                 <p>Quản lý giáo dục tối ưu: Quản lý dễ dàng, đăng ký thuận tiện, kết nối tương lai của bạn hôm nay.</p>
                 <h5></h5>
                 <a href="#">example@mail.com</a>
-
             </div>
             <div class="about-us">
                 <h4>About us</h4>
-
             </div>
             <div class="about-us">
                 <h4>Help</h4>
-
             </div>
             <div class="about-us">
                 <h4>Resources</h4>
-
             </div>
         </div>
-
         <div class="copyright">
             <div>
                 &copy;2024 - Wall-E, inc, all rights reserved
@@ -183,24 +139,17 @@
         </div>
     </section>
 </footer>
-<!-- footer section ends here  -->
-
-<!--Modal start-->
 <div id="courses-modal" class="modal">
     <div class="modal-content">
         <span class="close" onclick="document.getElementById('courses-modal').style.display = 'none'">&times;</span>
         <div id="modal-content"></div>
     </div>
 </div>
-<!--Modal end-->
-
-
 <script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
 <script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
 <script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
 <script src="/js/guest.js"></script>
 <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
 <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
-
 </body>
 </html>

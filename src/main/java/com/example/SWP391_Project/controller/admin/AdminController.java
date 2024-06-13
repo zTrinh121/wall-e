@@ -134,14 +134,15 @@ public class AdminController {
     // ------------------------------- Private notification
     // ---------------------------------
     @GetMapping("/admin-privateNotifications")
+    @ResponseBody
     public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
         List<PrivateNotification> privateNotifications = adminService.getAllPrivateNotifications();
         return ResponseEntity.ok().body(privateNotifications);
     }
 
     @PostMapping("/admin-privateNotification/create")
-    public ResponseEntity<PrivateNotification> createPrivateNotification(
-            @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
+    @ResponseBody
+    public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
         PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
         return ResponseEntity.ok().body(createdNotification);
     }

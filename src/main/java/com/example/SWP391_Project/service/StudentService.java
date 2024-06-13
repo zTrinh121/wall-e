@@ -30,4 +30,6 @@ public interface StudentService {
 
     List<Map<String, Object>> getStudentAttendance(int studentId);
 
+    List<Map<String, Object>> getSlotsByStudentId(int studentId);
+
 }

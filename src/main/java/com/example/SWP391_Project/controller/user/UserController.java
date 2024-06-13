@@ -7,6 +7,7 @@ import jakarta.mail.*;
 
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Email;
 import org.apache.catalina.Group;
@@ -610,5 +611,24 @@ public class UserController {
     public void updateUserStatus(@RequestParam int userId, @RequestParam boolean status) {
         userService.updateUserStatus(userId, status);
     }
+
+    @GetMapping("/course-details")
+    public String detailCourse(HttpSession session) {
+        session.invalidate();
+        return "student-classListDetails";
+    }
+
+    @GetMapping("/student-timetable")
+    public String viewTimetable(HttpSession session) {
+        session.invalidate();
+        return "student-timetable";
+    }
+
+    @GetMapping("/student-notification")
+    public String viewNotification(HttpSession session) {
+        session.invalidate();
+        return "studentNotification";
+    }
+
 
 }

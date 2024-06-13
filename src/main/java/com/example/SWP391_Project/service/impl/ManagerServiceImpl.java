@@ -10,6 +10,7 @@ import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
