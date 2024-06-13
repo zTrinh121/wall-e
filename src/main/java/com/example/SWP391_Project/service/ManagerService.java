@@ -51,7 +51,7 @@ public interface ManagerService {
 
     // View tất cả những center mà manager hiện tại quản lí
     // Trong này có cả các trung tâm đang đợi admin duyệt
-    List<Center> getCenters(HttpSession httpSession);
+    List<Center> getCenters(User user);
 
     // View chi tiết thông tin của trung tâm
     Center findCenterById(int centerId);

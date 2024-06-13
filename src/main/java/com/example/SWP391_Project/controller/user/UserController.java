@@ -129,6 +129,7 @@ public class UserController {
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
+                    session.setAttribute("user", user);
                     return "redirect:/manager-dashboard";
                 default:
                     return "redirect:/login";

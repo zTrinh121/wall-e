@@ -31,7 +31,9 @@ public class ManagerLearningController {
     @GetMapping("/centers")
     public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
         User user = (User) httpSession.getAttribute("user");
-        List<Center> centers = managerService.getCenters(httpSession);
+        System.out.println("User in controller: " + user.getId());
+        System.out.println("User Name in session at controller: "+ user.getName());
+        List<Center> centers = managerService.getCenters(user);
         if (centers.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

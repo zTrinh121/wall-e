@@ -251,18 +251,11 @@ public class ManagerServiceImpl implements ManagerService {
 
     // ------------------------- Manager center ----------------------------
     @Override
-    public List<Center> getCenters(HttpSession httpSession) {
-        User user = (User) httpSession.getAttribute("user");
-        Optional<User> optionalUser = Optional.ofNullable(user);
-
-        System.out.println("User in seesion ID: "+ user.getId());
-        if (optionalUser.isPresent()) {
-            Optional<List<Center>> optionalCenters = centerRepository.findByManager(optionalUser.get());
-            return optionalCenters.orElseThrow(() -> new RuntimeException("Centers not found for the manager!"));
-        } else {
-            throw new RuntimeException("User not found in session!");
-        }
+    public List<Center> getCenters(User user) {
+        Optional<List<Center>> centers = centerRepository.findByManager(user);
+        return centers.orElse(Collections.emptyList());
     }
+
 
     @Override
     public Center findCenterById(int centerId) {
