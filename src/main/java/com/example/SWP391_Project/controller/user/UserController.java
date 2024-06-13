@@ -587,4 +587,22 @@ public class UserController {
         userService.updateUserStatus(userId, status);
     }
 
+    @GetMapping("/course-details")
+    public String detailCourse(HttpSession session) {
+        session.invalidate();
+        return "student-classListDetails";
+    }
+
+    @GetMapping("/student-timetable")
+    public String viewTimetable(HttpSession session) {
+        session.invalidate();
+        return "student-timetable";
+    }
+
+    @GetMapping("/student-notification")
+    public String viewNotification(HttpSession session) {
+        session.invalidate();
+        return "studentNotification";
+    }
+
 }

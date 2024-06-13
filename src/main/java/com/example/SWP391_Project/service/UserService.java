@@ -6,6 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Map;
 
 public interface UserService {
 
@@ -50,5 +51,8 @@ public interface UserService {
     String generateVerificationCode();
 
     //int getVerificationCode();
+
+    List<Map<String, Object>> getUsersByRoleId(int roleId);
+    List<Map<String, Object>> getAllUsersWithSpecificAttributes();
 
 }
