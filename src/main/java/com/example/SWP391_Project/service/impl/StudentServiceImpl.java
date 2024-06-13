@@ -303,4 +303,43 @@ public class StudentServiceImpl implements StudentService {
         return notifications;
     }
 
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getStudentAttendance(int studentId) {
+        String query = "SELECT a.C09_ATTENDANCE_ID as attendanceId, a.C09_ATTENDANCE_STATUS as attendanceStatus, " +
+                "a.C09_SLOT_ID as slotId, c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode, " +
+                "s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, " +
+                "s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId " +
+                "FROM t09_attendance a " +
+                "JOIN t02_slot s ON a.C09_SLOT_ID = s.C02_SLOT_ID " +
+                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
+                "WHERE a.C09_STUDENT_ID = :studentId";
+
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> attendanceList = new ArrayList<>();
+        for (Object[] result : resultList) {
+            Map<String, Object> attendanceMap = new HashMap<>();
+            attendanceMap.put("attendanceId", result[0]);
+            attendanceMap.put("attendanceStatus", result[1]);
+            attendanceMap.put("slotId", result[2]);
+            attendanceMap.put("courseName", result[3]);
+            attendanceMap.put("courseCode", result[4]);
+
+            attendanceMap.put("slotDate", result[5]);
+            attendanceMap.put("slotStartTime", result[6]);
+            attendanceMap.put("slotEndTime", result[7]);
+            attendanceMap.put("roomId", result[8]);
+
+            attendanceList.add(attendanceMap);
+        }
+
+        return attendanceList;
+    }
+
 }

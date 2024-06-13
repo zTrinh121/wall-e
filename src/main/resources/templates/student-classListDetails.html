@@ -4,14 +4,11 @@
     <meta charset="UTF-8" />
     <title>Chi tiết lớp học</title>
     <link rel="stylesheet" href="/css/studentClassDetail.css" />
-    <script th:src="@{/js/studentFragments.js}" type="module"></script>
-    <th:block th:replace="studentFragments :: studenthead"></th:block>
+    <script src="/js/studentClassDetail.js" defer></script>
 </head>
 <body>
 <div class="wrapper">
     <div th:replace="studentFragments :: studentheader"></div>
-
-
     <div class="main_container">
         <section id="content">
             <!-- MAIN -->
@@ -20,13 +17,7 @@
                     <div class="left">
                         <h1>Chi tiết lớp học</h1>
                         <div>
-
-                            <button
-                                    onclick="window.location.href=('../feedbackTeacher/index.html')"
-                                    id="feedback-btn"
-                            >
-                                Đánh giá giáo viên
-                            </button>
+                            <button id="feedback-btn">Đánh giá giáo viên</button>
                         </div>
                     </div>
                 </div>
@@ -39,58 +30,48 @@
                             <h3 class="roadmap-header">Lộ trình học:</h3>
                             <div class="roadmap-detail">
                                 Bảng Chương Trình Học:<br />
-                                - Hiển thị các chủ đề chính được giảng dạy trong kỳ 1 của
-                                môn Hóa học.<br />
+                                - Hiển thị các chủ đề chính được giảng dạy trong kỳ 1 của môn Hóa học.<br />
                                 - Sắp xếp chúng theo thứ tự trong chương trình học.
                             </div>
                         </div>
                         <div class="time">
                             <h3 class="time-header">Số buổi: 30 buổi</h3>
                             <div class="time-detail">
-                                <button onclick="showAttendanceModal()">
-                                    Xem chi tiết điểm danh
-                                </button>
+                                <button id="btn-attendance-details">Xem chi tiết điểm danh</button>
                             </div>
                         </div>
-
                         <div class="report">
                             <h3 class="report-header">Kết quả/đánh giá</h3>
                             <div class="report-detail">
-                                <button onclick="showEvaluationModal()">Xem chi tiết</button>
-                            </div>
-                        </div>
-
-                        <!-- Modal điểm kiểm tra -->
-                        <div id="evaluationModal" class="modal">
-                            <div class="modal-content">
-                                <span class="close" onclick="closeEvaluationModal()">&times;</span>
-                                <h2>Chi tiết kết quả/đánh giá</h2>
-                                <p>Điểm kiểm tra 15 phút: <strong>9 điểm</strong></p>
-                                <p>Điểm kiểm tra 1 tiết: <strong>10 điểm</strong></p>
-                                <p>Đánh giá của giáo viên: <strong>Bạn X đã tiến bộ rất tốt trong tuần qua.</strong></p>
-                            </div>
-                        </div>
-
-
-                        <!-- Modal điểm danh -->
-                        <div id="attendanceModal" class="modal">
-                            <div class="modal-content">
-                    <span class="close" onclick="closeAttendanceModal()"
-                    >&times;</span
-                    >
-                                <h2>Chi tiết điểm danh</h2>
-                                <div id="attendanceList"></div>
+                                <button id="btn-evaluation-details">Xem chi tiết</button>
                             </div>
                         </div>
                     </div>
                     <div>
-                        <button id="btn-class-list" onclick="showClassListModal()">Xem danh sách lớp</button>
+                        <button id="btn-class-list">Xem danh sách lớp</button>
                     </div>
-
+                    <!-- Modal điểm kiểm tra -->
+                    <div id="evaluationModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="closeEvaluationModal">&times;</span>
+                            <h2>Chi tiết kết quả/đánh giá</h2>
+                            <p>Điểm kiểm tra hệ số 1: <strong id="shortTestScore"></strong></p>
+                            <p>Điểm kiểm tra hệ số 2: <strong id="longTestScore"></strong></p>
+                            <p>Đánh giá của giáo viên: <strong id="teacherFeedback">Bạn X đã tiến bộ rất tốt trong tuần qua.</strong></p>
+                        </div>
+                    </div>
+                    <!-- Modal điểm danh -->
+                    <div id="attendanceModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="closeAttendanceModal">&times;</span>
+                            <h2>Chi tiết điểm danh</h2>
+                            <div id="attendanceList"></div>
+                        </div>
+                    </div>
                     <!-- Modal danh sách lớp -->
                     <div id="classListModal" class="modal">
                         <div class="modal-content">
-                            <span class="close" onclick="closeClassListModal()">&times;</span>
+                            <span id="closeClassListModal" class="close">&times;</span>
                             <h2>Danh sách lớp</h2>
                             <table id="classListTable">
                                 <thead>
@@ -105,16 +86,32 @@
                             </table>
                         </div>
                     </div>
-
+                    <!--Modal create feedback-->
+                    <div id="feedbackModal" class="modal">
+                        <div class="modal-content">
+                            <span class="close" id="closeFeedbackModal">&times;</span>
+                            <h2>Teacher Feedback</h2>
+                            <form id="feedbackForm">
+                                <div class="nameTeacher">
+                                    <label for="teacherName">Teacher Name:</label>
+                                    <input type="text" id="teacherName" name="teacherName" readonly>
+                                </div>
+                                <div class="feedbackDetail">
+                                    <label for="feedbackContent">Feedback:</label>
+                                    <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
+                                </div>
+                                <button type="submit">Submit</button>
+                            </form>
+                        </div>
+                    </div>
+                    <!--Toast-->
+                    <div id="toastContainer" class="toast-container"></div>
                 </div>
                 <a class="back" onclick="history.back()"> Quay lại</a>
-                <!-- End class detail -->
             </main>
             <!-- MAIN -->
         </section>
     </div>
 </div>
-
-<script src="/js/studentClassDetail.js"></script>
 </body>
 </html>

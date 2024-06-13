@@ -28,4 +28,6 @@ public interface StudentService {
 
     List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
 
+    List<Map<String, Object>> getStudentAttendance(int studentId);
+
 }
