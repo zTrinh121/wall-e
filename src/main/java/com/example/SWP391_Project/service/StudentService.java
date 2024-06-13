@@ -2,6 +2,7 @@ package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.Course;
 import com.example.SWP391_Project.model.Feedback;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 
 import java.util.List;

@@ -486,7 +486,6 @@ document.addEventListener("DOMContentLoaded", function () {
         ])
             .then(([centers, users]) => {
                 // Extract center codes
-                console.log("User: " + users)
                 const centerCodes = centers.map(center => center.code);
                 // Extract user codes
                 const userCodes = users.map(user => user.userCode);
