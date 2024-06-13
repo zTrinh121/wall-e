@@ -486,11 +486,11 @@ document.addEventListener("DOMContentLoaded", function () {
         ])
             .then(([centers, users]) => {
                 // Extract center codes
+                console.log("User: " + users)
                 const centerCodes = centers.map(center => center.code);
-
                 // Extract user codes
-                const userCodes = users.map(user => user.code);
-
+                const userCodes = users.map(user => user.userCode);
+                console.log("Usercode: " + userCodes)
                 // Check if sendTo exists in either center codes or user codes
                 if (!centerCodes.includes(sendTo) && !userCodes.includes(sendTo)) {
                     // If sendTo doesn't exist in either, return false
