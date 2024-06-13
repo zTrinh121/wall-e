@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Quản lý giáo viên</title>
+    <link rel="stylesheet" href="/css/teacherManagement.css" />
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+    <script src="/js/teacherManagement.js"></script>
+</head>
+
+<body>
+<div class="main_container">
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Quản lý giáo viên</h1>
+                </div>
+            </div>
+            <ul class="box-info">
+                <li>
+                    <i class="bx bxs-calendar-check">
+                        <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
+                    </i>
+                    <span class="text">
+              <a href="/qlhv">
+                <h3>1020</h3>
+                <p>Học viên</p>
+              </a>
+            </span>
+                </li>
+                <li>
+                    <i class='bx bxs-group'>
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                    </i>
+                    <span class="text">
+              <a href="/qlgv">
+                <h3>2834</h3>
+                <p>Giáo viên</p>
+              </a>
+
+            </span>
+                </li>
+                <li>
+                    <i class='bx bxs-dollar-circle'>
+                        <i class="fa-solid fa-layer-group"></i>
+                    </i>
+                    <span class="text">
+              <h3>2543</h3>
+              <p>Khoá học</p>
+            </span>
+                </li>
+            </ul>
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Danh sách giáo viên</h3>
+                        <form action="#" class="search">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fa fa-search"></i>
+                            </i>
+                            <input type="text" placeholder="Tìm kiếm giáo viên">
+                            <button onclick="" type="submit">Tìm</button>
+                        </form>
+                        <div class="filter">
+                            <select name="subjects" id="subject">
+                                <option value="all">Tất cả</option>
+                                <option value="Maths">Toán</option>
+                                <option value="English">Anh</option>
+                                <option value="Literature">Văn</option>
+                                <option value="Physics">Vật lý</option>
+                            </select>
+                        </div>
+                    </div>
+                    <table id="teacher-centre-manage">
+                        <thead>
+                        <tr>
+                            <th>
+                                <p>Họ và tên</p>
+                            </th>
+                            <th>
+                                <p>Địa chỉ</p>
+                            </th>
+                            <th>
+                                <p>Lương/hệ số lương</p>
+                            </th>
+                            <th>
+                                <p>Chi tiết</p>
+                            </th>
+                            <!-- <th>
+                              <p>Trạng thái</p>
+                            </th>
+                            chưa xử lý rõ ràng được nên thế nào -->
+                        </tr>
+                        </thead>
+                        <tbody id="tableBody">
+
+                        </tbody>
+                    </table>
+                    <!-- Toast Notification -->
+                    <div id="toast" class="toast">
+                        <div id="toastMessage"></div>
+                    </div>
+                </div>
+                <!--  -->
+            </div>
+        </main>
+        <!-- MAIN -->
+    </section>
+</div>
+
+<!-- Modal -->
+<!-- Modal for Viewing Teacher Details -->
+<div id="teacherDetailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <iframe id="fns" src="/templates/teacherInfo.html" width="1250" height="500" frameborder="0"
+                scrolling="auto"></iframe>
+    </div>
+</div>
+
+<script src="/js/teacherManagement.js" type="module"></script>
+<script src="/js/dropdown.js"></script>
+
+
+<!-- support modal up while not exist -->
+<script>
+    $(document).on("click", ".openModalBtn", function () {
+      var modal = document.getElementById("teacherDetailModal");
+      modal.style.display = "block";
+    });
+
+    $(document).on("click", ".close", function () {
+      var modal = document.getElementById("teacherDetailModal");
+      modal.style.display = "none";
+    });
+</script>
+<!-- modal-up-detail-infor -->
+<script>
+    var modal = document.getElementById("teacherDetailModal");
+    var modalButtons = document.getElementsByClassName("openModalBtn");
+    var span = document.getElementsByClassName("close")[0];
+
+    // Open Teacher Detail Modal
+    for (var i = 0; i < modalButtons.length; i++) {
+      modalButtons[i].addEventListener("click", function () {
+        modal.style.display = "block";
+      });
+    }
+
+    // Close Modal
+    span.onclick = function () {
+      modal.style.display = "none";
+    };
+
+</script>
+<!-- final-script -->
+<script>
+    //back to right-page by iframe
+    document.querySelector(".close").addEventListener("click", function () {
+      var iframe = document.getElementById("fns");
+      iframe.contentWindow.location.href = "/ttgv";
+    });
+    //by page
+    // document.querySelector(".close").addEventListener("click", function () {
+    //   window.location.href = "/ttgv";
+    // });
+</script>
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const filteredUserList = [
+        {
+          name: "John Doe",
+          address: "123 Main Street",
+          phoneNumber: "0123456789",
+          teachingSubject: "Maths",
+          id: 1,
+          salary: 400,
+          salaryCoefficient: 1.0,
+          gender: "Male",
+          status: 1,
+        },
+        {
+          name: "Jane Smith",
+          address: "456 Elm Street",
+          phoneNumber: "9876543210",
+          teachingSubject: "English",
+          id: 2,
+          salary: 500,
+          salaryCoefficient: 1.0,
+          gender: "Female",
+          status: 1
+        },
+        {
+          name: "Administrator",
+          address: "789 High Avenue",
+          phoneNumber: "1239876540",
+          teachingSubject: "Literature",
+          id: 3,
+          salary: 600,
+          salaryCoefficient: 1.0,
+          gender: "Male",
+          status: 1
+        },
+        {
+          name: "Administrator",
+          address: "789 High Avenue",
+          phoneNumber: "1239876540",
+          teachingSubject: "Physics",
+          id: 4,
+          salary: 400,
+          salaryCoefficient: 1.0,
+          gender: "Male",
+          status: 1
+        }
+      ];
+
+      // chưa lấy được theo nút bấm xem của từng người -> xử lí sau
+      const user = filteredUserList[0];
+
+      // Điền dữ liệu vào các trường của form
+      document.getElementById("address").textContent = user.address;
+      document.getElementById("course").textContent = user.teachingSubject;
+      document.getElementById("salary").textContent = `${user.salary}.000 VND`;
+      document.getElementById("feedback").textContent = user.phoneNumber;
+    });
+</script>
+</body>
+
+</html>

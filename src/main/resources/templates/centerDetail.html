@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8"/>
+    <title>Chi tiết trung tâm</title>
+<!--    <link rel="icon" type="image/png" href="/images/Wall-E-icon.png">-->
+    <link rel="stylesheet" href="/css/centerDetail.css"/>
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+<!--    <script th:src="@{/js/centerDetail.js}" type="module"></script>-->
+    <script src="/js/centerDetail.js"></script>
+</head>
+
+<body>
+<div class="main_container">
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+<!--                    <h1 th:text="'Chi tiết trung tâm ' + ${center.name}"></h1>-->
+                    <h1><span id="centerDetailName"></span></h1>
+                    <div class="runline">
+                        <p>Hôm nay là:
+                            <span id="currentDate"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <ul class="box-info">
+                <li>
+                    <i class="bx bxs-calendar-check">
+                        <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
+                    </i>
+                    <span class="text">
+              <a href="/qlhv">
+<!--                <h3 th:text="${center.users}"></h3>-->
+                <p>Học viên</p>
+              </a>
+            </span>
+                </li>
+                <li>
+                    <i class='bx bxs-group'>
+                        <i class="fa-solid fa-person-chalkboard"></i>
+                    </i>
+                    <span class="text">
+              <a href="/qlgv">
+<!--                <h3 th:text="${center.teacher}"></h3>-->
+                <p>Giáo viên</p>
+              </a>
+            </span>
+                </li>
+                <li>
+                    <i class='bx bxs-dollar-circle'>
+                        <i class="fa-solid fa-layer-group"></i>
+                    </i>
+                    <span class="text">
+<!--              <h3 th:text="${center.course}"></h3>-->
+              <p>Khoá học</p>
+            </span>
+                </li>
+            </ul>
+
+            <!-- Edit Description Modal -->
+            <div id="editDescriptionModal" class="modal">
+                <div class="modal-content">
+                    <span class="close" onclick="closeEditModal()">&times;</span>
+                    <h2>Chỉnh sửa mô tả trung tâm</h2>
+                    <textarea id="descriptionInput" rows="6" cols="50"></textarea>
+                    <button onclick="saveDescription()">Lưu</button>
+                </div>
+            </div>
+
+            <!-- Start: DELETE TOAST -->
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3>Mô tả trung tâm</h3>
+                        <button onclick="editDescription()">
+                            <i class="fa-solid fa-pencil"></i>Chỉnh sửa mô tả
+                        </button>
+                        <button onclick="openDeleteModal()">
+                            <a class="delete-user"><i class="fas fa-trash"></i></a> Xoá trung tâm
+                        </button>
+                    </div>
+                    <div><span class="description" id="centreDescription"></span>
+<!--                        <p th:text="${center.description}"></p>-->
+                    </div>
+                </div>
+            </div>
+            <!-- End: DELETE TOAST -->
+        </main>
+    </section>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
+        <button id="confirmDelete" onclick="deleteCenter()">Xác nhận</button>
+        <button id="cancelDeleteButton" onclick="closeDeleteModal()">Huỷ</button>
+        <!-- nên css lại nút xác nhân vs huỷ cách xa xa ra -->
+    </div>
+</div>
+</body>
+
+</html>
