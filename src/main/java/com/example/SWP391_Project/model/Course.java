@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -57,12 +58,12 @@ public class Course {
     @JsonManagedReference
     Subject subject;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
-    @JsonManagedReference
+    @JsonIgnore
     User teacher;
 
-    @ManyToMany(mappedBy = "courses")
-    private List<User> students;
+//    @ManyToMany(mappedBy = "courses")
+//    private List<User> students;
 }
 

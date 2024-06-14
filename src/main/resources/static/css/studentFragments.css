@@ -22,6 +22,11 @@ body {
     right: 10px !important;
 }
 
+.top-navbar{
+    z-index: 100000000000;
+
+}
+
 .wrapper .top_navbar .hamburger {
     width: 70px;
     height: 100%;

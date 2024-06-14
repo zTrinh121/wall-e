@@ -12,7 +12,10 @@
 }
 
 
+.top_navbar{
+  z-index: 100000000000;
 
+}
 
 /* NAVBAR */
 #content nav {

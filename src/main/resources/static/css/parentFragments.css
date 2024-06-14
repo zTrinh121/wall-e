@@ -30,6 +30,10 @@ body {
     border-top-left-radius: 20px;
     cursor: pointer;
 }
+.top_navbar{
+    z-index: 100000000000;
+
+}
 
 .wrapper .top_navbar .hamburger div {
     width: 35px;

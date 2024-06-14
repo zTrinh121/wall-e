@@ -114,7 +114,7 @@ public class UserController {
                 case "STUDENT":
                     return "redirect:/student-dashboard";
                 case "PARENT":
-                    return "redirect:/parent-dashboard";
+                    return "parent-dashboard";
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
@@ -647,6 +647,24 @@ public class UserController {
     public String viewNotification(HttpSession session) {
         session.invalidate();
         return "studentNotification";
+    }
+
+    @GetMapping("/parent-timetable")
+    public String viewTimetableParent(HttpSession session) {
+        session.invalidate();
+        return "parent-timetable";
+    }
+
+    @GetMapping("/parent-notification")
+    public String viewNotificationParent(HttpSession session) {
+        session.invalidate();
+        return "parentNotification";
+    }
+
+    @GetMapping("/parent")
+    public String viewDashboardParent(HttpSession session) {
+        session.invalidate();
+        return "parent-dashboard";
     }
 
 

@@ -59,21 +59,21 @@ public class StudentController {
 
     // Tạo feedback cho giáo viên
     // Tạo feedback cho giáo viên
-    @PostMapping("/{studentId}/courses/{courseId}/feedback")
-    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
-                                                   @PathVariable int courseId,
-                                                   @RequestBody Feedback feedback) {
-        Course course = studentService.getCourseById(courseId);
-        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        feedback.getActor();
-
-        feedback.setCourse(course);
-        Feedback savedFeedback = studentService.createFeedback(feedback);
-        return ResponseEntity.ok(savedFeedback);
-    }
+//    @PostMapping("/{studentId}/courses/{courseId}/feedback")
+//    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
+//                                                   @PathVariable int courseId,
+//                                                   @RequestBody Feedback feedback) {
+//        Course course = studentService.getCourseById(courseId);
+//        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        feedback.getActor();
+//
+//        feedback.setCourse(course);
+//        Feedback savedFeedback = studentService.createFeedback(feedback);
+//        return ResponseEntity.ok(savedFeedback);
+//    }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
     @GetMapping("/{studentId}/courses")

@@ -38,7 +38,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     return a.id - b.id;
                 });
                 currentPage = 1; // Reset to first page
-                console.log(allPublicNotifications)
                 renderTable(allPublicNotifications);
             })
             .catch(error => console.error("Error fetching notifications:", error));
@@ -85,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             <th>Chi tiết</th>
         `;
         }
+        console.log(notifications)
 
         notifications.forEach(function (notification) {
             var row = `
@@ -93,7 +93,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 <td>${new Date(notification.createdAt).toLocaleDateString('en-GB')}</td>
                 ${isPrivate ? `<td>${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}</td>` : ''}
                 ${isCenter ? `<td>Trung tâm</td>`:`<td>Hệ thống</td>`}
-                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isCenter ? `data-center="${notification.center}"` : ``} ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}>Xem</button></td>       
+                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isCenter ? `data-center="${notification.center.name}"` : ``} ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}>Xem</button></td>       
             </tr>
         `;
             notificationTableBody.insertAdjacentHTML("beforeend", row);
@@ -104,13 +104,13 @@ document.addEventListener("DOMContentLoaded", () => {
         viewNotificationTitle.textContent = "Tiêu đề: " +title;
         viewNotificationContent.textContent = "Nội dung: " + content;
         viewNotificationCreatedAt.textContent = "Ngày tạo: " + new Date(createdAt).toLocaleDateString('en-GB');
-        console.log(center)
+
         if(sendTo !== null){
             viewNotificationSendTo.style.display = "block";
             viewNotificationSendTo.textContent = "Gửi đến " + sendTo;
         }
         else viewNotificationSendTo.style.display = "none"
-
+        console.log(center)
         if(center !== null){
             viewNotificationCenter.style.display = "block";
             viewNotificationCenter.textContent = "Thông báo từ trung tâm " + center;
