@@ -29,7 +29,7 @@ public interface UserService {
 
     void sendPasswordResetCode(User user);
 
-    void updateProfileImage(User user, MultipartFile image) throws IOException;
+    void uploadProfileImage(final int userId, final MultipartFile file);
 
     User findByEmailAndCode(String email, String code);
 

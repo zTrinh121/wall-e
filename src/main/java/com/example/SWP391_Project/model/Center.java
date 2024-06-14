@@ -53,6 +53,9 @@ public class Center {
     @Column(name = "C03_IMAGE_PATH")
     String imagePath; // xử lí sau
 
+    @Column(name = "C03_CLOUDINARY_IMAGE_ID")
+    String cloudinaryImageId;
+
     @ManyToOne
     @JoinColumn(name = "C03_MANAGER_ID")
     @JsonManagedReference

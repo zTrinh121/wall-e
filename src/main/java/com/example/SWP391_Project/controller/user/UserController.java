@@ -15,6 +15,8 @@ import org.apache.catalina.Group;
 import org.apache.catalina.UserDatabase;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -164,19 +166,36 @@ public class UserController {
 //           }
 
 
+//    @PostMapping("/profile-image")
+//    public String updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        try {
+//            userService.updateProfileImage(user, image);
+//            session.setAttribute("user", user);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        return "redirect:/profile";
+//    }
+
     @PostMapping("/profile-image")
-    public String updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session) {
+    public ResponseEntity<String> updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return "redirect:/login";
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
         }
         try {
-            userService.updateProfileImage(user, image);
-            session.setAttribute("user", user);
-        } catch (IOException e) {
+            userService.uploadProfileImage(user.getId(), image);
+            // Lưu ý: userService.uploadProfileImage đã cập nhật user trong đối số,
+            // vì vậy không cần gán lại vào session
+            return ResponseEntity.ok("Profile image updated successfully");
+        } catch (Exception e) {
             e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile image");
         }
-        return "redirect:/profile";
     }
 
     @PostMapping("/update-profile")

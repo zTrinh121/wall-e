@@ -15,6 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
 import java.time.Month;
@@ -50,6 +51,12 @@ public class ManagerLearningController {
 //        return ResponseEntity.ok().body(centers);
 //    }
 
+    @PostMapping("/center/image/{centerId}")
+    public ResponseEntity<?> uploadCenterImage(@PathVariable final int centerId, @PathVariable MultipartFile file) {
+        managerService.uploadCenterImage(centerId, file);
+        return ResponseEntity.ok("Upload successfully !");
+    }
+
     @GetMapping("/center/{centerId}")
     public ResponseEntity<Center> getCenterById(@PathVariable int centerId) {
         Center center = managerService.findCenterById(centerId);
@@ -58,7 +65,9 @@ public class ManagerLearningController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }@GetMapping("/manager/{managerId}")
+    }
+
+    @GetMapping("/manager/{managerId}")
     public ResponseEntity<Center> getMangerById(@PathVariable int centerId) {
         Center center = managerService.findCenterById(centerId);
         if (center != null) {

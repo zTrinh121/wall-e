@@ -9,6 +9,7 @@ import com.example.SWP391_Project.response.CourseDetailResponse;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Month;
 import java.time.Year;
@@ -64,6 +65,8 @@ public interface ManagerService {
         --> Task này phải thông Admin duyệt
      */
     Center createCenter(CenterDto centerDto, HttpSession session);
+
+    void uploadCenterImage(final int id, final MultipartFile file);
 
     Center updateCenterInfo(int id, CenterDto centerDto);
 
