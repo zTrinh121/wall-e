@@ -1,0 +1,386 @@
+@import url('https://fonts.googleapis.com/css?family=Montserrat:400,600,700&display=swap');
+
+a{
+    text-decoration: none;
+}
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    text-decoration: none;
+    box-sizing: border-box;
+    font-family: 'Montserrat', sans-serif;
+}
+:root {
+    --primary: #2e4ead;
+    --white: #ffffff;
+    --black: #000;
+    --bg: #f5f5f5;
+}
+::-webkit-scrollbar {
+    width: 1.3rem;
+}
+
+::-webkit-scrollbar-thumb {
+    border-radius: 1rem;
+    background: #797979;
+    transition: all 0.5s ease-in-out;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: #222224;
+}
+
+::-webkit-scrollbar-track {
+    background: #f9f9f9;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.container_swiper {
+    max-width: 124rem;
+    padding: 0 1rem;
+    margin: 0 auto;
+}
+
+
+
+
+
+body {
+    background: #e1ecf2;
+}
+
+.top_navbar {
+    width: calc(100% - 20px);
+    height: 60px;
+    display: flex;
+    position: fixed;
+    top: 0px;
+    right: 0px;
+    left: 10px;
+    z-index: 10;
+}
+
+.top_navbar .top-menu {
+    padding: 15px 17px;
+;
+}
+
+.top_navbar .top_menu {
+    width: 100%;
+    border-top-left-radius: 20px;
+    height: 100%;
+    background: #fff;
+    border-top-right-radius: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 20px;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.top_navbar .top_menu .logo {
+    color: #2648ae;
+    font-size: 20px;
+    font-weight: 700;
+    letter-spacing: 3px;
+}
+
+.top_navbar .top_menu ul {
+    display: flex;
+}
+
+.top_navbar .top_menu ul li .search {
+    display: block;
+    margin: 0 10px;
+    width: 35px;
+    height: 35px;
+    line-height: 35px;
+    text-align: center;
+    border: 1px solid #2648ae;
+    border-radius: 50%;
+    color: #2648ae;
+}
+
+
+.search {
+    width: 50%;
+    display: flex;
+    align-items: center;
+}
+
+#searchType{
+    border-radius: 1rem;
+    font-size: 1rem;
+    height: 45px;
+    padding-left: 1rem;
+}
+
+.search-content{
+    display: flex;
+    border-radius: 1rem;
+    border: 1px solid;
+    height: 45px;
+    width: 65%;
+    background: #fff;
+    align-items: center;
+    padding: .3rem;
+    margin-left: 1rem;
+}
+
+.search i {
+    color: rgba(0, 0, 0, .5);
+    margin: 0 .6rem;
+}
+
+.search input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-weight: 400;
+}
+
+.search .search-btn {
+    height: 100%;
+    padding: 0 1rem;
+    border-radius: inherit;
+    background: #2648ae;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.search button:hover {
+    background: #2648ae;
+}
+
+.top_navbar .top_menu ul li .btn {
+    display: block;
+    margin: 0 10px;
+    width: 100px;
+    height: 35px;
+    line-height: 32px;
+    text-align: center;
+    border: 1px solid #2648ae;
+    border-radius: 10px;
+    color: #2648ae;
+}
+
+.top_navbar .top_menu ul li a:hover {
+    background: #2648ae;
+    color: #fff;
+}
+
+.top_navbar .top_menu ul li a:hover i {
+    color: #fff;
+}
+
+.top_navbar .top_menu ul li .btn-sign-up {
+    background: #2648ae;
+    color: #fff;
+}
+
+.top_navbar .top_menu ul li .btn-sign-up:hover {
+    background: #fff;
+    color: #2648ae;
+}
+
+
+.main_container {
+    background-color: #F7F8F8;
+    min-height: 100vh;
+}
+
+.main-content>div {
+    width: 70%;
+}
+
+.main-content {
+    display: flex;
+    justify-content: center;
+    text-align: center;
+    padding-top: 50px;
+    padding-bottom: 50px;
+}
+
+.uk-navbar-nav {
+    justify-content: center;
+    font-family: "Catamaran", sans-serif;
+    gap: 15px;
+    margin-bottom: 35px;
+}
+
+.uk-navbar-nav>li {
+    padding: 0;
+    min-width: 100px;
+}
+
+.uk-navbar-nav>li>a {
+    padding: 15px 35px;
+    display: block;
+    background-color: #fff;
+    color: #222;
+    font-size: 15px;
+    min-height: auto;
+    font-weight: 600;
+    box-shadow: 0 0 25px #cccccc42;
+    border-radius: 7px;
+    transition: 0.5s all ease-in-out;
+}
+
+.uk-navbar-nav>li>a:hover,
+.uk-navbar-nav>li.uk-active>a {
+    background-color: #7B68EE;
+    color: #fff;
+}
+
+.img-gallery-container>li {
+    position: relative;
+    padding: 10px;
+    margin-top: 5px !important;
+    text-align: left;
+
+}
+
+.img-gal {
+    height: 415px;
+    width: 100%;
+    object-fit: cover;
+    transition: 0.5s all ease-in-out;
+    border-radius: 6px;
+    border: 1px solid #333;
+
+}
+
+.img-gal img{
+    border-radius: 6px;
+}
+
+.img-gal .main-content{
+    display: flex;
+    flex-direction: column;
+    padding-top: 5px;
+
+}
+
+.img-gal span{
+    font-weight: 600;
+}
+
+.img-gallery-container>li:hover>.img-gal {
+    filter: brightness(0.4) blur(3px);
+}
+
+.float-gallery-content {
+    position: absolute;
+    width: 90%;
+    z-index: -1;
+    background: #fff;
+    padding: 0;
+    margin: 0 auto;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    border-radius: 5px;
+    display: flex;
+    justify-content: space-between;
+    opacity: 0;
+    visibility: hidden;
+    transition: 0.3s all ease-in-out;
+    overflow: hidden;
+}
+
+.img-gallery-container>li:hover .float-gallery-content {
+    bottom: 20px;
+    opacity: 1;
+    visibility: visible;
+    z-index: 9;
+}
+
+.uk-block {
+    display: block;
+}
+
+.float-gallery-content .content {
+    padding: 8px 15px;
+}
+
+.float-gallery-content .content>a {
+    color: #212121;
+    position: relative;
+    bottom: -50px;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.float-gallery-content .content>a:hover {
+    color: #2648ae;
+}
+
+.content-btn button {
+    border: 0;
+    height: 100%;
+    padding: 5px 15px;
+    background: #2648ae;
+    font-size: 30px;
+    color: #fff;
+    position: relative;
+    right: -100px;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.highlight {
+    color: #2648ae;
+    font-weight: 600;
+    position: relative;
+    left: -100px;
+    opacity: 0;
+    transition: all 0.5s;
+}
+
+.img-gallery-container>li:hover .highlight {
+    left: 0;
+    opacity: 1;
+    transition-delay: 0.1s;
+}
+
+.img-gallery-container>li:hover button {
+    right: 0;
+    opacity: 1;
+    transition-delay: 0.1s;
+}
+
+.img-gallery-container>li:hover .content>a {
+    bottom: 0;
+    opacity: 1;
+    transition-delay: 0.1s;
+}
+
+@media screen and (max-width: 1100px) {
+    .img-gal {
+        height: 300px;
+    }
+}
+
+@media screen and (max-width: 650px) {
+    .img-gal {
+        height: 225px;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .img-gal {
+        height: 125px;
+    }
+}

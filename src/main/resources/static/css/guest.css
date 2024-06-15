@@ -480,11 +480,7 @@ footer .footer .copyright a {
 }
 
 
-@media (max-width:1440px) {
-    #tranding {
-        padding: 7rem 0;
-    }
-}
+
 
 #tranding .tranding-slider {
     height: 40rem;
@@ -516,7 +512,7 @@ footer .footer .copyright a {
 }
 
 .tranding-slide .tranding-slide-img img {
-    width: 32rem;
+    width: 23rem;
     height: 20rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
@@ -562,7 +558,7 @@ footer .footer .copyright a {
 }
 
 .swiper-slide .tranding-slide-content{
-    width: 65rem;
+    width: 54rem;
     border: 1px solid;
     height: 20rem;
     position: absolute;
@@ -597,7 +593,7 @@ footer .footer .copyright a {
 
 .tranding-slider-control {
     position: relative;
-    bottom: 5rem;
+    bottom: 12rem;
     display: flex;
     align-items: center;
     justify-content: center;
