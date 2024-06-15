@@ -516,7 +516,7 @@ footer .footer .copyright a {
 }
 
 .tranding-slide .tranding-slide-img img {
-    width: 20rem;
+    width: 32rem;
     height: 20rem;
     border-top-left-radius: 2rem;
     border-bottom-left-radius: 2rem;
@@ -562,7 +562,7 @@ footer .footer .copyright a {
 }
 
 .swiper-slide .tranding-slide-content{
-    width: 50rem;
+    width: 65rem;
     border: 1px solid;
     height: 20rem;
     position: absolute;
