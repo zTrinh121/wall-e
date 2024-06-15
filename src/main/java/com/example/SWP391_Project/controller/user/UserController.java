@@ -667,5 +667,10 @@ public class UserController {
         return "parent-dashboard";
     }
 
+    @GetMapping("/search")
+    public String searchAll(HttpSession session) {
+        session.invalidate();
+        return "search";
+    }
 
 }
