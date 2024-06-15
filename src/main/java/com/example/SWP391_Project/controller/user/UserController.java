@@ -2,7 +2,9 @@ package com.example.SWP391_Project.controller.user;
 
 import com.example.SWP391_Project.model.Role;
 import com.example.SWP391_Project.model.User;
+import com.example.SWP391_Project.service.EmailService;
 import com.example.SWP391_Project.service.UserService;
+import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
 
 import jakarta.mail.internet.InternetAddress;
@@ -33,6 +35,11 @@ public class UserController {
 
     @Autowired
     private UserService userService;
+    @Autowired
+    private EmailServiceImpl emailServiceImpl;
+
+    @Autowired
+    private EmailService emailService;
 
     @GetMapping("/login")
     public String login(Model model) {
@@ -214,119 +221,61 @@ public class UserController {
 
     @GetMapping("/register")
     public String register(Model model) {
-        model.addAttribute("user", new org.apache.catalina.User() {
-            @Override
-            public String getFullName() {
-                return "";
-            }
-
-            @Override
-            public void setFullName(String s) {
-
-            }
-
-            @Override
-            public Iterator<Group> getGroups() {
-                return null;
-            }
-
-            @Override
-            public String getPassword() {
-                return "";
-            }
-
-            @Override
-            public void setPassword(String s) {
-
-            }
-
-            @Override
-            public Iterator<org.apache.catalina.Role> getRoles() {
-                return null;
-            }
-
-            @Override
-            public UserDatabase getUserDatabase() {
-                return null;
-            }
-
-            @Override
-            public String getUsername() {
-                return "";
-            }
-
-            @Override
-            public void setUsername(String s) {
-
-            }
-
-            @Override
-            public void addGroup(Group group) {
-
-            }
-
-            @Override
-            public void addRole(org.apache.catalina.Role role) {
-
-            }
-
-            @Override
-            public boolean isInGroup(Group group) {
-                return false;
-            }
-
-            @Override
-            public boolean isInRole(org.apache.catalina.Role role) {
-                return false;
-            }
-
-            @Override
-            public void removeGroup(Group group) {
-
-            }
-
-            @Override
-            public void removeGroups() {
-
-            }
-
-            @Override
-            public void removeRole(org.apache.catalina.Role role) {
-
-            }
-
-            @Override
-            public void removeRoles() {
-
-            }
-
-            @Override
-            public String getName() {
-                return "";
-            }
-        });
         List<Role> roles = userService.findAllRoles();
         model.addAttribute("roles", roles);
         return "register";
     }
 
+
+
+
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model) {
+    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
         if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("error", "Username already exists");
+            model.addAttribute("usernameError", "Username already exists");
             return "register";
         }
         if (userService.findByEmail(user.getEmail()) != null) {
-            model.addAttribute("error", "Email already exists");
+            model.addAttribute("emailError", "Email already exists");
             return "register";
         }
         Role role = userService.findRoleById(roleId);
         user.setRole(role);
-        user.setStatus(true);  // Skip email verification
-        userService.saveUser(user);
-        // userService.sendVerificationCode(user);  // Skip sending verification code
-        return "redirect:/login";  // Redirect to login after registration
+        user.setStatus(false);  // Set status to false until email is verified
+
+        // Generate verification code and save it in the session
+        String verificationCode = userService.generateVerificationCode();
+        session.setAttribute("verificationCode", verificationCode);
+        session.setAttribute("userToRegister", user);
+
+        // Send verification email
+        emailService.sendVerificationEmail(user.getEmail(), verificationCode);
+
+        return "redirect:/verify-email";  // Redirect to the email verification page
     }
+
+    @PostMapping("/verify-email")
+    public String verifyEmail(@RequestParam String code, HttpSession session, Model model) {
+        User user = (User) session.getAttribute("userToRegister");
+        String storedCode = (String) session.getAttribute("verificationCode");
+
+        if (user != null && storedCode != null && storedCode.equals(code)) {
+            user.setStatus(true);  // Xác nhận thành công, cập nhật trạng thái người dùng
+            userService.saveUser(user);
+            session.removeAttribute("verificationCode");
+            session.removeAttribute("userToRegister");
+            return "redirect:/login";
+        } else {
+            model.addAttribute("error", "Invalid verification code");
+            return "verify-email";
+        }
+    }
+
+    @GetMapping("/verify-email")
+    public String verifyEmail() {
+        return "verify-email";  // Trả về trang xác nhận email
+    }
+
 
     @GetMapping("/forgot-password")
     public String forgotPassword(Model model) {
@@ -671,6 +620,12 @@ public class UserController {
     public String searchAll(HttpSession session) {
         session.invalidate();
         return "search";
+    }
+
+    @GetMapping("/mapping")
+    public String mapping(HttpSession session) {
+        session.invalidate();
+        return "mapping";
     }
 
 }
