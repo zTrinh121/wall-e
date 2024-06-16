@@ -257,4 +257,9 @@ public class UserServiceImpl implements UserService {
 //    public int getVerificationCode() {
 //        return verificationCode;
 //    }
+
+    @Override
+    public User findById(int id) {
+        return userRepository.findById(id).orElse(null);
+    }
 }

@@ -384,3 +384,11 @@ body {
         height: 125px;
     }
 }
+
+/*Modal detail start*/
+.uk-button{
+    background: #2e4ead;
+    border-radius: 1rem;
+    color: #fff;
+}
+/*Modal detail end*/

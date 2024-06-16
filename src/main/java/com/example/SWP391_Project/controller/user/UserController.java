@@ -121,11 +121,11 @@ public class UserController {
                 case "STUDENT":
                     return "redirect:/student-dashboard";
                 case "PARENT":
-                    return "parent-dashboard";
+                    return "redirect:/parent";
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
-                    return "managerHome";
+                    return "redirect:/managerHome";
                 default:
                     return "redirect:/login";
             }
@@ -225,9 +225,6 @@ public class UserController {
         model.addAttribute("roles", roles);
         return "register";
     }
-
-
-
 
     @PostMapping("/register")
     public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
@@ -528,48 +525,40 @@ public class UserController {
 
     @GetMapping("/accountManagement")
     public String accountManagement(HttpSession session) {
-        session.invalidate();
         return "accountManagement";
     }
 
     @GetMapping("/approveManagement")
     public String approveManagement(HttpSession session) {
-        session.invalidate();
         return "approveManagement";
     }
 
     @GetMapping("/centerManagement")
     public String centerManagement(HttpSession session) {
-        session.invalidate();
         return "adminCenterManagement";
     }
 
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
-        session.invalidate();
         return "profile-student";
     }
 
     @GetMapping("/student-dashboard")
     public String studentDashboard(HttpSession session) {
-        session.invalidate();
         return "student-dashboard";
     }
     @GetMapping("/manager-dashboard")
     public String managerDashboard(HttpSession session) {
-        session.invalidate();
         return "managerHome";
     }
 
     @GetMapping("/student-classList")
     public String studentClassList(HttpSession session) {
-        session.invalidate();
         return "student-classList";
     }
 
     @GetMapping("/search-in-student")
     public String search(HttpSession session) {
-        session.invalidate();
         return "search-in-student";
     }
 
@@ -582,50 +571,47 @@ public class UserController {
 
     @GetMapping("/course-details")
     public String detailCourse(HttpSession session) {
-        session.invalidate();
         return "student-classListDetails";
     }
 
     @GetMapping("/student-timetable")
     public String viewTimetable(HttpSession session) {
-        session.invalidate();
         return "student-timetable";
     }
 
     @GetMapping("/student-notification")
-    public String viewNotification(HttpSession session) {
-        session.invalidate();
+    public String viewNotification() {
         return "studentNotification";
     }
 
     @GetMapping("/parent-timetable")
-    public String viewTimetableParent(HttpSession session) {
-        session.invalidate();
+    public String viewTimetableParent() {
         return "parent-timetable";
     }
 
     @GetMapping("/parent-notification")
-    public String viewNotificationParent(HttpSession session) {
-        session.invalidate();
+    public String viewNotificationParent() {
         return "parentNotification";
     }
 
     @GetMapping("/parent")
-    public String viewDashboardParent(HttpSession session) {
-        session.invalidate();
+    public String viewDashboardParent() {
         return "parent-dashboard";
     }
 
     @GetMapping("/search")
-    public String searchAll(HttpSession session) {
-        session.invalidate();
+    public String searchAll() {
         return "search";
     }
 
     @GetMapping("/mapping")
-    public String mapping(HttpSession session) {
-        session.invalidate();
+    public String mapping() {
         return "mapping";
+    }
+
+    @GetMapping("/bill")
+    public String Bill() {
+        return "bill";
     }
 
 }
