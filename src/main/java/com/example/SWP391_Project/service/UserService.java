@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -28,7 +29,7 @@ public interface UserService {
 
     void sendPasswordResetCode(User user);
 
-    void updateProfileImage(User user, MultipartFile image) throws IOException;
+    void uploadProfileImage(final int userId, final MultipartFile file);
 
     User findByEmailAndCode(String email, String code);
 

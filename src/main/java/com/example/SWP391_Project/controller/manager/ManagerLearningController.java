@@ -7,6 +7,7 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.service.ManagerService;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
@@ -14,11 +15,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -46,6 +51,12 @@ public class ManagerLearningController {
 //        return ResponseEntity.ok().body(centers);
 //    }
 
+    @PostMapping("/center/image/{centerId}")
+    public ResponseEntity<?> uploadCenterImage(@PathVariable final int centerId, @PathVariable MultipartFile file) {
+        managerService.uploadCenterImage(centerId, file);
+        return ResponseEntity.ok("Upload successfully !");
+    }
+
     @GetMapping("/center/{centerId}")
     public ResponseEntity<Center> getCenterById(@PathVariable int centerId) {
         Center center = managerService.findCenterById(centerId);
@@ -54,7 +65,9 @@ public class ManagerLearningController {
         } else {
             return ResponseEntity.notFound().build();
         }
-    }@GetMapping("/manager/{managerId}")
+    }
+
+    @GetMapping("/manager/{managerId}")
     public ResponseEntity<Center> getMangerById(@PathVariable int centerId) {
         Center center = managerService.findCenterById(centerId);
         if (center != null) {

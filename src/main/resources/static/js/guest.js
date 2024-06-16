@@ -5,6 +5,7 @@ async function fetchCenters() {
             throw new Error('Network response was not ok');
         }
         const centers = await response.json();
+        console.log(centers)
 
         const filteredCenters = centers.filter(center => center.status !== 'Wait_to_process');
         const sortedCenters = filteredCenters.sort((a, b) => new Date(a.time) - new Date(b.time));
@@ -102,6 +103,7 @@ async function fetchCourses(centerId) {
 
 async function displayCoursesModal(centerId) {
     const courses = await fetchCourses(centerId);
+    console.log(courses)
     const modalContent = document.getElementById('modal-content');
     if (!modalContent) {
         console.error('Modal content element not found');
@@ -114,9 +116,9 @@ async function displayCoursesModal(centerId) {
         card.classList.add('course-card');
 
         card.innerHTML = `
-            <h3>${course.name}</h3>
+            <h3>${course.courseName}</h3>
             <p>${course.description}</p>
-            <p>Course Fee: ${course.courseFee}</p>
+            <p>Course Fee: ${course.courseFee}.000VNĐ</p>
             <button onclick="registerCourse(${course.id})">Register</button>
         `;
 
@@ -132,8 +134,8 @@ async function displayCoursesModal(centerId) {
 }
 
 function registerCourse(courseId) {
-    // Implement registration logic here
     console.log(`Registered for course ${courseId}`);
+    window.location.href = "login"
 }
 
 window.onclick = function(event) {
@@ -144,52 +146,16 @@ window.onclick = function(event) {
 }
 
 fetchCenters();
-
 document.addEventListener("DOMContentLoaded", function () {
     const searchForm = document.querySelector('.search');
-    if (searchForm) {
-        searchForm.addEventListener('submit', function (event) {
-            event.preventDefault();
-            const searchType = document.getElementById('searchType').value;
-            const searchInput = document.getElementById('searchInput').value;
-            performSearch(searchType, searchInput);
-        });
-    } else {
-        console.error('Search form element not found');
-    }
+    const searchInput = document.getElementById('searchInput');
+    const searchType = document.getElementById('searchType');
+    const resultBox = document.querySelector('.result-box');
+
+
+
+
 });
 
 
-function performSearch(searchType, searchInput) {
-    let apiUrl = '';
-    console.log(searchType + "" + searchInput)
-    switch (searchType) {
-        case 'all':
-            apiUrl = '/api/search?all=' + encodeURIComponent(searchInput);
-            break;
-        case 'center':
-            apiUrl = '/api/centers?name=' + encodeURIComponent(searchInput);
-            break;
-        case 'teacher':
-            apiUrl = '/api/users?role=3&name=' + encodeURIComponent(searchInput);
-            break;
-        case 'course':
-            apiUrl = '/api/courses?name=' + encodeURIComponent(searchInput);
-            break;
-        case 'center-post':
-            apiUrl = '/api/center-posts?title=' + encodeURIComponent(searchInput);
-            break;
-        default:
-            console.error('Invalid search type');
-            return;
-    }
 
-    // Perform API request using apiUrl
-    fetch(apiUrl)
-        .then(response => response.json())
-        .then(data => {
-            // Handle search results
-            console.log(data);
-        })
-        .catch(error => console.error('Error performing search:', error));
-}

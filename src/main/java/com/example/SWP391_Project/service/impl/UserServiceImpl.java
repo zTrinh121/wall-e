@@ -1,11 +1,16 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.model.Center;
 import com.example.SWP391_Project.model.Role;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.repository.RoleRepository;
+import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.UserRepository;
+import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.service.UserService;
 
+import com.example.SWP391_Project.utils.FileUploadUtil;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
@@ -40,7 +45,12 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JavaMailSender mailSender;
 
+    @Autowired
+    private CloudinaryService cloudinaryService;
+
     private int verificationCode;
+    @Autowired
+    private SlotRepository slotRepository;
 
     @Override
     public void saveUser(User user) {
@@ -76,7 +86,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean authenticateUser(String username, String password, int roleId) {
         User user = findByUsername(username);
-        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId;
+        return user != null && BCrypt.checkpw(password, user.getPassword()) && user.getRole().getId() == roleId && user.isStatus();
     }
 
     @Override
@@ -107,17 +117,16 @@ public class UserServiceImpl implements UserService {
         return jdbcTemplate.queryForList(query);
     }
 
-
-
     @Override
-    public void updateProfileImage(User user, MultipartFile image) throws IOException {
-        if (!image.isEmpty()) {
-            String uploadDir = "user-photos/" + user.getId();
-            String fileName = image.getOriginalFilename();
-            saveFile(uploadDir, fileName, image);
-            user.setProfileImage(uploadDir + "/" + fileName);
-            userRepository.save(user);
-        }
+    public void uploadProfileImage(final int userId, final MultipartFile file) {
+        final User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found !!!"));
+        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        user.setProfileImage(response.getUrl());
+        user.setCloudinaryImageId(response.getPublicId());
+        this.userRepository.save(user);
     }
 
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {
@@ -239,6 +248,10 @@ public class UserServiceImpl implements UserService {
         message.setText("Your password reset code is: " + code);
         mailSender.send(message);
     }
+
+
+
+
 
 //    @Override
 //    public int getVerificationCode() {

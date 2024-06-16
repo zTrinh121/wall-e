@@ -14,11 +14,6 @@ import java.util.List;
 @RestController
 public class ParentController {
 
-    @GetMapping("/parent")
-    public String parentDashboard() {
-        return "parent-dashboard";
-    }
-
     @Autowired
     private ParentService parentService;
 
@@ -44,13 +39,33 @@ public class ParentController {
 
     @GetMapping("parent/courses")
     public ResponseEntity<List<Course>> getStudentCourses(HttpSession session) {
-        int parentId = (int) session.getAttribute("authid");
+        Integer parentIdObj = (Integer) session.getAttribute("authid");
+
+        if (parentIdObj == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(null); // or handle differently as per your application logic
+        }
+
+        int parentId = parentIdObj.intValue();
+        System.out.println("Parent id in function: " + parentId);
+
         List<Course> courses = parentService.getStudentCourses(parentId);
+        System.out.println("Khóa học của con: " + courses);
         if (courses.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
+
+
+//    @GetMapping("parent/courses/{parentId}")
+//    public ResponseEntity<List<Course>> getStudentCourses(@PathVariable int parentId) {;
+//        List<Course> courses = parentService.getStudentCourses(parentId);
+//        System.out.println("Khóa học của con: " + courses);
+//        if (courses.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(courses, HttpStatus.OK);
+//    }
 
     @GetMapping("parent/attendances")
     public ResponseEntity<List<Attendance>> getStudentAttendances(HttpSession session) {

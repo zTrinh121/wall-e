@@ -2,6 +2,7 @@ package com.example.SWP391_Project.controller.student;
 
 import com.example.SWP391_Project.model.Course;
 import com.example.SWP391_Project.model.Feedback;
+import com.example.SWP391_Project.model.Slot;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.servlet.http.HttpSession;
@@ -58,21 +59,21 @@ public class StudentController {
 
     // Tạo feedback cho giáo viên
     // Tạo feedback cho giáo viên
-    @PostMapping("/{studentId}/courses/{courseId}/feedback")
-    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
-                                                   @PathVariable int courseId,
-                                                   @RequestBody Feedback feedback) {
-        Course course = studentService.getCourseById(courseId);
-        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
-            return ResponseEntity.badRequest().build();
-        }
-
-        
-
-        feedback.setCourse(course);
-        Feedback savedFeedback = studentService.createFeedback(feedback);
-        return ResponseEntity.ok(savedFeedback);
-    }
+//    @PostMapping("/{studentId}/courses/{courseId}/feedback")
+//    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
+//                                                   @PathVariable int courseId,
+//                                                   @RequestBody Feedback feedback) {
+//        Course course = studentService.getCourseById(courseId);
+//        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        feedback.getActor();
+//
+//        feedback.setCourse(course);
+//        Feedback savedFeedback = studentService.createFeedback(feedback);
+//        return ResponseEntity.ok(savedFeedback);
+//    }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
     @GetMapping("/{studentId}/courses")
@@ -119,6 +120,11 @@ public class StudentController {
     public ResponseEntity<List<Map<String, Object>>> getStudentAttendance(@PathVariable int studentId) {
         List<Map<String, Object>> attendance = studentService.getStudentAttendance(studentId);
         return ResponseEntity.ok(attendance);
+    }
+
+    @GetMapping("/{studentId}/slots")
+    public List<Map<String, Object>> getSlotsByStudentId(@PathVariable int studentId) {
+        return studentService.getSlotsByStudentId(studentId);
     }
 
 

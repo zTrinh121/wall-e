@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,6 +34,7 @@ public class Feedback {
     @ManyToOne
     @JoinColumn(name = "C06_ACTOR_ID", referencedColumnName = "C14_USER_ID")
     @JsonManagedReference
+    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     User actor;
 
     @ManyToOne

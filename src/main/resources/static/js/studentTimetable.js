@@ -31,8 +31,30 @@ document.addEventListener("DOMContentLoaded", () => {
         "T12",
     ];
 
-    const eventsArr = [];
+    let eventsArr = [];
     getEvents();
+    console.log(eventsArr);
+
+    function fetchEvents() {
+        fetch('/api/students/52/slots')
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+                eventsArr = data.map(event => ({
+                    day: new Date(event.slotDate).getDate(),
+                    month: new Date(event.slotDate).getMonth() + 1,
+                    year: new Date(event.slotDate).getFullYear(),
+                    events: [{
+                        title: event.courseName,
+                        time: convertTime(event.slotStartTime) + " - " + convertTime(event.slotEndTime),
+                        room: event.roomName
+                    }]
+                }));
+                initCalendar();
+            })
+            .catch(error => console.error('Error fetching events:', error));
+    }
+    fetchEvents();
     console.log(eventsArr);
 
     function initCalendar() {
