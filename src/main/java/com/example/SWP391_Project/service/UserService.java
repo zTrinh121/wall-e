@@ -29,7 +29,7 @@ public interface UserService {
 
     void sendPasswordResetCode(User user);
 
-    void uploadProfileImage(final int userId, final MultipartFile file);
+    User uploadProfileImage(final int userId, final MultipartFile file);
 
     User findByEmailAndCode(String email, String code);
 
@@ -55,5 +55,5 @@ public interface UserService {
 
     List<Map<String, Object>> getUsersByRoleId(int roleId);
     List<Map<String, Object>> getAllUsersWithSpecificAttributes();
-
+    User findById(int id);
 }

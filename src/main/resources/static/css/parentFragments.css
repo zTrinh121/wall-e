@@ -566,3 +566,7 @@ body {
 }
 /* BREAKPOINTS */
 /* Chat box end */
+
+.profile-dropdown p{
+    font-size: 12px;
+}
