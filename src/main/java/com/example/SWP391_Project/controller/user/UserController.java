@@ -110,6 +110,7 @@ public class UserController {
         if (userService.authenticateUser(username, password, roleId)) {
             User user = userService.findByUsername(username);
             session.setAttribute("authid", user.getId());
+            session.setAttribute("user", user);
 //            session.setAttribute("userId", user.getId());//***
 
             System.out.println( session.getAttribute("authid"));
@@ -189,19 +190,48 @@ public class UserController {
 //    }
 
     @PostMapping("/profile-image")
-    public ResponseEntity<String> updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session) {
+    public String updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("User not logged in");
+            return "redirect:/login";
         }
+    //        model.addAttribute("user", user);
+
         try {
-            userService.uploadProfileImage(user.getId(), image);
+            User updatedUser = userService.uploadProfileImage(user.getId(), image);
+            user.setProfileImage(updatedUser.getProfileImage());
+            user.setCloudinaryImageId(updatedUser.getCloudinaryImageId());
+            session.setAttribute("user", user);
+
             // Lưu ý: userService.uploadProfileImage đã cập nhật user trong đối số,
             // vì vậy không cần gán lại vào session
-            return ResponseEntity.ok("Profile image updated successfully");
+            switch (user.getRole().getDescription().name()){
+                case "STUDENT":
+                    return "redirect:/studentProfile";
+                case "TEACHER":
+                    return "redirect:/teacherProfile";
+                case "PARENT":
+                    return "redirect:/profile-parent";
+                case "ADMIN":
+                    return "redirect:/adminProfile";
+                default:
+                    return "redirect:/login";
+            }
         } catch (Exception e) {
             e.printStackTrace();
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to update profile image");
+//            session.setAttribute("profileImageError", "Failed to update profile image");
+            switch (user.getRole().getDescription().name()){
+                case "STUDENT":
+                    return "redirect:/studentProfile";
+                case "TEACHER":
+                    return "redirect:/teacherProfile";
+                case "PARENT":
+                    return "redirect:/parentProfile";
+                case "ADMIN":
+                    return "redirect:/adminProfile";
+                default:
+                    return "redirect:/login";
+            }
         }
     }
 
@@ -585,17 +615,34 @@ public class UserController {
     }
 
     @GetMapping("/parent-timetable")
-    public String viewTimetableParent() {
+    public String viewTimetableParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "parent-timetable";
     }
 
     @GetMapping("/parent-notification")
-    public String viewNotificationParent() {
+    public String viewNotificationParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+
         return "parentNotification";
     }
 
     @GetMapping("/parent")
-    public String viewDashboardParent() {
+    public String viewDashboardParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+
         return "parent-dashboard";
     }
 
@@ -605,13 +652,69 @@ public class UserController {
     }
 
     @GetMapping("/mapping")
-    public String mapping() {
+    public String mapping(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
         return "mapping";
     }
 
     @GetMapping("/bill")
-    public String Bill() {
+    public String Bill(HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
         return "bill";
     }
+
+    @GetMapping("/profile")
+    public String profileParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        System.out.println(user.getRole().getDescription().name() + " vai trò của người dùng");
+        switch (user.getRole().getDescription().name()){
+            case "STUDENT":
+                return "studentProfile";
+            case "TEACHER":
+                return "teacherProfile";
+            case "PARENT":
+                return "redirect:/profile-parent";
+            case "ADMIN":
+                return "adminProfile";
+            default:
+                return "redirect:/login";
+        }
+
+    }
+
+    @GetMapping("/parent-fragement")
+    public String fragmentParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        System.out.println(user.getProfileImage()+" ảnh của user");
+        model.addAttribute("user", user);
+        return "parentFragments";
+    }
+
+    @GetMapping("/profile-parent")
+    public String profiletParent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        System.out.println(user.getProfileImage()+" ảnh của user");
+        model.addAttribute("user", user);
+        return "parentProfile";
+    }
+
+
+
 
 }

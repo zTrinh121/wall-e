@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void uploadProfileImage(final int userId, final MultipartFile file) {
+    public User uploadProfileImage(final int userId, final MultipartFile file) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found !!!"));
         FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
@@ -127,6 +127,7 @@ public class UserServiceImpl implements UserService {
         user.setProfileImage(response.getUrl());
         user.setCloudinaryImageId(response.getPublicId());
         this.userRepository.save(user);
+        return user;
     }
 
     public static void saveFile(String uploadDir, String fileName, MultipartFile multipartFile) throws IOException {

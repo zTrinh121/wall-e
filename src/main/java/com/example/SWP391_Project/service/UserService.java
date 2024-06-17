@@ -29,7 +29,7 @@ public interface UserService {
 
     void sendPasswordResetCode(User user);
 
-    void uploadProfileImage(final int userId, final MultipartFile file);
+    User uploadProfileImage(final int userId, final MultipartFile file);
 
     User findByEmailAndCode(String email, String code);
 
