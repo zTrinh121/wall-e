@@ -39,6 +39,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             @Param("slotEndTime") Date slotEndTime,
             @Param("centerId") int centerId);
 
+    Optional<List<Room>> findByCenter_Id(int id);
 
 
 }

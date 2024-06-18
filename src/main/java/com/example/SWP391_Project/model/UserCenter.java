@@ -32,4 +32,5 @@ public class UserCenter {
     @JoinColumn(name = "C16_CENTER_ID")
     @JsonManagedReference
     Center center;
+
 }

@@ -38,5 +38,22 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "WHERE u.parent.id = :parentId")
     Optional<List<Course>> findAllCoursesWithParentUserId(@Param("parentId") int parentId);
 
+    @Query(value = "SELECT COUNT(c) FROM Course c WHERE c.center.id = :centerId GROUP BY c.center.id")
+    int countCourseByCenter(@Param("centerId") int centerId);
+
+    @Query("SELECT " +
+            "   c.teacher.code AS code, " +
+            "   c.teacher.name AS name, " +
+            "   c.teacher.phone AS phone, " +
+            "   c.teacher.address AS address, " +
+            "   c.teacher.dob AS dob, " +
+            "   c.teacher.gender AS gender, " +
+            "   c.teacher.email AS email, " +
+            "   GROUP_CONCAT(c.name) AS courses " +
+            "FROM Course c " +
+            "WHERE c.teacher.id = :teacherId " +
+            "GROUP BY c.teacher.id")
+    List<Object[]> findTeacherInfoAndCoursesByTeacherId(int teacherId);
+
 }
 
