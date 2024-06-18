@@ -54,8 +54,12 @@ public class PaymentController {
             Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment,paymentMethod);
             String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo ;
             return "redirect:" + billUrl;
-        } else {
-            String billUrl = "/bill?status=failed";
+        } else if(status.equals("24")){
+            System.out.println("HỦy thanh toán");
+            return "redirect:/billFail";
+        }
+        else {
+            String billUrl = "/billFail";
             return "redirect:" + billUrl;
         }
     }

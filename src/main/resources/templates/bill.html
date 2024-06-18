@@ -38,7 +38,8 @@
 
 
 		</article>
-<button onclick="window.location.href='/parent'" class="back-btn">Quay lại trang chủ</button>
+		<p id="userRole" style="display: none" th:text="${session.user?.role.getDescription().name()}"></p>
+		<button onclick="window.location.href='/parent'" id="back-btn">Quay lại trang chủ</button>
 	</body>
   </html>
 </span>

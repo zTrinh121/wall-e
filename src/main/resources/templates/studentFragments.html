@@ -34,7 +34,7 @@
             >
                 Wall-E
             </div>
-            <form action="" class="search">
+            <form action="/search" class="search">
                 <i class="fa fa-search"></i>
                 <input
                         type="text"
@@ -57,19 +57,26 @@
                 </div>
                 <div class="profile-dropdown">
                     <div class="profile-dropdown-btn">
-                        <div class="profile-img">
-                            <i class="fas fa-circle"></i>
+                        <div >
+                            <span th:if="${session.user?.profileImage == null}">
+                                <img class="profile-img" src="/images/3d-ava.jpg">
+                            </span>
+                            <span  th:if="${session.user?.profileImage != null}">
+                                <img class="profile-img" th:attr="src=@{${session.user?.profileImage}}"/>
+                            </span>
+
                         </div>
+                        <p th:text="${session.user?.username}"></p>
 
                         <span
-                        >Victoria
+                        >
                   <i class="fas fa-angle-down"></i>
                 </span>
                     </div>
 
                     <ul class="profile-dropdown-list">
                         <li class="profile-dropdown-list-item">
-                            <a href="profile-admin">
+                            <a href="student-profile">
                                 <i class="fas fa-user"></i>
                                 Thông tin cá nhân
                             </a>
@@ -86,7 +93,7 @@
                         <li class="profile-dropdown-list-item">
                             <a href="/mapping">
                                 <i class="fas fa-link"></i>
-                                Kết nối với phụ huynh
+                                Kết nối với phụ huynh/con
                             </a>
                         </li>
 
@@ -113,7 +120,7 @@
                 >
             </li>
             <li>
-                <a href="/profile-student">
+                <a href="/student-profile">
                     <span class="icon"><i class="fas fa-user"></i></span>
                     <span class="title">Thông tin cá nhân</span></a
                 >

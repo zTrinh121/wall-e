@@ -113,7 +113,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then(data => {
                 console.log("Feedback submitted:", data);
-                showToast("Đánh giá giáo viên thành công");
+                showToast(`<i class="fas fa-check"></i> Đánh giá giáo viên thành công`);
                 closeFeedbackModalFunc();
             })
             .catch(error => console.error("Error submitting feedback:", error));
@@ -121,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     function showToast(message) {
         const toastContainer = document.getElementById("toastContainer");
-        toastContainer.innerHTML = `<i class="fas fa-check-circle"></i> ${message}`;
+        toastContainer.innerHTML = `${message}`;
         toastContainer.classList.add("show");
         setTimeout(() => {
             toastContainer.classList.remove("show");
@@ -138,6 +138,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     openEvaluationModal(result)
                 } else {
                     console.log("No grades found for the student in this course.");
+                    showToast(`<i class="fas fa-xmark"></i> Giáo viên chưa nhập điểm/báo cáo`);
                 }
             })
             .catch(error => console.error("Error fetching course grades:", error));
@@ -176,7 +177,11 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log(courseName + " " + data.courseCode)
                 const filteredAttendance = data.filter(attendance => attendance.courseCode == courseName);
                 console.log(filteredAttendance)
-                populateAttendanceModal(filteredAttendance);
+                if (filteredAttendance.length==0){
+                    showToast(`<i class="fas fa-xmark"></i> Chưa có điểm danh`);
+                }else{
+                    populateAttendanceModal(filteredAttendance);
+                }
             })
             .catch(error => console.error("Error fetching attendance details:", error));
     }
@@ -204,4 +209,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         });
     }
+
+
 });

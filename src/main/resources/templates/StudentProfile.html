@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/parentProfile.css" />
+    <th:block th:replace="~{studentFragments :: studenthead}"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="~{studentFragments :: studentheader}"></div>
+
+    <div class="main_container">
+        <div class="container light-style flex-grow-1 container-p-y">
+            <h4 class="font-weight-bold py-3 mb-4">
+                Cài đặt tài khoản
+            </h4>
+            <div class="card overflow-hidden">
+                <div class="row no-gutters row-bordered row-border-light">
+
+                    <div class="col-md-9">
+                        <div class="tab-content">
+                            <div class="tab-pane fade active show" id="account-general">
+                                <div class="card-body media align-items-center">
+                                    <img th:if="${user.getProfileImage() == null}" src="/images/3d-ava.jpg" alt="Profile Image" class="d-block ui-w-80">
+                                    <img th:if="${user.getProfileImage() != null}" th:src="${user.getProfileImage()}" alt="Profile Image" class="d-block ui-w-80">
+                                    <div class="media-body ml-4">
+                                        <form method="post" action="/profile-image" enctype="multipart/form-data">
+                                            <label class="btn btn-outline-primary change-ava">
+                                                Đổi hình nền
+                                                <input type="file" name="image" class="account-settings-fileinput">
+                                            </label> &nbsp;
+                                            <button type="submit" class="btn btn-default md-btn-flat">Cập nhật ảnh</button>
+                                        </form>
+                                        <div class="small mt-1">Cho phép JPG, GIF or PNG. Tối đa 800K</div>
+<!--                                        <span th:if="${session.profileImageError != null}" class="text-danger">-->
+<!--                                          <i class="fas fa-exclamation-circle"></i>  [[${session.profileImageError}]]-->
+<!--                                        </span>-->
+
+<!--                                        <span th:if="${session.profileImageSuccess != null}" class="text-success">-->
+<!--                                          <i class="fas fa-check-circle"></i>  [[${session.profileImageError}]]-->
+<!--                                        </span>-->
+
+<!--                                        <span th:remove="session.profileImageError"></span>-->
+<!--                                        <span th:remove="session.profileImageSuccess"></span>-->
+                                    </div>
+                                </div>
+                                <hr class="border-light m-0">
+                                <div class="card-body">
+                                    <form method="post" action="/update-profile">
+                                        <div class="form-group">
+                                            <label class="form-label">Họ và tên</label>
+                                            <input type="text" class="form-control mb-1" name="name" th:value="${session.user?.name}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Mã người dùng</label>
+                                            <input type="text" class="form-control mb-1" name="name" readonly th:value="${session.user?.code}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Địa chỉ</label>
+                                            <input type="text" class="form-control mb-1" name="name" th:value="${session.user?.address}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Số điện thoại</label>
+                                            <input type="text" class="form-control mb-1" name="name" th:value="${session.user?.phone}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">Ngày sinh</label>
+                                            <input type="date" class="form-control mb-1" name="name" th:value="${session.user?.dob}">
+                                        </div>
+                                        <div class="form-group">
+                                            <label class="form-label">E-mail</label>
+                                            <input type="email" class="form-control mb-1" name="email" th:value="${session.user?.email}">
+
+                                        </div>
+
+                                        <div class="text-right mt-3">
+                                            <button type="submit" class="btn btn-primary">Lưu thay đổi</button>&nbsp;
+                                            <button type="button" class="btn btn-default">Hủy</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+
+                            <div class="tab-pane fade" id="account-info">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
