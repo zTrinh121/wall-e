@@ -1,12 +1,11 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.*;
-import com.example.SWP391_Project.enums.PaymentMethodEnum;
-import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
-import jakarta.servlet.http.HttpServletRequest;
+import com.example.SWP391_Project.response.StudentCoursesResponse;
+import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
@@ -109,7 +108,7 @@ public interface ManagerService {
     void rejectTeacherApply(int id);
 
     // Delete teacher
-    boolean deleteTeacher(int id);
+    boolean deleteTeacherInCenter(int teacherId, int centerId);
     // -------------------------------------------------------
 
 
@@ -121,7 +120,7 @@ public interface ManagerService {
     List<User> getStudentsInCertainCourse(int courseId);
 
     // Delete student --> xóa khỏi bảng T16
-    boolean deleteStudent(int id);
+    boolean deleteStudentInCenter(int studentId, int centerId);
     // -------------------------------------------------------
 
 
@@ -214,5 +213,16 @@ public interface ManagerService {
 
     // View feedback --> maybe bỏ qua Media Controller
     List<Feedback> getAllFeedbacks();
+
+    // ---------------------- BỔ SUNG ----------------------
+    int countTeachersByCenter(int centerId);
+
+    int countStudentsByCenter(int centerId);
+
+    int countCourseByCenter(int centerId);
+
+    List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId);
+
+    List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId);
 
 }

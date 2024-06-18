@@ -69,5 +69,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             @Param("courseId") int courseId
     );
 
-
 }
