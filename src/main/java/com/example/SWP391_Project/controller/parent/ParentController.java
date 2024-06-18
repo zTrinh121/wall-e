@@ -46,10 +46,8 @@ public class ParentController {
         }
 
         int parentId = parentIdObj.intValue();
-        System.out.println("Parent id in function: " + parentId);
 
         List<Course> courses = parentService.getStudentCourses(parentId);
-        System.out.println("Khóa học của con: " + courses);
         if (courses.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

@@ -29,12 +29,12 @@
         </div>
         <div class="top_menu">
             <div
-                    onclick="window.location.href='/student-dashboard'"
+                    onclick="window.location.href='/parent-dashboard'"
                     class="logo"
             >
                 Wall-E
             </div>
-            <form action="" class="search">
+            <form action="/search" class="search">
                 <i class="fa fa-search"></i>
                 <input
                         type="text"
@@ -46,7 +46,7 @@
 
 
 
-            <div class="item-drop-down">
+            <div th:fragment="dropdown" class="item-drop-down">
                 <div class="notification">
                     <div id="bell">
                         <i class="fas fa-bell"></i>
@@ -56,20 +56,26 @@
                     </div>
                 </div>
                 <div class="profile-dropdown">
-                    <div class="profile-dropdown-btn">
-                        <div class="profile-img">
-                            <i class="fas fa-circle"></i>
-                        </div>
+                    <div class="profile-dropdown-btn"  >
+                        <div >
+                            <span th:if="${session.user?.profileImage == null}">
+                                <img class="profile-img" src="/images/3d-ava.jpg">
+                            </span>
+                            <span  th:if="${session.user?.profileImage != null}">
+                                <img class="profile-img" th:attr="src=@{${session.user?.profileImage}}"/>
+                            </span>
 
-                        <span
-                        >Victoria
-                  <i class="fas fa-angle-down"></i>
+                        </div>
+                        <p th:text="${session.user?.username}"></p>
+
+                        <span>
+                        <i class="fas fa-angle-down"></i>
                 </span>
                     </div>
 
                     <ul class="profile-dropdown-list">
                         <li class="profile-dropdown-list-item">
-                            <a href="profile-admin">
+                            <a href="/profile">
                                 <i class="fas fa-user"></i>
                                 Thông tin cá nhân
                             </a>
@@ -84,14 +90,14 @@
                         <li class="profile-dropdown-list-item">
                             <a href="/mapping">
                                 <i class="fas fa-link"></i>
-                                Kết nối với con
+                                Kết nối với con/phụ huynh
                             </a>
                         </li>
 
                         <hr />
 
                         <li class="profile-dropdown-list-item">
-                            <a href="#">
+                            <a href="/logout">
                                 <i class="fas fa-sign-out-alt"></i>
                                 Đăng xuất
                             </a>
@@ -105,13 +111,13 @@
     <div class="sidebar">
         <ul>
             <li>
-                <a href="/parent">
+                <a href="/parent-dashboard">
                     <span class="icon"><i class="fas fa-home"></i></span>
                     <span class="title">Trang chủ</span></a
                 >
             </li>
             <li>
-                <a href="/profile-parent">
+                <a href="/profile">
                     <span class="icon"><i class="fas fa-user"></i></span>
                     <span class="title">Thông tin cá nhân</span></a
                 >

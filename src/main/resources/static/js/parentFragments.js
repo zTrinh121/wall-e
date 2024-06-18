@@ -91,7 +91,7 @@ document.addEventListener("DOMContentLoaded", function () {
             moreButton.classList.add('notification-item', 'more-button');
             moreButton.textContent = 'More';
             moreButton.addEventListener('click', () => {
-                window.location.href = '/student-notification'; // Replace with the actual URL of your notifications list page
+                window.location.href = '/parent-notification'; // Replace with the actual URL of your notifications list page
             });
             contentNotification.appendChild(moreButton);
         }

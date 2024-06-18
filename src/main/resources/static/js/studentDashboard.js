@@ -2,7 +2,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // var currentUrl = window.location.href;
     // var urlParams = new URLSearchParams(currentUrl);
     // console.log('URL Params:', urlParams);
-    var userId = 27;
+    var userId = document.getElementById("userId").innerHTML;
     // urlParams.forEach(function(value, key) {
     //     userId = value;
     // });
