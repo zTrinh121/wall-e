@@ -10,6 +10,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const eventDay = document.querySelector(".event-day");
     const eventDate = document.querySelector(".event-date");
     const eventsContainer = document.querySelector(".events");
+    const userId = document.getElementById("userId");
+    console.log(userId.innerHTML+" Mã user");
 
     let today = new Date();
     let activeDay;
@@ -36,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
     console.log(eventsArr);
 
     function fetchEvents() {
-        fetch('/api/students/52/slots')
+        fetch(`/api/students/${userId.innerHTML}/slots`)
             .then(response => response.json())
             .then(data => {
                 console.log(data)

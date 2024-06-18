@@ -122,7 +122,7 @@ public class UserController {
                 case "STUDENT":
                     return "redirect:/student-dashboard";
                 case "PARENT":
-                    return "redirect:/parent";
+                    return "redirect:/parent-dashboard";
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
@@ -147,6 +147,14 @@ public class UserController {
         if (user == null) {
             return "redirect:/login";
         }
+        String role = user.getRole().getDescription().name();
+        switch (role){
+            case "PARENT":
+                return "redirect:/parent-dashboard";
+            case "STUDENT":
+                return "redirect:/student-dashboard";
+        }
+
         model.addAttribute("user", user);
         return "dashboard";
     }
@@ -207,7 +215,7 @@ public class UserController {
             // vì vậy không cần gán lại vào session
             switch (user.getRole().getDescription().name()){
                 case "STUDENT":
-                    return "redirect:/studentProfile";
+                    return "redirect:/profile";
                 case "TEACHER":
                     return "redirect:/teacherProfile";
                 case "PARENT":
@@ -257,28 +265,21 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
+    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model) {
         if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("usernameError", "Username already exists");
+            model.addAttribute("error", "Username already exists");
             return "register";
         }
         if (userService.findByEmail(user.getEmail()) != null) {
-            model.addAttribute("emailError", "Email already exists");
+            model.addAttribute("error", "Email already exists");
             return "register";
         }
         Role role = userService.findRoleById(roleId);
         user.setRole(role);
-        user.setStatus(false);  // Set status to false until email is verified
-
-        // Generate verification code and save it in the session
-        String verificationCode = userService.generateVerificationCode();
-        session.setAttribute("verificationCode", verificationCode);
-        session.setAttribute("userToRegister", user);
-
-        // Send verification email
-        emailService.sendVerificationEmail(user.getEmail(), verificationCode);
-
-        return "redirect:/verify-email";  // Redirect to the email verification page
+        user.setStatus(true);  // Skip email verification
+        userService.saveUser(user);
+        // userService.sendVerificationCode(user);  // Skip sending verification code
+        return "redirect:/login";  // Redirect to login after registration
     }
 
     @PostMapping("/verify-email")
@@ -568,13 +569,26 @@ public class UserController {
         return "adminCenterManagement";
     }
 
-    @GetMapping("/profile-student")
-    public String profileStudent(HttpSession session) {
-        return "profile-student";
+    @GetMapping("/student-profile")
+    public String profileStudent(HttpSession session, Model model) {
+
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", user);
+        return "studentProfile";
     }
 
     @GetMapping("/student-dashboard")
-    public String studentDashboard(HttpSession session) {
+    public String studentDashboard(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", user);
         return "student-dashboard";
     }
     @GetMapping("/manager-dashboard")
@@ -605,12 +619,22 @@ public class UserController {
     }
 
     @GetMapping("/student-timetable")
-    public String viewTimetable(HttpSession session) {
-        return "student-timetable";
+    public String viewTimetable(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "/student-timetable";
     }
 
     @GetMapping("/student-notification")
-    public String viewNotification() {
+    public String viewNotification(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "studentNotification";
     }
 
@@ -635,16 +659,6 @@ public class UserController {
         return "parentNotification";
     }
 
-    @GetMapping("/parent")
-    public String viewDashboardParent(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-
-        return "parent-dashboard";
-    }
 
     @GetMapping("/search")
     public String searchAll() {
@@ -683,7 +697,7 @@ public class UserController {
             case "TEACHER":
                 return "teacherProfile";
             case "PARENT":
-                return "redirect:/profile-parent";
+                return "parentProfile";
             case "ADMIN":
                 return "adminProfile";
             default:
@@ -698,9 +712,18 @@ public class UserController {
         if (user == null) {
             return "redirect:/login";
         }
-        System.out.println(user.getProfileImage()+" ảnh của user");
         model.addAttribute("user", user);
         return "parentFragments";
+    }
+
+    @GetMapping("/student-fragement")
+    public String fragmentStudent(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "studentFragments";
     }
 
     @GetMapping("/profile-parent")
@@ -712,6 +735,26 @@ public class UserController {
         System.out.println(user.getProfileImage()+" ảnh của user");
         model.addAttribute("user", user);
         return "parentProfile";
+    }
+
+    @GetMapping("/parent-dashboard")
+    public String parentDashboard(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "parent-dashboard";
+    }
+
+    @GetMapping("/billFail")
+    public String billFail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "billFail";
     }
 
 

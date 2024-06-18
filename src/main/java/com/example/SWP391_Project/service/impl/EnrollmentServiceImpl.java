@@ -26,34 +26,48 @@ public class EnrollmentServiceImpl implements EnrollmentService {
     public Enrollment enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId, HttpSession session) {
         // Fetch the parent user from the userRepository
 
-        User parent = userRepository.findById(parentId)
-                .orElseThrow(() -> new IllegalArgumentException("Parent with ID " + parentId + " does not exist."));
+        User user = userRepository.findById(parentId)
+                .orElseThrow(() -> new IllegalArgumentException("User with ID " + parentId + " does not exist."));
+        String role =user.getRole().getDescription().name();
 
-        // Fetch the student user associated with the parent
-        User student = userRepository.findStudentsByParentId(parentId);
+        if(role.equals("PARENT")){
+            User student = userRepository.findStudentsByParentId(parentId);
 
-        // Check if a student is found
-        if (student != null) {
-            // Fetch courseId from session
+            if (student != null) {
+                Integer courseId = (Integer) session.getAttribute("courseId");
+                if (courseId == null) {
+                    throw new IllegalArgumentException("No courseId found in session.");
+                }
+
+                Course course = courseRepository.findById(courseId)
+                        .orElseThrow(() -> new IllegalArgumentException("Course with ID " + courseId + " does not exist."));
+
+                Enrollment enrollment = Enrollment.builder()
+                        .student(student)
+                        .course(course)
+                        .build();
+                System.out.println("Enrolement trong serviceimpl" + enrollment);
+                return enrollmentRepository.save(enrollment);
+            } else {
+                throw new IllegalArgumentException("No student found with parent ID " + parentId);
+            }
+        } else if(role.equals("STUDENT")){
             Integer courseId = (Integer) session.getAttribute("courseId");
             if (courseId == null) {
                 throw new IllegalArgumentException("No courseId found in session.");
             }
 
-            // Fetch the course entity from the courseRepository
             Course course = courseRepository.findById(courseId)
                     .orElseThrow(() -> new IllegalArgumentException("Course with ID " + courseId + " does not exist."));
 
-            // Create a new Enrollment entity and save it
             Enrollment enrollment = Enrollment.builder()
-                    .student(student)
+                    .student(user)
                     .course(course)
                     .build();
             System.out.println("Enrolement trong serviceimpl" + enrollment);
             return enrollmentRepository.save(enrollment); // Save and return the enrollment
-        } else {
-            throw new IllegalArgumentException("No student found with parent ID " + parentId);
         }
+        else throw new IllegalArgumentException("No role found");
     }
 
 }
