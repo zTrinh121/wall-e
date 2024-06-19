@@ -203,44 +203,32 @@ public class UserController {
         if (user == null) {
             return "redirect:/login";
         }
-    //        model.addAttribute("user", user);
 
         try {
             User updatedUser = userService.uploadProfileImage(user.getId(), image);
             user.setProfileImage(updatedUser.getProfileImage());
             user.setCloudinaryImageId(updatedUser.getCloudinaryImageId());
             session.setAttribute("user", user);
-
-            // Lưu ý: userService.uploadProfileImage đã cập nhật user trong đối số,
-            // vì vậy không cần gán lại vào session
             switch (user.getRole().getDescription().name()){
                 case "STUDENT":
-                    return "redirect:/profile";
+                    return "redirect:/student-profile";
                 case "TEACHER":
                     return "redirect:/teacherProfile";
                 case "PARENT":
-                    return "redirect:/profile-parent";
+                    return "parentProfile";
                 case "ADMIN":
                     return "redirect:/adminProfile";
                 default:
                     return "redirect:/login";
             }
+
+
         } catch (Exception e) {
             e.printStackTrace();
 //            session.setAttribute("profileImageError", "Failed to update profile image");
-            switch (user.getRole().getDescription().name()){
-                case "STUDENT":
-                    return "redirect:/studentProfile";
-                case "TEACHER":
-                    return "redirect:/teacherProfile";
-                case "PARENT":
-                    return "redirect:/parentProfile";
-                case "ADMIN":
-                    return "redirect:/adminProfile";
-                default:
-                    return "redirect:/login";
-            }
+
         }
+        return "redirect:/login";
     }
 
     @PostMapping("/update-profile")
@@ -601,11 +589,6 @@ public class UserController {
         return "student-classList";
     }
 
-    @GetMapping("/search-in-student")
-    public String search(HttpSession session) {
-        return "search-in-student";
-    }
-
 
     @PostMapping("/users/updateStatus")
     @ResponseBody
@@ -661,7 +644,9 @@ public class UserController {
 
 
     @GetMapping("/search")
-    public String searchAll() {
+    public String searchAll(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
         return "search";
     }
 

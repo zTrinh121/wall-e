@@ -41,7 +41,6 @@ document.addEventListener('DOMContentLoaded', function () {
                                 return response.json();
                             })
                             .then(isAuthenticated => {
-                                console.log(isAuthenticated);
                                 if (isAuthenticated) {
                                     const paymentUrlEndpoint = `http://localhost:8080/api/v1/payment/vn-pay?amount=${coursePrice}&bankCode=NCB&courseId=${courseId}`;
 
