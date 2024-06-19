@@ -183,21 +183,21 @@ public class ManagerLearningController {
         }
     }
 
-    @DeleteMapping("/teacher/delete/{id}")
-    public ResponseEntity<String> deleteTeacherInCenter(@PathVariable("id") int teacherId,
-                                                        @RequestParam("centerId") int centerId) {
-        boolean deleted = managerService.deleteTeacherInCenter(teacherId, centerId);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the teacher where ID = " + teacherId);
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/teacher/delete/{id}/{centerId}")
+        public ResponseEntity<String> deleteTeacherInCenter(@PathVariable("id") int teacherId,
+                                                            @PathVariable("centerId") int centerId) {
+            boolean deleted = managerService.deleteTeacherInCenter(teacherId, centerId);
+            if (deleted) {
+                return ResponseEntity.ok("Delete the teacher where ID = " + teacherId);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
-    }
     // --------------------------------------------------------------------------
 
 
     // --------------------------- MANAGER STUDENT ------------------------------
-    @GetMapping("/students/center/{centerId}")
+    @GetMapping("/students/{centerId}")
     public ResponseEntity<List<User>> getStudentsInCenter(@PathVariable int centerId) {
         List<User> students = managerService.getStudentsInCenter(centerId);
         if (students.isEmpty()) {
@@ -215,9 +215,9 @@ public class ManagerLearningController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @DeleteMapping("/student/delete/{id}")
+    @DeleteMapping("/student/delete/{id}/{centerId}")
     public ResponseEntity<String> deleteStudentInCenter(@PathVariable("id") int studentId,
-                                                        @RequestParam("centerId") int centerId) {
+                                                        @PathVariable("centerId") int centerId) {
         boolean deleted = managerService.deleteStudentInCenter(studentId, centerId);
         if (deleted) {
             return ResponseEntity.ok("Delete the student where ID = " + studentId);

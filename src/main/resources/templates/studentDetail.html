@@ -18,7 +18,7 @@
         <main>
             <div class="head-title">
                 <div class="left">
-                    <h1>Quản lý học sinh</h1>
+                    <h1><span id="centerDetailName"></span></h1>
                 </div>
             </div>
             <ul class="box-info">
@@ -27,10 +27,10 @@
                         <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
                     </i>
                     <span class="text">
-              <a href="/qlhv">
-                <h3>1020</h3>
-                <p>Học viên</p>
-              </a>
+                <a href=`/manager/qlhv?centerId=${center.id}` data-id="${center.id}" id="boxInfos">
+                    <h3 id="nums"></h3>
+                    <p>Học viên</p>
+                </a>
             </span>
                 </li>
                 <li>
@@ -38,11 +38,10 @@
                         <i class="fa-solid fa-person-chalkboard"></i>
                     </i>
                     <span class="text">
-              <a href="/qlgv">
-                <h3>2834</h3>
-                <p>Giáo viên</p>
-              </a>
-
+                      <a href=`/manager/qlgv?centerId=${center.id}` data-id="${center.id}" id="boxInfot">
+                    <h3 id="numt"></h3>
+                        <p>Giáo viên</p>
+                      </a>
             </span>
                 </li>
                 <li>
@@ -50,8 +49,10 @@
                         <i class="fa-solid fa-layer-group"></i>
                     </i>
                     <span class="text">
-              <h3>2543</h3>
+                <a href="#" data-id="${center.id}" id="boxInfoc">
+                <h3 id="numc"></h3>
               <p>Khoá học</p>
+                </a>
             </span>
                 </li>
             </ul>
@@ -66,7 +67,7 @@
                             <input type="text" placeholder="Tìm kiếm học sinh">
                             <button onclick="" type="submit">Tìm</button>
                         </form>
-                        <div class="filter">
+                        <div class="filter" style="display: none">
                             <select name="subjects" id="subject">
                                 <option value="all">Tất cả</option>
                                 <option value="Maths">Toán</option>
@@ -80,6 +81,9 @@
                         <thead>
                         <tr>
                             <th>
+                                <p>MSSV</p>
+                            </th>
+                            <th>
                                 <p>Họ và tên</p>
                             </th>
                             <th>
@@ -88,16 +92,12 @@
                             <th>
                                 <p>Chi tiết</p>
                             </th>
-                            <!-- <th>
-                              <p>Trạng thái</p>
-                            </th>
-                            chưa xử lý rõ ràng được nên thế nào -->
                         </tr>
                         </thead>
                         <tbody id="tableBody">
-
                         </tbody>
                     </table>
+                    <div id="no-result">No result</div>
                     <!-- Toast Notification -->
                     <div id="toast" class="toast">
                         <div id="toastMessage"></div>
@@ -115,116 +115,13 @@
 <div id="studentDetailModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <iframe id="fns" src="/templates/studentInfo.html" width="1250" height="500" frameborder="0"
+        <iframe id="fns" data-id="${center.id}" width="1250" height="500" frameborder="0"
                 scrolling="auto"></iframe>
     </div>
 </div>
 
 <script src="/js/studentManagement.js" type="module"></script>
-<script src="/js/dropdown.js"></script>
 
-
-<!-- support modal up while not exist -->
-<script>
-    $(document).on("click", ".openModalBtn", function () {
-      var modal = document.getElementById("studentDetailModal");
-      modal.style.display = "block";
-    });
-
-    $(document).on("click", ".close", function () {
-      var modal = document.getElementById("studentDetailModal");
-      modal.style.display = "none";
-    });
-</script>
-<!-- modal-up-detail-infor -->
-<script>
-    var modal = document.getElementById("studentDetailModal");
-    var modalButtons = document.getElementsByClassName("openModalBtn");
-    var span = document.getElementsByClassName("close")[0];
-
-    // Open student Detail Modal
-    for (var i = 0; i < modalButtons.length; i++) {
-      modalButtons[i].addEventListener("click", function () {
-        modal.style.display = "block";
-      });
-    }
-
-    // Close Modal
-    span.onclick = function () {
-      modal.style.display = "none";
-    };
-
-</script>
-<!-- final-script -->
-<script>
-    //back to right-page by iframe
-    document.querySelector(".close").addEventListener("click", function () {
-      var iframe = document.getElementById("fns");
-      iframe.contentWindow.location.href = "/tthv";
-    });
-    //by page
-    // document.querySelector(".close").addEventListener("click", function () {
-    //   window.location.href = "/tthv";
-    // });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const filteredUserList = [
-        {
-          name: "John Doe",
-          address: "123 Main Street",
-          phoneNumber: "0123456789",
-          teachingSubject: "Maths",
-          id: 1,
-          salary: 400,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1,
-        },
-        {
-          name: "Jane Smith",
-          address: "456 Elm Street",
-          phoneNumber: "9876543210",
-          teachingSubject: "English",
-          id: 2,
-          salary: 500,
-          salaryCoefficient: 1.0,
-          gender: "Female",
-          status: 1
-        },
-        {
-          name: "Administrator",
-          address: "789 High Avenue",
-          phoneNumber: "1239876540",
-          teachingSubject: "Literature",
-          id: 3,
-          salary: 600,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1
-        },
-        {
-          name: "Administrator",
-          address: "789 High Avenue",
-          phoneNumber: "1239876540",
-          teachingSubject: "Physics",
-          id: 4,
-          salary: 400,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1
-        }
-      ];
-
-      // chưa lấy được theo nút bấm xem của từng người -> xử lí sau
-      const user = filteredUserList[0];
-
-      // Điền dữ liệu vào các trường của form
-      document.getElementById("address").textContent = user.address;
-      document.getElementById("course").textContent = user.teachingSubject;
-      document.getElementById("feedback").textContent = user.phoneNumber;
-    });
-</script>
 </body>
 
 </html>

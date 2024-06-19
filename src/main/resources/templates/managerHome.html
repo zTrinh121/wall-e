@@ -20,9 +20,9 @@
         </div>
         <div class="top_menu">
             <div class="logo">
-                <a href="/templates/managerHome.html">Wall-E</a>
+                <a href="#">Wall-E</a>
             </div>
-            <form action="../search/index.html" class="search">
+            <form action="#" class="search">
                 <i class="bx bxs-calendar-check">
                     <i class="fa fa-search"></i>
                 </i>
@@ -45,7 +45,7 @@
 
                 <ul class="profile-dropdown-list">
                     <li class="profile-dropdown-list-item">
-                        <a href="../profile/index.html">
+                        <a href="#">
                             <i class="bx bxs-calendar-check">
 
                                 <i class="fas fa-user"></i>
@@ -95,18 +95,18 @@
                     <span class="title">Trang chủ</span></a>
             </li>
             <li>
-                <a href="../9notificationDetail/index.html">
+                <a href="#">
                     <span class="icon"><i class="fas fa-bell"></i></span>
                     <span class="title">Thông báo</span></a>
             </li>
             <li>
-                <a href="../15Revenue/index.html">
+                <a href="#">
                     <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
                     <span class="title">Doanh thu</span>
                 </a>
             </li>
             <li>
-                <a href="../11postDetail/index.html">
+                <a href="#">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
                 </a>
@@ -175,7 +175,61 @@
                             <div id="toastMessage"></div>
                         </div>
                     </div>
-                    <!--  -->
+                </div>
+                <div class="table-data">
+                    <div class="order">
+                        <table>
+                            <thead>
+                            <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                                </td>
+                            </tr>
+                            </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!-- Add Center Modal -->
+                <div id="addCentreModal" class="modal">
+                    <div class="add-modal-content">
+                        <span id="cancelAdd" class="close">&times;</span>
+                        <h4 style="text-align:center">Thêm Trung Tâm</h4>
+                        <p>Nhập thông tin của trung tâm mới:</p>
+                        <!-- Add Centre Form -->
+                        <form id="addCentreForm">
+                            <div>
+                                <label for="addCenterName">Tên trung tâm:</label>
+                                <input type="text" id="addCenterName" name="addCenterName" required>
+                            </div>
+<!--                            <div>-->
+<!--&lt;!&ndash;                                xủ lí giai đoạn mã trung tâm trùng nhau&ndash;&gt;-->
+<!--                                <label for="centreAddress">Mã trung tâm:</label>-->
+<!--                                <input type="text" id="centreAddress" name="centreAddress" required>-->
+<!--                            </div>-->
+                            <div>
+                                <label for="addCenterAddress">Địa chỉ trung tâm:</label>
+                                <input type="text" id="addCenterAddress" name="addCenterAddress" required>
+                            </div>
+                            <div>
+                                <label for="addCenterDesc">Mô tả:</label>
+                                <input type="text" id="addCenterDesc" name="addCenterDesc" required>
+                            </div>
+                            <div>
+<!--                                nên gửi/ đưa vào đâu-->
+                                <label for="addFileInput">File đính kèm:</label>
+                                <input type="file" id="addFileInput" accept=".pdf,.doc,.docx,.txt">
+                                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+                            </div>
+                            <button type="submit" id="confirmAdd">Xác nhận</button>
+                        </form>
+
+                    </div>
                 </div>
             </main>
             <!-- MAIN -->
@@ -185,9 +239,9 @@
 </div>
 <!-- Modal -->
 <div id="myModal" class="modal">
-    <div class="modal-content">
+    <div class="modal-content" id="modal-detail">
         <span class="close">&times;</span>
-        <iframe src="/manager/center/43" width="1250" height="500" frameborder="0"
+        <iframe data-id="${center.id}" width="1250" height="500" frameborder="0"
                 scrolling="auto"></iframe>
     </div>
 </div>
@@ -198,44 +252,11 @@
         <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
         <button id="confirmDelete">Xác nhận</button>
         <button id="cancelDeleteButton">Huỷ</button>
-        <!-- nên css lại nút xác nhân vs huỷ cách xa xa ra -->
-    </div>
-</div>
-
-<!-- Add Center Modal -->
-<div id="addCentreModal" class="modal">
-    <div class="add-modal-content">
-        <span id="cancelAdd" class="close">&times;</span>
-        <h4 style="text-align:center">Thêm Trung Tâm</h4>
-        <p>Nhập thông tin của trung tâm mới:</p>
-        <!-- Add Centre Form -->
-        <form id="addCentreForm">
-            <div>
-                <label for="centreName">Tên trung tâm:</label>
-                <input type="text" id="centreName" name="centreName" required>
-            </div>
-            <div>
-                <label for="centreAddress">Địa chỉ trung tâm:</label>
-                <input type="text" id="centreAddress" name="centreAddress" required>
-            </div>
-            <div>
-                <label for="centreDesc">Mô tả:</label>
-                <input type="text" id="centreDesc" name="centreDesc" required>
-            </div>
-            <div>
-                <label for="fileInput">File đính kèm:</label>
-                <input type="file" id="fileInput" accept=".pdf,.doc,.docx,.txt">
-                <!-- <button onclick="chooseFile()">Chọn file</button> -->
-            </div>
-            <button type="submit" id="confirmAdd">Xác nhận</button>
-        </form>
-
     </div>
 </div>
 
 <script src="/js/managerHome.js" type="module"></script>
 <script src="/js/dropdown.js"></script>
-<!-- nếu không cmt dòng trên thì code của phần iframe-modal sẽ không chạy đc :) -->
 
 </body>
 
