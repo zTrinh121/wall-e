@@ -5,6 +5,8 @@
     <title>Chi tiết lớp học</title>
     <link rel="stylesheet" href="/css/studentClassDetail.css" />
     <script src="/js/studentClassDetail.js" defer></script>
+    <script th:src="@{/js/studentFragments.js}" type="module"></script>
+    <th:block th:replace="~{studentFragments :: studenthead}"></th:block>
 </head>
 <body>
 <div class="wrapper">

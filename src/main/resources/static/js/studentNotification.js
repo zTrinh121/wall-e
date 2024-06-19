@@ -13,6 +13,8 @@ document.addEventListener("DOMContentLoaded", () => {
     var allPublicNotifications = [];
     var allPrivateNotifications = [];
     var paginationControls = document.getElementById("paginationControls");
+    const userCode = document.getElementById("userId");
+    console.log("User code: " + userCode.innerHTML + " " + typeof(userCode));
 
     publicNotificationBtn.addEventListener("click", function () {
         fetchAndDisplayPublicNotifications();
@@ -44,7 +46,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function fetchAndDisplayPrivateNotifications() {
-        fetch("/api/teachers/notifications/private")
+        fetch(`/api/students/private-notifications/${userCode.innerHTML}`)
             .then(response => response.json())
             .then(data => {
                 allPrivateNotifications = data;

@@ -72,5 +72,4 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT DISTINCT u FROM User u WHERE u.parent.id = :parentId ")
     User findStudentsByParentId(@Param("parentId") int parentId);
 
-
 }

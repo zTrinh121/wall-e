@@ -5,6 +5,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var userId = urlParams.get('userId');
     var amount = urlParams.get('amount');
     var date = urlParams.get('date');
+    var userRole = document.getElementById("userRole").innerHTML
+    var backBtn = document.getElementById("back-btn")
 
     // Format the date as needed
     var formattedDate = formatDate(date);
@@ -15,7 +17,22 @@ document.addEventListener('DOMContentLoaded', function() {
 
     document.querySelector('.meta tr:nth-child(3) td span').textContent = formatCurrency(amount);
 
-    // Additional details can be added as needed
+
+    if (backBtn) {
+        backBtn.onclick = function() {
+            var url = '/login';
+            if (userRole === "ADMIN") {
+                url = '/admin';
+            } else if (userRole === "TEACHER") {
+                url = '/teacher';
+            } else if (userRole === "PARENT") {
+                url = '/parent';
+            } else if (userRole === "STUDENT") {
+                url = '/student-dashboard';
+            }
+            window.location.href = url;
+        };
+    }
 });
 
 function formatDate(dateString) {
@@ -34,3 +51,4 @@ function formatCurrency(amount) {
     // Assuming the amount is in Vietnamese dong
     return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(amount);
 }
+

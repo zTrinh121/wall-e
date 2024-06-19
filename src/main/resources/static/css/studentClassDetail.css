@@ -638,7 +638,7 @@ tr:hover {
   top: 3.2rem;
   right: 1.2rem;
   z-index: 1000;
-  background: #4CAF50;
+  background: red;
   color: #fff;
   height: 3rem;
   border-radius: 0.5rem;

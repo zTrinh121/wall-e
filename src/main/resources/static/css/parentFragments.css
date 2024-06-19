@@ -145,7 +145,7 @@ body {
     width: 3rem;
     height: 3rem;
     border-radius: 50%;
-    background: url(../images/profile-pic.jpg);
+    /*background: url(../images/profile-pic.jpg);*/
     background-size: cover;
 }
 
