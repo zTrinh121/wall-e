@@ -126,7 +126,7 @@ public class UserController {
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
-                    return "redirect:/managerHome";
+                    return "managerHome";
                 default:
                     return "redirect:/login";
             }

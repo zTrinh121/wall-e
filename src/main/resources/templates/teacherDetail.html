@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
-
 <head>
     <meta charset="UTF-8" />
     <title>Quản lý giáo viên</title>
@@ -19,7 +18,7 @@
         <main>
             <div class="head-title">
                 <div class="left">
-                    <h1>Quản lý giáo viên</h1>
+                    <h1><span id="centerDetailName"></span></h1>
                 </div>
             </div>
             <ul class="box-info">
@@ -28,10 +27,10 @@
                         <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
                     </i>
                     <span class="text">
-              <a href="/qlhv">
-                <h3>1020</h3>
-                <p>Học viên</p>
-              </a>
+                <a href=`/manager/qlhv?centerId=${center.id}` data-id="${center.id}" id="boxInfos">
+                    <h3 id="nums"></h3>
+                    <p>Học viên</p>
+                </a>
             </span>
                 </li>
                 <li>
@@ -39,11 +38,10 @@
                         <i class="fa-solid fa-person-chalkboard"></i>
                     </i>
                     <span class="text">
-              <a href="/qlgv">
-                <h3>2834</h3>
-                <p>Giáo viên</p>
-              </a>
-
+                    <a href=`/manager/qlgv?centerId=${center.id}` data-id="${center.id}" id="boxInfot">
+                        <h3 id="numt"></h3>
+                        <p>Giáo viên</p>
+                    </a>
             </span>
                 </li>
                 <li>
@@ -51,8 +49,10 @@
                         <i class="fa-solid fa-layer-group"></i>
                     </i>
                     <span class="text">
-              <h3>2543</h3>
+              <a href="#" data-id="${center.id}" id="boxInfoc">
+                <h3 id="numc"></h3>
               <p>Khoá học</p>
+              </a>
             </span>
                 </li>
             </ul>
@@ -84,30 +84,50 @@
                                 <p>Họ và tên</p>
                             </th>
                             <th>
-                                <p>Địa chỉ</p>
+                                <p>Số điện thoại</p>
+                            </th>
+                            <th>
+                                <p>Email</p>
                             </th>
                             <th>
                                 <p>Lương/hệ số lương</p>
                             </th>
                             <th>
+                                <p>Hành động</p>
+                            </th>
+                            <th>
                                 <p>Chi tiết</p>
                             </th>
-                            <!-- <th>
-                              <p>Trạng thái</p>
-                            </th>
-                            chưa xử lý rõ ràng được nên thế nào -->
                         </tr>
                         </thead>
                         <tbody id="tableBody">
-
                         </tbody>
                     </table>
+                    <div id="no-result">No result</div>
                     <!-- Toast Notification -->
                     <div id="toast" class="toast">
                         <div id="toastMessage"></div>
                     </div>
                 </div>
-                <!--  -->
+            </div>
+            <div class="table-data">
+                <div class="order">
+                    <table>
+                        <thead>
+                        <tbody>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                            </td>
+                        </tr>
+                        </tbody>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </main>
         <!-- MAIN -->
@@ -119,117 +139,53 @@
 <div id="teacherDetailModal" class="modal">
     <div class="modal-content">
         <span class="close">&times;</span>
-        <iframe id="fns" src="/templates/teacherInfo.html" width="1250" height="500" frameborder="0"
+        <iframe id="fns" data-id="${center.id}" width="1250" height="500" frameborder="0"
                 scrolling="auto"></iframe>
+    </div>
+</div>
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn loại bỏ giáo viên <span id="centerName"></span>?</p>
+        <button id="confirmDelete">Xác nhận</button>
+        <button id="cancelDeleteButton">Huỷ</button>
+    </div>
+</div>
+
+<!-- Add Center Modal -->
+<div id="addCentreModal" class="modal">
+    <div class="add-modal-content">
+        <span id="cancelAdd" class="close">&times;</span>
+        <h4 style="text-align:center">Thêm Trung Tâm</h4>
+        <p>Nhập thông tin của trung tâm mới:</p>
+        <!-- Add Centre Form NOT YET -->
+        <form id="addCentreForm">
+            <div>
+                <label for="addCenterName">Tên trung tâm:</label>
+                <input type="text" id="addCenterName" name="addCenterName" required>
+            </div>
+            <div>
+                <label for="addCenterAddress">Địa chỉ trung tâm:</label>
+                <input type="text" id="addCenterAddress" name="addCenterAddress" required>
+            </div>
+            <div>
+                <label for="addCenterDesc">Mô tả:</label>
+                <input type="text" id="addCenterDesc" name="addCenterDesc" required>
+            </div>
+            <div>
+                <!--                                nên gửi/ đưa vào đâu-->
+                <label for="addFileInput">File đính kèm:</label>
+                <input type="file" id="addFileInput" accept=".pdf,.doc,.docx,.txt">
+                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+            </div>
+            <button type="submit" id="confirmAdd">Xác nhận</button>
+        </form>
+
     </div>
 </div>
 
 <script src="/js/teacherManagement.js" type="module"></script>
-<script src="/js/dropdown.js"></script>
 
-
-<!-- support modal up while not exist -->
-<script>
-    $(document).on("click", ".openModalBtn", function () {
-      var modal = document.getElementById("teacherDetailModal");
-      modal.style.display = "block";
-    });
-
-    $(document).on("click", ".close", function () {
-      var modal = document.getElementById("teacherDetailModal");
-      modal.style.display = "none";
-    });
-</script>
-<!-- modal-up-detail-infor -->
-<script>
-    var modal = document.getElementById("teacherDetailModal");
-    var modalButtons = document.getElementsByClassName("openModalBtn");
-    var span = document.getElementsByClassName("close")[0];
-
-    // Open Teacher Detail Modal
-    for (var i = 0; i < modalButtons.length; i++) {
-      modalButtons[i].addEventListener("click", function () {
-        modal.style.display = "block";
-      });
-    }
-
-    // Close Modal
-    span.onclick = function () {
-      modal.style.display = "none";
-    };
-
-</script>
-<!-- final-script -->
-<script>
-    //back to right-page by iframe
-    document.querySelector(".close").addEventListener("click", function () {
-      var iframe = document.getElementById("fns");
-      iframe.contentWindow.location.href = "/ttgv";
-    });
-    //by page
-    // document.querySelector(".close").addEventListener("click", function () {
-    //   window.location.href = "/ttgv";
-    // });
-</script>
-<script>
-    document.addEventListener("DOMContentLoaded", function () {
-      const filteredUserList = [
-        {
-          name: "John Doe",
-          address: "123 Main Street",
-          phoneNumber: "0123456789",
-          teachingSubject: "Maths",
-          id: 1,
-          salary: 400,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1,
-        },
-        {
-          name: "Jane Smith",
-          address: "456 Elm Street",
-          phoneNumber: "9876543210",
-          teachingSubject: "English",
-          id: 2,
-          salary: 500,
-          salaryCoefficient: 1.0,
-          gender: "Female",
-          status: 1
-        },
-        {
-          name: "Administrator",
-          address: "789 High Avenue",
-          phoneNumber: "1239876540",
-          teachingSubject: "Literature",
-          id: 3,
-          salary: 600,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1
-        },
-        {
-          name: "Administrator",
-          address: "789 High Avenue",
-          phoneNumber: "1239876540",
-          teachingSubject: "Physics",
-          id: 4,
-          salary: 400,
-          salaryCoefficient: 1.0,
-          gender: "Male",
-          status: 1
-        }
-      ];
-
-      // chưa lấy được theo nút bấm xem của từng người -> xử lí sau
-      const user = filteredUserList[0];
-
-      // Điền dữ liệu vào các trường của form
-      document.getElementById("address").textContent = user.address;
-      document.getElementById("course").textContent = user.teachingSubject;
-      document.getElementById("salary").textContent = `${user.salary}.000 VND`;
-      document.getElementById("feedback").textContent = user.phoneNumber;
-    });
-</script>
 </body>
 
 </html>
