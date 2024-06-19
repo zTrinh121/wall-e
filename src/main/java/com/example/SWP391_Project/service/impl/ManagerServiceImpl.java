@@ -10,13 +10,15 @@ import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
+import com.example.SWP391_Project.response.StudentCoursesResponse;
+import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +27,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.time.Month;
 import java.time.Year;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ManagerServiceImpl implements ManagerService {
@@ -71,6 +74,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private CloudinaryService cloudinaryService;
 
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
 
     // ----------------------- Private notification ----------------------------
     @Override
@@ -326,12 +331,31 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public boolean deleteCenter(int id) {
-        try {
-            centerRepository.deleteById(id);
+        Optional<Center> centerOptional = centerRepository.findById(id);
+        if (centerOptional.isPresent()) {
+            Center center = centerOptional.get();
+
+            // Kiểm tra xem có các Course tham chiếu đến Center này không
+            Optional<List<Course>> coursesOptional = courseRepository.findByCenter_Id(id);
+            coursesOptional.ifPresent(courses -> {
+                if (!courses.isEmpty()) {
+                    throw new DataIntegrityViolationException("Cannot delete center with ID " + id + " because it is referenced by existing courses.");
+                }
+            });
+
+            // Kiểm tra xem có các Room tham chiếu đến Center này không
+            Optional<List<Room>> roomsOptional = roomRepository.findByCenter_Id(id);
+            roomsOptional.ifPresent(rooms -> {
+                if (!rooms.isEmpty()) {
+                    throw new DataIntegrityViolationException("Cannot delete center with ID " + id + " because it is referenced by existing rooms.");
+                }
+            });
+
+            // Xóa Center nếu không có Course hoặc Room nào tham chiếu đến
+            centerRepository.delete(center);
             return true;
-        } catch (Exception e) {
-            return false;
         }
+        return false;
     }
     // ------------------------------------------------------------------------
 
@@ -448,14 +472,20 @@ public class ManagerServiceImpl implements ManagerService {
         return courseRepository.save(course);
     }
 
-    @Override
-    public boolean deleteCourse(int id) {
-        try {
-            courseRepository.deleteById(id);
+    public boolean deleteCourse(int courseId) {
+        Optional<Course> courseOptional = courseRepository.findById(courseId);
+        if (courseOptional.isPresent()) {
+            Course course = courseOptional.get();
+
+            Optional<List<Enrollment>> enrollmentsOptional = enrollmentRepository.findByCourse_Id(courseId);
+            if (enrollmentsOptional.isPresent() && !enrollmentsOptional.get().isEmpty()) {
+                throw new DataIntegrityViolationException("Cannot delete course with ID " + courseId + " because it is referenced by existing enrollments.");
+            }
+
+            courseRepository.delete(course);
             return true;
-        } catch (Exception e) {
-            return false;
         }
+        return false;
     }
     // ------------------------------------------------------------------------
 
@@ -491,9 +521,9 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public boolean deleteTeacher(int id) {
+    public boolean deleteTeacherInCenter(int teacherId, int centerId) {
         try {
-            userCenterRepository.deleteById(id);
+            userCenterRepository.deleteUserInCenter(teacherId, centerId);
             return true;
         } catch (Exception e) {
             return false;
@@ -516,9 +546,9 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public boolean deleteStudent(int id) {
+    public boolean deleteStudentInCenter(int studentId, int centerId) {
         try {
-            userCenterRepository.deleteById(id);
+            userCenterRepository.deleteUserInCenter(studentId, centerId);
             return true;
         } catch (Exception e) {
             return false;
@@ -687,6 +717,57 @@ public class ManagerServiceImpl implements ManagerService {
         Optional<List<User>> users =
                 userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Failed, year, month, centerId);
         return users.orElse(Collections.emptyList());
+    }
+
+    // -------------------------------------------------------------------
+
+    @Override
+    public int countTeachersByCenter(int centerId) {
+        return userCenterRepository.countTeachersByCenter(centerId);
+    }
+
+    @Override
+    public int countStudentsByCenter(int centerId) {
+        return userCenterRepository.countStudentsByCenter(centerId);
+    }
+
+    @Override
+    public int countCourseByCenter(int centerId) {
+        return courseRepository.countCourseByCenter(centerId);
+    }
+
+    @Override
+    public List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId) {
+        List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId);
+        return results.stream()
+                .map(obj -> new TeacherCoursesResponse(
+                        (String) obj[0],      // teacherCode
+                        (String) obj[1],      // teacherName
+                        (String) obj[2],      // teacherPhone
+                        (String) obj[3],      // teacherAddress
+                        (java.util.Date) obj[4], // teacherDob
+                        (boolean) obj[5],     // teacherGender
+                        (String) obj[6],      // teacherEmail
+                        (String) obj[7]       // courseNames
+                ))
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId) {
+        List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId);
+        return results.stream()
+                .map(obj -> new StudentCoursesResponse(
+                        (String) obj[0],      // studentCode
+                        (String) obj[1],      // studentName
+                        (String) obj[2],      // studentPhone
+                        (String) obj[3],      // studentAddress
+                        (java.util.Date) obj[4], // studentDob
+                        (boolean) obj[5],     // studentGender
+                        (String) obj[6],      // studentEmail
+                        (String) obj[7]       // courseNames
+                ))
+                .collect(Collectors.toList());
     }
 }
 

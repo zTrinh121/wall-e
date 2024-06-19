@@ -4,26 +4,24 @@ import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.SlotDto;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
+import com.example.SWP391_Project.response.StudentCoursesResponse;
+import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import com.example.SWP391_Project.service.ManagerService;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -45,6 +43,7 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(centers, HttpStatus.OK);
     }
+
 //    @GetMapping("/centerHome")
 //    public ResponseEntity<List<CenterDetailResponse>> getCenterInfo() {
 //        List<CenterDetailResponse> centers = managerService.getCenters();
@@ -67,15 +66,7 @@ public class ManagerLearningController {
         }
     }
 
-    @GetMapping("/manager/{managerId}")
-    public ResponseEntity<Center> getMangerById(@PathVariable int centerId) {
-        Center center = managerService.findCenterById(centerId);
-        if (center != null) {
-            return ResponseEntity.ok(center);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
+   // Hàm này nhiều khả năng lỗi !!!!
     @PostMapping("/center/create")
     public Center createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession session) {
         return managerService.createCenter(centerDto, session);
@@ -94,11 +85,17 @@ public class ManagerLearningController {
 
     @DeleteMapping("/center/delete/{id}")
     public ResponseEntity<String> deleteCenter(@PathVariable int id) {
-        boolean deleted = managerService.deleteCenter(id);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the center where ID = " + id);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = managerService.deleteCenter(id);
+            if (deleted) {
+                return ResponseEntity.ok("Deleted the center where ID = " + id);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     // --------------------------------------------------------------------------
@@ -138,11 +135,18 @@ public class ManagerLearningController {
 
     @DeleteMapping("/course/delete/{id}")
     public ResponseEntity<String> deleteCourse(@PathVariable int id) {
-        boolean deleted = managerService.deleteCourse(id);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the course where ID = " + id);
-        } else {
-            return ResponseEntity.notFound().build();
+        try {
+            boolean deleted = managerService.deleteCourse(id);
+            if (deleted) {
+                return ResponseEntity.ok("Deleted the course where ID = " + id);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (DataIntegrityViolationException e) {
+            // Xử lý ngoại lệ khi không thể xóa vì có khóa ngoại tham chiếu
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
         }
     }
     // --------------------------------------------------------------------------
@@ -179,20 +183,21 @@ public class ManagerLearningController {
         }
     }
 
-    @DeleteMapping("/teacher/delete/{id}")
-    public ResponseEntity<String> deleteTeacher(@PathVariable int id) {
-        boolean deleted = managerService.deleteTeacher(id);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the teacher where ID = " + id);
-        } else {
-            return ResponseEntity.notFound().build();
+    @DeleteMapping("/teacher/delete/{id}/{centerId}")
+        public ResponseEntity<String> deleteTeacherInCenter(@PathVariable("id") int teacherId,
+                                                            @PathVariable("centerId") int centerId) {
+            boolean deleted = managerService.deleteTeacherInCenter(teacherId, centerId);
+            if (deleted) {
+                return ResponseEntity.ok("Delete the teacher where ID = " + teacherId);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
         }
-    }
     // --------------------------------------------------------------------------
 
 
     // --------------------------- MANAGER STUDENT ------------------------------
-    @GetMapping("/students/center/{centerId}")
+    @GetMapping("/students/{centerId}")
     public ResponseEntity<List<User>> getStudentsInCenter(@PathVariable int centerId) {
         List<User> students = managerService.getStudentsInCenter(centerId);
         if (students.isEmpty()) {
@@ -210,11 +215,12 @@ public class ManagerLearningController {
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
 
-    @DeleteMapping("/student/delete/{id}")
-    public ResponseEntity<String> deleteStudent(@PathVariable int id) {
-        boolean deleted = managerService.deleteStudent(id);
+    @DeleteMapping("/student/delete/{id}/{centerId}")
+    public ResponseEntity<String> deleteStudentInCenter(@PathVariable("id") int studentId,
+                                                        @PathVariable("centerId") int centerId) {
+        boolean deleted = managerService.deleteStudentInCenter(studentId, centerId);
         if (deleted) {
-            return ResponseEntity.ok("Delete the student where ID = " + id);
+            return ResponseEntity.ok("Delete the student where ID = " + studentId);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -348,5 +354,51 @@ public class ManagerLearningController {
             @PathVariable int centerId
     ) {
         return ResponseEntity.ok(managerService.findStudentsWithUnpaidFeesInCenter(Year.of(year), Month.of(month), centerId));
+    }
+
+    // ---------------------------- ADD MORE ----------------------------------
+    @GetMapping("/teacher-count/{centerId}")
+    public ResponseEntity<Integer> countTeachersByCenter(@PathVariable int centerId) {
+        int count = managerService.countTeachersByCenter(centerId);
+        if (count == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/student-count/{centerId}")
+    public ResponseEntity<Integer> countStudentsByCenter(@PathVariable int centerId) {
+        int count = managerService.countStudentsByCenter(centerId);
+        if (count == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/course-count/{centerId}")
+    public ResponseEntity<Integer> countCoursesByCenter(@PathVariable int centerId) {
+        int count = managerService.countCourseByCenter(centerId);
+        if (count == 0) {
+            return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
+        }
+        return ResponseEntity.ok(count);
+    }
+
+    @GetMapping("/teacher-detail/{teacherId}")
+    public ResponseEntity<List<TeacherCoursesResponse>> getTeacherInfoAndCourses(@PathVariable int teacherId) {
+        List<TeacherCoursesResponse> teacherCourses = managerService.getTeacherInfoAndCourses(teacherId);
+        if (teacherCourses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(teacherCourses);
+    }
+
+    @GetMapping("/student-detail/{studentId}")
+    public ResponseEntity<List<StudentCoursesResponse>> getStudentInfoAndCourses(@PathVariable int studentId) {
+        List<StudentCoursesResponse> studentCourses = managerService.getStudentInfoAndCourses(studentId);
+        if (studentCourses.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(studentCourses);
     }
 }

@@ -17,6 +17,5 @@ public interface CenterPostRepository extends JpaRepository<CenterPost, Integer>
             "LEFT JOIN cp.center c " +
             "LEFT JOIN c.manager m")
     List<CenterPostResponse> findAllCenterPostsAndManagerDetails();
-
 }
 

@@ -1,89 +1,322 @@
-import { filteredUserList } from "../../../dummyData/userDemo.js";
-
-// Start: nva
-$(document).ready(function () {
-  $(".nva").click(function () {
-    $(".wrapper").toggleClass("collapse");
-  });
-});
-// End: nva
-
-// Display user data
-filteredUserList.forEach((element) => {
-  console.log(element);
-});
-
-document.addEventListener("DOMContentLoaded", function () {
-  const roleFilter = document.getElementById("subject");
-  const tableBody = document.getElementById("tableBody");
-
-  function buildTable(data) {
-    tableBody.innerHTML = ""; // Clear existing table rows
-    data.forEach((e) => {
-      let ban = e.status == 1 ? "Hoạt động" : "Đã xoá";
-      let row = `<tr>
-                          <td><p>${e.name}</p></td>
-                          <td><p>${e.address}</p></td>
-                          <td><p>${e.salary}/${e.salaryCoefficient}</p></td>
-                          <td><p><button class="openModalBtn">Xem</button></p</td>
-                     </tr>`;
-      tableBody.innerHTML += row;
+document.addEventListener("DOMContentLoaded", () => {
+    //close modal ifraem
+    var closeButton = document.querySelectorAll(".close");
+    closeButton.forEach((button) => {
+        button.addEventListener("click", function (event) {
+            event.preventDefault();
+            addModal.style.display = "none";
+            deleteModal.style.display = "none";
+        });
     });
-    // <td><button class="action-button">${ban}</button></td>
-    addEventListenersToButtons();
-  }
 
-  function filterTable() {
-    const selectedRole = roleFilter.value;
-    let roleEnum = 0; // Default to 'all'
-    if (selectedRole === "Maths") {
-      roleEnum = 1;
-    } else if (selectedRole === "English") {
-      roleEnum = 2;
-    } else if (selectedRole === "Literature") {
-      roleEnum = 3;
-    } else if (selectedRole === "Physics") {
-      roleEnum = 4;
+    // Modals
+    var addModal = document.getElementById("myModal");
+    var addCentreModal = document.getElementById("addCentreModal");
+    var deleteModal = document.getElementById("deleteModal");
+
+    // Open Add Centre Modal
+    var addCentreBtn = document.getElementById("addCentreBtn");
+    if (addCentreBtn) {
+        addCentreBtn.addEventListener("click", () => {
+            console.log("Opening Add Centre Modal");
+            addCentreModal.style.display = "block";
+        });
     }
 
-    const filteredData =
-      roleEnum === 0
-        ? filteredUserList
-        : filteredUserList.filter((user) => user.id === roleEnum);
+    // Close Add Centre Modal
+    var cancelAddButton = document.getElementById("cancelAdd");
+    if (cancelAddButton) {
+        cancelAddButton.addEventListener("click", () => {
+            addCentreModal.style.display = "none";
+        });
+    }
 
-    buildTable(filteredData);
-  }
-
-  // Listen button
-  function addEventListenersToButtons() {
-    const buttons = document.querySelectorAll(".action-button");
-    buttons.forEach((button) => {
-      button.addEventListener("click", function () {
-        const userName =
-          button.parentElement.parentElement.querySelector(
-            "td:first-child p"
-          ).innerText;
-        // Toggle ban status
-        const newStatus = button.innerText === "Xoá" ? "Hoạt động" : "Xoá";
-        // Update button text
-        button.innerText = newStatus;
-        showToast(newStatus, userName);
-      });
+    window.addEventListener("click", function (e) {
+        if (e.target == addCentreModal) {
+            addCentreModal.style.display = "none";
+        }
     });
+
+    // Close Delete Modal
+    var cancelDeleteButton = document.getElementById("cancelDeleteButton");
+    if (cancelDeleteButton) {
+        cancelDeleteButton.addEventListener("click", () => {
+            deleteModal.style.display = "none";
+        });
+    }
+
+    window.addEventListener("click", function (e) {
+        if (e.target == deleteModal) {
+            deleteModal.style.display = "none";
+        }
+    });
+
+    // Helper function to show toast message
+    function showToast(message) {
+        var toast = document.getElementById("toast");
+        toast.querySelector("p").textContent = message;
+        toast.classList.add("show");
+        setTimeout(function () {
+            toast.classList.remove("show");
+        }, 2000);
+    }
+
+    // Add Centre-NOTYET
+    var addCentreForm = document.getElementById("addCentreForm");
+    if (addCentreForm) {
+        addCentreForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = new FormData(addCentreForm);
+
+            var centerData = {
+                name: formData.get("addCenterName"),
+                address: formData.get("addCenterAddress"),
+                description: formData.get("addCenterDesc")
+                // Handle file upload if necessary
+            };
+
+            fetch("/manager/center/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(centerData)
+            })
+            .then(response => response.json())
+            .then(data => {
+                console.log("Center added:", data);
+                addCentreModal.style.display = "none";
+                fetchCenters();
+                showToast("Thêm trung tâm thành công");
+            })
+            .catch(error => console.error("Error adding center:", error));
+        });
+    }
+
+    var noResultDiv = document.getElementById("no-result");
+
+    //date
+//    document.getElementById("currentDate").innerText = getCurrentDate();
+//    function getCurrentDate() {
+//            var currentDate = new Date();
+//            var dayOfWeek = [
+//              "Chủ Nhật",
+//              "Thứ Hai",
+//              "Thứ Ba",
+//              "Thứ Tư",
+//              "Thứ Năm",
+//              "Thứ Sáu",
+//              "Thứ Bảy",
+//            ];
+//            var day = String(currentDate.getDate()).padStart(2, "0");
+//            var month = String(currentDate.getMonth() + 1).padStart(2, "0");
+//            var year = currentDate.getFullYear();
+//            var dayIndex = currentDate.getDay();
+//            var dayName = dayOfWeek[dayIndex];
+//            return dayName + ", " + day + "-" + month + "-" + year;
+//          }
+});
+//FETCH
+document.addEventListener("DOMContentLoaded", () => {
+    //get-tea-list
+//    const urlParams = window.location.href;
+//    console.log(urlParams);
+//    const centerIdz = urlParams.get('centerIdn');
+//    console.log(centerIdz);
+    // Get the current URL
+        const urlParams = window.location.href;
+        console.log("Current URL:", urlParams);
+        // Extract centerId from the URL
+        const urlParts = urlParams.split("centerId=");
+        centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
+        console.log("Center ID:", centerIdz);
+    //fetch-api-for-stu
+    function fetchTeachers(centerIdz) {
+      var URL = `/manager/getTeachers/${centerIdz}`;
+      var nameURL = `/manager/center/${centerIdz}`;
+      console.log(URL);
+      fetch(URL)
+          .then((response) => {
+              if (!response.ok) {
+                  throw new Error("Network response was not ok");
+              }
+              return response.json();
+          })
+          .then((data) => {
+              console.log("Data received from API:", data);
+              if (!Array.isArray(data)) {
+                data = [data];
+              }
+              displayTeacherLists(data);
+          })
+          .catch((error) => console.error("Error fetching centers:", error));
+
+          //get-center-name-in-fetch
+          fetch(nameURL)
+            .then((getCTN) => {
+                if (!getCTN.ok) {
+                throw new Error("Network response was not ok");
+            }
+            return getCTN.json();
+            })
+            .then((ctn) => {
+            document.getElementById("centerDetailName").innerText = "Quản lý học sinh của trung tâm " + ctn.name;
+            })
+            .catch((err) => console.error("loi lay ten center: ", err));
+    }
+    fetchTeachers(centerIdz);
+
+    //display-stu-into-list
+function displayTeacherLists(centers) {
+    var tableBody = document.getElementById("tableBody");
+    if (!tableBody) {
+      console.error("Element with ID 'tableBody' not found.");
+      return;
+    }
+    if (!Array.isArray(centers)) {
+      console.error("Expected an array but got:", centers);
+      return;
+    }
+    tableBody.innerHTML = "";
+    console.log(centers);
+    console.log(centers.length === 0);
+    if (centers.length === 0) {
+      noResultDiv.style.display = "block";
+    } else {
+      noResultDiv.style.display = "none";
+      centers.forEach((center) => {
+        var row = `
+          <tr class="view-details" data-id="${center.id}">
+            <td><p>${center.name}</p></td>
+            <td><p>${center.phone}</p></td>
+            <td><p>${center.email}</p></td>
+            <td><p>${center.code}</p></td>
+            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
+            <td><button class="open-modal-btn" data-id="${center.id}">Xem</button></td>
+          </tr>
+        `;
+        tableBody.insertAdjacentHTML("beforeend", row);
+      });
+        // Attach event listeners for delete buttons
+        var deleteButtons = document.querySelectorAll(".delete-user");
+        deleteButtons.forEach((button) => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                var row = event.target.closest("tr");
+                var centerName = row.querySelector("td:nth-child(1) p").textContent;
+                var centerId = row.getAttribute("data-id");
+                centerNameElement.textContent = centerName;
+                deleteModal.style.display = "block";
+                deleteTarget = {
+                    row: row,
+                    id: centerId
+                };
+                console.log("Delete button clicked for center:", centerName, "with ID:", centerId);
+            });
+        });
+
+      // Reattach event listeners for new buttons
+      document.querySelectorAll(".open-modal-btn").forEach((button) => {
+        button.addEventListener("click", function () {
+          var centerId = this.getAttribute("data-id");
+          openModalWithTeacherDetails(centerId);
+        });
+      });
+    }
   }
+  // Confirm delete action
+      var confirmDeleteButton = document.getElementById("confirmDelete");
+      var cancelDeleteButton = document.getElementById("cancelDeleteButton");
+      var centerNameElement = document.getElementById("centerName");
+      var deleteTarget = null;
 
-  function showToast(message, userName) {
-    const toast = document.getElementById("toast");
-    const toastMessage = document.getElementById("toastMessage");
-    toastMessage.innerHTML = `<i class="fas fa-info"></i> Tài khoản ${userName} đã ${message.toLowerCase()}`;
-    toast.className = "toast show";
-    setTimeout(function () {
-      toast.className = toast.className.replace("show", "");
-    }, 3000);
-  }
+      confirmDeleteButton.addEventListener("click", () => {
+          if (deleteTarget, centerIdz) {
+            console.log("Confirm delete for center ID:", deleteTarget.id);
+            fetch(`/manager/teacher/delete/${deleteTarget.id}/${centerIdz}`, {
+              method: "DELETE"
+          })
+          .then(response => {
+            if (response.ok) {
+              deleteTarget.row.remove();
+              deleteModal.style.display = "none";
+//                      showToast("Xóa thành công giáo viên");
+                console.log(deleteTarget);
+              console.log("Teacher deleted successfully");
+            } else {
+              console.error("Error deleting center:", response.statusText);
+            }
+          })
+          .catch(error => console.error("Error deleting center:", error));
+      }
+      });
 
-  roleFilter.addEventListener("change", filterTable);
+  //open-by-student-id
+function openModalWithTeacherDetails(centerId) {
+    console.log(centerId);
+    // Construct the URL for fetching center details
+    var url = `/manager/students/${centerId}`;
 
-  // Initial table build
-  buildTable(filteredUserList);
+    // Fetch center details by ID and display in modal
+    fetch(url)
+        .then((response) => response.json())
+        .then((data) => {
+            console.log("Center details:", data);
+            console.log(encodeURIComponent(data.id));
+
+            var queryUrl = "/manager/qlgv?";
+            queryUrl += "centerIdn=" + encodeURIComponent(data.id);
+            console.log(queryUrl);
+
+            // Update the iframe source with the constructed URL
+            var iframe = document.querySelector("#studentDetailModal iframe");
+            iframe.src = queryUrl;
+
+            // Display the modal
+            var modal = document.getElementById("studentDetailModal");
+            modal.style.display = "block";
+        })
+        .catch((error) => console.error("Error fetching center details:", error));
+}
+
+var noResultDiv = document.getElementById("no-result");
+});
+//box-info-redirect
+//students
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfos = document.getElementById("boxInfos");
+
+    if (boxInfos) {
+        boxInfos.addEventListener("click", function(event) {
+            event.preventDefault();
+                // Construct the correct URL based on centerId
+                var url = `/manager/qlhv?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url); // Verify the constructed URL
+
+                // Perform any further actions with the constructed URL
+                window.location.href = url; // Example: Redirect to the constructed URL
+        });
+    } else {
+        console.error("Element with id 'boxInfos' not found.");
+    }
+});
+//teachers
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfot = document.getElementById("boxInfot");
+
+    if (boxInfot) {
+        boxInfot.addEventListener("click", function(event) {
+            event.preventDefault();
+                // Construct the correct URL based on centerId
+                var url = `/manager/qlgv?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url); // Verify the constructed URL
+
+                // Perform any further actions with the constructed URL
+                window.location.href = url; // Example: Redirect to the constructed URL
+        });
+    } else {
+        console.error("Element with id 'boxInfot' not found.");
+    }
 });
