@@ -9,7 +9,7 @@
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.19.2/dist/js/uikit.min.js"></script>
     <link rel="stylesheet" th:href="@{/css/search.css}">
     <script th:src="@{/js/search.js}"></script>
-    <script th:src="@{/js/studentFragments.js}" type="module"></script>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
 </head>
 
 <body>
@@ -42,7 +42,7 @@
         </ul>
         <ul class="login-account">
             <div  th:if="${session.user != null}">
-                <div th:replace="~{parentFragments :: dropdown}" class="item-drop-down"></div>
+                <div th:replace="~{fragments :: dropdown}" class="item-drop-down"></div>
             </div>
         </ul>
     </div>

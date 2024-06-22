@@ -9,7 +9,6 @@ import jakarta.mail.*;
 
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
-import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.constraints.Email;
 import org.apache.catalina.Group;
@@ -17,14 +16,10 @@ import org.apache.catalina.Group;
 import org.apache.catalina.UserDatabase;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.io.IOException;
 
 import java.util.Iterator;
 import java.util.List;
@@ -153,6 +148,8 @@ public class UserController {
                 return "redirect:/parent-dashboard";
             case "STUDENT":
                 return "redirect:/student-dashboard";
+            case "TEACHER":
+                return "redirect:/teacher-dashboard";
         }
 
         model.addAttribute("user", user);
@@ -198,7 +195,7 @@ public class UserController {
 //    }
 
     @PostMapping("/profile-image")
-    public String updateProfileImage(@RequestParam("image") MultipartFile image, HttpSession session, Model model) {
+    public String updateProfileImage(@RequestParam("files") MultipartFile image, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
@@ -215,7 +212,7 @@ public class UserController {
                 case "TEACHER":
                     return "redirect:/teacherProfile";
                 case "PARENT":
-                    return "parentProfile";
+                    return "redirect:/profile-parent";
                 case "ADMIN":
                     return "redirect:/adminProfile";
                 default:
@@ -597,18 +594,20 @@ public class UserController {
     }
 
     @GetMapping("/course-details")
-    public String detailCourse(HttpSession session) {
-        return "student-classListDetails";
+    public String detailCourse(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "classRegisteredDetail";
     }
 
-    @GetMapping("/student-timetable")
+    @GetMapping("/timetable")
     public String viewTimetable(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "/student-timetable";
+        return "timetableViewOnly";
     }
 
     @GetMapping("/student-notification")
@@ -621,15 +620,6 @@ public class UserController {
         return "studentNotification";
     }
 
-    @GetMapping("/parent-timetable")
-    public String viewTimetableParent(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "parent-timetable";
-    }
 
     @GetMapping("/parent-notification")
     public String viewNotificationParent(Model model, HttpSession session) {
@@ -691,24 +681,14 @@ public class UserController {
 
     }
 
-    @GetMapping("/parent-fragement")
+    @GetMapping("/fragement")
     public String fragmentParent(Model model, HttpSession session) {
         User user = (User) session.getAttribute("user");
         if (user == null) {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
-        return "parentFragments";
-    }
-
-    @GetMapping("/student-fragement")
-    public String fragmentStudent(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "studentFragments";
+        return "fragments";
     }
 
     @GetMapping("/profile-parent")
@@ -740,6 +720,37 @@ public class UserController {
         }
         model.addAttribute("user", user);
         return "billFail";
+    }
+
+    @GetMapping("/teacher-dashboard")
+    public String teacherDashboard(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+        return "teacher-dashboard";
+    }
+
+    @GetMapping("/material")
+    public String material(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "material";
+    }
+
+
+    @GetMapping("/material-create")
+    public String materialCreate(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+        return "material-create";
     }
 
 
