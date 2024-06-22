@@ -3,42 +3,42 @@ var centerIdz;
 document.addEventListener("DOMContentLoaded", function () {
   const roleFilter = document.getElementById("subject");
   const tableBody = document.getElementById("tableBody");
-
-  function buildTable(data) {
-    tableBody.innerHTML = ""; // Clear existing table rows
-    data.forEach((e) => {
-      let ban = e.status == 1 ? "Hoạt động" : "Đã xoá";
-      let row = `<tr>
-                          <td><p>${e.name}</p></td>
-                          <td><p>${e.address}</p></td>
-                          <td><p><button class="openModalBtn">Xem</button></p</td>
-                     </tr>`;
-      tableBody.innerHTML += row;
-    });
-    // <td><button class="action-button">${ban}</button></td>
-    addEventListenersToButtons();
-  }
-
-  function filterTable() {
-    const selectedRole = roleFilter.value;
-    let roleEnum = 0; // Default to 'all'
-    if (selectedRole === "Maths") {
-      roleEnum = 1;
-    } else if (selectedRole === "English") {
-      roleEnum = 2;
-    } else if (selectedRole === "Literature") {
-      roleEnum = 3;
-    } else if (selectedRole === "Physics") {
-      roleEnum = 4;
-    }
-
-    const filteredData =
-      roleEnum === 0
-        ? filteredUserList
-        : filteredUserList.filter((user) => user.id === roleEnum);
-
-    buildTable(filteredData);
-  }
+//
+//  function buildTable(data) {
+//    tableBody.innerHTML = ""; // Clear existing table rows
+//    data.forEach((e) => {
+//      let ban = e.status == 1 ? "Hoạt động" : "Đã xoá";
+//      let row = `<tr>
+//                          <td><p>${e.name}</p></td>
+//                          <td><p>${e.address}</p></td>
+//                          <td><p><button class="openModalBtn">Xem</button></p</td>
+//                     </tr>`;
+//      tableBody.innerHTML += row;
+//    });
+//    // <td><button class="action-button">${ban}</button></td>
+//    addEventListenersToButtons();
+//  }
+//
+//  function filterTable() {
+//    const selectedRole = roleFilter.value;
+//    let roleEnum = 0; // Default to 'all'
+//    if (selectedRole === "Maths") {
+//      roleEnum = 1;
+//    } else if (selectedRole === "English") {
+//      roleEnum = 2;
+//    } else if (selectedRole === "Literature") {
+//      roleEnum = 3;
+//    } else if (selectedRole === "Physics") {
+//      roleEnum = 4;
+//    }
+//
+//    const filteredData =
+//      roleEnum === 0
+//        ? filteredUserList
+//        : filteredUserList.filter((user) => user.id === roleEnum);
+//
+//    buildTable(filteredData);
+//  }
 
   // Listen button
 //  function addEventListenersToButtons() {
@@ -68,7 +68,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }, 3000);
   }
 
-  roleFilter.addEventListener("change", filterTable);
+//  roleFilter.addEventListener("change", filterTable);
 
   // Initial table build
 
@@ -147,11 +147,28 @@ function displayStudentLists(centers) {
             <td><p>${center.code}</p></td>
             <td><p>${center.name}</p></td>
             <td><p>${center.address}</p></td>
-            <td><button class="open-modal-btn" data-id="${center.id}">Xem</button></td>
+            <td><p><button class="openModalBtn"><a href="" id="stuInfo">Xem</a></button></p</td>
           </tr>
         `;
         tableBody.insertAdjacentHTML("beforeend", row);
       });
+      //get-st-id
+          var stuInfo = document.getElementById("stuInfo");
+          console.log("stuinfofofofof" + stuInfo);
+          if (stuInfo) {
+              stuInfo.addEventListener("click", function(event) {
+                  event.preventDefault();
+                      // Construct the correct URL based on centerId
+                      var url = `/manager/qlgv?centerId=`;
+                      url += encodeURIComponent(centerIdz);
+                      console.log(url); // Verify the constructed URL
+
+                      // Perform any further actions with the constructed URL
+                      window.location.href = url; // Example: Redirect to the constructed URL
+              });
+          } else {
+              console.error("Element with id 'stuInfo' not found.");
+          }
 
       // Reattach event listeners for new buttons
       document.querySelectorAll(".open-modal-btn").forEach((button) => {
@@ -233,7 +250,25 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Element with id 'boxInfot' not found.");
     }
 });
-
+//student-info-redirect
+//document.addEventListener("DOMContentLoaded", function () {
+//    var stuInfo = document.getElementById("stuInfo");
+//    console.log("stuinfofofofof" + stuInfo);
+//    if (stuInfo) {
+//        stuInfo.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                // Construct the correct URL based on centerId
+//                var url = `/manager/qlgv?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url); // Verify the constructed URL
+//
+//                // Perform any further actions with the constructed URL
+//                window.location.href = url; // Example: Redirect to the constructed URL
+//        });
+//    } else {
+//        console.error("Element with id 'stuInfo' not found.");
+//    }
+//});
 
 
 

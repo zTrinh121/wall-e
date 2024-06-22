@@ -51,9 +51,10 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "   c.teacher.email AS email, " +
             "   GROUP_CONCAT(c.name) AS courses " +
             "FROM Course c " +
-            "WHERE c.teacher.id = :teacherId " +
+            "WHERE c.teacher.id = :teacherId AND c.center.id = :centerId " +
             "GROUP BY c.teacher.id")
-    List<Object[]> findTeacherInfoAndCoursesByTeacherId(int teacherId);
+    List<Object[]> findTeacherInfoAndCoursesByTeacherId(@Param("teacherId") int teacherId,
+                                                        @Param("centerId") int centerId);
 
 }
 
