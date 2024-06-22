@@ -16,27 +16,37 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t05_role`
+-- Table structure for table `t20_individual_notification`
 --
 
-DROP TABLE IF EXISTS `t05_role`;
+DROP TABLE IF EXISTS `t20_individual_notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t05_role` (
-  `C05_ROLE_ID` int NOT NULL,
-  `C05_ROLE_DESC` enum('STUDENT','PARENT','TEACHER','MANAGER','ADMIN') NOT NULL,
-  PRIMARY KEY (`C05_ROLE_ID`)
+CREATE TABLE `t20_individual_notification` (
+  `C20_ID` int NOT NULL AUTO_INCREMENT,
+  `C20_TITLE` varchar(255) NOT NULL,
+  `C20_CONTENT` varchar(255) NOT NULL,
+  `C20_ACTOR_ID` int NOT NULL,
+  `C20_SEND_TO_USER` varchar(255) NOT NULL,
+  `C20_HAS_SEEN` bit(1) DEFAULT b'0',
+  `C20_SEEN_TIME` datetime DEFAULT (now()),
+  `c20_create_at` datetime DEFAULT CURRENT_TIMESTAMP,
+  `c20_update_at` datetime(6) DEFAULT NULL,
+  PRIMARY KEY (`C20_ID`),
+  KEY `FK_T20_T14` (`C20_SEND_TO_USER`),
+  KEY `FK_T20_T14_ID` (`C20_ACTOR_ID`),
+  CONSTRAINT `FK_T20_T14` FOREIGN KEY (`C20_SEND_TO_USER`) REFERENCES `t14_user` (`C14_USERNAME`),
+  CONSTRAINT `FK_T20_T14_ID` FOREIGN KEY (`C20_ACTOR_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t05_role`
+-- Dumping data for table `t20_individual_notification`
 --
 
-LOCK TABLES `t05_role` WRITE;
-/*!40000 ALTER TABLE `t05_role` DISABLE KEYS */;
-INSERT INTO `t05_role` VALUES (1,'STUDENT'),(2,'PARENT'),(3,'TEACHER'),(4,'MANAGER'),(5,'ADMIN');
-/*!40000 ALTER TABLE `t05_role` ENABLE KEYS */;
+LOCK TABLES `t20_individual_notification` WRITE;
+/*!40000 ALTER TABLE `t20_individual_notification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t20_individual_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

@@ -32,7 +32,7 @@ CREATE TABLE `t07_material` (
   KEY `FK_MATERIAL_SUBJECT` (`C07_SUBJECT_ID`),
   CONSTRAINT `FK_MATERIAL_SUBJECT` FOREIGN KEY (`C07_SUBJECT_ID`) REFERENCES `t13_subject` (`C13_SUBJECT_ID`),
   CONSTRAINT `FK_MATERIAL_TEACHER` FOREIGN KEY (`C07_TEACHER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `t07_material` (
 
 LOCK TABLES `t07_material` WRITE;
 /*!40000 ALTER TABLE `t07_material` DISABLE KEYS */;
-INSERT INTO `t07_material` VALUES (1,'Materials 1',3,1),(2,'Materials 2',8,2),(3,'Materials 3',13,3),(4,'Materials 4',18,4),(5,'Materials 5',3,5),(6,'Materials 6',8,6),(7,'Materials 7',13,7),(8,'Materials 8',18,8),(9,'Materials 9',3,9),(10,'Materials 10',8,10),(11,'Materials 11',13,11),(12,'Materials 12',18,12),(13,'Materials 13',3,13),(14,'Materials 14',8,14),(15,'Materials 15',13,15),(16,'Materials 16',18,16),(17,'Materials 17',3,17),(18,'Materials 18',8,18),(19,'Materials 19',13,19),(20,'Materials 20',18,20);
+INSERT INTO `t07_material` VALUES (1,'Materials 1',3,1),(2,'Materials 2',8,2),(3,'Materials 3',13,3),(4,'Materials 4',18,4),(5,'Materials 5',3,5),(6,'Materials 6',8,6),(7,'Materials 7',13,7),(8,'Materials 8',18,8),(9,'Materials 9',3,9),(10,'Materials 10',8,10),(11,'Materials 11',13,11),(12,'Materials 12',18,12),(13,'Materials 13',3,13),(14,'Materials 14',8,14),(15,'Materials 15',13,15),(16,'Materials 16',18,16),(17,'Materials 17',3,17),(18,'Materials 18',8,18),(19,'Materials 19',13,19),(20,'Materials 20',18,20),(21,'Materials 1',3,1),(22,'Materials 2',8,2),(23,'Materials 3',13,3),(24,'Materials 4',18,4),(25,'Materials 5',3,5),(26,'Materials 6',8,6),(27,'Materials 7',13,7),(28,'Materials 8',18,8),(29,'Materials 9',3,9),(30,'Materials 10',8,10),(31,'Materials 11',13,11),(32,'Materials 12',18,12),(33,'Materials 13',3,13),(34,'Materials 14',8,14),(35,'Materials 15',13,15),(36,'Materials 16',18,16),(37,'Materials 17',3,17),(38,'Materials 18',8,18),(39,'Materials 19',13,19),(40,'Materials 20',18,20);
 /*!40000 ALTER TABLE `t07_material` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-12 19:35:53
+-- Dump completed on 2024-06-22 22:24:39

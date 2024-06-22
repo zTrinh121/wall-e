@@ -16,37 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t19_private_notifications`
+-- Table structure for table `t23_view_center_notification`
 --
 
-DROP TABLE IF EXISTS `t19_private_notifications`;
+DROP TABLE IF EXISTS `t23_view_center_notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t19_private_notifications` (
-  `C19_ID` int NOT NULL AUTO_INCREMENT,
-  `C19_TITLE` varchar(255) NOT NULL,
-  `c19_content` varchar(255) NOT NULL,
-  `C19_CREATED_AT` datetime NOT NULL,
-  `C19_UPDATED_AT` datetime DEFAULT NULL,
-  `c19_actor` tinyint NOT NULL,
-  `C19_SEND_TO_USER` varchar(255) DEFAULT NULL,
-  `C19_SEND_TO_CENTER` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`C19_ID`),
-  KEY `FK_SEND_TO_USER` (`C19_SEND_TO_USER`),
-  KEY `FK_SEND_TO_CENTER` (`C19_SEND_TO_CENTER`),
-  CONSTRAINT `FK_SEND_TO_CENTER` FOREIGN KEY (`C19_SEND_TO_CENTER`) REFERENCES `t03_center` (`C03_CENTER_CODE`),
-  CONSTRAINT `FK_SEND_TO_USER` FOREIGN KEY (`C19_SEND_TO_USER`) REFERENCES `t14_user` (`C14_USER_CODE`),
-  CONSTRAINT `CHK_SEND_TO` CHECK (((`C19_SEND_TO_USER` is not null) or (`C19_SEND_TO_CENTER` is not null)))
+CREATE TABLE `t23_view_center_notification` (
+  `C23_ID` int NOT NULL AUTO_INCREMENT,
+  `C23_CENTER_NOTIFICATION_ID` int NOT NULL,
+  `C23_HAS_SEEN_BY` int NOT NULL,
+  `C23_SEEN_TIME` datetime DEFAULT (now()),
+  PRIMARY KEY (`C23_ID`),
+  KEY `FK_T23_T22` (`C23_CENTER_NOTIFICATION_ID`),
+  KEY `FK_T23_T14` (`C23_HAS_SEEN_BY`),
+  CONSTRAINT `FK_T23_T14` FOREIGN KEY (`C23_HAS_SEEN_BY`) REFERENCES `t16_user_center` (`C16_USER_ID`),
+  CONSTRAINT `FK_T23_T22` FOREIGN KEY (`C23_CENTER_NOTIFICATION_ID`) REFERENCES `t22_center_notification` (`C22_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t19_private_notifications`
+-- Dumping data for table `t23_view_center_notification`
 --
 
-LOCK TABLES `t19_private_notifications` WRITE;
-/*!40000 ALTER TABLE `t19_private_notifications` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t19_private_notifications` ENABLE KEYS */;
+LOCK TABLES `t23_view_center_notification` WRITE;
+/*!40000 ALTER TABLE `t23_view_center_notification` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t23_view_center_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -58,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-12 19:35:52
+-- Dump completed on 2024-06-22 22:24:39

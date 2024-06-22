@@ -16,27 +16,33 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t05_role`
+-- Table structure for table `t19_view_system_notification`
 --
 
-DROP TABLE IF EXISTS `t05_role`;
+DROP TABLE IF EXISTS `t19_view_system_notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t05_role` (
-  `C05_ROLE_ID` int NOT NULL,
-  `C05_ROLE_DESC` enum('STUDENT','PARENT','TEACHER','MANAGER','ADMIN') NOT NULL,
-  PRIMARY KEY (`C05_ROLE_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t19_view_system_notification` (
+  `C19_ID` int NOT NULL AUTO_INCREMENT,
+  `C19_SYSTEM_NOTIFICATION_ID` int NOT NULL,
+  `C19_HAS_SEEN_BY` int NOT NULL,
+  `C19_SEEN_TIME` datetime DEFAULT (now()),
+  PRIMARY KEY (`C19_ID`),
+  KEY `FK_T19_T11` (`C19_SYSTEM_NOTIFICATION_ID`),
+  KEY `FK_T19_T14` (`C19_HAS_SEEN_BY`),
+  CONSTRAINT `FK_T19_T11` FOREIGN KEY (`C19_SYSTEM_NOTIFICATION_ID`) REFERENCES `t11_system_notification` (`C11_ID`),
+  CONSTRAINT `FK_T19_T14` FOREIGN KEY (`C19_HAS_SEEN_BY`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t05_role`
+-- Dumping data for table `t19_view_system_notification`
 --
 
-LOCK TABLES `t05_role` WRITE;
-/*!40000 ALTER TABLE `t05_role` DISABLE KEYS */;
-INSERT INTO `t05_role` VALUES (1,'STUDENT'),(2,'PARENT'),(3,'TEACHER'),(4,'MANAGER'),(5,'ADMIN');
-/*!40000 ALTER TABLE `t05_role` ENABLE KEYS */;
+LOCK TABLES `t19_view_system_notification` WRITE;
+/*!40000 ALTER TABLE `t19_view_system_notification` DISABLE KEYS */;
+INSERT INTO `t19_view_system_notification` VALUES (1,1,2,'2024-06-22 09:15:16');
+/*!40000 ALTER TABLE `t19_view_system_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-22 22:24:39
+-- Dump completed on 2024-06-22 22:24:38
