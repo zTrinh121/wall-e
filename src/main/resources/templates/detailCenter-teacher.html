@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang chủ</title>
+    <link rel="icon" type="image/png" href="/FE/images/Wall-E-icon.png">
+    <link rel="stylesheet" href="/css/detailCenter-teacher.css" />
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+    <scripts src="script.js"></scripts>
+</head>
+
+<body>
+<div class="main_container">
+    <section id="content">
+        <!-- MAIN -->
+        <main>
+            <div class="head-title">
+                <div class="left">
+                    <h1>Chi tiết trung tâm A</h1>
+                    <div class="runline">
+                        <p>Hôm nay là:
+                            <span id="currentDate"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="table-data">
+                <div class="order">
+                    <div class="head">
+                        <h3 style="text-align: center;">Chào mừng đến với trung tâm A</h3>
+                    </div>
+                    <div class="head">
+
+                        <form action="../search/index.html" class="search">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fa fa-search"></i>
+                            </i>
+                            <input type="text" placeholder="Tìm kiếm">
+                            <button onclick="" type="submit">Tìm</button>
+                        </form>
+
+                        <button onclick="openDeleteModal()">
+                            Rời trung tâm <a class="delete-user"><i class="fa-solid fa-arrow-right-from-bracket"></i></a>
+                        </button>
+                        <!-- cảm giác nút này thừa thải -->
+                    </div>
+                </div>
+            </div>
+            <div class="table-data">
+                <div class="order">
+                    <table id="teacher-centre-manage">
+                        <thead>
+                        <tr>
+                            <th>
+                                <p>Tên lớp học</p>
+                            </th>
+                            <th>
+                                <p>Mã lớp học</p>
+                            </th>
+                            <th>
+                                <p>Số lượng học viên</p>
+                            </th>
+                            <th>
+                                <p>Thông tin chi tiết</p>
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                <p>John Doe</p>
+                            </td>
+                            <td>
+                                <p>ABC</p>
+                            </td>
+                            <td>
+                                <p>45 Trần Duy hưng</p>
+                            </td>
+                            <td><button class="openModalBtn">Xem</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Jane Smith</p>
+                            </td>
+                            <td>
+                                <p>XYZ</p>
+                            </td>
+                            <td>
+                                <p>36 Vũ Duy NGhĩa</p>
+                            </td>
+                            <td><button class="openModalBtn">Xem</button></td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <p>Will Smith</p>
+                            </td>
+                            <td>
+                                <p>DDD</p>
+                            </td>
+                            <td>
+                                <p>16 Vũ hán</p>
+                            </td>
+                            <td><button class="openModalBtn">Xem</button></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+
+            <div class="table-data">
+                <div class="order">
+                    <div class="description" id="centreDescription">
+                        <p> địa chỉ - số điện thoại liên lạc/ của quản lý - manager name - email quản lý/trung tâm</p>
+                    </div>
+                </div>
+            </div>
+            <!-- Edit Description Modal -->
+            <!-- <div id="editDescriptionModal" class="modal">
+              <div class="modal-content">
+                <span class="close" onclick="closeEditModal()">&times;</span>
+                <h2>Chỉnh sửa mô tả trung tâm</h2>
+                <textarea id="descriptionInput" rows="6" cols="50"></textarea>
+                <button onclick="saveDescription()">Lưu</button>
+              </div>
+            </div> -->
+            <!-- Start: DELETE TOAST -->
+
+
+
+</main>
+<!-- MAIN -->
+</section>
+</div>
+<!-- Delete Modal -->
+
+
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn rời trung tâm <span id="centerName"></span>?</p>
+        <button id="confirmDelete" onclick="deleteCenter()">Xác nhận</button>
+        <button id="cancelDeleteButton" onclick="closeDeleteModal()">Huỷ</button>
+        <!-- nên css lại nút xác nhân vs huỷ cách xa xa ra -->
+    </div>
+</div>
+
+<script src="/js/detailCenter-teacher.js" type="module"></script>
+<!-- modal-up-detail-infor -->
+<script>
+    var modal = document.getElementById("myModal");
+    var modalButtons = document.getElementsByClassName("openModalBtn");
+    var span = document.getElementsByClassName("close")[0];
+    // Rà hết class 'openModalBtn'
+    for (var i = 0; i < modalButtons.length; i++) {
+        modalButtons[i].addEventListener("click", function () {
+            modal.style.display = "block";
+        });
+    }
+    // hide-modal
+    span.onclick = function () {
+        modal.style.display = "none";
+    }
+</script>
+<!-- getCurrentDate -->
+<script>
+    document.getElementById("currentDate").innerText = getCurrentDate();
+
+    function getCurrentDate() {
+        var currentDate = new Date();
+        var dayOfWeek = ['Chủ Nhật', 'Thứ Hai', 'Thứ Ba', 'Thứ Tư', 'Thứ Năm', 'Thứ Sáu', 'Thứ Bảy'];
+        var day = String(currentDate.getDate()).padStart(2, "0");
+        var month = String(currentDate.getMonth() + 1).padStart(2, "0");
+        var year = currentDate.getFullYear();
+        var dayIndex = currentDate.getDay();
+        var dayName = dayOfWeek[dayIndex];
+        return dayName + ", " + day + "-" + month + "-" + year + " ";
+    };
+</script>
+
+<!-- edit modal up -->
+<script>
+    // Open edit description modal
+    function editDescription() {
+        const descriptionModal = document.getElementById('editDescriptionModal');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const currentDescription = document.getElementById('centreDescription').textContent;
+        descriptionInput.value = currentDescription.trim();
+        descriptionModal.style.display = 'block';
+    }
+
+    // Close edit description modal
+    function closeEditModal() {
+        const descriptionModal = document.getElementById('editDescriptionModal');
+        descriptionModal.style.display = 'none';
+    }
+
+    // Save edited description
+    function saveDescription() {
+        const descriptionModal = document.getElementById('editDescriptionModal');
+        const descriptionInput = document.getElementById('descriptionInput');
+        const newDescription = descriptionInput.value;
+        document.getElementById('centreDescription').innerHTML = `<p>${newDescription}</p>`;
+        descriptionModal.style.display = 'none';
+    }
+</script>
+
+<!-- delete center -->
+<script>
+    // modal-show-up
+    function openDeleteModal() {
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.style.display = 'block';
+    }
+
+    // Close
+    function closeDeleteModal() {
+        const deleteModal = document.getElementById('deleteModal');
+        deleteModal.style.display = 'none';
+    }
+
+    // Deletion
+    function deleteCenter() {
+        const centerName = document.getElementById('centerName').textContent;
+        // Perform delete operation here
+        // After successful deletion, you can display a toast or perform any other action
+        showToast('Rời thành công trung tâm ' + centerName + '!');
+        closeDeleteModal();
+    }
+
+    // Show toast message
+    function showToast(message) {
+        const toast = document.createElement('div');
+        toast.className = 'toast';
+        toast.textContent = message;
+        document.body.appendChild(toast);
+        setTimeout(() => {
+            toast.classList.add('show');
+        }, 100);
+        setTimeout(() => {
+            toast.classList.remove('show');
+            setTimeout(() => {
+                document.body.removeChild(toast);
+            }, 300);
+        }, 3000);
+    }
+</script>
+
+</body>
+
+</html>

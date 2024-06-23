@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8" />
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/managerHome.css" />
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+</head>
+
+<body>
+<div class="wrapper">
+    <div class="top_navbar">
+        <div class="nva">
+            <div class="one"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
+        <div class="top_menu">
+            <div class="logo">
+                <a href="#">Wall-E</a>
+            </div>
+            <form action="#" class="search">
+                <i class="bx bxs-calendar-check">
+                    <i class="fa fa-search"></i>
+                </i>
+                <input type="text" placeholder="Tìm kiếm thông báo tài khoản">
+                <button onclick="" type="submit">Tìm</button>
+            </form>
+            <div class="profile-dropdown">
+                <div onclick="toggle()" class="profile-dropdown-btn">
+                    <div class="profile-img">
+                        <i class="fas fa-circle"></i>
+                    </div>
+
+                    <span >Victoria
+
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                </div>
+
+
+
+                <ul class="profile-dropdown-list">
+                    <li class="profile-dropdown-list-item">
+                        <a href="#">
+                            <i class="bx bxs-calendar-check">
+
+                                <i class="fas fa-user"></i>
+                            </i>
+                            Thông tin cá nhân
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="#">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-bell"></i>
+                            </i>
+                            Thông báo
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/change-password">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-lock"></i>
+                            </i>
+                            Đổi mật khẩu
+                        </a>
+                    </li>
+
+                    <hr />
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/guest">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </i>
+                            Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="sidebar">
+        <ul>
+            <li>
+                <a href="#" class="active">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Trang chủ</span></a>
+            </li>
+            <li>
+                <a href="/manager/noti">
+                    <span class="icon"><i class="fas fa-bell"></i></span>
+                    <span class="title">Thông báo</span></a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+                    <span class="title">Doanh thu</span>
+                </a>
+            </li>
+            <li>
+                <a href="/manager/mpost" class="active">
+                    <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
+                    <span class="title">Bài đăng</span>
+                </a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_container">
+        <section id="content">
+
+            <!-- MAIN -->
+            <main>
+                <div class="head-title">
+                    <div class="left">
+                        <h1>Danh sách trung tâm</h1>
+                        <div class="runline">
+                            <p>Hôm nay là:
+                                <span id="currentDate"></span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="table-data">
+                    <div class="order">
+                        <div class="head">
+                            <h3>Danh sách trung tâm</h3>
+                            <form action="" class="search">
+                                <i class="bx bxs-calendar-check">
+                                    <i class="fa fa-search"></i>
+                                </i>
+                                <input type="text" placeholder="Tìm kiếm trung tâm">
+                                <button type="submit">Tìm</button>
+                            </form>
+                            <div class="filter" style="display: none;">
+                                <select name="codeids" id="codeid">
+                                </select>
+                            </div>
+                        </div>
+                        <table id="teacher-centre-manage">
+                            <thead>
+                            <tr>
+                                <th>
+                                    <p>Tiêu đề</p>
+                                </th>
+                                <th>
+                                    <p>Ngày đăng</p>
+                                </th>
+                                <th>
+                                    <p>Phân loại</p>
+                                </th>
+                                <th>
+                                    <p>Hành động</p>
+                                </th>
+                                <th>
+                                    <p>Xem</p>
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody id="tableBody">
+                            </tbody>
+                        </table>
+                        <div id="no-result">No result</div>
+                        <!--                        <div id="paginationControls" class="pagination-controls"></div>-->
+                        <!-- Toast Notification -->
+                        <div id="toast" class="toast">
+                            <div id="toastMessage"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="table-data">
+                    <div class="order">
+                        <table>
+                            <thead>
+                            <tbody>
+                            <tr>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td>
+                                    <p><button id="addCentreBtn" class="add-btn">Tạo bài đăng </button></p>
+                                </td>
+                                <td>
+                                    <p><button id="addCentreBtnE" class="add-btn">Tạo bài chiêu sinh </button></p>
+                                </td>
+                            </tr>
+                            </tbody>
+                            </thead>
+                        </table>
+                    </div>
+                </div>
+                <!-- Add Post Modal define by E -->
+                <div id="addCentreModal" class="modal">
+                    <div class="add-modal-content">
+                        <span id="cancelAdd" class="close">&times;</span>
+                        <h4 style="text-align:center">Tạo bài đăng</h4>
+                        <!-- Add Centre Form -->
+                        <form id="addCentreForm">
+                            <div>
+                                <label for="addCenterName">Tiêu đề:</label>
+                                <input type="text" id="addCenterName" name="addCenterName" required>
+                            </div>
+                            <div>
+                                <label for="addCenterDesc">Mô tả:</label>
+                                <input type="text" id="addCenterDesc" name="addCenterDesc" required>
+                            </div>
+                            <div>
+                                <!--                                nên gửi/ đưa vào đâu-->
+                                <label for="addFileInput">File đính kèm:</label>
+                                <input type="file" id="addFileInput" accept=".pdf,.doc,.docx,.txt">
+                                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+                            </div>
+                            <button type="submit" id="confirmAdd">Gửi yêu cầu</button>
+                        </form>
+
+                    </div>
+                </div>
+                <div id="addCentreModalE" class="modal">
+                    <div class="add-modal-content">
+                        <span id="cancelAddE" class="close">&times;</span>
+                        <h4 style="text-align:center">Tạo bài đăng</h4>
+                        <!-- Add Centre Form -->
+                        <form id="addCentreFormE">
+                            <div>
+                                <label for="addCenterNameE">Tiêu đề:</label>
+                                <input type="text" id="addCenterNameE" name="addCenterNameE" required>
+                            </div>
+                            <div>
+                                <label for="addCenterDescE">Mô tả:</label>
+                                <input type="text" id="addCenterDescE" name="addCenterDescE" required>
+                            </div>
+                            <div>
+                                <!--                                nên gửi/ đưa vào đâu-->
+                                <label for="addFileInputE">File đính kèm:</label>
+                                <input type="file" id="addFileInputE" accept=".pdf,.doc,.docx,.txt">
+                                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+                            </div>
+                            <button type="submit" id="confirmAddE">Gửi yêu cầu</button>
+                        </form>
+
+                    </div>
+                </div>
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+
+</div>
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content" id="modal-detail">
+        <span class="close">&times;</span>
+        <iframe data-id="${center.id}" width="1250" height="500" frameborder="0"
+                scrolling="auto"></iframe>
+    </div>
+</div>
+
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
+        <button id="confirmDelete">Xác nhận</button>
+        <button id="cancelDeleteButton">Huỷ</button>
+    </div>
+</div>
+
+<script src="/js/managerHome.js" type="module"></script>
+<script src="/js/dropdown.js"></script>
+
+</body>
+
+</html>

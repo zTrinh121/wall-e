@@ -16,7 +16,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
+
     User findByUsername(String username);
+
     User findByEmail(String email);
 
     User findByEmailAndCode(String email, String code);
@@ -79,5 +81,5 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT u FROM User u WHERE u.username = :username")
     Optional<User> findByUsernamee(@Param("username") String username);
-///////////////////////////////////////////////
+
 }

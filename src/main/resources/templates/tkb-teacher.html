@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <title>Thời khóa biểu</title>
+    <link rel="stylesheet" href="/css/tkb-teacher.css" />
+    <script src="/js/tkb-teacher.js"></script>
+    <script src="frag.js" type="module"></script>
+    <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+    <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
+    <th:block th:replace="studentFragments :: studenthead"></th:block>
+</head>
+
+<body>
+<div class="wrapper">
+    <div th:replace="studentFragments :: studentheader"></div>
+    <div class="top_navbar">
+        <div class="nva">
+            <div class="one"></div>
+            <div class="two"></div>
+            <div class="three"></div>
+        </div>
+        <div class="top_menu">
+            <div class="logo">
+                <a=href=".. /1dashBoard/index.html">Wall-E</a>
+            </div>
+            <form action="../search/index.html" class="search">
+                <i class="bx bxs-calendar-check">
+                    <i class="fa fa-search"></i>
+                </i>
+                <input type="text" placeholder="Tìm kiếm">
+                <button onclick="" type="submit">Tìm</button>
+            </form>
+            <div class="profile-dropdown">
+                <div onclick="toggle()" class="profile-dropdown-btn">
+                    <div class="profile-img">
+                        <i class="fas fa-circle"></i>
+                    </div>
+
+                    <span>Victoria
+                            <i class="fas fa-angle-down"></i>
+                        </span>
+                </div>
+
+                <ul class="profile-dropdown-list">
+                    <li class="profile-dropdown-list-item">
+                        <a href="../profile/index.html">
+                            <i class="bx bxs-calendar-check">
+
+                                <i class="fas fa-user"></i>
+                            </i>
+                            Thông tin cá nhân
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/tkb-teacher">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-bell"></i>
+                            </i>
+                            Thông báo
+                        </a>
+                    </li>
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="../changePassword/index.html">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-lock"></i>
+                            </i>
+                            Đổi mật khẩu
+                        </a>
+                    </li>
+
+                    <hr />
+
+                    <li class="profile-dropdown-list-item">
+                        <a href="/FE/page/guest/index.html">
+                            <i class="bx bxs-calendar-check">
+                                <i class="fas fa-sign-out-alt"></i>
+                            </i>
+                            Đăng xuất
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+    <div class="sidebar">
+        <ul>
+            <li>
+                <a href="/teacher-dashboard">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Trang chủ</span></a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+                    <span class="title">Tổng doanh thu</span>
+                </a>
+            </li>
+            <li>
+                <a href="/tkb-teacher">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Thời khoá biểu</span></a>
+            </li>
+            <li>
+                <a href="/teacher-notification">
+                    <span class="icon"><i class="fas fa-home"></i></span>
+                    <span class="title">Thông báo</span></a>
+            </li>
+        </ul>
+    </div>
+    <div class="main_container">
+        <section id="content">
+            <!-- MAIN -->
+            <main>
+                <div class="container">
+                    <div class="left">
+                        <div class="header">
+                            <p>Thời khóa biểu</p>
+                        </div>
+                        <div class="calendar">
+                            <div class="month">
+                                <i class="fas fa-angle-left prev"></i>
+                                <div class="date">december 2015</div>
+                                <i class="fas fa-angle-right next"></i>
+                            </div>
+                            <div class="weekdays">
+                                <div>CN</div>
+                                <div>T2</div>
+                                <div>T3</div>
+                                <div>T4</div>
+                                <div>T5</div>
+                                <div>T6</div>
+                                <div>T7</div>
+                            </div>
+                            <div class="days"></div>
+                            <div class="goto-today">
+                                <div class="goto">
+                                    <input type="text" placeholder="mm/yyyy" class="date-input" />
+                                    <button class="goto-btn">Tìm</button>
+                                </div>
+                                <button class="today-btn">Hôm nay</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="right">
+                        <div class="today-date">
+                            <div class="event-date">12th december 2022</div>
+                        </div>
+                        <div class="events"></div>
+
+                    </div>
+                </div>
+
+                <!-- End timetable -->
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+</div>
+
+
+</body>
+
+</html>

@@ -12,9 +12,9 @@ import java.util.regex.Pattern;
 
 @UtilityClass
 public class FileUploadUtil {
+
     public static final long MAX_IMAGE_SIZE = 2 * 1024 * 1024; // 2MB
     public static final long MAX_PDF_SIZE = 20 * 1024 * 1024; // 20MB
-
 
     public static final String IMAGE_PATTERN = "([^\\s]+(\\.(?i)(jpg|jpeg|png|gif|bmp))$)";
 
