@@ -2,7 +2,6 @@ package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.*;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
@@ -10,6 +9,7 @@ import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.View;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
@@ -18,26 +18,26 @@ import java.util.List;
 @Service
 public interface ManagerService {
 
-    // ------------- private Notifications --------------
-    List<PrivateNotification> getAllPrivateNotification();
-
-    PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDtoDto);
-
-    PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto);
-
-    boolean deletePrivateNotification(int id);
-    // --------------------------------------------------
-
-
-    // ------------- public Notifications --------------
-    List<PublicNotification> getAllPublicNotification();
-
-    PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto);
-
-    PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto);
-
-    boolean deletePublicNotification(int id);
-    // --------------------------------------------------
+//    // ------------- private Notifications --------------
+//    List<PrivateNotification> getAllPrivateNotification();
+//
+//    PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDtoDto);
+//
+//    PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto);
+//
+//    boolean deletePrivateNotification(int id);
+//    // --------------------------------------------------
+//
+//
+//    // ------------- public Notifications --------------
+//    List<PublicNotification> getAllPublicNotification();
+//
+//    PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto);
+//
+//    PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto);
+//
+//    boolean deletePublicNotification(int id);
+//    // --------------------------------------------------
 
 
     // ----------------- center Posts ------------------
@@ -63,7 +63,7 @@ public interface ManagerService {
         Tạo một trung tâm trên hệ thống
         --> Task này phải thông Admin duyệt
      */
-    Center createCenter(CenterDto centerDto, HttpSession session);
+    Center createCenter(CenterDto centerDto, User manager);
 
     void uploadCenterImage(final int id, final MultipartFile file);
 
@@ -221,8 +221,33 @@ public interface ManagerService {
 
     int countCourseByCenter(int centerId);
 
-    List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId);
+    List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId);
 
-    List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId);
+    List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId);
+
+    // ------------- Individual Notifications --------------
+    List<IndividualNotification> getAllIndividualNotifications(int managerId);
+
+    IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User admin);
+
+    IndividualNotification updateIndividualNotification(int id, IndividualNotificationDto invididualNotificationDto);
+
+    boolean deleteIndividualNotification(int id);
+
+    List<IndividualNotification> getViewersIndividualNotification(int managerId);
+    // --------------------------------------------------
+
+    // ------------- Center Notifications --------------
+    List<CenterNotification> getAllCenterNotifications(int managerId);
+
+    CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto);
+
+    CenterNotification updateCenterNotification(int id, CenterNotificationDto centerNotificationDto);
+
+    boolean deleteCenterNotification(int id);
+
+    List<ViewCenterNotification> getListViewersCenterNotification(int notificationId);
+
+    // --------------------------------------------------
 
 }

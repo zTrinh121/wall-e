@@ -16,11 +16,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
 
     @Query("SELECT NEW com.example.SWP391_Project.response.CourseDetailResponse(" +
             "c.name, c.code, c.description, c.startDate, c.endDate, " +
-            "c.amountOfStudents, c.courseFee, " +
-            "s.name, s.description, " +
+            "c.amountOfStudents, c.subject, c.courseFee, " +
             "u.name, u.phone, u.address, u.dob, u.gender, u.email) " +
             "FROM Course c " +
-            "JOIN c.subject s " +
             "JOIN c.teacher u " +
             "WHERE c.id = :courseId")
     CourseDetailResponse getCourseDetailByCourseId(int courseId);
@@ -51,9 +49,10 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "   c.teacher.email AS email, " +
             "   GROUP_CONCAT(c.name) AS courses " +
             "FROM Course c " +
-            "WHERE c.teacher.id = :teacherId " +
+            "WHERE c.teacher.id = :teacherId AND c.center.id = :centerId " +
             "GROUP BY c.teacher.id")
-    List<Object[]> findTeacherInfoAndCoursesByTeacherId(int teacherId);
+    List<Object[]> findTeacherInfoAndCoursesByTeacherId(@Param("teacherId") int teacherId,
+                                                        @Param("centerId") int centerId);
 
 }
 

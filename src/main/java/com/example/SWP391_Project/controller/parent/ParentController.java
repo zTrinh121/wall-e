@@ -85,4 +85,22 @@ public class ParentController {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
+
+    @GetMapping("/students")
+    public ResponseEntity<?> getStudentsByParentId(HttpSession session) {
+        try {
+            int parentId = (int) session.getAttribute("authid");
+            List<User> students = parentService.getStudentsByParentId(parentId);
+
+            if (students == null || students.isEmpty()) {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                        .body("No students found for parent ID: " + parentId);
+            }
+
+            return ResponseEntity.ok(students);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Failed to fetch students: " + e.getMessage());
+        }
+    }
 }

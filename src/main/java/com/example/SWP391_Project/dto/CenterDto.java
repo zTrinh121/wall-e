@@ -10,7 +10,6 @@ import lombok.experimental.FieldDefaults;
 public class CenterDto {
 
     // course's detail
-    // format must be "CENTER%"
     String code;
 
     String name;

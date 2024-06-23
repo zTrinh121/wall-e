@@ -3,10 +3,8 @@ package com.example.SWP391_Project.service.impl;
 import com.example.SWP391_Project.dto.*;
 import com.example.SWP391_Project.enums.PaymentMethodEnum;
 import com.example.SWP391_Project.enums.PaymentStatus;
-import com.example.SWP391_Project.enums.RoleDescription;
 import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.response.CourseDetailResponse;
@@ -33,12 +31,6 @@ import java.util.stream.Collectors;
 public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
-    private PrivateNotificationRepository privateNotificationRepository;
-
-    @Autowired
-    private PublicNotificationRepository publicNotificationRepository;
-
-    @Autowired
     private CenterPostRepository centerPostRepository;
 
     @Autowired
@@ -47,8 +39,8 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private CourseRepository courseRepository;
 
-    @Autowired
-    private SubjectRepository subjectRepository;
+//    @Autowired
+//    private SubjectRepository subjectRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -77,126 +69,135 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private EnrollmentRepository enrollmentRepository;
 
-    // ----------------------- Private notification ----------------------------
-    @Override
-    public List<PrivateNotification> getAllPrivateNotification() {
-        return privateNotificationRepository
-                .findAll(Sort.by(Sort.Direction.DESC, "id"));
-    }
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
 
-    @Override
-    public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
-        String sendTo = privateNotificationDto.getSendTo();
-        if (sendTo.startsWith("USER")) {
-            Optional<User> userCode = userRepository.findByCode(privateNotificationDto.getSendTo());
-            if (userCode.isPresent()) {
-                PrivateNotification privateNotification = PrivateNotification.builder()
-                        .title(privateNotificationDto.getTitle())
-                        .content(privateNotificationDto.getContent())
-                        .createdAt(new Date())
-                        //.actor(Actor.MANAGER)
-                        .actor(RoleDescription.MANAGER)
-                        .userSendTo(userCode.get())
-                        .centerSendTo(null)
-                        .build();
-                return privateNotificationRepository.save(privateNotification);
-            } else {
-                throw new IllegalArgumentException("User not found");
-            }
-        } else if (sendTo.startsWith("CENTER")) {
-            Optional<Center> centerOptional = centerRepository.findByCode(privateNotificationDto.getSendTo());
-            if (centerOptional.isPresent()) {
-                PrivateNotification privateNotification = PrivateNotification.builder()
-                        .title(privateNotificationDto.getTitle())
-                        .content(privateNotificationDto.getContent())
-                        .createdAt(new Date())
-                       // .actor(Actor.MANAGER)
-                        .actor(RoleDescription.MANAGER)
-                        .userSendTo(null)
-                        .centerSendTo(centerOptional.get())
-                        .build();
-                return privateNotificationRepository.save(privateNotification);
-            } else {
-                throw new IllegalArgumentException("Center not found");
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid sendTo value");
-        }
-    }
+    @Autowired
+    private CenterNotificationRepository centerNotificationRepository;
 
-    @Override
-    public PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto) {
-        PrivateNotification privateNotification = privateNotificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("The private notification hasn't been existed ! "));
+    @Autowired
+    private ViewCenterNotificationRepository viewCenterNotificationRepository;
 
-        privateNotification.setTitle(privateNotificationDto.getTitle());
-        privateNotification.setContent(privateNotificationDto.getContent());
-        privateNotification.setUpdatedAt(new Date());
-
-        return privateNotificationRepository.save(privateNotification);
-    }
-
-    @Override
-    public boolean deletePrivateNotification(int id) {
-        try {
-            privateNotificationRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    // ------------------------------------------------------------------------
-
-
-    // ----------------------- Public notification ----------------------------
-    @Override
-    public List<PublicNotification> getAllPublicNotification() {
-        return publicNotificationRepository
-                .findAll(Sort.by(Sort.Direction.DESC, "id"));
-    }
-
-    @Override
-    public PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto) {
-        Optional<Center> centerOtp = centerRepository.findByCode(publicNotificationDto.getCenterSendTo());
-        if (!centerOtp.isPresent()) {
-            throw new IllegalArgumentException("Center not found when finding by code !");
-        }
-        Center center = centerOtp.get();
-
-        PublicNotification publicNotification = PublicNotification.builder()
-                .title(publicNotificationDto.getTitle())
-                .content(publicNotificationDto.getContent())
-                .createdAt(new Date())
-                .center(center)
-                .build();
-        return publicNotificationRepository.save(publicNotification);
-    }
-
-    public PublicNotification findPublicNotificationById(int id) {
-        return publicNotificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("The public notification hasn't been existed ! "));
-    }
-
-    @Override
-    public PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto) {
-        PublicNotification publicNotification = findPublicNotificationById(id);
-
-        publicNotification.setTitle(publicNotificationDto.getTitle());
-        publicNotification.setContent(publicNotificationDto.getContent());
-        publicNotification.setUpdatedAt(new Date());
-
-        return publicNotificationRepository.save(publicNotification);
-    }
-
-    @Override
-    public boolean deletePublicNotification(int id) {
-        try {
-            publicNotificationRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
+//    // ----------------------- Private notification ----------------------------
+//    @Override
+//    public List<PrivateNotification> getAllPrivateNotification() {
+//        return privateNotificationRepository
+//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+//    }
+//
+//    @Override
+//    public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
+//        String sendTo = privateNotificationDto.getSendTo();
+//        if (sendTo.startsWith("USER")) {
+//            Optional<User> userCode = userRepository.findByCode(privateNotificationDto.getSendTo());
+//            if (userCode.isPresent()) {
+//                PrivateNotification privateNotification = PrivateNotification.builder()
+//                        .title(privateNotificationDto.getTitle())
+//                        .content(privateNotificationDto.getContent())
+//                        .createdAt(new Date())
+//                        //.actor(Actor.MANAGER)
+//                        .actor(RoleDescription.MANAGER)
+//                        .userSendTo(userCode.get())
+//                        .centerSendTo(null)
+//                        .build();
+//                return privateNotificationRepository.save(privateNotification);
+//            } else {
+//                throw new IllegalArgumentException("User not found");
+//            }
+//        } else if (sendTo.startsWith("CENTER")) {
+//            Optional<Center> centerOptional = centerRepository.findByCode(privateNotificationDto.getSendTo());
+//            if (centerOptional.isPresent()) {
+//                PrivateNotification privateNotification = PrivateNotification.builder()
+//                        .title(privateNotificationDto.getTitle())
+//                        .content(privateNotificationDto.getContent())
+//                        .createdAt(new Date())
+//                       // .actor(Actor.MANAGER)
+//                        .actor(RoleDescription.MANAGER)
+//                        .userSendTo(null)
+//                        .centerSendTo(centerOptional.get())
+//                        .build();
+//                return privateNotificationRepository.save(privateNotification);
+//            } else {
+//                throw new IllegalArgumentException("Center not found");
+//            }
+//        } else {
+//            throw new IllegalArgumentException("Invalid sendTo value");
+//        }
+//    }
+//
+//    @Override
+//    public PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto) {
+//        PrivateNotification privateNotification = privateNotificationRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("The private notification hasn't been existed ! "));
+//
+//        privateNotification.setTitle(privateNotificationDto.getTitle());
+//        privateNotification.setContent(privateNotificationDto.getContent());
+//        privateNotification.setUpdatedAt(new Date());
+//
+//        return privateNotificationRepository.save(privateNotification);
+//    }
+//
+//    @Override
+//    public boolean deletePrivateNotification(int id) {
+//        try {
+//            privateNotificationRepository.deleteById(id);
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+//    // ------------------------------------------------------------------------
+//
+//
+//    // ----------------------- Public notification ----------------------------
+//    @Override
+//    public List<PublicNotification> getAllPublicNotification() {
+//        return publicNotificationRepository
+//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+//    }
+//
+//    @Override
+//    public PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto) {
+//        Optional<Center> centerOtp = centerRepository.findByCode(publicNotificationDto.getCenterSendTo());
+//        if (!centerOtp.isPresent()) {
+//            throw new IllegalArgumentException("Center not found when finding by code !");
+//        }
+//        Center center = centerOtp.get();
+//
+//        PublicNotification publicNotification = PublicNotification.builder()
+//                .title(publicNotificationDto.getTitle())
+//                .content(publicNotificationDto.getContent())
+//                .createdAt(new Date())
+//                .center(center)
+//                .build();
+//        return publicNotificationRepository.save(publicNotification);
+//    }
+//
+//    public PublicNotification findPublicNotificationById(int id) {
+//        return publicNotificationRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("The public notification hasn't been existed ! "));
+//    }
+//
+//    @Override
+//    public PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto) {
+//        PublicNotification publicNotification = findPublicNotificationById(id);
+//
+//        publicNotification.setTitle(publicNotificationDto.getTitle());
+//        publicNotification.setContent(publicNotificationDto.getContent());
+//        publicNotification.setUpdatedAt(new Date());
+//
+//        return publicNotificationRepository.save(publicNotification);
+//    }
+//
+//    @Override
+//    public boolean deletePublicNotification(int id) {
+//        try {
+//            publicNotificationRepository.deleteById(id);
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
     // ------------------------------------------------------------------------
 
 
@@ -279,24 +280,16 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public void uploadCenterImage(final int id, final MultipartFile file) {
         final Center center = findCenterById(id);
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        FileUploadUtil.assertAllowedImage(file);
         final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        final CloudinaryResponse response = this.cloudinaryService.uploadImageFile(file, fileName);
         center.setImagePath(response.getUrl());
         center.setCloudinaryImageId(response.getPublicId());
         this.centerRepository.save(center);
     }
 
     @Override
-    public Center createCenter(CenterDto centerDto, HttpSession session) {
-        if (centerDto == null) {
-            return null;
-        }
-        User loggedInUser = (User) session.getAttribute("User");
-        if (loggedInUser == null) {
-            throw new IllegalArgumentException("User is not present in the session.");
-        }
-
+    public Center createCenter(CenterDto centerDto, User manager) {
         Center center = Center.builder()
                 .code(centerDto.getCode())
                 .name(centerDto.getName())
@@ -307,10 +300,11 @@ public class ManagerServiceImpl implements ManagerService {
                 .regulation(centerDto.getRegulation())
                 .createdAt(new Date())
                 .imagePath(centerDto.getImagePath())
-                .manager(loggedInUser)
+                .manager(manager)
                 .build();
         return centerRepository.save(center);
     }
+
 
     @Override
     @Transactional
@@ -382,13 +376,6 @@ public class ManagerServiceImpl implements ManagerService {
         }
         Center center = centerOtp.get();
 
-        // Find Subject by code
-        Optional<Subject> subjectOtp = subjectRepository.findByCode(courseDto.getSubjectCode());
-        if (!subjectOtp.isPresent()) {
-            throw new IllegalArgumentException("Subject not found");
-        }
-        Subject subject = subjectOtp.get();
-
         // Find Teacher by code
         Optional<User> teacherOtp = userRepository.findByCode(courseDto.getTeacherCode());
         if (!teacherOtp.isPresent()) {
@@ -396,27 +383,27 @@ public class ManagerServiceImpl implements ManagerService {
         }
         User teacher = teacherOtp.get();
 
-        // Lấy thông tin từ CourseDto
-        Date startDate = courseDto.getStartDate();
-        Date endDate = courseDto.getEndDate();
-        float courseFee = courseDto.getCourseFee();
-
-        // Chuyển Date thành Calendar để tính toán
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(startDate);
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(endDate);
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-
-        // Tính số tháng giữa startDate và endDate
-        int totalMonths = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
-
-        // Tính totalCourseFee
-        float totalCourseFee = totalMonths * courseFee;
+//        // Lấy thông tin từ CourseDto
+//        Date startDate = courseDto.getStartDate();
+//        Date endDate = courseDto.getEndDate();
+//        float courseFee = courseDto.getCourseFee();
+//
+//        // Chuyển Date thành Calendar để tính toán
+//        Calendar startCalendar = Calendar.getInstance();
+//        startCalendar.setTime(startDate);
+//        int startYear = startCalendar.get(Calendar.YEAR);
+//        int startMonth = startCalendar.get(Calendar.MONTH);
+//
+//        Calendar endCalendar = Calendar.getInstance();
+//        endCalendar.setTime(endDate);
+//        int endYear = endCalendar.get(Calendar.YEAR);
+//        int endMonth = endCalendar.get(Calendar.MONTH);
+//
+//        // Tính số tháng giữa startDate và endDate
+//        int totalMonths = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
+//
+//        // Tính totalCourseFee
+//        float totalCourseFee = totalMonths * courseFee;
 
         Course course = Course.builder()
                 .name(courseDto.getName())
@@ -425,10 +412,9 @@ public class ManagerServiceImpl implements ManagerService {
                 .startDate(courseDto.getStartDate())
                 .endDate(courseDto.getEndDate())
                 .amountOfStudents(courseDto.getAmountOfStudents())
-                .totalCourseFee(totalCourseFee)
                 .courseFee(courseDto.getCourseFee())
+                .subject(courseDto.getSubjectName())
                 .center(center)
-                .subject(subject)
                 .teacher(teacher)
                 .build();
         return courseRepository.save(course);
@@ -443,23 +429,6 @@ public class ManagerServiceImpl implements ManagerService {
         }
         Course course = courseOtp.get();
 
-        // Chuyển Date thành Calendar để tính toán
-        Calendar startCalendar = Calendar.getInstance();
-        startCalendar.setTime(courseDto.getStartDate());
-        int startYear = startCalendar.get(Calendar.YEAR);
-        int startMonth = startCalendar.get(Calendar.MONTH);
-
-        Calendar endCalendar = Calendar.getInstance();
-        endCalendar.setTime(courseDto.getEndDate());
-        int endYear = endCalendar.get(Calendar.YEAR);
-        int endMonth = endCalendar.get(Calendar.MONTH);
-
-        // Tính số tháng giữa startDate và endDate
-        int totalMonths = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
-
-        // Tính tổng học phí (totalCourseFee)
-        float totalCourseFee = totalMonths * courseDto.getCourseFee();
-
         // Cập nhật các thuộc tính của Course
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
@@ -467,7 +436,6 @@ public class ManagerServiceImpl implements ManagerService {
         course.setEndDate(courseDto.getEndDate());
         course.setAmountOfStudents(courseDto.getAmountOfStudents());
         course.setCourseFee(courseDto.getCourseFee());
-        course.setTotalCourseFee(totalCourseFee);
 
         return courseRepository.save(course);
     }
@@ -737,8 +705,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId) {
-        List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId);
+    public List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId) {
+        List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId, centerId);
         return results.stream()
                 .map(obj -> new TeacherCoursesResponse(
                         (String) obj[0],      // teacherCode
@@ -754,8 +722,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId) {
-        List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId);
+    public List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId) {
+        List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId, centerId);
         return results.stream()
                 .map(obj -> new StudentCoursesResponse(
                         (String) obj[0],      // studentCode
@@ -769,7 +737,118 @@ public class ManagerServiceImpl implements ManagerService {
                 ))
                 .collect(Collectors.toList());
     }
+
+    // ------------------------- Individual notification ---------------------------
+    @Override
+    public List<IndividualNotification> getAllIndividualNotifications(int managerId) {
+        Optional<List<IndividualNotification>> notifications = individualNotificationRepository.findByActor_Id(managerId);
+        return notifications.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User manager) {
+        Optional<User> sendTo = userRepository.findByUsername(invididualNotificationDto.getSendToUser());
+        if (!sendTo.isPresent()) {
+            throw new IllegalArgumentException("User not found when finding by username !");
+        }
+        User user = sendTo.get();
+
+        IndividualNotification individualNotification = IndividualNotification.builder()
+                .title(invididualNotificationDto.getTitle())
+                .content(invididualNotificationDto.getContent())
+                .actor(manager)
+                .createdAt(new Date())
+                .sendToUser(user)
+                .hasSeen(false)
+                .build();
+        return individualNotificationRepository.save(individualNotification);
+    }
+
+    @Override
+    public IndividualNotification updateIndividualNotification(int id, IndividualNotificationDto individualNotificationDto) {
+        IndividualNotification individualNotification = individualNotificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The individual notification hasn't been existed ! "));
+
+        individualNotification.setTitle(individualNotificationDto.getTitle());
+        individualNotification.setContent(individualNotification.getContent());
+        individualNotification.setUpdatedAt(new Date());
+
+        return individualNotificationRepository.save(individualNotification);
+    }
+
+    @Override
+    public boolean deleteIndividualNotification(int id) {
+        try {
+            individualNotificationRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public List<IndividualNotification> getViewersIndividualNotification(int managerId) {
+        Optional<List<IndividualNotification>> optionalNotifications = individualNotificationRepository.findByActorIdAndHasSeen(managerId);
+        return optionalNotifications.orElse(Collections.emptyList());
+    }
+
+    // ---------------------------- Center notification ---------------------------
+
+    @Override
+    public List<CenterNotification> getAllCenterNotifications(int managerId) {
+        Optional<List<CenterNotification>> optionalNotifications = centerNotificationRepository.findAllByManagerId(managerId);
+        return optionalNotifications.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto) {
+        Optional<Center> center = centerRepository.findById(centerNotificationDto.getCenterId());
+        if (!center.isPresent()) {
+            throw new IllegalArgumentException("Center not found when finding by ID !");
+        }
+        Center ct = center.get();
+
+        CenterNotification centerNotification = CenterNotification.builder()
+                .title(centerNotificationDto.getTitle())
+                .content(centerNotificationDto.getContent())
+                .createdAt(new Date())
+                .center(ct)
+                .build();
+        return centerNotificationRepository.save(centerNotification);
+    }
+
+    @Override
+    public CenterNotification updateCenterNotification(int id, CenterNotificationDto centerNotificationDto) {
+        CenterNotification centerNotification = centerNotificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The center notification hasn't been existed ! "));
+
+        centerNotification.setTitle(centerNotification.getTitle());
+        centerNotification.setContent(centerNotification.getContent());
+        centerNotification.setUpdatedAt(new Date());
+
+        return centerNotificationRepository.save(centerNotification);
+    }
+
+    @Override
+    public boolean deleteCenterNotification(int id) {
+        try {
+            centerNotificationRepository.deleteById(id);
+            return true;
+        } catch (Exception e) {
+            return false;
+        }
+    }
+
+    @Override
+    public List<ViewCenterNotification> getListViewersCenterNotification(int notificationId) {
+        Optional<List<ViewCenterNotification>> optionalList = viewCenterNotificationRepository.findByCenterNotification_Id(notificationId);
+        return optionalList.orElse(Collections.emptyList());
+    }
 }
+
+
+
+
 
 
 
