@@ -46,8 +46,8 @@ public class Slot {
     @JsonManagedReference
     Room room;
 
-    @ManyToOne
-    @JoinColumn(name = "C02_STUDENT_ID")
-    @JsonManagedReference
-    StudentSlot student;  // Add this line
+//    @ManyToOne
+//    @JoinColumn(name = "C02_STUDENT_ID")
+//    @JsonManagedReference
+//    StudentSlot student;  // Add this line
 }

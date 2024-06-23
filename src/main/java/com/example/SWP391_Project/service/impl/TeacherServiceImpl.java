@@ -1,13 +1,18 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.EnrollmentRepository;
-import com.example.SWP391_Project.repository.PrivateNotificationRepository;
+import com.example.SWP391_Project.repository.MaterialRepository;
 import com.example.SWP391_Project.repository.ResultRepository;
+import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.repository.TeacherRepository;
+import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 
@@ -20,7 +25,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private ResultRepository resultRepository;
     @Autowired
-    private PrivateNotificationRepository privateNotificationRepository;
+    private CloudinaryService cloudinaryService;
+    @Autowired
+    private MaterialRepository materialRepository;
 
     @Override
     public List<String> getCourseNamesByTeacherId(Long teacherId) {
@@ -86,36 +93,55 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
-    // Lấy ra 3 loại thông báo
-    @Override
-    public List<PrivateNotification> getAllPrivateNotifications() {
-        return teacherRepository.findAllPrivateNotifications();
+//    // Lấy ra 3 loại thông báo
+//    @Override
+//    public List<PrivateNotification> getAllPrivateNotifications() {
+//        return teacherRepository.findAllPrivateNotifications();
+//    }
+//
+//    @Override
+//    public List<PublicNotification> getAllPublicNotifications() {
+//        return teacherRepository.findAllPublicNotifications();
+//    }
+//
+//    @Override
+//    public List<SystemNotification> getAllSystemNotifications() {
+//        return teacherRepository.findAllSystemNotifications();
+//    }
+//// in ra cả 3
+//    @Override
+//    public NotificationResponse getAllNotifications() {
+//        List<PrivateNotification> privateNotifications = getAllPrivateNotifications();
+//        List<PublicNotification> publicNotifications = getAllPublicNotifications();
+//        List<SystemNotification> systemNotifications = getAllSystemNotifications();
+//        return new NotificationResponse(privateNotifications, publicNotifications, systemNotifications);
+//    }
+//
+//    // tạo thông báo private
+//    @Override
+//    public void addPrivateNotification(PrivateNotification notification) {
+//        privateNotificationRepository.save(notification); // Lưu private notification vào database
+//    }
+
+
+    @Transactional
+    public void uploadPdfFile(MultipartFile file, MaterialDto materialDto, User teacher) {
+        FileUploadUtil.assertAllowedPDF(file);
+
+        try {
+            String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+            CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
+
+            Material material = new Material();
+            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
+            material.setSubjectName(materialDto.getSubjectName());
+            material.setTeacher(teacher);
+            material.setPdfPath(response.getUrl());
+            material.setCloudinaryPdfId(response.getPublicId());
+
+            materialRepository.save(material);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to upload PDF file and save material: " + e.getMessage());
+        }
     }
-
-    @Override
-    public List<PublicNotification> getAllPublicNotifications() {
-        return teacherRepository.findAllPublicNotifications();
-    }
-
-    @Override
-    public List<SystemNotification> getAllSystemNotifications() {
-        return teacherRepository.findAllSystemNotifications();
-    }
-// in ra cả 3
-    @Override
-    public NotificationResponse getAllNotifications() {
-        List<PrivateNotification> privateNotifications = getAllPrivateNotifications();
-        List<PublicNotification> publicNotifications = getAllPublicNotifications();
-        List<SystemNotification> systemNotifications = getAllSystemNotifications();
-        return new NotificationResponse(privateNotifications, publicNotifications, systemNotifications);
-    }
-
-    // tạo thông báo private
-    @Override
-    public void addPrivateNotification(PrivateNotification notification) {
-        privateNotificationRepository.save(notification); // Lưu private notification vào database
-    }
-
-
-
 }

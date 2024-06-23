@@ -1,12 +1,12 @@
 package com.example.SWP391_Project.controller.admin;
 
-import com.example.SWP391_Project.dto.PrivateNotificationDto;
+import com.example.SWP391_Project.dto.IndividualNotificationDto;
 import com.example.SWP391_Project.dto.SystemNotificationDto;
-import com.example.SWP391_Project.model.PrivateNotification;
-import com.example.SWP391_Project.model.SystemNotification;
+import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
 import com.example.SWP391_Project.service.AdminService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -49,21 +49,21 @@ public class AdminController {
 
     // ------------------------------- Public notification
     // ---------------------------------
-    @GetMapping("/admin-publicNotifications")
+    @GetMapping("/admin-systemNotifications")
     @ResponseBody
     public ResponseEntity<List<SystemNotification>> getAllSystemNotifications() {
         List<SystemNotification> system = adminService.getAllSystemNotifications();
         return ResponseEntity.ok().body(system);
     }
 
-    @PostMapping("/admin-publicNotification/create")
+    @PostMapping("/admin-systemNotification/create")
     @ResponseBody
     public SystemNotification createSystemNotification(
             @RequestBody @Valid SystemNotificationDto systemNotificationDto) {
         return adminService.createSystemNotification(systemNotificationDto);
     }
 
-    @PutMapping("/admin-publicNotification/update/{id}")
+    @PutMapping("/admin-systemNotification/update/{id}")
     @ResponseBody
     public ResponseEntity<SystemNotification> updateSystemNotification(@PathVariable int id,
             @RequestBody @Valid SystemNotificationDto systemNotificationDto) {
@@ -75,12 +75,29 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/admin-publicNotification/delete/{id}")
+    @DeleteMapping("/admin-systemNotification/delete/{id}")
     @ResponseBody
     public ResponseEntity<String> deleteSystemNotification(@PathVariable int id) {
         boolean deleted = adminService.deleteSystemNotification(id);
         if (deleted) {
             return ResponseEntity.ok("Delete the system notification where ID = " + id);
+        } else {
+            return ResponseEntity.notFound().build();
+        }
+    }
+
+//    @GetMapping("/ViewSystemNotifications")
+//    public ResponseEntity<List<ViewSystemNotification>> getAllViewSystemNotifications() {
+//        List<ViewSystemNotification> notifications = adminService.getAllViewSystemNotifications();
+//        return ResponseEntity.ok(notifications);
+//    }
+
+    // API to get a single system notification by ID
+    @GetMapping("/ViewSystemNotification/{notificationId}")
+    public ResponseEntity<List<ViewSystemNotification>> getSystemNotificationById(@PathVariable("notificationId") int notificationId) {
+        List<ViewSystemNotification> notification = adminService.getListViewersSystemNotification(notificationId);
+        if (notification != null) {
+            return ResponseEntity.ok(notification);
         } else {
             return ResponseEntity.notFound().build();
         }
@@ -131,26 +148,66 @@ public class AdminController {
         }
     }
 
-    // ------------------------------- Private notification
-    // ---------------------------------
-    @GetMapping("/admin-privateNotifications")
-    @ResponseBody
-    public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
-        List<PrivateNotification> privateNotifications = adminService.getAllPrivateNotifications();
-        return ResponseEntity.ok().body(privateNotifications);
+//    // ------------------------------- Private notification
+//    // ---------------------------------
+//    @GetMapping("/admin-privateNotifications")
+//    @ResponseBody
+//    public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
+//        List<PrivateNotification> privateNotifications = adminService.getAllPrivateNotifications();
+//        return ResponseEntity.ok().body(privateNotifications);
+//    }
+//
+//    @PostMapping("/admin-privateNotification/create")
+//    @ResponseBody
+//    public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
+//        PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
+//        return ResponseEntity.ok().body(createdNotification);
+//    }
+//
+//    @PutMapping("/admin-privateNotification/update/{id}")
+//    public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
+//            @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
+//        PrivateNotification updatedNotification = adminService.updatePrivateNotification(id, privateNotificationDto);
+//        if (updatedNotification != null) {
+//            return ResponseEntity.ok(updatedNotification);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+//
+//    @DeleteMapping("/admin-privateNotification/delete/{id}")
+//    public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
+//        boolean deleted = adminService.deletePrivateNotification(id);
+//        if (deleted) {
+//            return ResponseEntity.ok("Deleted the private notification where ID = " + id);
+//        } else {
+//            return ResponseEntity.notFound().build();
+//        }
+//    }
+    // ----------------------- Individual notification ----------------------
+
+    @GetMapping("/individualNotifications")
+    public ResponseEntity<List<IndividualNotification>> getAllIndividualNotification(HttpSession httpSession) {
+        int adminId = (int) httpSession.getAttribute("authid");
+        List<IndividualNotification> notifications = adminService.getAllIndividualNotifications(adminId);
+        if (notifications.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(notifications, HttpStatus.OK);
     }
 
-    @PostMapping("/admin-privateNotification/create")
+    @PostMapping("/individualNotification/create")
     @ResponseBody
-    public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-        PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
-        return ResponseEntity.ok().body(createdNotification);
+    public ResponseEntity<IndividualNotification> createIndividualNotification(@RequestBody @Valid IndividualNotificationDto individualNotificationDto, HttpSession httpSession) {
+        User adminInfo = (User) httpSession.getAttribute("authid");
+        IndividualNotification notification = adminService.createIndividualNotification(individualNotificationDto, adminInfo);
+        return ResponseEntity.ok().body(notification);
     }
 
-    @PutMapping("/admin-privateNotification/update/{id}")
-    public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
-            @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-        PrivateNotification updatedNotification = adminService.updatePrivateNotification(id, privateNotificationDto);
+    @PutMapping("/admin-individualNotification/update/{id}")
+    public ResponseEntity<IndividualNotification> updateIndividualNotification(@PathVariable int id,
+            @RequestBody @Valid IndividualNotificationDto individualNotificationDto) {
+        IndividualNotification updatedNotification = adminService.updateIndividualNotification(id, individualNotificationDto);
         if (updatedNotification != null) {
             return ResponseEntity.ok(updatedNotification);
         } else {
@@ -158,13 +215,20 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/admin-privateNotification/delete/{id}")
+    @DeleteMapping("/admin-individualNotification/delete/{id}")
     public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
-        boolean deleted = adminService.deletePrivateNotification(id);
+        boolean deleted = adminService.deleteIndividualNotification(id);
         if (deleted) {
             return ResponseEntity.ok("Deleted the private notification where ID = " + id);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/individualNotification/seen")
+    public ResponseEntity<List<IndividualNotification>> getViewersIndividualNotification(HttpSession httpSession) {
+        int adminId = (int) httpSession.getAttribute("authid");
+        List<IndividualNotification> notifications = adminService.getViewersIndividualNotification(adminId);
+        return ResponseEntity.ok(notifications);
     }
 }

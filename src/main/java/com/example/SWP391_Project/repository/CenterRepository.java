@@ -21,4 +21,6 @@ public interface CenterRepository extends JpaRepository<Center, Integer> {
 
     Optional<List<Center>> findByAddressContaining(String address);
 
+    Optional<Center> findById(int Id);
+
 }

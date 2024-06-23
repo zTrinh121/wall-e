@@ -18,11 +18,9 @@ public class CourseDetailResponse {
     private Date startDate;
     private Date endDate;
     private int amountOfStudents;
+    private String subjectName;
     private float courseFee;
 
-    // subject's attribute
-    private String subjectName;
-    private String subjectDescription;
 
     // teacher's attribute
     private String teacherName;

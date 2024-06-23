@@ -1,10 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
-import com.example.SWP391_Project.model.Attendance;
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Result;
-import com.example.SWP391_Project.model.Slot;
+import com.example.SWP391_Project.model.*;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 
@@ -23,5 +20,7 @@ public interface ParentService {
     List<Course> getStudentCourses(int parentId);
 
     List<Attendance> getStudentAttendances(int parentId);
+
+    List<User> getStudentsByParentId(int parentId);
 
 }

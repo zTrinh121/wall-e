@@ -277,3 +277,44 @@ document.addEventListener("DOMContentLoaded", function () {
     // Execute the fetchNotifications function initially to load notifications
     fetchNotifications();
 });
+$(document).ready(function() {
+    $('#search-input').on('input', function() {
+        var keyword = $(this).val();
+        if (keyword.length >= 2) {
+            $.ajax({
+                url: '/api/students/search',
+                type: 'GET',
+                data: { keyword: keyword },
+                success: function(response) {
+                    var dropdown = '';
+                    response.slice(0, 5).forEach(function(item) {
+                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
+                        dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                    });
+                    $('#search-results').html(dropdown).show();
+
+                    // Thêm sự kiện click cho mỗi kết quả tìm kiếm
+                    $('.search-item').click(function() {
+                        var url = $(this).data('url');
+                        sessionStorage.setItem('searchDetails', $(this).text()); // Lưu tên vào sessionStorage
+                        window.location.href = url; // Chuyển hướng tới trang chi tiết
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching search results:', error);
+                }
+            });
+        } else {
+            $('#search-results').hide();
+        }
+    });
+
+    // Ẩn kết quả tìm kiếm khi nhấn vào bất kỳ nơi nào bên ngoài
+    $(document).click(function(event) {
+        if (!$(event.target).closest('.search').length) {
+            $('#search-results').hide();
+        }
+    });
+});
+
+

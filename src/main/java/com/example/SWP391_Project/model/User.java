@@ -34,7 +34,7 @@ public class User {
     @Column(name = "C14_USER_ID")
     int id;
 
-    @Column(name = "C14_USER_USERNAME", nullable = false)
+    @Column(name = "C14_USERNAME", nullable = false)
     String username;
 
     @Column(name = "C14_USER_PASSWORD", nullable = false)
@@ -46,7 +46,7 @@ public class User {
     @Column(name = "C14_USER_CODE", nullable = false)
     String code;
 
-    @Column(name = "C14_USER_NAME", nullable = true)
+    @Column(name = "C14_NAME", nullable = true)
     String name;
 
     @Column(name = "C14_USER_PHONE", nullable = false)
@@ -84,13 +84,5 @@ public class User {
     @OneToMany(mappedBy = "student")
     @JsonBackReference
     List<Enrollment> enrollments;
-
-//    @ManyToMany(fetch = FetchType.LAZY)
-//    @JoinTable(
-//            name = "t15_enrollment",
-//            joinColumns = @JoinColumn(name = "C15_STUDENT_ID"),
-//            inverseJoinColumns = @JoinColumn(name = "C15_COURSE_ID")
-//    )
-//    private List<Course> courses;
 
 }
