@@ -42,6 +42,6 @@ public interface TeacherService {
 //    // tạo thông báo private
 //    void addPrivateNotification(PrivateNotification notification);
 
-    void uploadPdfFile(final MultipartFile file, MaterialDto materialDto, User teacher);
+    void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher);
 
 }

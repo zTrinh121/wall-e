@@ -3,6 +3,7 @@ package com.example.SWP391_Project.controller.user;
 import com.example.SWP391_Project.model.Role;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.service.EmailService;
+import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
@@ -32,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private EmailServiceImpl emailServiceImpl;
+    @Autowired
+    private TeacherService teacherService;
 
     @Autowired
     private EmailService emailService;
@@ -836,6 +839,36 @@ public class UserController {
 //        }
 //        model.addAttribute("user", user);
         return "material-create-select";
+    }
+
+
+    @PostMapping("PDF/File/upload")
+    public String uploadMaterialPdf(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("materialsName") String materialsName,
+            @RequestParam("subjectName") String subjectName,
+            HttpSession httpSession) {
+
+        try {
+            User user = (User) httpSession.getAttribute("user");
+
+            if (user == null) {
+                return "redirect:/material-create?status=auth_error";
+            }
+
+            if (!file.getContentType().equals("application/pdf")) {
+                // Handle the case where the uploaded file is not a PDF
+                System.err.println("Only PDF files are allowed.");
+                return "redirect:/material-create?status=invalid_file_type";
+            }
+
+            teacherService.uploadPdfFile(file, subjectName, materialsName, user);
+
+            return "redirect:/material-create?status=success";
+        } catch (Exception e) {
+            System.err.println("Error uploading PDF: " + e.getMessage());
+            return "redirect:/material-create?status=fail";
+        }
     }
 
 

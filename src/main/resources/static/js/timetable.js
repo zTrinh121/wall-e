@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMaxTime: '22:00:00',
         slotDuration: '02:00:00',
         events: 'https://fullcalendar.io/api/demo-feeds/events.json?overload-day',
-        eventOverlap: false,
+        eventOverlap: true,
         firstDay: 1,
     });
 

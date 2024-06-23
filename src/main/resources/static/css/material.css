@@ -797,6 +797,11 @@ main .header button{
   background: #2e4ead;
 }
 
+.active {
+  background-color: #2e4ead !important; /* Blue color as an example */
+  color: white !important;
+}
+
 #grade-buttons, #subject-buttons{
   display: flex;
   flex-wrap: wrap;

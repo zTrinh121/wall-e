@@ -8,6 +8,7 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -26,6 +27,7 @@ public class TeacherController {
     }
 
     @GetMapping("/courses/{courseId}/students")
+
     public ResponseEntity<List<User>> getStudentsByCourseId(@PathVariable Long courseId) {
         List<User> students = teacherService.getStudentsByCourseId(courseId);
         return ResponseEntity.ok(students);
@@ -117,21 +119,22 @@ public class TeacherController {
 //        return ResponseEntity.ok().build();
 //    }
 
-    @PostMapping("PDF/File/upload")
-    public ResponseEntity<?> uploadMaterialPdf(
-            @RequestPart("file") MultipartFile file,
-            @RequestPart("materialDto") @Valid MaterialDto materialDto,
-            HttpSession httpSession) {
-
-        try {
-            User teacher = (User) httpSession.getAttribute("authid");
-
-            teacherService.uploadPdfFile(file, materialDto, teacher);
-
-            return ResponseEntity.ok().body("Material uploaded successfully.");
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to upload material: " + e.getMessage());
-        }
-    }
+//    @PostMapping("PDF/File/upload")
+//    public String uploadMaterialPdf(
+//            @RequestPart("file") MultipartFile file,
+//            @RequestParam("materialsName") String materialsName ,
+//            @RequestParam("subjectName") String subjectName ,
+//            HttpSession httpSession) {
+//
+//        try {
+//            User teacher = (User) httpSession.getAttribute("authid");
+//
+//            teacherService.uploadPdfFile(file, subjectName, materialsName, teacher);
+//
+//            return "redirect:/material-create?status=sucess";
+//        } catch (Exception e) {
+//            return "redirect:/material-create?status=fail";
+//        }
+//    }
 
 }
