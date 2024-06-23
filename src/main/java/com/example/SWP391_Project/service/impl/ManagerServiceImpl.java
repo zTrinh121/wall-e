@@ -318,13 +318,13 @@ public class ManagerServiceImpl implements ManagerService {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("The center hasn't been existed"));
 
-        center.setName(centerDto.getName());
+//        center.setName(centerDto.getName());
         center.setDescription((centerDto.getDescription()));
-        center.setAddress(centerDto.getAddress());
-        center.setPhone(centerDto.getPhone());
-        center.setEmail(centerDto.getEmail());
-        center.setRegulation(centerDto.getRegulation());
-        center.setImagePath(centerDto.getImagePath());
+//        center.setAddress(centerDto.getAddress());
+//        center.setPhone(centerDto.getPhone());
+//        center.setEmail(centerDto.getEmail());
+//        center.setRegulation(centerDto.getRegulation());
+//        center.setImagePath(centerDto.getImagePath());
 
         return centerRepository.save(center);
     }
@@ -737,8 +737,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId) {
-        List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId);
+    public List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId) {
+        List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId, centerId);
         return results.stream()
                 .map(obj -> new TeacherCoursesResponse(
                         (String) obj[0],      // teacherCode
@@ -754,8 +754,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId) {
-        List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId);
+    public List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId) {
+        List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId, centerId);
         return results.stream()
                 .map(obj -> new StudentCoursesResponse(
                         (String) obj[0],      // studentCode

@@ -106,7 +106,7 @@
                 </a>
             </li>
             <li>
-                <a href="/manager/mpost">
+                <a href="/manager/mpost" class="active">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
                 </a>
@@ -149,19 +149,19 @@
                             <thead>
                             <tr>
                                 <th>
-                                    <p>Tên trung tâm</p>
+                                    <p>Tiêu đề</p>
                                 </th>
                                 <th>
-                                    <p>Ngày tạo</p>
+                                    <p>Ngày đăng</p>
                                 </th>
                                 <th>
-                                    <p>Mã trung tâm</p>
+                                    <p>Phân loại</p>
                                 </th>
                                 <th>
                                     <p>Hành động</p>
                                 </th>
                                 <th>
-                                    <p>Thông tin chi tiết</p>
+                                    <p>Xem</p>
                                 </th>
                             </tr>
                             </thead>
@@ -169,7 +169,7 @@
                             </tbody>
                         </table>
                         <div id="no-result">No result</div>
-<!--                        <div id="paginationControls" class="pagination-controls"></div>-->
+                        <!--                        <div id="paginationControls" class="pagination-controls"></div>-->
                         <!-- Toast Notification -->
                         <div id="toast" class="toast">
                             <div id="toastMessage"></div>
@@ -187,7 +187,10 @@
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                                    <p><button id="addCentreBtn" class="add-btn">Tạo bài đăng </button></p>
+                                </td>
+                                <td>
+                                    <p><button id="addCentreBtnE" class="add-btn">Tạo bài chiêu sinh </button></p>
                                 </td>
                             </tr>
                             </tbody>
@@ -195,38 +198,53 @@
                         </table>
                     </div>
                 </div>
-                <!-- Add Center Modal -->
+                <!-- Add Post Modal define by E -->
                 <div id="addCentreModal" class="modal">
                     <div class="add-modal-content">
                         <span id="cancelAdd" class="close">&times;</span>
-                        <h4 style="text-align:center">Thêm Trung Tâm</h4>
-                        <p>Nhập thông tin của trung tâm mới:</p>
+                        <h4 style="text-align:center">Tạo bài đăng</h4>
                         <!-- Add Centre Form -->
                         <form id="addCentreForm">
                             <div>
-                                <label for="addCenterName">Tên trung tâm:</label>
+                                <label for="addCenterName">Tiêu đề:</label>
                                 <input type="text" id="addCenterName" name="addCenterName" required>
-                            </div>
-<!--                            <div>-->
-<!--&lt;!&ndash;                                xủ lí giai đoạn mã trung tâm trùng nhau&ndash;&gt;-->
-<!--                                <label for="centreAddress">Mã trung tâm:</label>-->
-<!--                                <input type="text" id="centreAddress" name="centreAddress" required>-->
-<!--                            </div>-->
-                            <div>
-                                <label for="addCenterAddress">Địa chỉ trung tâm:</label>
-                                <input type="text" id="addCenterAddress" name="addCenterAddress" required>
                             </div>
                             <div>
                                 <label for="addCenterDesc">Mô tả:</label>
                                 <input type="text" id="addCenterDesc" name="addCenterDesc" required>
                             </div>
                             <div>
-<!--                                nên gửi/ đưa vào đâu-->
+                                <!--                                nên gửi/ đưa vào đâu-->
                                 <label for="addFileInput">File đính kèm:</label>
                                 <input type="file" id="addFileInput" accept=".pdf,.doc,.docx,.txt">
                                 <!-- <button onclick="chooseFile()">Chọn file</button> -->
                             </div>
-                            <button type="submit" id="confirmAdd">Xác nhận</button>
+                            <button type="submit" id="confirmAdd">Gửi yêu cầu</button>
+                        </form>
+
+                    </div>
+                </div>
+                <div id="addCentreModalE" class="modal">
+                    <div class="add-modal-content">
+                        <span id="cancelAddE" class="close">&times;</span>
+                        <h4 style="text-align:center">Tạo bài đăng</h4>
+                        <!-- Add Centre Form -->
+                        <form id="addCentreFormE">
+                            <div>
+                                <label for="addCenterNameE">Tiêu đề:</label>
+                                <input type="text" id="addCenterNameE" name="addCenterNameE" required>
+                            </div>
+                            <div>
+                                <label for="addCenterDescE">Mô tả:</label>
+                                <input type="text" id="addCenterDescE" name="addCenterDescE" required>
+                            </div>
+                            <div>
+                                <!--                                nên gửi/ đưa vào đâu-->
+                                <label for="addFileInputE">File đính kèm:</label>
+                                <input type="file" id="addFileInputE" accept=".pdf,.doc,.docx,.txt">
+                                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+                            </div>
+                            <button type="submit" id="confirmAddE">Gửi yêu cầu</button>
                         </form>
 
                     </div>

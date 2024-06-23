@@ -62,4 +62,8 @@ public class Center {
     @JsonManagedReference
     User manager;
 
+
+//    @OneToMany(mappedBy = "center", cascade = CascadeType.REMOVE)
+//    List<Course> courses;
+
 }

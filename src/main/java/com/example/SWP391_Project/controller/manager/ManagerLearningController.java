@@ -73,9 +73,9 @@ public class ManagerLearningController {
     }
 
     @PutMapping("/center/update/{centerId}")
-    public ResponseEntity<Center> updateCenterInfo(@PathVariable int id,
+    public ResponseEntity<Center> updateCenterInfo(@PathVariable int centerId,
                                                    @RequestBody @Valid CenterDto centerDto) {
-        Center center = managerService.updateCenterInfo(id, centerDto);
+        Center center = managerService.updateCenterInfo(centerId, centerDto);
         if (center != null) {
             return ResponseEntity.ok(center);
         } else {
@@ -384,18 +384,20 @@ public class ManagerLearningController {
         return ResponseEntity.ok(count);
     }
 
-    @GetMapping("/teacher-detail/{teacherId}")
-    public ResponseEntity<List<TeacherCoursesResponse>> getTeacherInfoAndCourses(@PathVariable int teacherId) {
-        List<TeacherCoursesResponse> teacherCourses = managerService.getTeacherInfoAndCourses(teacherId);
+    @GetMapping("/teacher-detail/{teacherId}/{centerId}")
+    public ResponseEntity<List<TeacherCoursesResponse>> getTeacherInfoAndCourses(@PathVariable("teacherId") int teacherId,
+                                                                                 @PathVariable("centerId") int centerId) {
+        List<TeacherCoursesResponse> teacherCourses = managerService.getTeacherInfoAndCourses(teacherId, centerId);
         if (teacherCourses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
         return ResponseEntity.ok(teacherCourses);
     }
 
-    @GetMapping("/student-detail/{studentId}")
-    public ResponseEntity<List<StudentCoursesResponse>> getStudentInfoAndCourses(@PathVariable int studentId) {
-        List<StudentCoursesResponse> studentCourses = managerService.getStudentInfoAndCourses(studentId);
+    @GetMapping("/student-detail/{studentId}/{centerId}")
+    public ResponseEntity<List<StudentCoursesResponse>> getStudentInfoAndCourses(@PathVariable("studentId") int studentId,
+                                                                                 @PathVariable("centerId") int centerId) {
+        List<StudentCoursesResponse> studentCourses = managerService.getStudentInfoAndCourses(studentId, centerId);
         if (studentCourses.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
