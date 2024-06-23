@@ -8,7 +8,7 @@
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
-<!--    <script src="/js/studentManagement.js"></script>-->
+    <script src="/js/stuInfo.js"></script>
 </head>
 
 <body>
@@ -28,24 +28,59 @@
             </div>
             <div class="table-data">
                 <div class="order">
-                    <div class="head">
-                        <h3 id="studentNameHeading">Thông tin cơ bản của học sinh</h3>
-                        <button id="openDeleteModal">
-                            <a class="delete-user"><i class="fas fa-trash"></i></a> Xoá</button>
-                    </div>
-                    <form id="myForm">
-
-                        <label>Địa chỉ:</label><br>
-                        <div id="address" name="address"></div><br><br>
-
-                        <label>Khoá học:<span id="courseLabel"></span></label><br>
-                        <div id="course" name="course"></div><br><br>
-
-                        <label>Feedback:<span id="feedbackLabel"></span></label><br>
-                        <div id="feedback" name="feedback"></div><br><br>
-
-                        <button id="scheduleButton" type="button">Lịch học</button><br><br>
-                    </form>
+                    <table>
+                        <tr>
+                            <div class="head"><h3 id="studentNameHeading" >Thông tin cơ bản của học sinh</h3></div>
+                        </tr>
+                        <tr>
+                            <th colspan="1" class="section-header"></th>
+                            <th colspan="1" class="section-header"  >Học viên</th>
+                            <th colspan="1" class="section-header" id="nameParent"  >Phụ huynh</th>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Giới tính:</label></td>
+                            <td><div id="genderStu" name="gender"></div></td>
+                            <td style="text-align: left;"><div id="genderP" name="gender"></div></td>
+                            <td></td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Số điện thoại:</label></td>
+                            <td><div id="phoneStu" name="phone">Không có</div></td>
+                            <td style="text-align: left;"><div id="phoneP" name="phone">Không có</div></td>
+                            <td></td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Email:</label></td>
+                            <td><div id="mailStu" name="mail">Không có</div></td>
+                            <td style="text-align: left;"><div id="mailP" name="mail">Không có</div></td>
+                            <td></td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Địa chỉ:</label></td>
+                            <td><div id="addressStu" name="address"></div></td>
+                            <td></td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Khoá học:</label></td>
+                            <td><div id="courseStu" name="course"></div></td>
+                            <td></td>
+                        </tr>
+                        <tr style="text-align: left;">
+                            <td><label>Feedback:</label></td>
+                            <td><div id="feedbackStu" name="feedback">Không có</div></td>
+                            <td></td>
+                        </tr>
+                        <tr>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td>
+                                <button id="scheduleButton" type="button">Lịch học</button>
+                            </td>
+                        </tr>
+                    </table>
                 </div>
             </div>
         </main>
