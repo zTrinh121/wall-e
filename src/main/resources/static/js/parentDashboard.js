@@ -40,11 +40,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 boxCourses.insertAdjacentHTML("beforeend", row);
             });
 
-            // <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId}
-            //    data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode}
-            //    data-amountOfStudents={post.amountOfStudents} data-startTime={post.startTime} data-endTime={post.endTime}
-            //    data-centerName={post.centerName}>Xem chi tiết</a>
-            //
+
         }
     }
 

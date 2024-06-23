@@ -1,10 +1,9 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.IndividualNotificationDto;
 import com.example.SWP391_Project.dto.SystemNotificationDto;
-import com.example.SWP391_Project.enums.RoleDescription;
 import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.dto.PrivateNotificationDto;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
@@ -15,6 +14,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -29,13 +29,16 @@ public class AdminServiceImpl implements AdminService {
     private SystemNotificationRepository systemNotificationRepository;
 
     @Autowired
-    PrivateNotificationRepository privateNotificationRepository;
+    private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
     @Autowired
     private CenterPostRepository centerPostRepository;
 
     @Autowired
     private CenterRepository centerRepository;
+
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
 
 
     @Override
@@ -92,13 +95,22 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
+//    @Override
+//    public List<ViewSystemNotification> getAllViewSystemNotifications() {
+//        return viewSystemNotificationRepository
+//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+//    }
+
+    @Override
+    public List<ViewSystemNotification> getListViewersSystemNotification(int notificationId) {
+        Optional<List<ViewSystemNotification>> optionalViewers = viewSystemNotificationRepository.findBySystemNotification_Id(notificationId);
+        return optionalViewers.orElse(Collections.emptyList());
+    }
+
     @Override
     public List<CenterPostResponse> getCenterPosts() {
         return centerPostRepository.findAllCenterPostsAndManagerDetails();
     }
-
-
-
 
     @Override
     public void approveCenterPost(int id) {
@@ -153,70 +165,125 @@ public class AdminServiceImpl implements AdminService {
         }
     }
 
-    // ----------------------- Private notification ----------------------------
+//    // ----------------------- Private notification ----------------------------
+//    @Override
+//    public List<PrivateNotification> getAllPrivateNotifications() {
+//        return privateNotificationRepository
+//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+//    }
+//
+//    @Override
+//    public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
+//        String sendTo = privateNotificationDto.getSendTo();
+//        if (sendTo.startsWith("USER")) {
+//            Optional<User> userCode = userRepository.findByCode(sendTo);
+//            if (userCode.isPresent()) {
+//                PrivateNotification privateNotification = PrivateNotification.builder()
+//                        .title(privateNotificationDto.getTitle())
+//                        .content(privateNotificationDto.getContent())
+//                        .createdAt(new Date())
+//                        .actor(RoleDescription.ADMIN)
+//                        .userSendTo(userCode.get())
+//                        .centerSendTo(null)
+//                        .build();
+//                return privateNotificationRepository.save(privateNotification);
+//            } else {
+//                throw new IllegalArgumentException("User not found");
+//            }
+//        } else if (sendTo.startsWith("CENTER")) {
+//            Optional<Center> centerOptional = centerRepository.findByCode(sendTo);
+//            if (centerOptional.isPresent()) {
+//                PrivateNotification privateNotification = PrivateNotification.builder()
+//                        .title(privateNotificationDto.getTitle())
+//                        .content(privateNotificationDto.getContent())
+//                        .createdAt(new Date())
+//                        .actor(RoleDescription.ADMIN)
+//                        .userSendTo(null)
+//                        .centerSendTo(centerOptional.get())
+//                        .build();
+//                return privateNotificationRepository.save(privateNotification);
+//            } else {
+//                throw new IllegalArgumentException("Center not found");
+//            }
+//        } else {
+//            throw new IllegalArgumentException("Invalid sendTo value");
+//        }
+//    }
+//
+//    @Override
+//    public PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto) {
+//        PrivateNotification privateNotification = privateNotificationRepository.findById(id)
+//                .orElseThrow(() -> new RuntimeException("The private notification hasn't been existed ! "));
+//
+//        privateNotification.setTitle(privateNotificationDto.getTitle());
+//        privateNotification.setContent(privateNotificationDto.getContent());
+//        privateNotification.setUpdatedAt(new Date());
+//
+//        return privateNotificationRepository.save(privateNotification);
+//    }
+//
+//    @Override
+//    public boolean deletePrivateNotification(int id) {
+//        try {
+//            privateNotificationRepository.deleteById(id);
+//            return true;
+//        } catch (Exception e) {
+//            return false;
+//        }
+//    }
+
+    // ----------------------- Individual notification ----------------------------
+
     @Override
-    public List<PrivateNotification> getAllPrivateNotifications() {
-        return privateNotificationRepository
-                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+    public List<IndividualNotification> getAllIndividualNotifications(int adminId) {
+        Optional<List<IndividualNotification>> notifications = individualNotificationRepository.findByActor_Id(adminId);
+        return notifications.orElse(Collections.emptyList());
     }
 
     @Override
-    public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
-        String sendTo = privateNotificationDto.getSendTo();
-        if (sendTo.startsWith("USER")) {
-            Optional<User> userCode = userRepository.findByCode(sendTo);
-            if (userCode.isPresent()) {
-                PrivateNotification privateNotification = PrivateNotification.builder()
-                        .title(privateNotificationDto.getTitle())
-                        .content(privateNotificationDto.getContent())
-                        .createdAt(new Date())
-                        .actor(RoleDescription.ADMIN)
-                        .userSendTo(userCode.get())
-                        .centerSendTo(null)
-                        .build();
-                return privateNotificationRepository.save(privateNotification);
-            } else {
-                throw new IllegalArgumentException("User not found");
-            }
-        } else if (sendTo.startsWith("CENTER")) {
-            Optional<Center> centerOptional = centerRepository.findByCode(sendTo);
-            if (centerOptional.isPresent()) {
-                PrivateNotification privateNotification = PrivateNotification.builder()
-                        .title(privateNotificationDto.getTitle())
-                        .content(privateNotificationDto.getContent())
-                        .createdAt(new Date())
-                        .actor(RoleDescription.ADMIN)
-                        .userSendTo(null)
-                        .centerSendTo(centerOptional.get())
-                        .build();
-                return privateNotificationRepository.save(privateNotification);
-            } else {
-                throw new IllegalArgumentException("Center not found");
-            }
-        } else {
-            throw new IllegalArgumentException("Invalid sendTo value");
+    public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User admin) {
+        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
+        if (!sendTo.isPresent()) {
+            throw new IllegalArgumentException("User not found when finding by username !");
         }
+        User user = sendTo.get();
+
+        IndividualNotification individualNotification = IndividualNotification.builder()
+                        .title(invididualNotificationDto.getTitle())
+                        .content(invididualNotificationDto.getContent())
+                        .actor(admin)
+                        .createdAt(new Date())
+                        .sendToUser(user)
+                        .hasSeen(false)
+                        .build();
+                return individualNotificationRepository.save(individualNotification);
     }
 
     @Override
-    public PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto) {
-        PrivateNotification privateNotification = privateNotificationRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("The private notification hasn't been existed ! "));
+    public IndividualNotification updateIndividualNotification(int id, IndividualNotificationDto individualNotificationDto) {
+        IndividualNotification individualNotification = individualNotificationRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The individual notification hasn't been existed ! "));
 
-        privateNotification.setTitle(privateNotificationDto.getTitle());
-        privateNotification.setContent(privateNotificationDto.getContent());
-        privateNotification.setUpdatedAt(new Date());
+        individualNotification.setTitle(individualNotificationDto.getTitle());
+        individualNotification.setContent(individualNotification.getContent());
+        individualNotification.setUpdatedAt(new Date());
 
-        return privateNotificationRepository.save(privateNotification);
+        return individualNotificationRepository.save(individualNotification);
     }
 
     @Override
-    public boolean deletePrivateNotification(int id) {
+    public boolean deleteIndividualNotification(int id) {
         try {
-            privateNotificationRepository.deleteById(id);
+            individualNotificationRepository.deleteById(id);
             return true;
         } catch (Exception e) {
             return false;
         }
+    }
+
+    @Override
+    public List<IndividualNotification> getViewersIndividualNotification(int adminId) {
+        Optional<List<IndividualNotification>> optionalNotifications = individualNotificationRepository.findByActorIdAndHasSeen(adminId);
+        return optionalNotifications.orElse(Collections.emptyList());
     }
 }

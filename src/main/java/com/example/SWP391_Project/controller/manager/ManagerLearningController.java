@@ -32,7 +32,6 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER CENTER ------------------------------
-
     @GetMapping("/centers")
     public ResponseEntity<List<Center>> getCenters(HttpSession httpSession) {
         String id =  httpSession.getAttribute("authid").toString();
@@ -66,10 +65,11 @@ public class ManagerLearningController {
         }
     }
 
-   // Hàm này nhiều khả năng lỗi !!!!
-    @PostMapping("/center/create")
-    public Center createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession session) {
-        return managerService.createCenter(centerDto, session);
+    @PostMapping("/create")
+    public ResponseEntity<Center> createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession httpSession) {
+        User managerInfo = (User) httpSession.getAttribute("authid");
+        Center createdCenter = managerService.createCenter(centerDto, managerInfo);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdCenter);
     }
 
     @PutMapping("/center/update/{centerId}")

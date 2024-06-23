@@ -16,8 +16,7 @@ public class CourseDto {
     Date endDate;
     int amountOfStudents;
     float courseFee;
-    float totalCourseFee;
     String centerCode;
-    String subjectCode;
+    String subjectName;
     String teacherCode;
 }

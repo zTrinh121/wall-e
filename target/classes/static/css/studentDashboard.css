@@ -120,20 +120,7 @@ body {
   cursor: pointer;
 }
 
-/* Dropdown menu styling */
-.notification .content-notification {
-   display: none; /*Hidden by default */
-   padding: 10px;
-  position: absolute;
-  background-color: white;
-  min-width: 200px;
-  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-  z-index: 1;
-  right: 0; /* Align to the right of the bell */
-  border-radius: 1rem;
-  top: 4rem;
 
-}
 
 .notification .content-notification ul {
   list-style: none;

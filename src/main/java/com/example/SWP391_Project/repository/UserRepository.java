@@ -16,7 +16,9 @@ import java.util.Optional;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Integer> {
+
     User findByUsername(String username);
+
     User findByEmail(String email);
 
     User findByEmailAndCode(String email, String code);
@@ -71,5 +73,13 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT DISTINCT u FROM User u WHERE u.parent.id = :parentId ")
     User findStudentsByParentId(@Param("parentId") int parentId);
+
+    Optional<User> findById(int id);
+
+    @Query("SELECT u FROM User u WHERE u.parent.id = :parentId")
+    List<User> getStudentsByParentId(int parentId);
+
+    @Query("SELECT u FROM User u WHERE u.username = :username")
+    Optional<User> findByUsernamee(@Param("username") String username);
 
 }

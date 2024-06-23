@@ -7,7 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.List;
 
 @Entity
 @Table(name = "t03_center")
@@ -52,7 +51,7 @@ public class Center {
     Status status;
 
     @Column(name = "C03_IMAGE_PATH")
-    String imagePath; // xử lí sau
+    String imagePath;
 
     @Column(name = "C03_CLOUDINARY_IMAGE_ID")
     String cloudinaryImageId;
@@ -61,9 +60,7 @@ public class Center {
     @JoinColumn(name = "C03_MANAGER_ID")
     @JsonManagedReference
     User manager;
-
-
+}
 //    @OneToMany(mappedBy = "center", cascade = CascadeType.REMOVE)
 //    List<Course> courses;
 
-}

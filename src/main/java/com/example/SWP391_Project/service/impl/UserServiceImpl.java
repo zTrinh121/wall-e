@@ -9,7 +9,7 @@ import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.UserRepository;
 import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.service.UserService;
-
+import java.util.UUID;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
@@ -27,11 +27,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -66,8 +64,6 @@ public class UserServiceImpl implements UserService {
 //        return userRepository.findById(id);
 //    }
 
-
-
     @Override
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
@@ -95,8 +91,6 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
-
     @Autowired
     private JdbcTemplate jdbcTemplate;
 
@@ -121,9 +115,9 @@ public class UserServiceImpl implements UserService {
     public User uploadProfileImage(final int userId, final MultipartFile file) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found !!!"));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        FileUploadUtil.assertAllowedImage(file);
         final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        final CloudinaryResponse response = this.cloudinaryService.uploadImageFile(file, fileName);
         user.setProfileImage(response.getUrl());
         user.setCloudinaryImageId(response.getPublicId());
         this.userRepository.save(user);
@@ -253,14 +247,46 @@ public class UserServiceImpl implements UserService {
 
 
 
+    public String generateUserCode() {
+        String uniqueID = UUID.randomUUID().toString().substring(0, 8); // Tạo mã ngẫu nhiên gồm 8 ký tự
+        return "USER" + uniqueID; // Tiền tố 'USER' được thêm vào trước mã
+    }
+
+
+
+    @Transactional
+    public void updateParentIdByEmail(String email, int parentId) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            User parentUser = userRepository.findById(parentId).orElse(null);
+            if (parentUser != null) {
+                user.setParent(parentUser);
+                userRepository.save(user);
+            }
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void updateParentIdById(int userId, int parentId) {
+        User user = userRepository.findById(userId).orElse(null);
+        User parentUser = userRepository.findById(parentId).orElse(null);
+        if (user != null && parentUser != null) {
+            user.setParent(parentUser);
+            userRepository.save(user);
+        }
+    }
+
+
 
 //    @Override
 //    public int getVerificationCode() {
 //        return verificationCode;
 //    }
 
-    @Override
-    public User findById(int id) {
-        return userRepository.findById(id).orElse(null);
-    }
+//    @Override
+//    public User findById(int id) {
+//        return userRepository.findById(id).orElse(null);
+//    }
 }

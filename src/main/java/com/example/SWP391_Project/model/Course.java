@@ -7,8 +7,6 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
-import java.util.List;
-
 
 @Entity
 @Table(name = "t01_course")
@@ -45,25 +43,17 @@ public class Course {
     @Column(name = "C01_COURSE_FEE", nullable = false)
     float courseFee;
 
-    @Column(name = "C01_TOTAL_COURSE_FEE", nullable = false)
-    float totalCourseFee;
+    @Column(name = "C01_SUBJECT_NAME", nullable = false)
+    String subject;
 
     @ManyToOne
     @JoinColumn(name = "C01_CENTER_ID", nullable = false)
     @JsonManagedReference
     Center center;
-
-    @ManyToOne
-    @JoinColumn(name = "C01_SUBJECT_ID", nullable = false)
-    @JsonManagedReference
-    Subject subject;
-
+    
     @ManyToOne
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
     @JsonManagedReference
     User teacher;
-
-//    @ManyToMany(mappedBy = "courses")
-//    private List<User> students;
 }
 
