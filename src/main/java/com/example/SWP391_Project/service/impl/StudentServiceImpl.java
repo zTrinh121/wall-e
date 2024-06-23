@@ -25,7 +25,9 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class StudentServiceImpl implements StudentService {
+public class
+
+StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
