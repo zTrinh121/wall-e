@@ -628,11 +628,11 @@ public class UserController {
     }
 
 
-    @GetMapping("/teacher-dashboard")
-    public String teacherDashboard(HttpSession session) {
-        session.invalidate();
-        return "teacher-dashboard";
-    }
+//    @GetMapping("/teacher-dashboard")
+//    public String teacherDashboard(HttpSession session) {
+//        session.invalidate();
+//        return "teacher-dashboard";
+//    }
 
     @GetMapping("/search-in-student")
     public String search(HttpSession session) {
