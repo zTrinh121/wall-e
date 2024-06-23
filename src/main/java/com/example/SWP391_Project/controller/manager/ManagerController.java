@@ -65,5 +65,14 @@ public class ManagerController
     public String mnPost() {
         return "managerPost";
     }
+    @GetMapping("/qlkh")
+    public String mnCourse() {
+        return "courseDetail";
+    }
+    @GetMapping("/ttkh")
+    public String courseInfo() {
+        return "courseInfo";
+    }
+
 
 }

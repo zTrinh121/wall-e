@@ -58,9 +58,9 @@ public class Course {
     @JsonManagedReference
     Subject subject;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     User teacher;
 
 //    @ManyToMany(mappedBy = "courses")
