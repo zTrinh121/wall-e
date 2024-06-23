@@ -52,13 +52,18 @@ public class ManagerController
     public String teacherInfo() {
         return "teacherInfo";
     }
-//    @GetMapping("/centerHome/{centerId}")
-//    public String centerHome() {
-//        return "centerDetail";
-//    }
+
+    @GetMapping("/noti")
+    public String mnoti(){
+        return  "managerNoti";
+    }
     @GetMapping("/centerHome")
     public String centerHome2() {
         return "centerDetail";
+    }
+    @GetMapping("/mpost")
+    public String mnPost() {
+        return "managerPost";
     }
 
 }

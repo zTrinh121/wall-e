@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <title>Thời khóa biểu</title>
     <link
@@ -11,12 +11,12 @@
     />
     <link rel="stylesheet" href="/css/studentDashboard.css" />
     <script src="/js/studentDashboard.js"></script>
-    <script th:src="@{/js/studentFragments.js}" type="module"></script>
-    <th:block th:replace="studentFragments :: studenthead"></th:block>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
 </head>
 <body>
 <div class="wrapper">
-    <div th:replace="studentFragments :: studentheader"></div>
+    <div th:replace="fragments :: header"></div>
 
     <div class="main_container">
         <div class="notification-buttons">

@@ -312,13 +312,13 @@ public class ManagerServiceImpl implements ManagerService {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("The center hasn't been existed"));
 
-        center.setName(centerDto.getName());
+//        center.setName(centerDto.getName());
         center.setDescription((centerDto.getDescription()));
-        center.setAddress(centerDto.getAddress());
-        center.setPhone(centerDto.getPhone());
-        center.setEmail(centerDto.getEmail());
-        center.setRegulation(centerDto.getRegulation());
-        center.setImagePath(centerDto.getImagePath());
+//        center.setAddress(centerDto.getAddress());
+//        center.setPhone(centerDto.getPhone());
+//        center.setEmail(centerDto.getEmail());
+//        center.setRegulation(centerDto.getRegulation());
+//        center.setImagePath(centerDto.getImagePath());
 
         return centerRepository.save(center);
     }

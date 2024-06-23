@@ -1,11 +1,40 @@
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 <head>
-    <title>Teacher Dashboard</title>
-    <link rel="stylesheet" type="text/css" href="/css/studentDashboard.css"/>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/timetable.css" />
+
+    <script src="/js/teacherDashboard.js"></script>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
+    <th:block th:replace="fragments :: head"></th:block>
 </head>
+
 <body>
-<h1>Welcome to the teacher Dashboard</h1>
-<p>Content for teachers goes here.</p>
+<div class="wrapper">
+    <div th:replace="fragments :: header"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <!-- MAIN -->
+            <main>
+                <h1 class="header">Danh sách khóa dạy</h1>
+                <p id="userId" th:text="${session.user?.id}"></p>
+                <div class="box-container" id="courseBoxes">
+
+
+                </div>
+                <div id="no-result">No result</div>
+                <div id="paginationControls" class="pagination-controls"></div>
+            </main>
+            <!-- MAIN -->
+        </section>
+    </div>
+</div>
+
+<!--Start modal create event-->
+
+
 </body>
+
 </html>

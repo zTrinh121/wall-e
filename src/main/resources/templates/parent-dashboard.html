@@ -1,16 +1,16 @@
-<!DOCTYPE html>
+    <!DOCTYPE html>
 <html lang="en">
 <head>
     <title>Trang chủ</title>
     <link rel="stylesheet" href="/css/studentDashboard.css" />
 
     <script src="/js/parentDashboard.js"></script>
-    <script th:src="@{/js/parentFragments.js}" type="module"></script>
-    <th:block th:replace="parentFragments :: parenthead"></th:block>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
 </head>
 <body>
 <div class="wrapper">
-    <div th:replace="parentFragments :: parentheader"></div>
+    <div th:replace="fragments :: header"></div>
 
     <div class="main_container">
         <section id="content">
