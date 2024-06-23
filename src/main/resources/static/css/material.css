@@ -791,6 +791,10 @@ main .header button{
   box-sizing: border-box;
   cursor: pointer;
 }
+#upload-btn{
+  
+}
+
 
 #upload-btn:hover, .button-item button:hover {
   background-color: #f3f4f6;

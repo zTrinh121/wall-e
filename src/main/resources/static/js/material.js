@@ -46,13 +46,13 @@
         console.log(uploadtn)
 
         //Start: add material btn
-        switch (roleUser){
-            case "STUDENT":
-                uploadtn.style.display = "none";
-                break;
-            case "PARENT":
-                uploadtn.style.display = "none";
-                break;
-        }
+        // switch (roleUser){
+        //     case "STUDENT":
+        //         uploadtn.style.display = "none";
+        //         break;
+        //     case "PARENT":
+        //         uploadtn.style.display = "none";
+        //         break;
+        // }
         //End: add material btn
     })
