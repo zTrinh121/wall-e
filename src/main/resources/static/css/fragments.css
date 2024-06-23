@@ -619,3 +619,94 @@ body {
 #userId{
     display: none;
 }
+
+.search {
+    display: flex;
+    border: 1px solid #ccc;
+    width: 50%;
+    height: 45px;
+    background: #fff;
+    border-radius: 3rem;
+    align-items: center;
+    padding: .3rem;
+    position: relative;
+}
+
+.search i {
+    color: rgba(0, 0, 0, .5);
+    margin: 0 .6rem;
+}
+
+.search input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-weight: 400;
+}
+
+.search button {
+    height: 100%;
+    padding: 0 1rem;
+    border-radius: inherit;
+    background: #2e4ead;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-weight: 400;
+    cursor: pointer;
+}
+
+.search button:hover {
+    background: #fff;
+    color: #2648ae;
+    border: 1px solid #2648ae;
+}
+
+/* Search results dropdown */
+.search-results {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 3rem;
+    max-height: 200px;
+    overflow-y: auto;
+    display: none; /* Ẩn kết quả tìm kiếm mặc định */
+}
+
+.search-results div {
+    padding: 10px 20px;
+    cursor: pointer;
+}
+
+.search-results div:hover {
+    background: #f1f1f1;
+}
+#search-results {
+    display: none; /* Ẩn khi không có kết quả hoặc chưa tìm kiếm */
+    position: absolute;
+    background: white;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1000;
+}
+
+.search-item {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #ccc;
+}
+
+.search-item:hover {
+    background-color: #f0f0f0;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
