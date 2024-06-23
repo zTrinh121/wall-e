@@ -716,3 +716,13 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+#turnBack {
+	border: none;
+	width: 5rem;
+	height: 1.5rem;
+	background: #2e4ead;
+	color: #fff;
+	border-radius: 15px;
+	cursor: pointer;
+	transition-duration: 0.4s;
+}

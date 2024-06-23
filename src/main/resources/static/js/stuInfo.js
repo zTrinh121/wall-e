@@ -15,6 +15,16 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Center ID:", centerIdz);
     console.log("Student ID:", stuIdz);
 //End getting
+//turnBack
+    var turnBack = document.getElementById("turnBack");
+
+    turnBack.addEventListener("click", function(event) {
+        event.preventDefault();
+            var url = `/manager/qlhv?centerId=`;
+            url += encodeURIComponent(centerIdz);
+            window.location.href = url;
+    });
+//Ending
 //Fetch API
     function fetchStudents(centerIdz, stuIdz) {
       var URL = `/manager/student-detail/${stuIdz}/${centerIdz}`;
