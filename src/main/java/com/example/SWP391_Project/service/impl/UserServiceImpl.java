@@ -58,14 +58,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.orElseThrow(() -> new RuntimeException("username not found"));
+        return userRepository.findByUsername(username);
     }
 //    public User findById(int id){
 //        return userRepository.findById(id);
 //    }
-
-
 
     @Override
     public User findByEmail(String email) {
@@ -92,8 +89,6 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
-
-
 
 
     @Autowired
@@ -171,9 +166,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User authenticateUser(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent() && BCrypt.checkpw(password, user.get().getPassword())) {
-            return user.get();
+        User user = userRepository.findByUsername(username);
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            return user;
         }
         return null;
     }
@@ -248,10 +243,6 @@ public class UserServiceImpl implements UserService {
         message.setText("Your password reset code is: " + code);
         mailSender.send(message);
     }
-
-
-
-
 
 //    @Override
 //    public int getVerificationCode() {

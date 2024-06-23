@@ -133,7 +133,7 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
             CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
 
             Material material = new Material();
-            material.setMaterialsName(materialDto.getMaterialsName());
+            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
             material.setSubjectName(materialDto.getSubjectName());
             material.setTeacher(teacher);
             material.setPdfPath(response.getUrl());
