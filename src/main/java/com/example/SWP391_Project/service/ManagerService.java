@@ -221,8 +221,8 @@ public interface ManagerService {
 
     int countCourseByCenter(int centerId);
 
-    List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId);
+    List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId);
 
-    List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId);
+    List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId);
 
 }

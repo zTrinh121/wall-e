@@ -29,8 +29,10 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             "   GROUP_CONCAT(e.course.name) AS courses " +
             "FROM Enrollment e " +
             "JOIN e.student s " +
-            "WHERE s.id = :studentId " +
+            "JOIN e.course c " +
+            "WHERE s.id = :studentId AND c.center.id = :centerId " +
             "GROUP BY s.id")
-    List<Object[]> findStudentInfoAndCoursesByStudentId(int studentId);
+    List<Object[]> findStudentInfoAndCoursesByStudentId(@Param("studentId") int studentId,
+                                                        @Param("centerId") int centerId);
 
 }
