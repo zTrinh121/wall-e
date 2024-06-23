@@ -104,7 +104,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (!Array.isArray(data)) {
                 data = [data];
               }
-              displayStudentLists(data);
+              displayStudentLists(data, centerIdz);
           })
           .catch((error) => console.error("Error fetching centers:", error));
 
@@ -124,7 +124,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchStudents(centerIdz);
 
     //display-stu-into-list
-function displayStudentLists(centers) {
+function displayStudentLists(centers, centerIdz) {
     var tableBody = document.getElementById("tableBody");
     if (!tableBody) {
       console.error("Element with ID 'tableBody' not found.");
@@ -147,65 +147,52 @@ function displayStudentLists(centers) {
             <td><p>${center.code}</p></td>
             <td><p>${center.name}</p></td>
             <td><p>${center.address}</p></td>
-            <td><p><button class="openModalBtn"><a href="" id="stuInfo">Xem</a></button></p</td>
+            <td><p><button class="openModalBtn">Xem</button></p</td>
           </tr>
         `;
         tableBody.insertAdjacentHTML("beforeend", row);
       });
       //get-st-id
-          var stuInfo = document.getElementById("stuInfo");
-          console.log("stuinfofofofof" + stuInfo);
-          if (stuInfo) {
-              stuInfo.addEventListener("click", function(event) {
-                  event.preventDefault();
-                      // Construct the correct URL based on centerId
-                      var url = `/manager/qlgv?centerId=`;
-                      url += encodeURIComponent(centerIdz);
-                      console.log(url); // Verify the constructed URL
-
-                      // Perform any further actions with the constructed URL
-                      window.location.href = url; // Example: Redirect to the constructed URL
-              });
-          } else {
-              console.error("Element with id 'stuInfo' not found.");
-          }
+//          var stuInfo = document.getElementById("stuInfo");
+//          console.log("stuinfofofofof" + stuInfo);
+//          if (stuInfo) {
+//              stuInfo.addEventListener("click", function(event) {
+//                  event.preventDefault();
+//                      // Construct the correct URL based on centerId
+//                      var url = `/manager/qlgv?centerId=`;
+//                      url += encodeURIComponent(centerIdz);
+//                      console.log(url); // Verify the constructed URL
+//
+//                      // Perform any further actions with the constructed URL
+//                      window.location.href = url; // Example: Redirect to the constructed URL
+//              });
+//          } else {
+//              console.error("Element with id 'stuInfo' not found.");
+//          }
 
       // Reattach event listeners for new buttons
-      document.querySelectorAll(".open-modal-btn").forEach((button) => {
+      document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
-          var centerId = this.getAttribute("data-id");
-          openModalWithStudentDetails(centerId);
+          var stuId = this.getAttribute("data-id");
+          openModalWithStudentDetails(stuId, centerIdz);
         });
       });
     }
   }
 
   //open-by-student-id
-function openModalWithStudentDetails(centerId) {
-    console.log(centerId);
+function openModalWithStudentDetails(stuId, centerIdz) {
+    console.log(stuId);//id cua hs
     // Construct the URL for fetching center details
-    var url = `/manager/students/${centerId}`;
-
-    // Fetch center details by ID and display in modal
-    fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Center details:", data);
-            console.log(encodeURIComponent(data.id));
-
-            var queryUrl = "/manager/qlhv?";
-            queryUrl += "centerIdn=" + encodeURIComponent(data.id);
-            console.log(queryUrl);
-
-            // Update the iframe source with the constructed URL
-            var iframe = document.querySelector("#studentDetailModal iframe");
-            iframe.src = queryUrl;
-
+//    var url = `/manager/student-detail/{stuId}/{centerIdz}`;
+    var queryUrl = "/manager/tthv?";
+    queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?stuIdn=" + encodeURIComponent(stuId);
+    console.log(queryUrl);
+    //chuyen-huong-mode
+    window.location.href = queryUrl;
             // Display the modal
-            var modal = document.getElementById("studentDetailModal");
-            modal.style.display = "block";
-        })
-        .catch((error) => console.error("Error fetching center details:", error));
+//            var modal = document.getElementById("studentDetailModal");
+//            modal.style.display = "block";
 }
 
 var noResultDiv = document.getElementById("no-result");
