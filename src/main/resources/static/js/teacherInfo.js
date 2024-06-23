@@ -15,6 +15,17 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Center ID:", centerIdz);
     console.log("teacher ID:", teaIdz);
 //End getting
+//turnBack
+    var turnBack = document.getElementById("turnBack");
+
+    turnBack.addEventListener("click", function(event) {
+        event.preventDefault();
+            var url = `/manager/qlgv?centerId=`;
+            url += encodeURIComponent(centerIdz);
+            window.location.href = url;
+    });
+//Ending
+
 //Fetch API
     function  fetchTeachers(centerIdz, teaIdz) {
       var URL = `/manager/teacher-detail/${teaIdz}/${centerIdz}`;
