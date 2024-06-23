@@ -3,11 +3,11 @@
 <head>
     <title>Trang chủ</title>
     <link rel="stylesheet" href="/css/parentProfile.css" />
-    <th:block th:replace="~{parentFragments :: parenthead}"></th:block>
+    <th:block th:replace="~{fragments :: head}"></th:block>
 </head>
 <body>
 <div class="wrapper">
-    <div th:replace="~{parentFragments :: parentheader}"></div>
+    <div th:replace="~{fragments :: header}"></div>
 
     <div class="main_container">
         <div class="container light-style flex-grow-1 container-p-y">
@@ -32,16 +32,16 @@
                                             <button type="submit" class="btn btn-default md-btn-flat">Cập nhật ảnh</button>
                                         </form>
                                         <div class="small mt-1">Cho phép JPG, GIF or PNG. Tối đa 800K</div>
-<!--                                        <span th:if="${session.profileImageError != null}" class="text-danger">-->
-<!--                                          <i class="fas fa-exclamation-circle"></i>  [[${session.profileImageError}]]-->
-<!--                                        </span>-->
+                                        <!--                                        <span th:if="${session.profileImageError != null}" class="text-danger">-->
+                                        <!--                                          <i class="fas fa-exclamation-circle"></i>  [[${session.profileImageError}]]-->
+                                        <!--                                        </span>-->
 
-<!--                                        <span th:if="${session.profileImageSuccess != null}" class="text-success">-->
-<!--                                          <i class="fas fa-check-circle"></i>  [[${session.profileImageError}]]-->
-<!--                                        </span>-->
+                                        <!--                                        <span th:if="${session.profileImageSuccess != null}" class="text-success">-->
+                                        <!--                                          <i class="fas fa-check-circle"></i>  [[${session.profileImageError}]]-->
+                                        <!--                                        </span>-->
 
-<!--                                        <span th:remove="session.profileImageError"></span>-->
-<!--                                        <span th:remove="session.profileImageSuccess"></span>-->
+                                        <!--                                        <span th:remove="session.profileImageError"></span>-->
+                                        <!--                                        <span th:remove="session.profileImageSuccess"></span>-->
                                     </div>
                                 </div>
                                 <hr class="border-light m-0">

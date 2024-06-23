@@ -80,6 +80,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentSchedule(int studentId) {
         String query = "SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, " +
+                "c.c01_course_desc as courseDesc, c.c01_course_name as courseName, " +
                 "c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime, " +
                 "c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName, " +
                 "teacher.C14_USER_NAME as teacherName, teacher.C14_USER_ID as teacherId, " +
@@ -103,13 +104,15 @@ public class StudentServiceImpl implements StudentService {
             Map<String, Object> scheduleMap = new HashMap<>();
             scheduleMap.put("courseId", result[0]);
             scheduleMap.put("courseCode", result[1]);
-            scheduleMap.put("startTime", result[2]);
-            scheduleMap.put("endTime", result[3]);
-            scheduleMap.put("amountOfStudents", result[4]);
-            scheduleMap.put("centerName", result[5]);
-            scheduleMap.put("teacherName", result[6]);
-            scheduleMap.put("teacherId", result[7]);
-            scheduleMap.put("studentId", result[8]);
+            scheduleMap.put("courseDesc", result[2]);
+            scheduleMap.put("courseName", result[3]);
+            scheduleMap.put("startTime", result[4]);
+            scheduleMap.put("endTime", result[5]);
+            scheduleMap.put("amountOfStudents", result[6]);
+            scheduleMap.put("centerName", result[7]);
+            scheduleMap.put("teacherName", result[8]);
+            scheduleMap.put("teacherId", result[9]);
+            scheduleMap.put("studentId", result[10]);
 
             schedule.add(scheduleMap);
         }
@@ -228,17 +231,18 @@ public class StudentServiceImpl implements StudentService {
 
     @Transactional
     @Override
-    public List<Map<String, Object>> getPrivateNotificationsByUserCode(int userCode) {
+    public List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode) {
         String query = "SELECT p.C19_TITLE as title, p.C19_CONTENT as content, p.C19_CREATED_AT as createdAt, p.C19_UPDATED_AT as updatedAt " +
                 "FROM t19_private_notifications p " +
-                "JOIN t14_user u ON p.C19_SEND_TO = u.C14_USER_ID " +
+                "JOIN t14_user u ON p.C19_SEND_TO_USER = u.C14_USER_ID " +
                 "WHERE u.C14_USER_CODE = :userCode";
 
+
         System.out.println("Query: " + query);
-        System.out.println("CourseId: " + userCode);
+        System.out.println("userCode: " + userCode);
 
         Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("courseId", userCode);
+        nativeQuery.setParameter("userCode", userCode);
 
         List<Object[]> resultList = nativeQuery.getResultList();
         List<Map<String, Object>> notifications = new ArrayList<>();

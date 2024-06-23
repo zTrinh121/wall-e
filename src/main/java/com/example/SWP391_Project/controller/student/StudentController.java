@@ -96,7 +96,7 @@ public class StudentController {
 
     @GetMapping("/private-notifications/{userCode}")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable int userCode) {
+    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
         List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
         return ResponseEntity.ok(notifications);
     }
