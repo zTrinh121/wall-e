@@ -28,7 +28,7 @@ public class ManagerController
 {
     @Autowired
     ManagerService managerService;
-    @GetMapping("/manager")
+    @GetMapping("/managerHome")
     public String managerHome() {
         return "managerHome";
     }
