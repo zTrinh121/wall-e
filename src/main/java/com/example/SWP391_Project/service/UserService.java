@@ -55,5 +55,11 @@ public interface UserService {
 
     List<Map<String, Object>> getUsersByRoleId(int roleId);
     List<Map<String, Object>> getAllUsersWithSpecificAttributes();
+    String generateUserCode();
 
+
+     void updateParentIdByEmail(String email, int parentId) ;
+
+
+    void updateParentIdById(int userId, int parentId);
 }

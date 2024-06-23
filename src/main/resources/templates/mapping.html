@@ -1,29 +1,26 @@
-<span style="font-family: verdana, geneva, sans-serif;"><!DOCTYPE html>
-    <html lang="en">
-    <head>
-      <meta charset="UTF-8">
-      <title>Kết nối tài khoản</title>
-      <link rel="stylesheet" th:href="@{/css/mapping.css}" />
-        <!-- Font Awesome Cdn Link -->
-       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-    </head>
-    <body>
-      <div class="wrapper">
-        <h1>Kết nối tài khoản</h1>
-        <p>Vui lòng nhập mã người dùng của tài khoản kết nối đến</p>
-        <form action="/verify-email">
-            <input type="text" required placeholder="Nhập mã người dùng">
-            <div class="error">
-                <p>Báo lỗi phần này</p>
-            </div>
-            <p class="recover">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết nối tài khoản</title>
+    <link rel="stylesheet" th:href="@{/css/mapping.css}" />
+    <!-- Font Awesome Cdn Link -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+</head>
+<body>
+<div class="wrapper">
+    <h1>Kết nối tài khoản</h1>
+    <p>Vui lòng nhập mã người dùng của tài khoản kết nối đến</p>
+    <form action="/api/students/send-verification-email" method="post">
+        <input type="email" name="email" required placeholder="Nhập email">
+        <div class="error">
+            <p>Báo lỗi phần này</p>
+        </div>
+        <p class="recover">
             <a onclick="window.history.go(-1); return false;">Quay lại</a>
-          </p>
-          <input type="submit" class="button" value="Xác nhận" />
-        </form>
-
-
-      </div>
-    </body>
-    </html>
-    </span>
+        </p>
+        <input type="submit" class="button" value="Xác nhận" />
+    </form>
+</div>
+</body>
+</html>

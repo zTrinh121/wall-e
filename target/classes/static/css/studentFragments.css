@@ -22,11 +22,6 @@ body {
     right: 10px !important;
 }
 
-.top-navbar{
-    z-index: 100000000000;
-
-}
-
 .wrapper .top_navbar .hamburger {
     width: 70px;
     height: 100%;
@@ -368,202 +363,121 @@ body {
     cursor: pointer;
 }
 
+
+/*.search-results {*/
+/*    position: absolute;*/
+/*    top: 100%;*/
+/*    left: 0;*/
+/*    !*color: #000;*!*/
+/*    width: 100%;*/
+/*    border: 1px solid #ddd;*/
+/*    border-top: none;*/
+/*    background-color: red;*/
+/*    z-index: 1;*/
+/*    max-height: 200px;*/
+/*    overflow-y: auto;*/
+/*}*/
+
+/*.search-results div {*/
+/*    padding: 10px;*/
+/*    cursor: pointer;*/
+/*}*/
+
+/*.search-results div:hover {*/
+/*    background-color: black;*/
+/*}*/
 /*End: MODAL    */
 
-
-/* Chat box start */
-.chatbox-wrapper {
-    position: fixed;
-    bottom: 2rem;
-    right: 2rem;
-    width: 4rem;
-    height: 4rem;
-    z-index: 1000;
-}
-.chatbox-toggle {
-    width: 100%;
-    height: 100%;
-    background: #2648ae;
-    color: white;
-    font-size: 2rem;
+/* Start Search */
+.search {
     display: flex;
-    justify-content: center;
+    border: 1px solid #ccc;
+    width: 50%;
+    height: 45px;
+    background: #fff;
+    border-radius: 3rem;
     align-items: center;
-    border-radius: 50%;
-    cursor: pointer;
-    transition: .2s;
-}
-.chatbox-toggle:active {
-    transform: scale(.9);
-}
-.chatbox-message-wrapper {
-    position: absolute;
-    bottom: calc(100% + 1rem);
-    right: 0;
-    width: 420px;
-    border-radius: .5rem;
-    overflow: hidden;
-    box-shadow: .5rem .5rem 2rem rgba(0, 0, 0, .1);
-    transform: scale(0);
-    transform-origin: bottom right;
-    transition: .2s;
-}
-.chatbox-message-wrapper.show {
-    transform: scale(1);
-}
-.chatbox-message-header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    background: white;
-    padding: .75rem 1.5rem;
-}
-.chatbox-message-profile {
-    display: flex;
-    align-items: center;
-    grid-gap: .5rem;
-}
-.chatbox-message-image {
-    width: 3rem;
-    height: 3rem;
-    object-fit: cover;
-    border-radius: 50%;
-}
-.chatbox-message-name {
-    font-size: 1.125rem;
-    font-weight: 600;
-}
-.chatbox-message-status {
-    font-size: .875rem;
-    color: #888;
-}
-.chatbox-message-dropdown {
+    padding: .3rem;
     position: relative;
 }
 
-.chatbox-message-dropdown i {
-    display: flex;
+.search i {
+    color: rgba(0, 0, 0, .5);
+    margin: 0 .6rem;
 }
 
-.chatbox-message-dropdown-toggle {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 2.5rem;
-    height: 2.5rem;
-    font-size: 1.25rem;
+.search input {
+    width: 100%;
+    height: 100%;
+    background: transparent;
+    border: none;
+    outline: none;
+    font-weight: 400;
+}
+
+.search button {
+    height: 100%;
+    padding: 0 1rem;
+    border-radius: inherit;
+    background: #2e4ead;
+    border: none;
+    outline: none;
+    color: #fff;
+    font-weight: 400;
     cursor: pointer;
-    border-radius: 50%;
 }
-.chatbox-message-dropdown-toggle:hover {
-    background: #F5F5F5;
+
+.search button:hover {
+    background: #fff;
+    color: #2648ae;
+    border: 1px solid #2648ae;
 }
-.chatbox-message-dropdown-menu {
-    list-style: none;
-    margin: 0;
+
+/* Search results dropdown */
+.search-results {
     position: absolute;
     top: 100%;
-    right: 0;
-    background: white;
-    padding: .5rem 0;
-    width: 120px;
-    box-shadow: .25rem .25rem 1.5rem rgba(0, 0, 0, .1);
-    transform: scale(0);
-    transform-origin: top right;
-    transition: .2s;
-    border-radius: .5rem;
-}
-.chatbox-message-dropdown-menu.show {
-    transform: scale(1);
-
-}
-.chatbox-message-dropdown-menu a {
-    font-size: .875rem;
-    font-weight: 500;
-    color: #222;
-    text-decoration: none;
-    padding: .5rem 1rem;
-    display: block;
-}
-.chatbox-message-dropdown-menu a:hover {
-    background: #F5F5F5;
-}
-.chatbox-message-content {
-    background: #F5F5F5;
-    padding: 1.5rem;
-    display: flex;
-    flex-direction: column;
-    grid-row-gap: 1rem;
-    max-height: 300px;
+    left: 0;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+    border-radius: 3rem;
+    max-height: 200px;
     overflow-y: auto;
+    display: none; /* Ẩn kết quả tìm kiếm mặc định */
 }
-.chatbox-message-item {
-    width: 90%;
-    padding: 1rem;
-}
-.chatbox-message-item.sent {
-    align-self: flex-end;
-    background: #2648ae;
-    color: white;
-    border-radius: .75rem 0 .75rem .75rem;
-}
-.chatbox-message-item.received {
-    background: white;
-    border-radius: 0 .75rem .75rem .75rem;
-    box-shadow: .25rem .25rem 1.5rem rgba(0, 0, 0, .05);
-}
-.chatbox-message-item-time {
-    float: right;
-    font-size: .75rem;
-    margin-top: .5rem;
-    display: inline-block;
-}
-.chatbox-message-bottom {
-    background: white;
-    padding: .75rem 1.5rem;
-}
-.chatbox-message-form {
-    display: flex;
-    align-items: center;
-    background: #F5F5F5;
-    border-radius: .5rem;
-    padding: .5rem 1.25rem;
-    justify-content: space-between;
-}
-.chatbox-message-input {
-    background: transparent;
-    outline: none;
-    border: none;
-    resize: none;
-    scrollbar-width: none;
-}
-.chatbox-message-input::-webkit-scrollbar {
-    display: none;
-}
-.chatbox-message-submit {
-    font-size: 1.25rem;
-    color: #2648ae;
-    background: transparent;
-    border: none;
-    outline: none;
+
+.search-results div {
+    padding: 10px 20px;
     cursor: pointer;
 }
-.chatbox-message-no-message {
-    font-size: 1rem;
-    font-weight: 600;
-    text-align: center;
+
+.search-results div:hover {
+    background: #f1f1f1;
+}
+#search-results {
+    display: none; /* Ẩn khi không có kết quả hoặc chưa tìm kiếm */
+    position: absolute;
+    background: white;
+    width: 100%;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    z-index: 1000;
 }
 
-
-/* BREAKPOINTS */
-@media screen and (max-width: 576px) {
-    .chatbox-message-wrapper {
-        width: calc(100vw - 2rem);
-    }
-    .chatbox-wrapper {
-        bottom: 1rem;
-        right: 1rem;
-    }
+.search-item {
+    display: block;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: black;
+    border-bottom: 1px solid #ccc;
 }
-/* BREAKPOINTS */
-/* Chat box end */
+
+.search-item:hover {
+    background-color: #f0f0f0;
+}
+
+.search-item:last-child {
+    border-bottom: none;
+}
+
+/* End Search */

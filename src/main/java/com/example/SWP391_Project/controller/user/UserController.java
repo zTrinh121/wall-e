@@ -6,7 +6,7 @@ import com.example.SWP391_Project.service.EmailService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
-
+import java.util.UUID;
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpServletRequest;
@@ -239,6 +239,11 @@ public class UserController {
             model.addAttribute("emailError", "Email already exists");
             return "register";
         }
+
+        // Generate and set user code
+        String userCode = userService.generateUserCode();
+        user.setCode(userCode); // Gán mã người dùng cho đối tượng User
+
         Role role = userService.findRoleById(roleId);
         user.setRole(role);
         user.setStatus(false);  // Set status to false until email is verified
@@ -253,6 +258,7 @@ public class UserController {
 
         return "redirect:/verify-email";  // Redirect to the email verification page
     }
+
 
     @PostMapping("/verify-email")
     public String verifyEmail(@RequestParam String code, HttpSession session, Model model) {
@@ -543,6 +549,11 @@ public class UserController {
         session.invalidate();
         return "adminCenterManagement";
     }
+    @GetMapping("/verify-emaill")
+    public String verifyEmaill(HttpSession session) {
+        session.invalidate();
+        return "verify-emaill";
+    }
 
     @GetMapping("/profile-student")
     public String profileStudent(HttpSession session) {
@@ -561,10 +572,47 @@ public class UserController {
         return "managerHome";
     }
 
+    @GetMapping("/guest-teacher")
+    public String guestTeacher(HttpSession session) {
+        session.invalidate();
+        return "guest-teacher";
+    }
+
+    @GetMapping("/tkb-teacher")
+    public String tkbTeacher(HttpSession session) {
+        session.invalidate();
+        return "tkb-teacher";
+    }
+
+    @GetMapping("/teacherFragments")
+    public String teacherFragments(HttpSession session) {
+        session.invalidate();
+        return "teacherFragments";
+    }
+
+    @GetMapping("/teacher-notification")
+    public String teacherNotification(HttpSession session) {
+        session.invalidate();
+        return "teacher-notification";
+    }
+
+    @GetMapping("/detailCenter-teacher")
+    public String detailCenterTeacher(HttpSession session) {
+        session.invalidate();
+        return "detailCenter-teacher";
+    }
+
     @GetMapping("/student-classList")
     public String studentClassList(HttpSession session) {
         session.invalidate();
         return "student-classList";
+    }
+
+
+    @GetMapping("/teacher-dashboard")
+    public String teacherDashboard(HttpSession session) {
+        session.invalidate();
+        return "teacher-dashboard";
     }
 
     @GetMapping("/search-in-student")
@@ -614,6 +662,12 @@ public class UserController {
     public String viewDashboardParent(HttpSession session) {
         session.invalidate();
         return "parent-dashboard";
+    }
+
+    @GetMapping("/teacher-studentDetail")
+    public String teacherStudentDetail(HttpSession session) {
+        session.invalidate();
+        return "teacher-studentDetail";
     }
 
     @GetMapping("/search")
