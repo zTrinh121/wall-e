@@ -242,7 +242,7 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User admin) {
-        Optional<User> sendTo = userRepository.findByUsername(invididualNotificationDto.getSendToUser());
+        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
         if (!sendTo.isPresent()) {
             throw new IllegalArgumentException("User not found when finding by username !");
         }

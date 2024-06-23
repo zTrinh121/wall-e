@@ -58,14 +58,11 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        Optional<User> user = userRepository.findByUsername(username);
-        return user.orElseThrow(() -> new RuntimeException("username not found"));
+        return userRepository.findByUsername(username);
     }
 //    public User findById(int id){
 //        return userRepository.findById(id);
 //    }
-
-
 
     @Override
     public User findByEmail(String email) {
@@ -92,8 +89,6 @@ public class UserServiceImpl implements UserService {
     public List<User> findAllUsers() {
         return userRepository.findAll();
     }
-
-
 
 
     @Autowired
@@ -171,9 +166,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User authenticateUser(String username, String password) {
-        Optional<User> user = userRepository.findByUsername(username);
-        if (user.isPresent() && BCrypt.checkpw(password, user.get().getPassword())) {
-            return user.get();
+        User user = userRepository.findByUsername(username);
+        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
+            return user;
         }
         return null;
     }
@@ -251,6 +246,7 @@ public class UserServiceImpl implements UserService {
 
 
 
+
     public String generateUserCode() {
         String uniqueID = UUID.randomUUID().toString().substring(0, 8); // Tạo mã ngẫu nhiên gồm 8 ký tự
         return "USER" + uniqueID; // Tiền tố 'USER' được thêm vào trước mã
@@ -281,6 +277,7 @@ public class UserServiceImpl implements UserService {
             userRepository.save(user);
         }
     }
+
 
 
 //    @Override
