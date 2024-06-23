@@ -210,7 +210,7 @@ public class UserController {
                 case "STUDENT":
                     return "redirect:/student-profile";
                 case "TEACHER":
-                    return "redirect:/teacherProfile";
+                    return "redirect:/profile";
                 case "PARENT":
                     return "redirect:/profile-parent";
                 case "ADMIN":
@@ -762,6 +762,19 @@ public class UserController {
 //        model.addAttribute("user", user);
         return "notificationDetail";
     }
+
+    @GetMapping("/material-create-select")
+    public String materialCreateSelect(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+        return "material-create-select";
+    }
+
+
+
 
 
 
