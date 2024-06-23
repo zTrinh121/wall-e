@@ -192,13 +192,16 @@ public class StudentController {
     public String verifyEmaill(@RequestParam String code, HttpSession session, Model model) {
         String storedCode = (String) session.getAttribute("verificationCode");
         String emailToVerify = (String) session.getAttribute("emailToVerify");
+        User user = (User) session.getAttribute("user");
+        int id = user.getId();
+        System.out.println("ID mapping: " + id);
 
         if (storedCode != null && storedCode.equals(code)) {
             // Lấy người dùng có email nhận mã xác nhận
             User userToVerify = userService.findByEmail(emailToVerify);
             if (userToVerify != null) {
                 // Cập nhật C14_PARENT_ID của người dùng có ID 1 thành ID của email vừa nhập
-                userService.updateParentIdById(3, userToVerify.getId());
+                userService.updateParentIdById(id, userToVerify.getId());
             }
 
             session.removeAttribute("verificationCode");

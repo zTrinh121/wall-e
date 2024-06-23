@@ -441,10 +441,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if(!data.type.trim()){
             isValid = false;
             showError("notificationSendTo", "Gửi tới không được để trống");
-            if (data.type === "private" && !data.sendTo.startsWith("CENTER") && !data.sendTo.startsWith("USER")) {
-                showError("notificationSendTo", "Gửi tới phải bắt đầu bằng 'CENTER' hoặc 'USER'.");
-                isValid = false;
-            }
+
         }
 
         return isValid;

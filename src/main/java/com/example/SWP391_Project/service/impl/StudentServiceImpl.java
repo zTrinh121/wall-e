@@ -87,7 +87,7 @@ public class StudentServiceImpl implements StudentService {
         c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
         c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
         c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
-        teacher.C14_USER_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
         e.C15_STUDENT_ID as studentId, s.C02_SLOT_ID as slotId, s.C02_SLOT_DATE as slotDate,
         s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId
         FROM t15_enrollment e
@@ -97,6 +97,8 @@ public class StudentServiceImpl implements StudentService {
         JOIN t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID
         WHERE e.C15_STUDENT_ID = :studentId
         """;
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
 
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("studentId", studentId);
@@ -206,7 +208,7 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public List<Map<String, Object>> getStudentsByCourseId(int courseId) {
-        String query = "SELECT s.C14_USER_NAME as studentName, " +
+        String query = "SELECT s.C14_NAME as studentName, " +
                 "s.C14_USER_PHONE as studentPhone, " +
                 "CASE WHEN s.C14_PARENT_ID IS NOT NULL THEN 'Linked' ELSE 'Not Linked' END as parentStatus, " +
                 "c.C01_COURSE_ID as courseId " +
@@ -326,7 +328,7 @@ public class StudentServiceImpl implements StudentService {
                 "s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, " +
                 "s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId " +
                 "FROM t09_attendance a " +
-                "JOIN t02_slot s ON a.C09_SLOT_ID = s.C02_SLOT_ID " +
+                "JOIN t02_slot s ON a.C09_SLOT_ID =80 s.C02_SLOT_ID " +
                 "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
                 "WHERE a.C09_STUDENT_ID = :studentId";
 
