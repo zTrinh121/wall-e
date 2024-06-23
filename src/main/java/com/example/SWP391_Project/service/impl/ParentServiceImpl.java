@@ -86,4 +86,8 @@ public class ParentServiceImpl implements ParentService {
         }
     }
 
+    @Override
+    public List<User> getStudentsByParentId(int parentId) {
+        return userRepository.getStudentsByParentId(parentId);
+    }
 }

@@ -1,9 +1,11 @@
 package com.example.SWP391_Project.service;
 
+import com.example.SWP391_Project.dto.IndividualNotificationDto;
 import com.example.SWP391_Project.dto.SystemNotificationDto;
-import com.example.SWP391_Project.model.PrivateNotification;
-import com.example.SWP391_Project.dto.PrivateNotificationDto;
+import com.example.SWP391_Project.model.IndividualNotification;
 import com.example.SWP391_Project.model.SystemNotification;
+import com.example.SWP391_Project.model.User;
+import com.example.SWP391_Project.model.ViewSystemNotification;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
 import org.springframework.stereotype.Service;
@@ -30,6 +32,10 @@ public interface AdminService {
     SystemNotification updateSystemNotification(int id, SystemNotificationDto systemNotificationDto);
 
     boolean deleteSystemNotification(int id);
+
+//    List<ViewSystemNotification> getAllViewSystemNotifications();
+
+    List<ViewSystemNotification> getListViewersSystemNotification(int notificationId);
     // --------------------------------------------------
 
     void approveCenterPost(int id);
@@ -40,13 +46,16 @@ public interface AdminService {
 
     void rejectCenterApply(int id);
 
-    // ------------- Private Notifications --------------
-    List<PrivateNotification> getAllPrivateNotifications();
+    // ------------- Individual Notifications --------------
+    List<IndividualNotification> getAllIndividualNotifications(int adminId);
 
-    PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDtoDto);
+    IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User admin);
 
-    PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto);
+    IndividualNotification updateIndividualNotification(int id, IndividualNotificationDto invididualNotificationDto);
 
-    boolean deletePrivateNotification(int id);
+    boolean deleteIndividualNotification(int id);
+
+    List<IndividualNotification> getViewersIndividualNotification(int adminId);
+
     // --------------------------------------------------
 }

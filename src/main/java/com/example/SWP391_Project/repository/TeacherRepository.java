@@ -35,13 +35,13 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
 
     // Lấy ra cả 3 loại thông báo
 
-    @Query("SELECT p FROM PrivateNotification p")
-    List<PrivateNotification> findAllPrivateNotifications();
-
-    @Query("SELECT p FROM PublicNotification p")
-    List<PublicNotification> findAllPublicNotifications();
-
-    @Query("SELECT s FROM SystemNotification s")
-    List<SystemNotification> findAllSystemNotifications();
+//    @Query("SELECT p FROM PrivateNotification p")
+//    List<PrivateNotification> findAllPrivateNotifications();
+//
+//    @Query("SELECT p FROM PublicNotification p")
+//    List<PublicNotification> findAllPublicNotifications();
+//
+//    @Query("SELECT s FROM SystemNotification s")
+//    List<SystemNotification> findAllSystemNotifications();
 
 }

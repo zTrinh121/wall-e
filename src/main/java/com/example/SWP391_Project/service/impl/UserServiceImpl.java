@@ -27,11 +27,9 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.UserPrincipalNotFoundException;
 import java.security.SecureRandom;
-import java.util.List;
-import java.util.Map;
-import java.util.Properties;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -60,7 +58,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User findByUsername(String username) {
-        return userRepository.findByUsername(username);
+        Optional<User> user = userRepository.findByUsername(username);
+        return user.orElseThrow(() -> new RuntimeException("username not found"));
     }
 //    public User findById(int id){
 //        return userRepository.findById(id);
@@ -121,9 +120,9 @@ public class UserServiceImpl implements UserService {
     public User uploadProfileImage(final int userId, final MultipartFile file) {
         final User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found !!!"));
-        FileUploadUtil.assertAllowed(file, FileUploadUtil.IMAGE_PATTERN);
+        FileUploadUtil.assertAllowedImage(file);
         final String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
-        final CloudinaryResponse response = this.cloudinaryService.uploadFile(file, fileName);
+        final CloudinaryResponse response = this.cloudinaryService.uploadImageFile(file, fileName);
         user.setProfileImage(response.getUrl());
         user.setCloudinaryImageId(response.getPublicId());
         this.userRepository.save(user);
@@ -172,9 +171,9 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User authenticateUser(String username, String password) {
-        User user = userRepository.findByUsername(username);
-        if (user != null && BCrypt.checkpw(password, user.getPassword())) {
-            return user;
+        Optional<User> user = userRepository.findByUsername(username);
+        if (user.isPresent() && BCrypt.checkpw(password, user.get().getPassword())) {
+            return user.get();
         }
         return null;
     }
