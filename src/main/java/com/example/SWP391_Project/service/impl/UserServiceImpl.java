@@ -9,7 +9,7 @@ import com.example.SWP391_Project.repository.SlotRepository;
 import com.example.SWP391_Project.repository.UserRepository;
 import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.service.UserService;
-
+import java.util.UUID;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import jakarta.mail.*;
 import jakarta.mail.internet.InternetAddress;
@@ -252,6 +252,36 @@ public class UserServiceImpl implements UserService {
 
 
 
+    public String generateUserCode() {
+        String uniqueID = UUID.randomUUID().toString().substring(0, 8); // Tạo mã ngẫu nhiên gồm 8 ký tự
+        return "USER" + uniqueID; // Tiền tố 'USER' được thêm vào trước mã
+    }
+
+
+
+    @Transactional
+    public void updateParentIdByEmail(String email, int parentId) {
+        User user = userRepository.findByEmail(email);
+        if (user != null) {
+            User parentUser = userRepository.findById(parentId).orElse(null);
+            if (parentUser != null) {
+                user.setParent(parentUser);
+                userRepository.save(user);
+            }
+        }
+    }
+
+
+    @Override
+    @Transactional
+    public void updateParentIdById(int userId, int parentId) {
+        User user = userRepository.findById(userId).orElse(null);
+        User parentUser = userRepository.findById(parentId).orElse(null);
+        if (user != null && parentUser != null) {
+            user.setParent(parentUser);
+            userRepository.save(user);
+        }
+    }
 
 
 //    @Override
@@ -259,8 +289,8 @@ public class UserServiceImpl implements UserService {
 //        return verificationCode;
 //    }
 
-    @Override
-    public User findById(int id) {
-        return userRepository.findById(id).orElse(null);
-    }
+//    @Override
+//    public User findById(int id) {
+//        return userRepository.findById(id).orElse(null);
+//    }
 }

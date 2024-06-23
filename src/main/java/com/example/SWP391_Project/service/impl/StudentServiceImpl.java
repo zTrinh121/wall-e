@@ -76,23 +76,27 @@ public class StudentServiceImpl implements StudentService {
         return feedbackRepository.save(feedback);
     }
 
+//     System.out.println("Query: " + query);
+//        System.out.println("Student ID: " + studentId);
+
     @Transactional
     @Override
     public List<Map<String, Object>> getStudentSchedule(int studentId) {
-        String query = "SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, " +
-                "c.c01_course_desc as courseDesc, c.c01_course_name as courseName, " +
-                "c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime, " +
-                "c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName, " +
-                "teacher.C14_USER_NAME as teacherName, teacher.C14_USER_ID as teacherId, " +
-                "e.C15_STUDENT_ID as studentId " +
-                "FROM t15_enrollment e " +
-                "JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
-                "JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID " +
-                "JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID " +
-                "WHERE e.C15_STUDENT_ID = :studentId";
-
-        System.out.println("Query: " + query);
-        System.out.println("Student ID: " + studentId);
+        String query = """
+        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
+        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
+        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
+        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
+        teacher.C14_USER_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+        e.C15_STUDENT_ID as studentId, s.C02_SLOT_ID as slotId, s.C02_SLOT_DATE as slotDate,
+        s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId
+        FROM t15_enrollment e
+        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
+        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
+        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
+        JOIN t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID
+        WHERE e.C15_STUDENT_ID = :studentId
+        """;
 
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("studentId", studentId);
@@ -113,14 +117,17 @@ public class StudentServiceImpl implements StudentService {
             scheduleMap.put("teacherName", result[8]);
             scheduleMap.put("teacherId", result[9]);
             scheduleMap.put("studentId", result[10]);
-
+            scheduleMap.put("slotId", result[11]);
+            scheduleMap.put("slotDate", result[12]);
+            scheduleMap.put("slotStartTime", result[13]);
+            scheduleMap.put("slotEndTime", result[14]);
+            scheduleMap.put("roomId", result[15]);
             schedule.add(scheduleMap);
         }
 
-        System.out.println("Schedule: " + schedule);
-
         return schedule;
     }
+
 
     // Lấy ra bảng điểm của học sinh đó
 
@@ -383,6 +390,32 @@ public class StudentServiceImpl implements StudentService {
         }
 
         return slots;
+    }
+
+    @Transactional
+    @Override
+    public List<Map<String, String>> search(String keyword) {
+        String query = "SELECT 'Course' as type, c.C01_COURSE_NAME as name FROM t01_course c WHERE c.C01_COURSE_NAME LIKE :keyword " +
+                "UNION " +
+                "SELECT 'Center' as type, cn.C03_CENTER_NAME as name FROM t03_center cn WHERE cn.C03_CENTER_NAME LIKE :keyword";
+
+        System.out.println("Query: " + query);
+        System.out.println("CourseId: " + keyword);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("keyword", "%" + keyword + "%");
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, String>> results = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, String> resultMap = new HashMap<>();
+            resultMap.put("type", (String) result[0]);
+            resultMap.put("name", (String) result[1]);
+            results.add(resultMap);
+        }
+
+        return results;
     }
 
 

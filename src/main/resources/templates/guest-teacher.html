@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Guest Page</title>
+    <link rel="stylesheet" th:href="@{/css/guest-teacher.css}"/>
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+    <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css"
+            integrity="sha512-xh6O/CkQoPOWDdYTDqeRdPCVd1SpvCA9XXcUnZS2FmJNp1coAFzvtCN9BmamE+4aHK8yyUHUSCcJHgXloTyT2A=="
+            crossorigin="anonymous"
+            referrerpolicy="no-referrer"
+    />
+</head>
+<body>
+<div class="wrapper">
+    <div class="top_navbar">
+        <div class="top_menu">
+            <div class="logo">Wall-E</div>
+            <form class="search">
+                <select id="searchType">
+                    <option value="all">Tất cả</option>
+                    <option value="center">Trung tâm</option>
+                    <option value="teacher">Giáo viên</option>
+                    <option value="course">Khóa học</option>
+                    <option value="center-post">Bài đăng trung tâm</option>
+                </select>
+                <div class="search-content">
+                    <input type="text" autocomplete="off" id="searchInput" placeholder="Tìm kiếm lớp học, trung tâm, ...">
+                    <button type="submit">Tìm</button>
+                </div>
+                <div class="result-box"></div>
+            </form>
+            <ul>
+                <li>
+                    <a class="btn btn-sign-up" href="/register">
+                        Đăng ký
+                    </a>
+                </li>
+                <li>
+                    <a class="btn btn-sign-in" href="/login">
+                        Đăng nhập
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <div class="main_container">
+        <div class="content">
+            <h3>Wall-E</h3>
+            <div class="guest-intro">
+                <div class="desc">
+                    <h1>Kết nối tương lai với Wall-E</h1>
+                    <p>Wall-E - quản lý giáo dục tối ưu: Quản lý dễ dàng, đăng ký thuận tiện, kết nối tương lai của bạn hôm nay.</p>
+                </div>
+                <div class="image">
+                    <img src="images/school-suppliers.png" />
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<section class="travel">
+    <div class="container">
+        <div class="box box1">
+            <img src="../../images/planning.png" alt="">
+            <div class="content">
+                <h4>Lộ trình rõ ràng</h4>
+                <p>Lập kế hoạch học tập hiệu quả. Chúng tôi mang đến giải pháp tối ưu cho việc quản lý giáo dục, giúp phụ huynh và học sinh dễ dàng đăng ký và theo dõi tiến trình học tập. </p>
+            </div>
+        </div>
+        <div class="box box2">
+            <img src="../../images/education.png" alt="">
+            <div class="content">
+                <h4>Dễ dàng và linh hoạt</h4>
+                <p>Trang web của chúng tôi được thiết kế để đáp ứng mọi nhu cầu của bạn một cách linh hoạt và tinh tế. Từ việc tạo lịch học cho đến quản lý thông tin học sinh, mọi thứ đều được tổ chức một cách dễ dàng và thuận tiện.</p>
+            </div>
+        </div>
+        <div class="box box3">
+            <img src="../../images/trust.png" alt="">
+            <div class="content">
+                <h4>Đáng tin cậy và uy tín</h4>
+                <p>Chúng tôi cam kết cung cấp dịch vụ giáo dục chất lượng cao, đảm bảo sự hài lòng và an tâm cho phụ huynh và học sinh. Với hệ thống quản lý tiên tiến và đội ngũ chuyên gia tận tâm, chúng tôi luôn nỗ lực để đáp ứng mọi nhu cầu học tập của bạn.</p>
+            </div>
+        </div>
+    </div>
+</section>
+<!-- travel section ends here  -->
+<!-- <section class="destinations">
+        <h4 class="label">Classes</h4>
+        <div class="container">
+            <div class="container-box">
+                <h2 class="heading">High-quality with excellect teachers</h2>
+                <div class="content">
+                    <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Vero culpa pariatur iusto sequi, ut expedita soluta nihil est quaerat itaque corporis maiores in, at id officiis tempore. Harum vitae fugit itaque expedita asperiores vero delectus?</p>
+                    <a href="#">explore more <i class="fa fa-arrow-right"></i></a>
+                </div>
+            </div>
+
+        </div>
+    </section> -->
+
+
+<section id="tranding">
+    <div class="container_swiper">
+        <h3 class="text-center section-subheading">- Trung tâm nổi bật -</h3>
+        <h1 class="text-center section-heading">Đến từ Wall-E</h1>
+    </div>
+    <div class="container">
+        <div class="swiper tranding-slider">
+            <div class="swiper-wrapper" id="swiper-wrapper">
+                <!-- Slides will be injected here dynamically -->
+            </div>
+            <div class="tranding-slider-control">
+                <div class="swiper-button-prev slider-arrow">
+                    <ion-icon name="arrow-back-outline"></ion-icon>
+                </div>
+                <div class="swiper-button-next slider-arrow">
+                    <ion-icon name="arrow-forward-outline"></ion-icon>
+                </div>
+                <div class="swiper-pagination"></div>
+            </div>
+        </div>
+    </div>
+</section>
+<footer>
+    <section class="footer">
+        <div class="container">
+            <div class="detail">
+                <h3>Wall-E</h3>
+                <p>Quản lý giáo dục tối ưu: Quản lý dễ dàng, đăng ký thuận tiện, kết nối tương lai của bạn hôm nay.</p>
+                <h5></h5>
+                <a href="#">example@mail.com</a>
+            </div>
+            <div class="about-us">
+                <h4>About us</h4>
+            </div>
+            <div class="about-us">
+                <h4>Help</h4>
+            </div>
+            <div class="about-us">
+                <h4>Resources</h4>
+            </div>
+        </div>
+        <div class="copyright">
+            <div>
+                &copy;2024 - Wall-E, inc, all rights reserved
+            </div>
+            <div>
+                <a href="#">Term & conditions</a>
+                <a href="#">Privacy policy</a>
+            </div>
+        </div>
+    </section>
+</footer>
+<div id="courses-modal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="document.getElementById('courses-modal').style.display = 'none'">&times;</span>
+        <div id="modal-content"></div>
+    </div>
+</div>
+<script type="module" src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.esm.js"></script>
+<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script>
+<script src="https://unpkg.com/swiper@8/swiper-bundle.min.js"></script>
+<script src="/js/guest.js"></script>
+<script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
+<script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
+</body>
+</html>

@@ -33,4 +33,7 @@ public interface StudentService {
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
+    List<Map<String, String>> search(String keyword);
+
+
 }

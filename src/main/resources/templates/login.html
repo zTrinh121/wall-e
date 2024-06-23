@@ -6,8 +6,24 @@
     <title>Login & Register Form</title>
     <link rel="stylesheet" href="/css/authSignIn.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
+<!--    <img src="/images/book3d.png" alt="Description of the image" style="width: 300px; height: auto;">-->
+    <style>
+        body {
+            background-image: url('/images/edudesc.jpg');
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            width: 900px;
+            height: auto
+        }
+    </style>
 </head>
 <body>
+<!--<video controls autoplay loop>-->
+<!--    <source src="/path/to/your/video.mp4" type="video/mp4">-->
+<!--    &lt;!&ndash; Thêm các source khác (nếu cần) &ndash;&gt;-->
+<!--    Your browser does not support the video tag.-->
+<!--</video>-->
 <div class="wrapper">
     <div class="title-text">
         <div class="title login">Đăng Nhập</div>
@@ -66,9 +82,9 @@
                 <div class="field">
                 <input type="text" required placeholder="Số điện thoại" name="phone">
                 </div>
-                <div class="field">
-                <input type="text" required placeholder="Mã người dùng" name="code">
-                </div>
+<!--                <div class="field">-->
+<!--                <input type="text" required placeholder="Mã người dùng" name="code">-->
+<!--                </div>-->
                 <div class="field">
                 <select name="roleId" required>
                     <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
@@ -109,5 +125,8 @@
         return true;
     }
 </script>
+<!--<img src="/images/book3d.png" alt="Background image">-->
+<!--<img src="/images/book3d.png" alt="Description of the image" style="width: 300px; height: auto;">-->
+
 </body>
 </html>
