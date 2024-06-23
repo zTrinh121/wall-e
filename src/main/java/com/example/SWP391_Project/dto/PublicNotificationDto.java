@@ -14,9 +14,5 @@ public class PublicNotificationDto {
 
     String content;
 
-    Date createdAt;
-
-    Date updatedAt;
-
     String centerSendTo;
 }

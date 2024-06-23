@@ -28,15 +28,10 @@ public class ManagerController
 {
     @Autowired
     ManagerService managerService;
-    //khi lấy ra sẽ lấy theo manager id hay sao ta ? -> dư thgian => ẩn id
     @GetMapping("/manager")
     public String managerHome() {
         return "managerHome";
     }
-//    @GetMapping("/manager/{managerId}")
-//    public String managerHome2() {
-//        return "managerHome";
-//    }
     //    qlhv = quan li hoc vien
     @GetMapping("/qlhv")
     public String stuManage() {
@@ -57,34 +52,18 @@ public class ManagerController
     public String teacherInfo() {
         return "teacherInfo";
     }
-//    @GetMapping("/centerHome/{centerId}")
-//    public String centerHome() {
-//        return "centerDetail";
-//    }
 
+    @GetMapping("/noti")
+    public String mnoti(){
+        return  "managerNoti";
+    }
     @GetMapping("/centerHome")
     public String centerHome2() {
         return "centerDetail";
     }
-
-//    @GetMapping("/centerDetail")
-//    public String centerHome2(HttpSession session) {
-//        session.invalidate();
-//        return "centerDetail";
-//    }
-//
-//
-//    @GetMapping("/manager")
-//    public String managerDashboard(HttpSession session) {
-//        session.invalidate();
-//        return "managerHome";
-//    }
-//
-//    @GetMapping("/centeDetail")
-//    public String centerDetail(HttpSession session) {
-//        session.invalidate();
-//        return "centerDetail";
-//    }
-
+    @GetMapping("/mpost")
+    public String mnPost() {
+        return "managerPost";
+    }
 
 }

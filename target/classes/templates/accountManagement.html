@@ -8,7 +8,7 @@
     <script src="/js/adminAccountManagement.js"></script>
 </head>
 <body>
-<div class="wrapper collapse">
+<div class="wrapper">
     <div th:replace="adminFragments :: adminheader"></div>
     <div class="main_container">
         <section id="content">
@@ -43,7 +43,21 @@
                             </thead>
                             <tbody id="tableBody"></tbody>
                         </table>
-                        <div id="paginationControls" class="pagination-controls"></div>
+                        <div class="pagination" style="display: flex; justify-content: space-between">
+                            <select id="pageSizeSelector">
+                                <option value="5">5/page</option>
+                                <option value="10">10/page</option>
+                                <option value="20">20/page</option>
+                            </select>
+                            <span id="paginationControls" class="pagination-controls" ></span>
+
+                            <div>
+                                <input type="number" id="goToPageInput" min="1" placeholder="Page">
+                                <button id="goToPageButton">Go</button>
+                            </div>
+
+                        </div>
+
                         <div id="toastContainer" class="toast-container"></div>
                     </div>
                 </div>

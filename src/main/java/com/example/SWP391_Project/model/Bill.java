@@ -35,6 +35,16 @@ public class Bill {
     Enrollment enrollment;
 
     @ManyToOne
+    @JoinColumn(name = "C08_STUDENT_ID")
+    @JsonManagedReference
+    User student;
+
+    @ManyToOne
+    @JoinColumn(name = "C08_COURSE_ID")
+    @JsonManagedReference
+    Course course;
+
+    @ManyToOne
     @JoinColumn(name = "C08_PMETHOD_ID")
     @JsonManagedReference
     PaymentMethod paymentMethod;

@@ -5,12 +5,12 @@
     <link rel="stylesheet" href="/css/studentDashboard.css" />
 
     <script src="/js/studentDashboard.js"></script>
-    <script th:src="@{/js/studentFragments.js}" type="module"></script>
-    <th:block th:replace="~{studentFragments :: studenthead}"></th:block>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="~{fragments :: head}"></th:block>
 </head>
 <body>
 <div class="wrapper">
-    <div th:replace="~{studentFragments :: studentheader}"></div>
+    <div th:replace="~{fragments :: header}"></div>
 
 
     <div class="main_container">
@@ -22,6 +22,7 @@
 
                 </div>
                 <div class="header">Khóa học của tôi</div>
+                <p id="userId" th:text="${session.user?.id}"></p>
                     <div class="box-container" id="courseBoxes">
 
 

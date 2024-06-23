@@ -1,0 +1,45 @@
+<span style="font-family: verdana, geneva, sans-serif"
+><!DOCTYPE html>
+  <html lang="en">
+    <head>
+      <meta charset="UTF-8" />
+      <title>Hóa đơn</title>
+      <link rel="stylesheet" href="css/bill.css" />
+        <script src="/js/bill.js"></script>
+      <link
+              rel="stylesheet"
+              href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"
+      />
+    </head>
+    <body>
+		<header>
+			<h1>Hóa đơn</h1>
+			<span><img alt="" src="http://www.jonathantneal.com/examples/invoice/logo.png"><input type="file" accept="image/*"></span>
+		</header>
+		<article>
+			<h1>Recipient</h1>
+			<address >
+				<p>Wall-E<br>EduCenter Platform</p>
+			</address>
+			<table class="meta">
+				<tr>
+					<th><span >Hóa đơn</span></th>
+					<td><span ></span></td>
+				</tr>
+				<tr>
+					<th><span >Ngày</span></th>
+					<td><span ></span></td>
+				</tr>
+				<tr>
+					<th><span >Số tiền</span></th>
+					<td><span id="prefix" >VND</span><span></span></td>
+				</tr>
+			</table>
+
+
+		</article>
+		<p id="userRole" style="display: none" th:text="${session.user?.role.getDescription().name()}"></p>
+		<button onclick="window.location.href='/parent'" id="back-btn">Quay lại trang chủ</button>
+	</body>
+  </html>
+</span>

@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "t03_center")
@@ -61,3 +62,6 @@ public class Center {
     @JsonManagedReference
     User manager;
 }
+//    @OneToMany(mappedBy = "center", cascade = CascadeType.REMOVE)
+//    List<Course> courses;
+

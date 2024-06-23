@@ -214,7 +214,6 @@
 }
 
 #content main .table-data .head button i {
-  font-weight: 400;
   margin-right: 0.5rem;
 
 }
@@ -259,13 +258,12 @@
   font-size: 18px;
   text-align: left;
   border-bottom: 1px solid #eee;
-  text-align: center;
 }
 
 #content main .table-data .order table td {
   padding: 16px 0;
-  text-align: center;
 }
+
 
 #content main .table-data .order table td:last-child a {
   cursor: pointer;
@@ -282,7 +280,6 @@
   align-items: center;
   grid-gap: 12px;
   padding-left: 6px;
-  justify-content: center;
 }
 
 #content main .table-data .order table td img {
@@ -519,12 +516,12 @@
   width: 20rem;
   height: 10vh;
   margin-left: -125px;
-  margin-top: -165px;
+  margin-top: -125px;
   background-color: #4caf50;
   text-align: center;
   position: fixed;
   z-index: 1;
-  top: 36%;
+  top: 37%;
   right: 35px;
   font-size: 14px;
   border-radius: 0.5rem;
@@ -546,7 +543,7 @@
 
 #toast  p {
   display: flex;
-  font-size: 16px;
+  font-size: 15px;
   align-items: center;
   color: #fff;
 }
