@@ -1,4 +1,3 @@
-// Start: Drop down
 document.addEventListener("DOMContentLoaded", function () {
     const bell = document.getElementById("bell");
     const contentNotification = document.querySelector(".content-notification");
@@ -59,6 +58,20 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    // Start: notification
+    let notificationCount = 5; // Example count
+
+    // Get the notification count element
+    const notificationCountElement = document.getElementById('notificationCount');
+
+    // Update the count and show the badge if count is greater than 0
+    if (notificationCount > 0) {
+        notificationCountElement.textContent = notificationCount;
+        notificationCountElement.style.display = 'inline-block';
+    } else {
+        notificationCountElement.style.display = 'none';
+    }
+
     function fetchNotifications() {
         fetch('api/teachers/notifications/system')
             .then(response => response.json())
@@ -72,25 +85,67 @@ document.addEventListener("DOMContentLoaded", function () {
         contentNotification.innerHTML = ''; // Clear existing notifications
 
         const maxDisplay = 5;
-        const displayedNotifications = notifications.slice(0, maxDisplay);
+        let displayedCount = 0;
+        let moreButton;
 
-        displayedNotifications.forEach(notification => {
-            const notificationItem = document.createElement('div');
-            notificationItem.classList.add('notification-item');
-            notificationItem.textContent = notification.title; // Adjust based on your notification structure
-            notificationItem.addEventListener('click', () => {
-                showNotificationDetails(notification);
+        function renderNotifications(notificationsToRender) {
+            notificationsToRender.forEach(notification => {
+                const notificationItem = document.createElement('div');
+                notificationItem.classList.add('notification-item');
+
+                // Create the icon element
+                const icon = document.createElement('i');
+                icon.classList.add('fas', 'fa-info-circle'); // Example icon, change to the desired one
+
+                // Create the text element
+                const text = document.createElement('span');
+                text.textContent = notification.title; // Adjust based on your notification structure
+
+                notificationItem.appendChild(icon);
+                notificationItem.appendChild(text);
+
+                notificationItem.addEventListener('click', () => {
+                    window.location.href = `/notification?id=${notification.id}`; // Redirect to notification details page
+                });
+
+                contentNotification.appendChild(notificationItem);
             });
-            contentNotification.appendChild(notificationItem);
-        });
+
+            // Move "More" button to the end
+            if (moreButton) {
+                contentNotification.appendChild(moreButton);
+            }
+        }
+
+        function loadMoreNotifications() {
+            const nextBatch = notifications.slice(displayedCount, displayedCount + maxDisplay);
+            renderNotifications(nextBatch);
+            displayedCount += nextBatch.length;
+
+            if (displayedCount >= notifications.length && moreButton) {
+                moreButton.style.display = 'none';
+            }
+        }
+
+        loadMoreNotifications(); // Load initial batch
 
         if (notifications.length > maxDisplay) {
-            const moreButton = document.createElement('div');
+            moreButton = document.createElement('div');
             moreButton.classList.add('notification-item', 'more-button');
-            moreButton.textContent = 'More';
-            moreButton.addEventListener('click', () => {
-                window.location.href = '/student-notification'; // Replace with the actual URL of your notifications list page
-            });
+
+
+            const moreIcon = document.createElement('i');
+
+
+            // Create the text element for the "More" button
+            const moreText = document.createElement('span');
+            moreText.textContent = 'Xem thông báo trước';
+
+            moreButton.appendChild(moreIcon);
+            moreButton.appendChild(moreText);
+
+            moreButton.addEventListener('click', loadMoreNotifications);
+
             contentNotification.appendChild(moreButton);
         }
     }
@@ -218,4 +273,7 @@ document.addEventListener("DOMContentLoaded", function () {
         return text.length > 0;
     }
     // End chat box
+
+    // Execute the fetchNotifications function initially to load notifications
+    fetchNotifications();
 });

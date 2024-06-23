@@ -314,10 +314,55 @@ body {
     margin-left: 70px;
 }
 
+/*Start: Bell notification*/
+.notification {
+    position: relative;
+    display: inline-block;
+}
+
+.content-notification{
+
+}
+
+/* Dropdown menu styling */
+.notification .content-notification {
+    display: none; /*Hidden by default */
+    max-height: 50vh;
+    padding: 10px;
+    position: absolute;
+    background-color: white;
+    min-width: 32vw;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+    z-index: 1;
+    right: 0; /* Align to the right of the bell */
+    border-radius: 1rem;
+    top: 1.8rem;
+    padding: 10px;
+    overflow-y: auto;
+
+}
+
 .content-notification .notification-item{
-    border-bottom: 1px solid;
-    padding: 6px 0px;
+    padding: 10px 0px;
+    display: flex;
+    justify-content: left;
+    gap: 1rem;
+}
+
+.content-notification .more-button{
     cursor: pointer;
+}
+
+.notification-count {
+    position: absolute;
+    top: -10px;
+    right: -10px;
+    background: red;
+    color: white;
+    border-radius: 50%;
+    padding: 2px 6px;
+    font-size: 12px;
+    display: none; /* Hidden by default */
 }
 
 .more-button{

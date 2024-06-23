@@ -753,6 +753,18 @@ public class UserController {
         return "material-create";
     }
 
+    @GetMapping("/notification")
+    public String notification(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+        return "notificationDetail";
+    }
+
+
+
 
 
 
