@@ -55,7 +55,7 @@ public class PaymentController {
             String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo ;
             return "redirect:" + billUrl;
         } else if(status.equals("24")){
-            System.out.println("HỦy thanh toán");
+            System.out.println("Hủy thanh toán");
             return "redirect:/billFail";
         }
         else {
