@@ -1,16 +1,11 @@
 package com.example.SWP391_Project.service.impl;
 
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Feedback;
-import com.example.SWP391_Project.model.Slot;
-import com.example.SWP391_Project.model.User;
-import com.example.SWP391_Project.repository.CourseRepository;
-import com.example.SWP391_Project.repository.FeedbackRepository;
-import com.example.SWP391_Project.repository.SlotRepository;
-import com.example.SWP391_Project.repository.StudentRepository;
+import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -45,6 +40,9 @@ public class StudentServiceImpl implements StudentService {
     private EntityManager entityManager;
     @Autowired
     private SlotRepository slotRepository;
+
+    @Autowired
+    private MaterialRepository materialRepository;
 
     @Override
     public User getStudentById(int studentId) {
@@ -424,6 +422,12 @@ public class StudentServiceImpl implements StudentService {
         return results;
     }
 
+    @Override
+    public List<Material> getAllMaterials() {
+        return materialRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
+
 //    @Autowired
 //    private JdbcTemplate jdbcTemplate;
 
@@ -482,5 +486,6 @@ public class StudentServiceImpl implements StudentService {
 //            }
 //        });
 //    }
+
 
 }

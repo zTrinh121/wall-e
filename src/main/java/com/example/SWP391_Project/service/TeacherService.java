@@ -44,4 +44,8 @@ public interface TeacherService {
 
     void uploadPdfFile(final MultipartFile file, MaterialDto materialDto, User teacher);
 
+    List<Material> getAllMaterials();
+
+    List<Material> getMaterialsByTeacherId(int teacherId);
+
 }

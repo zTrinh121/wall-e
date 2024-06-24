@@ -11,7 +11,7 @@ import java.util.Date;
 @NoArgsConstructor
 public class TeacherCoursesResponse {
 
-    private String teacherCode;
+    private String teacherUsername;
 
     private String teacherName;
 

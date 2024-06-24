@@ -40,7 +40,7 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
     int countCourseByCenter(@Param("centerId") int centerId);
 
     @Query("SELECT " +
-            "   c.teacher.code AS code, " +
+            "   c.teacher.username AS username, " +
             "   c.teacher.name AS name, " +
             "   c.teacher.phone AS phone, " +
             "   c.teacher.address AS address, " +

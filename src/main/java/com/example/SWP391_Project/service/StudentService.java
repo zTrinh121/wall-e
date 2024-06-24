@@ -22,23 +22,12 @@ public interface StudentService {
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
 
-//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
-//
-//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
-
     List<Map<String, Object>> getStudentAttendance(int studentId);
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
     List<Map<String, String>> search(String keyword);
 
-    //--------------
+    List<Material> getAllMaterials();
 
-//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
-//
-//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
-//
-//    List<Map<String, Object>> getAllNotifications();
-//
-//    List<Notification> getCenterNotifications(int centerId);
 }

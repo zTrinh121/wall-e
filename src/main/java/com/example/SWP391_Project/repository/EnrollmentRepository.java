@@ -19,20 +19,28 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
     Optional<List<Enrollment>> findByCourse_Id(int id);
 
     @Query("SELECT " +
-            "   s.code AS code, " +
+            "   s.username AS username, " +
             "   s.name AS name, " +
             "   s.phone AS phone, " +
             "   s.address AS address, " +
             "   s.dob AS dob, " +
             "   s.gender AS gender, " +
             "   s.email AS email, " +
-            "   GROUP_CONCAT(e.course.name) AS courses " +
+            "   GROUP_CONCAT(c.name) AS courses, " +
+            "   p.username AS parentUsername, " +
+            "   p.name AS parentName, " +
+            "   p.phone AS parentPhone, " +
+            "   p.dob AS parentDob, " +
+            "   p.gender AS parentGender, " +
+            "   p.email AS parentEmail " +
             "FROM Enrollment e " +
             "JOIN e.student s " +
+            "LEFT JOIN s.parent p " +
             "JOIN e.course c " +
             "WHERE s.id = :studentId AND c.center.id = :centerId " +
-            "GROUP BY s.id")
+            "GROUP BY s.id, p.name, p.phone")
     List<Object[]> findStudentInfoAndCoursesByStudentId(@Param("studentId") int studentId,
                                                         @Param("centerId") int centerId);
+
 
 }

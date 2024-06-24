@@ -134,4 +134,28 @@ public class TeacherController {
         }
     }
 
+    @GetMapping("/allMaterials")
+    public ResponseEntity<List<Material>> getAllMaterials() {
+        List<Material> materials = teacherService.getAllMaterials();
+        if (materials.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(materials);
+        }
+    }
+
+    @GetMapping("materials")
+    public ResponseEntity<List<Material>> getMaterialsByTeacherId(HttpSession session) {
+        int teacherId = (int) session.getAttribute("authid");
+        List<Material> materials = teacherService.getMaterialsByTeacherId(teacherId);
+        if (materials.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(materials, HttpStatus.OK);
+    }
+
+
+
+
+
 }

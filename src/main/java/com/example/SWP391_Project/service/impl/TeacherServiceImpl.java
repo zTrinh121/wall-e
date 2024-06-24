@@ -10,11 +10,14 @@ import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.repository.TeacherRepository;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -143,5 +146,17 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload PDF file and save material: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Material> getAllMaterials() {
+        return materialRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    @Override
+    public List<Material> getMaterialsByTeacherId(int teacherId) {
+        Optional<List<Material>> materials = materialRepository.findByTeacher_Id(teacherId);
+        return materials.orElse(Collections.emptyList());
     }
 }
