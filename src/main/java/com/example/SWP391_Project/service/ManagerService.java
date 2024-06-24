@@ -223,6 +223,7 @@ public interface ManagerService {
 
     List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId);
 
+
     List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId);
 
     // ------------- Individual Notifications --------------

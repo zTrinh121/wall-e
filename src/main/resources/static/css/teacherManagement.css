@@ -108,7 +108,7 @@ body {
 	width: 3rem;
 	height: 3rem;
 	border-radius: 50%;
-	background: url(../../../images/profile-pic.jpg);
+	/*background: url(../../../images/profile-pic.jpg);*/
 	background-size: cover;
 }
 
@@ -162,7 +162,7 @@ body {
 }
 
 .wrapper .main_container {
-	width: (100% - 200px);
+	/*width: (100% - 200px);*/
 	margin-top: 70px;
 	margin-left: 200px;
 	padding: 15px;
@@ -190,7 +190,7 @@ body {
 }
 
 .wrapper.collapse .main_container {
-	width: (100% - 70px);
+	/*width: (100% - 70px);*/
 	margin-left: 70px;
 }
 

@@ -2,8 +2,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     const roleFilter = document.getElementById('role');
     const tableBody = document.getElementById('tableBody');
     const paginationControls = document.getElementById('paginationControls');
+    const pageSizeSelector = document.getElementById('pageSizeSelector');
+    const goToPageInput = document.getElementById('goToPageInput');
+    const goToPageButton = document.getElementById('goToPageButton');
     let allUsers = []; // Store all fetched users
-    const itemsPerPage = 5; // Number of users per page
+    let itemsPerPage = parseInt(pageSizeSelector.value); // Number of users per page
     let currentPage = 1; // Current page number
     let selectedRole = 0; // Selected role filter
 
@@ -16,6 +19,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             }
             allUsers = await response.json();
             renderTable();
+            renderPaginationControls();
         } catch (error) {
             console.error('Error fetching users:', error);
         }
@@ -27,10 +31,8 @@ document.addEventListener('DOMContentLoaded', async function() {
         const usersToDisplay = allUsers.slice(start, end);
 
         buildTable(usersToDisplay);
-        renderPaginationControls();
     }
 
-    // Giả sử bạn có một đối tượng ánh xạ ID vai trò sang mô tả vai trò
     const roleDescriptions = {
         1: 'Quản trị viên',
         2: 'Học sinh',
@@ -56,7 +58,6 @@ document.addEventListener('DOMContentLoaded', async function() {
         addEventListenersToButtons();
     }
 
-
     function addEventListenersToButtons() {
         const buttons = document.querySelectorAll('.action-button');
         buttons.forEach(button => {
@@ -71,21 +72,47 @@ document.addEventListener('DOMContentLoaded', async function() {
 
     function renderPaginationControls() {
         const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+        const maxVisiblePages = 5;
         paginationControls.innerHTML = '';
 
-        for (let i = 1; i <= totalPages; i++) {
-            const pageButton = document.createElement('button');
-            pageButton.textContent = i;
-            pageButton.classList.add('page-button');
-            if (i === currentPage) {
-                pageButton.classList.add('active');
+        if (totalPages <= maxVisiblePages) {
+            for (let i = 1; i <= totalPages; i++) {
+                addPageButton(i);
             }
-            pageButton.addEventListener('click', () => {
-                currentPage = i;
-                renderTable();
-            });
-            paginationControls.appendChild(pageButton);
+        } else {
+            addPageButton(1);
+            if (currentPage > 3) {
+                addEllipsis();
+            }
+            for (let i = Math.max(2, currentPage - 1); i <= Math.min(totalPages - 1, currentPage + 1); i++) {
+                addPageButton(i);
+            }
+            if (currentPage < totalPages - 2) {
+                addEllipsis();
+            }
+            addPageButton(totalPages);
         }
+    }
+
+    function addPageButton(pageNumber) {
+        const pageButton = document.createElement('button');
+        pageButton.textContent = pageNumber;
+        pageButton.classList.add('page-button');
+        if (pageNumber === currentPage) {
+            pageButton.classList.add('active');
+        }
+        pageButton.addEventListener('click', () => {
+            currentPage = pageNumber;
+            renderTable();
+            renderPaginationControls();
+        });
+        paginationControls.appendChild(pageButton);
+    }
+
+    function addEllipsis() {
+        const ellipsis = document.createElement('span');
+        ellipsis.textContent = '...';
+        paginationControls.appendChild(ellipsis);
     }
 
     function filterTable() {
@@ -95,6 +122,7 @@ document.addEventListener('DOMContentLoaded', async function() {
         else if (selectedRoleValue === 'student') { selectedRole = 1; }
         else if (selectedRoleValue === 'parent') { selectedRole = 2; }
         else if (selectedRoleValue === 'manager') { selectedRole = 4; }
+        currentPage = 1; // Reset to first page on filter change
         fetchUsers(selectedRole);
     }
 
@@ -141,6 +169,23 @@ document.addEventListener('DOMContentLoaded', async function() {
     // End show toast
 
     roleFilter.addEventListener('change', filterTable);
+
+    pageSizeSelector.addEventListener('change', () => {
+        itemsPerPage = parseInt(pageSizeSelector.value);
+        currentPage = 1; // Reset to first page on page size change
+        renderTable();
+        renderPaginationControls();
+    });
+
+    goToPageButton.addEventListener('click', () => {
+        const page = parseInt(goToPageInput.value);
+        const totalPages = Math.ceil(allUsers.length / itemsPerPage);
+        if (!isNaN(page) && page >= 1 && page <= totalPages) {
+            currentPage = page;
+            renderTable();
+            renderPaginationControls();
+        }
+    });
 
     fetchUsers(); // Initial fetch to display all users
 });

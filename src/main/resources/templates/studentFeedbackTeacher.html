@@ -4,13 +4,13 @@
   <meta charset="UTF-8" />
   <title>Trang chủ</title>
   <link rel="stylesheet" href="/css/studentFeedbackTeacher.css" />
-  <script th:src="@{/js/studentFragments.js}" type="module"></script>
-  <th:block th:replace="studentFragments :: studenthead"></th:block>
+  <script th:src="@{/js/fragments.js}" type="module"></script>
+  <th:block th:replace="fragments :: head"></th:block>
   <script src="/js/studentFeedbackTeacher.js"></script>
 </head>
 <body>
 <div class="wrapper">
-  <div th:replace="studentFragments :: studentheader"></div>
+  <div th:replace="fragments :: header"></div>
 
   <div class="main_container">
     <section id="content">
