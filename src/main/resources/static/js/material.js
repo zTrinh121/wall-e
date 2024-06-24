@@ -1,58 +1,87 @@
-    function displayButtons() {
-        const gradeButtons = document.querySelector('.button');
-        const subjectButtons = document.getElementById('subject-buttons');
+document.addEventListener("DOMContentLoaded", function() {
+    // Define the subjects
+    const subjects = [
+        "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD",
+        "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
+        "Mỹ thuật", "GDQP-AN", "Tin học", "Khác"
+    ];
 
-        // Hide grade buttons
-        gradeButtons.style.display = 'none';
+    // Create grade buttons
+    const gradeButtonsContainer = document.getElementById('grade-buttons');
+    if (gradeButtonsContainer) {
+        for (let i = 1; i <= 12; i++) {
+            const button = document.createElement('button');
+            button.textContent = `Khối ${i}`;
+            button.onclick = () => selectGrade(i, button);
+            gradeButtonsContainer.appendChild(button);
+        }
+    }
 
-        // Show subject buttons
-        subjectButtons.style.display = 'flex';
-        subjectButtons.innerHTML = ''; // Clear previous content
+    function selectGrade(grade, button) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('grade', grade);
+        urlParams.delete('subject'); // Remove subject if grade is changed
+        window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+        showSubjectButtons();
+        highlightSelectedButton(button, 'grade');
+    }
 
-        // List of subjects to display
-        const subjects = [
-            "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "Giáo dục công dân",
-            "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
-            "Mỹ thuật", "GDQP-AN", "Tin học", "Kỹ năng sống", "Khác"
-        ];
+    // Show subject buttons
+    function showSubjectButtons() {
+        const subjectChoose = document.getElementsByClassName("button-group-subject")[0];
+        const subjectButtonsContainer = document.getElementById('subject-buttons');
+        subjectChoose.style.display = "block";
+        subjectButtonsContainer.style.display = 'flex';
+        subjectButtonsContainer.innerHTML = ''; // Clear previous buttons
 
-        // Create buttons for each subject
         subjects.forEach(subject => {
-            const buttonItem = document.createElement('div');
-            buttonItem.className = 'button-item';
-
             const button = document.createElement('button');
             button.textContent = subject;
-            button.onclick = () => redirectToSubject(subject);
+            button.onclick = () => selectSubject(subject, button);
+            subjectButtonsContainer.appendChild(button);
+        });
 
-            buttonItem.appendChild(button);
-            subjectButtons.appendChild(buttonItem);
+        // Highlight selected subject if available in URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const selectedSubject = urlParams.get('subject');
+        if (selectedSubject) {
+            const subjectButtons = document.querySelectorAll('#subject-buttons button');
+            subjectButtons.forEach(button => {
+                if (button.textContent === selectedSubject) {
+                    button.classList.add('active');
+                }
+            });
+        }
+    }
+
+    // Handle subject selection
+    function selectSubject(subject, button) {
+        const urlParams = new URLSearchParams(window.location.search);
+        urlParams.set('subject', subject);
+        window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
+        highlightSelectedButton(button, 'subject');
+    }
+
+    // Highlight selected button
+    function highlightSelectedButton(button, type) {
+        // Remove active class from previously selected button of the same type
+        const buttons = document.querySelectorAll(`#${type}-buttons button`);
+        buttons.forEach(btn => btn.classList.remove('active'));
+
+        // Add active class to the clicked button
+        button.classList.add('active');
+    }
+
+    // On page load, check if grade is already selected
+    const urlParams = new URLSearchParams(window.location.search);
+    const grade = urlParams.get('grade');
+    if (grade) {
+        showSubjectButtons();
+        const gradeButtons = document.querySelectorAll('#grade-buttons button');
+        gradeButtons.forEach(button => {
+            if (button.textContent === `Khối ${grade}`) {
+                button.classList.add('active');
+            }
         });
     }
-
-    function redirectTo(grade) {
-        window.location.href = `material?grade=${grade}`;
-    }
-
-    function redirectToSubject(subject) {
-        // Handle redirection to the subject page or do any other action
-        alert(`Redirect to subject: ${subject}`);
-    }
-
-
-    document.addEventListener("DOMContentLoaded", () => {
-        const roleUser = document.getElementById("roleUser").innerHTML;
-        const uploadtn = document.getElementById("upload-btn");
-        console.log(uploadtn)
-
-        //Start: add material btn
-        // switch (roleUser){
-        //     case "STUDENT":
-        //         uploadtn.style.display = "none";
-        //         break;
-        //     case "PARENT":
-        //         uploadtn.style.display = "none";
-        //         break;
-        // }
-        //End: add material btn
-    })
+});

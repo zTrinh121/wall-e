@@ -12,6 +12,8 @@ document.addEventListener("DOMContentLoaded", () => {
     const attendanceModal = document.getElementById("attendanceModal");
     const closeAttendanceModalBtn = document.getElementById("closeAttendanceModal");
     const roleUser = document.getElementById("role-user").innerHTML;
+    const report = document.getElementsByClassName("report")[0];
+    console.log(roleUser)
 
     let teacherName = "";
     let courseName = "";
@@ -57,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function fetchClassList() {
-        fetch(`/api/students/course/${courseId}/students`)
+        fetch(`/api/teachers/courses/${courseId}/students`)
             .then(response => response.json())
             .then(data => {
                 populateClassListModal(data);
@@ -66,19 +68,25 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function populateClassListModal(classListData) {
+        console.log(classListData)
         const classListBody = document.getElementById("classListBody");
         classListBody.innerHTML = "";
 
         classListData.forEach((student, index) => {
+            const studentName = student.name || student.username;
             const row = `
                 <tr>
                     <td>${index + 1}</td>
-                    <td>${student.studentName}</td>
+                    <td>${studentName}</td>
+                    ${roleUser === 'TEACHER' ? `<td><a href="#" class="score-link" data-student-id="${student.id}">Chi tiết</a></td>` : ''}
                 </tr>
             `;
             classListBody.insertAdjacentHTML("beforeend", row);
         });
-
+        if (roleUser === 'TEACHER') {
+            scoreHeader.style.display = 'table-cell';
+            attachScoreLinksEvent();
+        }
         classListModal.style.display = "block";
         closeClassListModal.addEventListener("click", () => {
             classListModal.style.display = "none";
@@ -86,10 +94,50 @@ document.addEventListener("DOMContentLoaded", () => {
 
         window.addEventListener("click", (event) => {
             if (event.target == classListModal) {
-                classListModal.style.display = "none";
+                evaluationModal.style.display = "none";
             }
         });
     }
+
+    function attachScoreLinksEvent() {
+        const scoreLinks = document.querySelectorAll(".score-link");
+        scoreLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+                const studentId = this.getAttribute("data-student-id");
+                console.log(studentId)
+                showEvaluationModal(studentId);
+            });
+        });
+    }
+
+    
+
+    function showEvaluationModal(studentId) {
+        document.getElementById("scoresTableBody").innerHTML = "";
+
+        const scores = [
+            { exam: "Midterm", score: 85 },
+            { exam: "Final", score: 90 }
+        ];
+
+        scores.forEach(score => {
+            const row = document.createElement("tr");
+            row.innerHTML = `
+                <td>${score.exam}</td>
+                <td>${score.score}</td>
+            `;
+            document.getElementById("scoresTableBody").appendChild(row);
+        });
+
+        evaluationModal.style.display = 'block';
+    }
+    window.addEventListener('click', function (event) {
+        if (event.target == evaluationModal) {
+            evaluationModal.style.display = "none";
+        }
+    });
+
 
     function openFeedbackModal() {
         const teacherNameInput = document.getElementById("teacherName");
@@ -113,6 +161,7 @@ document.addEventListener("DOMContentLoaded", () => {
             break;
         case "TEACHER":
             feedbackBtn.style.display = "none";
+            report.style.display = "none";
             break;
         case "PARENT":
             feedbackBtn.style.display = "none";
@@ -170,15 +219,39 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openEvaluationModal(grades) {
-        const shortTestScore = grades.find(grade => grade.resultType === 1);
-        const longTestScore = grades.find(grade => grade.resultType === 2);
+        const shortTestScores = grades.filter(grade => grade.resultType === 1);
+        const longTestScores = grades.filter(grade => grade.resultType === 2);
+        const examScores = grades.filter(grade => grade.resultType === 3);
 
-        document.getElementById("shortTestScore").textContent = shortTestScore ? shortTestScore.resultValue : "N/A";
-        document.getElementById("longTestScore").textContent = longTestScore ? longTestScore.resultValue : "N/A";
-        document.getElementById("teacherFeedback").textContent = grades.map(grade => `Bạn đã đạt ${grade.resultValue} điểm trong ${grade.resultType === 1 ? 'kiểm tra 15 phút' : 'kiểm tra 1 tiết'}`).join('. ');
+        // Clear previous table content
+        const tableBody = document.getElementById("scoresTableBody");
+        tableBody.innerHTML = '';
+
+        const addScoresToTable = (scores, type) => {
+            scores.forEach(score => {
+                const row = document.createElement("tr");
+
+                const typeCell = document.createElement("td");
+                typeCell.textContent = type;
+                row.appendChild(typeCell);
+
+                const scoreCell = document.createElement("td");
+                scoreCell.textContent = score.resultValue;
+                row.appendChild(scoreCell);
+
+                tableBody.appendChild(row);
+            });
+        };
+
+        addScoresToTable(shortTestScores, 'Kiểm tra 15 phút');
+        addScoresToTable(longTestScores, 'Kiểm tra 1 tiết');
+        addScoresToTable(examScores, 'Kiểm tra cuối kỳ');
+
+        document.getElementById("teacherFeedback").textContent = grades.map(grade => `Bạn đã đạt ${grade.resultValue} điểm trong ${grade.resultType === 1 ? 'kiểm tra 15 phút' : grade.resultType === 2 ? 'kiểm tra 1 tiết' : 'kiểm tra cuối kỳ'}`).join('. ');
 
         evaluationModal.style.display = "block";
     }
+
 
     function closeEvaluationModal() {
         evaluationModal.style.display = "none";

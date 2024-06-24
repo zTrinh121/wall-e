@@ -775,6 +775,11 @@ main .header button{
   line-height: 1rem;
 }
 
+.return{
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 
 /* Upload button */
 #upload-btn, .button-item button, #grade-buttons button, #subject-buttons button {
@@ -797,10 +802,19 @@ main .header button{
   background: #2e4ead;
 }
 
-.active {
+button.active {
   background-color: #2e4ead !important; /* Blue color as an example */
   color: white !important;
 }
+
+
+.item-material {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem; /* Adjust as needed */
+}
+
 
 #grade-buttons, #subject-buttons{
   display: flex;

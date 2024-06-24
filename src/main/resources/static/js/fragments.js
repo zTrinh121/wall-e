@@ -189,7 +189,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatboxMessage = document.querySelector('.chatbox-message-wrapper');
 
     if (chatboxToggle) {
-        console.log("chatboxToggle element found:", chatboxToggle);
         chatboxToggle.addEventListener('click', function () {
             console.log("It show"); // Check if this logs to the console
             chatboxMessage.classList.toggle('show');

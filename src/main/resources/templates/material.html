@@ -14,7 +14,9 @@
     <div class="main_container">
         <section id="content">
             <main>
+
                 <div class="header">
+
                     <div>Tài liệu chung</div>
                     <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
                     <button id="upload-btn" onclick="window.location.href='/material-create-select'">
@@ -24,58 +26,94 @@
                 </div>
 
                 <div class="container">
-                    <div class="button">
-                        <div class="button-item">
-                            <button onclick="displayButtons()">Tất cả</button>
+                    <div class="button-group">
+                        <div class="header-container">
+                            <h2>Chọn khối</h2>
                         </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(1)">Khối 1</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(2)">Khối 2</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(3)">Khối 3</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(4)">Khối 4</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(5)">Khối 5</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(6)">Khối 6</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(7)">Khối 7</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(8)">Khối 8</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(9)">Khối 9</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(10)">Khối 10</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(11)">Khối 11</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="redirectTo(12)">Khối 12</button>
-                        </div>
-                        <div class="button-item">
-                            <button onclick="displayButtons()">Khác</button>
+                        <div  id="grade-buttons">
+
                         </div>
                     </div>
-
-                    <!-- Container for subject buttons -->
-                    <div id="subject-buttons" class="button" style="display: none;">
-                        <!-- Dynamic content will be added here -->
+                    <div class="button-group-subject" style="display: none;">
+                        <h2>Chọn môn học</h2>
+                        <div id="subject-buttons" ></div>
+                    </div>
                     </div>
 
                     <!-- List of materials -->
                     <div class="item-material">
+                        <div class="student-exam-result-up">
+                            <div class="image-fit">
+                                <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">
+                            </div>
+                            <div class="text-left">
+                                <div class="azt-student-name">
+                                    <span class="font-medium truncate">Trắc nghiệm Toán 7</span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Ngày cập nhật: </span>
+                                    <span class="text-black font-medium"> 12/06/2024 00:26 </span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Người soạn: </span>
+                                    <span class="text-black font-medium"> Đỗ Yến Oanh </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-exam-result-up">
+                            <div class="image-fit">
+                                <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">
+                            </div>
+                            <div class="text-left">
+                                <div class="azt-student-name">
+                                    <span class="font-medium truncate">Trắc nghiệm Toán 7</span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Ngày cập nhật: </span>
+                                    <span class="text-black font-medium"> 12/06/2024 00:26 </span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Người soạn: </span>
+                                    <span class="text-black font-medium"> Đỗ Yến Oanh </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-exam-result-up">
+                            <div class="image-fit">
+                                <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">
+                            </div>
+                            <div class="text-left">
+                                <div class="azt-student-name">
+                                    <span class="font-medium truncate">Trắc nghiệm Toán 7</span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Ngày cập nhật: </span>
+                                    <span class="text-black font-medium"> 12/06/2024 00:26 </span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Người soạn: </span>
+                                    <span class="text-black font-medium"> Đỗ Yến Oanh </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-exam-result-up">
+                            <div class="image-fit">
+                                <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">
+                            </div>
+                            <div class="text-left">
+                                <div class="azt-student-name">
+                                    <span class="font-medium truncate">Trắc nghiệm Toán 7</span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Ngày cập nhật: </span>
+                                    <span class="text-black font-medium"> 12/06/2024 00:26 </span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Người soạn: </span>
+                                    <span class="text-black font-medium"> Đỗ Yến Oanh </span>
+                                </div>
+                            </div>
+                        </div>
                         <div class="student-exam-result-up">
                             <div class="image-fit">
                                 <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">

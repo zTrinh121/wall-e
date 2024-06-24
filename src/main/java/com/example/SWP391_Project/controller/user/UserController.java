@@ -653,6 +653,9 @@ public class UserController {
     @GetMapping("/course-details")
     public String detailCourse(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("user", user);
         return "classRegisteredDetail";
     }
@@ -792,11 +795,11 @@ public class UserController {
 
     @GetMapping("/teacher-dashboard")
     public String teacherDashboard(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "teacher-dashboard";
     }
 
@@ -813,11 +816,11 @@ public class UserController {
 
     @GetMapping("/material-create")
     public String materialCreate(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "material-create";
     }
 
@@ -833,11 +836,11 @@ public class UserController {
 
     @GetMapping("/material-create-select")
     public String materialCreateSelect(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "material-create-select";
     }
 
@@ -853,21 +856,19 @@ public class UserController {
             User user = (User) httpSession.getAttribute("user");
 
             if (user == null) {
-                return "redirect:/material-create?status=auth_error";
+                return "redirect:/login";
             }
-
             if (!file.getContentType().equals("application/pdf")) {
                 // Handle the case where the uploaded file is not a PDF
                 System.err.println("Only PDF files are allowed.");
                 return "redirect:/material-create?status=invalid_file_type";
             }
-
             teacherService.uploadPdfFile(file, subjectName, materialsName, user);
 
             return "redirect:/material-create?status=success";
         } catch (Exception e) {
             System.err.println("Error uploading PDF: " + e.getMessage());
-            return "redirect:/material-create?status=fail";
+            return "redirect:/material";
         }
     }
 
