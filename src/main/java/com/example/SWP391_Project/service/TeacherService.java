@@ -7,9 +7,10 @@ import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 public interface TeacherService {
-    List<String> getCourseNamesByTeacherId(Long teacherId);
+     List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId);
 
     List<User> getStudentsByCourseId(Long courseId);
 

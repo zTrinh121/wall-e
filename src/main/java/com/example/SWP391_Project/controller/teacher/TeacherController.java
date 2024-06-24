@@ -12,18 +12,23 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teachers")
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
+//mmm
+@GetMapping("/{teacherId}/courses")
+public ResponseEntity<List<Map<String, Object>>> getCoursesByTeacherId(@PathVariable Long teacherId) {
+    List<Map<String, Object>> courseNames = teacherService.getCourseNamesByTeacherId(teacherId);
+    return ResponseEntity.ok(courseNames);
+}
 
-    @GetMapping("/{teacherId}/courses")
-    public ResponseEntity<List<String>> getCoursesByTeacherId(@PathVariable Long teacherId) {
-        List<String> courseNames = teacherService.getCourseNamesByTeacherId(teacherId);
-        return ResponseEntity.ok(courseNames);
-    }
+
+
+
 
     @GetMapping("/courses/{courseId}/students")
     public ResponseEntity<List<User>> getStudentsByCourseId(@PathVariable Long courseId) {

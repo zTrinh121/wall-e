@@ -68,13 +68,14 @@ public class StudentController {
 //        return ResponseEntity.ok(courses);
 //    }
 
-    // Tạo feedback cho giáo viên
+
     // Tạo feedback cho giáo viên
 //    @PostMapping("/{studentId}/courses/{courseId}/feedback")
 //    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
 //                                                   @PathVariable int courseId,
 //                                                   @RequestBody Feedback feedback) {
 //        Course course = studentService.getCourseById(courseId);
+//
 //        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
 //            return ResponseEntity.badRequest().build();
 //        }

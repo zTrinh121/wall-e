@@ -14,7 +14,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -30,17 +33,38 @@ public class TeacherServiceImpl implements TeacherService {
     private MaterialRepository materialRepository;
 
     @Override
-    public List<String> getCourseNamesByTeacherId(Long teacherId) {
-        return teacherRepository.findCourseNamesByTeacherId(teacherId);
+    public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
+        List<Object[]> results = teacherRepository.findCourseNamesByTeacherId(teacherId);
+        List<Map<String, Object>> courseInfos = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> courseInfo = new HashMap<>();
+            courseInfo.put("courseName", result[0]);
+            courseInfo.put("courseId", result[1]);
+            courseInfo.put("courseCode", result[2]);
+            courseInfo.put("courseDescription", result[3]);
+            courseInfo.put("courseStartDate", result[4]);
+            courseInfo.put("courseEndDate", result[5]);
+            courseInfo.put("amountOfStudents", result[6]);
+            courseInfo.put("roomName", result[7]);
+            courseInfo.put("centerName", result[8]);
+            courseInfos.add(courseInfo);
+        }
+        return courseInfos;
     }
 
-// List ra các thông tin học sinh trng lớp học đó
+
+
+
+
+
+
+    // List ra các thông tin học sinh trng lớp học đó
     @Override
     public List<User> getStudentsByCourseId(Long courseId) {
         return teacherRepository.findStudentsByCourseId(courseId);
     }
 
-// Tìm kiếm hjc sinh trng 1 lớp học theo tên
+    // Tìm kiếm hjc sinh trng 1 lớp học theo tên
     @Override
     public List<User> searchStudentsByCourseIdAndName(Long courseId, String studentName) {
         return enrollmentRepository.findStudentsByCourseIdAndName(courseId, studentName);
@@ -81,11 +105,11 @@ public class TeacherServiceImpl implements TeacherService {
         resultRepository.deleteById(resultId);
     }
 
-// Lấy ra toàn bộ thời khóa biểu của giáo viên đó
-@Override
-public List<Object[]> getScheduleByTeacherId(Long teacherId) {
-    return teacherRepository.findScheduleByTeacherId(teacherId);
-}
+    // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
+    @Override
+    public List<Object[]> getScheduleByTeacherId(Long teacherId) {
+        return teacherRepository.findScheduleByTeacherId(teacherId);
+    }
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @Override
