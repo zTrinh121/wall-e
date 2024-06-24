@@ -17,7 +17,9 @@ public interface TeacherService {
     List<User> searchStudentsByCourseIdAndName(Long courseId, String studentName);
 
   //  List<Schedule> getScheduleByCourseId(Long courseId); // lấy ra tất cả
-    List<Object[]> getScheduleByCourseId(Long courseId);// lấy 3 thông tin
+  public List<Map<String, Object>> getScheduleByCourseId(Long courseId);
+
+// lấy 3 thông tin
 
 
     // CRUD điểm
@@ -27,7 +29,7 @@ public interface TeacherService {
     void deleteResult(Long resultId);
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
-    List<Object[]> getScheduleByTeacherId(Long teacherId);
+    public List<Map<String, Object>> getScheduleByTeacherId(Long teacherId);
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
      List<Object[]> getScheduleByTeacherIdAndCenterId(Long teacherId, Long centerId);

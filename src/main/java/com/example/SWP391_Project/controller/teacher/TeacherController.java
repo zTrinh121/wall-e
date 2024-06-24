@@ -41,12 +41,14 @@ public ResponseEntity<List<Map<String, Object>>> getCoursesByTeacherId(@PathVari
         List<User> students = teacherService.searchStudentsByCourseIdAndName(courseId, studentName);
         return ResponseEntity.ok(students);
     }
+// ssx
+@GetMapping("/courses/{courseId}/schedule")
+public ResponseEntity<List<Map<String, Object>>> getScheduleByCourseId(@PathVariable Long courseId) {
+    List<Map<String, Object>> schedule = teacherService.getScheduleByCourseId(courseId);
+    return ResponseEntity.ok(schedule);
+}
 
-    @GetMapping("/courses/{courseId}/schedule")
-    public ResponseEntity<List<Object[]>> getScheduleByCourseId(@PathVariable Long courseId) {
-        List<Object[]> schedule = teacherService.getScheduleByCourseId(courseId);
-        return ResponseEntity.ok(schedule);
-    }
+
 
 
     // CRUD điểm
@@ -77,10 +79,11 @@ public ResponseEntity<List<Map<String, Object>>> getCoursesByTeacherId(@PathVari
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
     @GetMapping("/{teacherId}/schedule")
-    public ResponseEntity<List<Object[]>> getScheduleByTeacherId(@PathVariable Long teacherId) {
-        List<Object[]> schedule = teacherService.getScheduleByTeacherId(teacherId);
+    public ResponseEntity<List<Map<String, Object>>> getScheduleByTeacherId(@PathVariable Long teacherId) {
+        List<Map<String, Object>> schedule = teacherService.getScheduleByTeacherId(teacherId);
         return ResponseEntity.ok(schedule);
     }
+
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @GetMapping("/{teacherId}/schedule/{centerId}")

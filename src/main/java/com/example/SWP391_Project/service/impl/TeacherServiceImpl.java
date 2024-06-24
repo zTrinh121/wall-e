@@ -79,9 +79,25 @@ public class TeacherServiceImpl implements TeacherService {
 
     // Lấy ra 3 thông tin
     @Override
-    public List<Object[]> getScheduleByCourseId(Long courseId) {
-        return teacherRepository.findScheduleByCourseId(courseId);
+    public List<Map<String, Object>> getScheduleByCourseId(Long courseId) {
+        List<Object[]> results = teacherRepository.findScheduleByCourseId(courseId);
+        List<Map<String, Object>> schedules = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> schedule = new HashMap<>();
+            schedule.put("slotDate", result[0]);
+            schedule.put("slotStartTime", result[1]);
+            schedule.put("slotEndTime", result[2]);
+            schedule.put("dayName", result[3]);
+            schedule.put("roomName", result[4]);
+            schedules.add(schedule);
+        }
+        return schedules;
     }
+
+
+
+
+
 
 
     // CRUD điểm
@@ -107,9 +123,21 @@ public class TeacherServiceImpl implements TeacherService {
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
     @Override
-    public List<Object[]> getScheduleByTeacherId(Long teacherId) {
-        return teacherRepository.findScheduleByTeacherId(teacherId);
+    public List<Map<String, Object>> getScheduleByTeacherId(Long teacherId) {
+        List<Object[]> results = teacherRepository.findScheduleByTeacherId(teacherId);
+        List<Map<String, Object>> schedules = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> schedule = new HashMap<>();
+            schedule.put("slotDate", result[0]);
+            schedule.put("slotStartTime", result[1]);
+            schedule.put("slotEndTime", result[2]);
+            schedule.put("courseName", result[3]);
+            schedule.put("roomName", result[4]);
+            schedules.add(schedule);
+        }
+        return schedules;
     }
+
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @Override
