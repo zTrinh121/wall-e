@@ -23,8 +23,8 @@ public class ParentServiceImpl implements ParentService {
     @Autowired
     private CourseRepository courseRepository;
 
-    @Autowired
-    private AttendanceRepository attendanceRepository;
+//    @Autowired
+//    private AttendanceRepository attendanceRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -51,11 +51,11 @@ public class ParentServiceImpl implements ParentService {
         return courses.orElse(Collections.emptyList());
     }
 
-    @Override
-    public List<Attendance> getStudentAttendances(int parentId) {
-        Optional<List<Attendance>> attendances = attendanceRepository.findAllAttendanceByParentId(parentId);
-        return attendances.orElse(Collections.emptyList());
-    }
+//    @Override
+//    public List<Attendance> getStudentAttendances(int parentId) {
+//        Optional<List<Attendance>> attendances = attendanceRepository.findAllAttendanceByParentId(parentId);
+//        return attendances.orElse(Collections.emptyList());
+//    }
 
     @Override
     public void enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId) {
