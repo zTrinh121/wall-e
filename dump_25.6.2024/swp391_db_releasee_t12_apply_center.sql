@@ -27,7 +27,7 @@ CREATE TABLE `t12_apply_center` (
   `C12_TEACHER_ID` int NOT NULL,
   `C12_CENTER_ID` int NOT NULL,
   `C12_TITLE` varchar(255) NOT NULL,
-  `C12_CONTENT` varchar(255) NOT NULL,
+  `c12_content` text,
   `C12_APPLY_STATUS` enum('Approved','Rejected','Wait_to_process') NOT NULL DEFAULT 'Wait_to_process',
   PRIMARY KEY (`C12_APPLY_ID`),
   UNIQUE KEY `CK_C12_UNQ` (`C12_TEACHER_ID`,`C12_CENTER_ID`),
@@ -35,7 +35,7 @@ CREATE TABLE `t12_apply_center` (
   KEY `FK_T12_CENTER` (`C12_CENTER_ID`),
   CONSTRAINT `FK_T12_CENTER` FOREIGN KEY (`C12_CENTER_ID`) REFERENCES `t03_center` (`C03_CENTER_ID`),
   CONSTRAINT `FK_T12_TEACHER` FOREIGN KEY (`C12_TEACHER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -44,6 +44,7 @@ CREATE TABLE `t12_apply_center` (
 
 LOCK TABLES `t12_apply_center` WRITE;
 /*!40000 ALTER TABLE `t12_apply_center` DISABLE KEYS */;
+INSERT INTO `t12_apply_center` VALUES (1,4,1,'\"Xin tham gia dạy môn Toán tại trung tâm.\"','\"Kính gửi Ban quản lý trung tâm, tôi là giáo viên có kinh nghiệm trong việc giảng dạy môn Toán. Tôi rất mong muốn có cơ hội được gắn bó và đóng góp vào sự phát triển chung của trung tâm. Xin cảm ơn sự xem xét của Ban.\"','Approved'),(2,5,1,'\"Xin tham gia dạy môn Văn tại trung tâm.\"','\"Kính gửi Ban quản lý trung tâm, tôi là giáo viên có tâm huyết với môn Văn và có kinh nghiệm giảng dạy lâu năm. Tôi mong muốn được góp phần vào việc phát triển học sinh trong lĩnh vực Văn học. Xin trân trọng đề nghị và mong nhận được sự phản hồi từ Ban.\"','Approved'),(3,6,1,'\"Xin tham gia dạy môn Lịch sử tại trung tâm.\"','\"Kính gửi Ban quản lý trung tâm, tôi là giáo viên chuyên dạy môn Lịch sử với sự đam mê và hiểu biết sâu rộng về lịch sử địa phương và quốc gia. Tôi mong muốn có cơ hội được chia sẻ kiến thức và kinh nghiệm với các em học sinh tại trung tâm. Xin chân thành cảm ơn.\"','Wait_to_process'),(4,7,1,'\"Xin tham gia dạy môn Hóa học tại trung tâm.\"','\"Kính gửi Ban quản lý trung tâm, tôi là giáo viên chuyên dạy môn Hóa học với mong muốn mang đến cho học sinh sự hiểu biết rõ ràng và ứng dụng thực tiễn của môn học. Tôi rất mong muốn được tham gia vào đội ngũ giảng dạy của trung tâm. Xin trân trọng đề nghị và mong nhận được sự hồi âm từ Ban.\"','Wait_to_process');
 /*!40000 ALTER TABLE `t12_apply_center` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -56,4 +57,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-22 22:24:40
+-- Dump completed on 2024-06-25  2:18:50

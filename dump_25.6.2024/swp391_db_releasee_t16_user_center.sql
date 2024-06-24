@@ -16,33 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t19_view_system_notification`
+-- Table structure for table `t16_user_center`
 --
 
-DROP TABLE IF EXISTS `t19_view_system_notification`;
+DROP TABLE IF EXISTS `t16_user_center`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t19_view_system_notification` (
-  `C19_ID` int NOT NULL AUTO_INCREMENT,
-  `C19_SYSTEM_NOTIFICATION_ID` int NOT NULL,
-  `C19_HAS_SEEN_BY` int NOT NULL,
-  `C19_SEEN_TIME` datetime DEFAULT (now()),
-  PRIMARY KEY (`C19_ID`),
-  KEY `FK_T19_T11` (`C19_SYSTEM_NOTIFICATION_ID`),
-  KEY `FK_T19_T14` (`C19_HAS_SEEN_BY`),
-  CONSTRAINT `FK_T19_T11` FOREIGN KEY (`C19_SYSTEM_NOTIFICATION_ID`) REFERENCES `t11_system_notification` (`C11_ID`),
-  CONSTRAINT `FK_T19_T14` FOREIGN KEY (`C19_HAS_SEEN_BY`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t16_user_center` (
+  `C16_USER_CENTER_ID` int NOT NULL AUTO_INCREMENT,
+  `C16_USER_ID` int NOT NULL,
+  `C16_CENTER_ID` int NOT NULL,
+  PRIMARY KEY (`C16_USER_CENTER_ID`),
+  UNIQUE KEY `CK_T16_FK` (`C16_USER_ID`,`C16_CENTER_ID`),
+  KEY `FK_T16_CENTER` (`C16_CENTER_ID`),
+  CONSTRAINT `FK_T16_CENTER` FOREIGN KEY (`C16_CENTER_ID`) REFERENCES `t03_center` (`C03_CENTER_ID`),
+  CONSTRAINT `FK_T16_USER` FOREIGN KEY (`C16_USER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t19_view_system_notification`
+-- Dumping data for table `t16_user_center`
 --
 
-LOCK TABLES `t19_view_system_notification` WRITE;
-/*!40000 ALTER TABLE `t19_view_system_notification` DISABLE KEYS */;
-INSERT INTO `t19_view_system_notification` VALUES (1,1,2,'2024-06-22 09:15:16');
-/*!40000 ALTER TABLE `t19_view_system_notification` ENABLE KEYS */;
+LOCK TABLES `t16_user_center` WRITE;
+/*!40000 ALTER TABLE `t16_user_center` DISABLE KEYS */;
+INSERT INTO `t16_user_center` VALUES (1,4,1),(2,5,1),(3,10,1),(4,11,1),(5,12,1),(6,13,1),(7,14,1),(8,15,1),(9,16,1),(10,17,1),(11,18,1),(12,19,1),(13,20,1);
+/*!40000 ALTER TABLE `t16_user_center` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -54,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-22 22:24:38
+-- Dump completed on 2024-06-25  2:18:50

@@ -16,32 +16,40 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t17_student_slot`
+-- Table structure for table `t08_bill`
 --
 
-DROP TABLE IF EXISTS `t17_student_slot`;
+DROP TABLE IF EXISTS `t08_bill`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t17_student_slot` (
-  `C17_STUDENT_SLOT_ID` int NOT NULL AUTO_INCREMENT,
-  `C17_STUDENT_ID` int NOT NULL,
-  `C17_SLOT_ID` int NOT NULL,
-  PRIMARY KEY (`C17_STUDENT_SLOT_ID`),
-  UNIQUE KEY `CK_T17_UNQ` (`C17_STUDENT_ID`,`C17_SLOT_ID`),
-  KEY `FK_T17_SLOT` (`C17_SLOT_ID`),
-  CONSTRAINT `FK_T17_SLOT` FOREIGN KEY (`C17_SLOT_ID`) REFERENCES `t02_slot` (`C02_SLOT_ID`),
-  CONSTRAINT `FK_T17_STUDENT` FOREIGN KEY (`C17_STUDENT_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=21 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t08_bill` (
+  `C08_BILL_ID` int NOT NULL AUTO_INCREMENT,
+  `c08_status` tinyint NOT NULL,
+  `C08_CREATED_AT` datetime NOT NULL,
+  `C08_STUDENT_ID` int NOT NULL,
+  `C08_COURSE_ID` int NOT NULL,
+  `C08_PMETHOD_ID` int NOT NULL,
+  `c08_enrollment_id` int DEFAULT NULL,
+  PRIMARY KEY (`C08_BILL_ID`),
+  UNIQUE KEY `CK_T08_UNIQUE` (`C08_CREATED_AT`,`C08_STUDENT_ID`,`C08_COURSE_ID`),
+  KEY `FK_BILL_STUDENT` (`C08_STUDENT_ID`),
+  KEY `FK_BILL_COURSE` (`C08_COURSE_ID`),
+  KEY `FK_BILL_PMETHOD` (`C08_PMETHOD_ID`),
+  KEY `FK2n96013cvgbh3mwei8q3ljh1e` (`c08_enrollment_id`),
+  CONSTRAINT `FK2n96013cvgbh3mwei8q3ljh1e` FOREIGN KEY (`c08_enrollment_id`) REFERENCES `t15_enrollment` (`C15_ENROLLMENT_ID`),
+  CONSTRAINT `FK_BILL_COURSE` FOREIGN KEY (`C08_COURSE_ID`) REFERENCES `t01_course` (`C01_COURSE_ID`),
+  CONSTRAINT `FK_BILL_PMETHOD` FOREIGN KEY (`C08_PMETHOD_ID`) REFERENCES `t04_payment_method` (`C04_PMETHOD_ID`),
+  CONSTRAINT `FK_BILL_STUDENT` FOREIGN KEY (`C08_STUDENT_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t17_student_slot`
+-- Dumping data for table `t08_bill`
 --
 
-LOCK TABLES `t17_student_slot` WRITE;
-/*!40000 ALTER TABLE `t17_student_slot` DISABLE KEYS */;
-INSERT INTO `t17_student_slot` VALUES (1,1,5),(13,1,9),(5,1,10),(9,1,13),(17,1,17),(10,6,1),(2,6,8),(18,6,11),(14,6,12),(6,6,18),(7,11,2),(15,11,3),(11,11,14),(3,11,15),(19,11,19),(4,16,3),(16,16,4),(12,16,6),(8,16,7),(20,16,16);
-/*!40000 ALTER TABLE `t17_student_slot` ENABLE KEYS */;
+LOCK TABLES `t08_bill` WRITE;
+/*!40000 ALTER TABLE `t08_bill` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t08_bill` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +61,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-22 22:24:40
+-- Dump completed on 2024-06-25  2:18:49
