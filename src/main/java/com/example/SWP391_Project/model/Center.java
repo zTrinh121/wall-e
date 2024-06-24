@@ -28,7 +28,7 @@ public class Center {
     @Column(name = "C03_CENTER_NAME")
     String name;
 
-    @Column(name = "C03_CENTER_DESC")
+    @Column(name = "C03_CENTER_DESC", columnDefinition = "TEXT")
     String description;
 
     @Column(name = "C03_CENTER_ADDRESS")
@@ -40,7 +40,7 @@ public class Center {
     @Column(name = "C03_CENTER_EMAIL")
     String email;
 
-    @Column(name = "C03_CENTER_REGULATIONS")
+    @Column(name = "C03_CENTER_REGULATIONS", columnDefinition = "TEXT")
     String regulation;
 
     @Column(name = "C03_CREATED_AT")

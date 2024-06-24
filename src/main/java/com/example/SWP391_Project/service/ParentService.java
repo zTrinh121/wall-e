@@ -19,7 +19,7 @@ public interface ParentService {
 
     List<Course> getStudentCourses(int parentId);
 
-    List<Attendance> getStudentAttendances(int parentId);
+//    List<Attendance> getStudentAttendances(int parentId);
 
     List<User> getStudentsByParentId(int parentId);
 

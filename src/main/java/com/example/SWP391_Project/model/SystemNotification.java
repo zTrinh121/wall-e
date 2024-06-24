@@ -23,7 +23,7 @@ public class SystemNotification {
     @Column(name = "C11_TITLE", nullable = false)
     String title;
 
-    @Column(name = "C11_CONTENT", nullable = false)
+    @Column(name = "C11_CONTENT", nullable = false, columnDefinition = "TEXT")
     String content;
 
     @Column(name = "C11_CREATED_AT", nullable = false)
