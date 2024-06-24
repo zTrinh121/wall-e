@@ -1,9 +1,6 @@
 package com.example.SWP391_Project.controller.student;
 
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Feedback;
-import com.example.SWP391_Project.model.Slot;
-import com.example.SWP391_Project.model.User;
+import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.service.StudentService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailService;
@@ -208,6 +205,16 @@ public class StudentController {
         } else {
             model.addAttribute("error", "Invalid verification code");
             return "verify-emaill";
+        }
+    }
+
+    @GetMapping("/allMaterials")
+    public ResponseEntity<List<Material>> getAllMaterials() {
+        List<Material> materials = studentService.getAllMaterials();
+        if (materials.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(materials);
         }
     }
 }

@@ -51,9 +51,9 @@ public class Course {
     @JsonManagedReference
     Center center;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
-    @JsonIgnore
+    @JsonManagedReference
     User teacher;
 }
 

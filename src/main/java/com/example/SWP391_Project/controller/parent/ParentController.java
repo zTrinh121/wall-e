@@ -65,15 +65,15 @@ public class ParentController {
 //        return new ResponseEntity<>(courses, HttpStatus.OK);
 //    }
 
-    @GetMapping("parent/attendances")
-    public ResponseEntity<List<Attendance>> getStudentAttendances(HttpSession session) {
-        int parentId = (int) session.getAttribute("authid");
-        List<Attendance> attendances = parentService.getStudentAttendances(parentId);
-        if (attendances.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(attendances, HttpStatus.OK);
-    }
+//    @GetMapping("parent/attendances")
+//    public ResponseEntity<List<Attendance>> getStudentAttendances(HttpSession session) {
+//        int parentId = (int) session.getAttribute("authid");
+//        List<Attendance> attendances = parentService.getStudentAttendances(parentId);
+//        if (attendances.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(attendances, HttpStatus.OK);
+//    }
 
     @PostMapping("parent/enrollment")
     public ResponseEntity<String> enrollStudentInCourse(@RequestBody EnrollmentDto enrollmentDto, HttpSession session) {
