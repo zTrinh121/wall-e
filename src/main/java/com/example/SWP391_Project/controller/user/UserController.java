@@ -253,27 +253,35 @@ public class UserController {
     }
 
     @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model) {
+    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
         if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("error", "Username already exists");
+            model.addAttribute("error", "Tên người dùng đã tồn tại");
             return "register";
         }
         if (userService.findByEmail(user.getEmail()) != null) {
-            model.addAttribute("error", "Email already exists");
+            model.addAttribute("error", "Email đã tồn tại");
             return "register";
         }
 
-        // Generate and set user code
+        // Tạo và gán mã người dùng
         String userCode = userService.generateUserCode();
-        user.setCode(userCode); // Gán mã người dùng cho đối tượng User
+        user.setCode(userCode); // Gán mã người dùng
 
         Role role = userService.findRoleById(roleId);
         user.setRole(role);
-        user.setStatus(true);  // Skip email verification
-        userService.saveUser(user);
-        // userService.sendVerificationCode(user);  // Skip sending verification code
-        return "redirect:/login";  // Redirect to login after registration
+        user.setStatus(false);  // Ban đầu là false cho đến khi xác nhận email
+
+        // Tạo mã xác nhận
+        String verificationCode = userService.generateVerificationCode();
+        session.setAttribute("userToRegister", user);
+        session.setAttribute("verificationCode", verificationCode);
+
+        // Gửi mã xác nhận qua email
+        userService.sendEmail(user.getEmail(), verificationCode);
+
+        return "redirect:/verify-email";  // Chuyển hướng tới trang xác nhận email
     }
+
 
 
     @PostMapping("/verify-email")
@@ -286,12 +294,13 @@ public class UserController {
             userService.saveUser(user);
             session.removeAttribute("verificationCode");
             session.removeAttribute("userToRegister");
-            return "redirect:/login";
+            return "redirect:/login";  // Chuyển hướng tới trang đăng nhập sau khi đăng ký thành công
         } else {
-            model.addAttribute("error", "Invalid verification code");
+            model.addAttribute("error", "Mã xác nhận không hợp lệ");
             return "verify-email";
         }
     }
+
 
     @GetMapping("/verify-email")
     public String verifyEmail() {

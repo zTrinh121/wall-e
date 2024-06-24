@@ -118,20 +118,20 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    @GetMapping("/private-notifications/{userCode}")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
-        return ResponseEntity.ok(notifications);
-    }
-
-    @GetMapping("/public-notifications/{userId}/{centerId}")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(
-            @PathVariable int userId, @PathVariable int centerId) {
-        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
-        return ResponseEntity.ok(notifications);
-    }
+//    @GetMapping("/private-notifications/{userCode}")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
+//        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
+//        return ResponseEntity.ok(notifications);
+//    }
+//
+//    @GetMapping("/public-notifications/{userId}/{centerId}")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(
+//            @PathVariable int userId, @PathVariable int centerId) {
+//        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
+//        return ResponseEntity.ok(notifications);
+//    }
 
     @GetMapping("/{studentId}/attendance")
     @ResponseBody
@@ -213,6 +213,33 @@ public class StudentController {
             return "verify-emaill";
         }
     }
+
+
+    //--------------------------------------
+//    @GetMapping("/private-notifications/{userCode}")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
+//        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
+//        return notifications.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(notifications);
+//    }
+//
+//    @GetMapping("/public-notifications/{userId}/{centerId}")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(@PathVariable int userId, @PathVariable int centerId) {
+//        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
+//        return notifications.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(notifications);
+//    }
+
+//    @GetMapping("/notifications")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getAllNotifications() {
+//        List<Map<String, Object>> notifications = studentService.getAllNotifications();
+//        if (notifications.isEmpty()) {
+//            return ResponseEntity.noContent().build();
+//        }
+//        return ResponseEntity.ok(notifications);
+//    }
+
 }
 
 
