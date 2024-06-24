@@ -115,21 +115,6 @@ public class StudentController {
         return ResponseEntity.ok(students);
     }
 
-    @GetMapping("/private-notifications/{userCode}")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
-        return ResponseEntity.ok(notifications);
-    }
-
-    @GetMapping("/public-notifications/{userId}/{centerId}")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(
-            @PathVariable int userId, @PathVariable int centerId) {
-        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
-        return ResponseEntity.ok(notifications);
-    }
-
     @GetMapping("/{studentId}/attendance")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getStudentAttendance(@PathVariable int studentId) {
@@ -189,13 +174,16 @@ public class StudentController {
     public String verifyEmaill(@RequestParam String code, HttpSession session, Model model) {
         String storedCode = (String) session.getAttribute("verificationCode");
         String emailToVerify = (String) session.getAttribute("emailToVerify");
+        User user = (User) session.getAttribute("user");
+        int id = user.getId();
+        System.out.println("ID mapping: " + id);
 
         if (storedCode != null && storedCode.equals(code)) {
             // Lấy người dùng có email nhận mã xác nhận
             User userToVerify = userService.findByEmail(emailToVerify);
             if (userToVerify != null) {
                 // Cập nhật C14_PARENT_ID của người dùng có ID 1 thành ID của email vừa nhập
-                userService.updateParentIdById(3, userToVerify.getId());
+                userService.updateParentIdById(id, userToVerify.getId());
             }
 
             session.removeAttribute("verificationCode");
@@ -207,6 +195,7 @@ public class StudentController {
             return "verify-emaill";
         }
     }
+
 
     @GetMapping("/allMaterials")
     public ResponseEntity<List<Material>> getAllMaterials() {
