@@ -1,9 +1,6 @@
 package com.example.SWP391_Project.service;
 
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Feedback;
-import com.example.SWP391_Project.model.Slot;
-import com.example.SWP391_Project.model.User;
+import com.example.SWP391_Project.model.*;
 
 import java.util.List;
 import java.util.Map;
@@ -25,9 +22,9 @@ public interface StudentService {
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
 
-    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
-
-    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
+//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
+//
+//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
 
     List<Map<String, Object>> getStudentAttendance(int studentId);
 
@@ -35,5 +32,13 @@ public interface StudentService {
 
     List<Map<String, String>> search(String keyword);
 
+    //--------------
 
+//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
+//
+//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
+//
+//    List<Map<String, Object>> getAllNotifications();
+//
+//    List<Notification> getCenterNotifications(int centerId);
 }

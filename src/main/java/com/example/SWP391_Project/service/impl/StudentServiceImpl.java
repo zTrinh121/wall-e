@@ -12,6 +12,7 @@ import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,6 +20,7 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 
+import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -238,87 +240,87 @@ public class StudentServiceImpl implements StudentService {
         return students;
     }
 
-    @Transactional
-    @Override
-    public List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode) {
-        String query = "SELECT p.C19_TITLE as title, p.C19_CONTENT as content, p.C19_CREATED_AT as createdAt, p.C19_UPDATED_AT as updatedAt " +
-                "FROM t19_private_notifications p " +
-                "JOIN t14_user u ON p.C19_SEND_TO_USER = u.C14_USER_ID " +
-                "WHERE u.C14_USER_CODE = :userCode";
-
-
-        System.out.println("Query: " + query);
-        System.out.println("userCode: " + userCode);
-
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userCode", userCode);
-
-        List<Object[]> resultList = nativeQuery.getResultList();
-        List<Map<String, Object>> notifications = new ArrayList<>();
-
+//    @Transactional
+//    @Override
+//    public List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode) {
+//        String query = "SELECT p.C19_TITLE as title, p.C19_CONTENT as content, p.C19_CREATED_AT as createdAt, p.C19_UPDATED_AT as updatedAt " +
+//                "FROM t19_private_notifications p " +
+//                "JOIN t14_user u ON p.C19_SEND_TO_USER = u.C14_USER_ID " +
+//                "WHERE u.C14_USER_CODE = :userCode";
+//
+//
 //        System.out.println("Query: " + query);
-//        System.out.println("CourseId: " + courseId);
-
-
-
-//        List<Object[]> resultList = nativeQuery.getResultList();
-//        List<Map<String, Object>> students = new ArrayList<>();
-
-        for (Object[] result : resultList) {
-            Map<String, Object> notificationMap = new HashMap<>();
-            notificationMap.put("title", result[0]);
-            notificationMap.put("content", result[1]);
-            notificationMap.put("createdAt", result[2]);
-            notificationMap.put("updatedAt", result[3]);
-
-            notifications.add(notificationMap);
-        }
-
-        return notifications;
-    }
-
-    @Transactional
-    @Override
-    public List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId) {
-        String query = "SELECT n.C20_TITLE as title, n.C20_CONTENT as content, n.C20_CREATED_AT as createdAt, n.C20_UPDATED_AT as updatedAt " +
-                "FROM t20_public_notifications n " +
-                "JOIN t16_user_center uc ON n.C20_CENTER_ID = uc.C16_CENTER_ID " +
-                "WHERE uc.C16_USER_ID = :userId AND n.C20_CENTER_ID = :centerId";
-
-
-        System.out.println("Query: " + query);
-        System.out.println("UserId: " + userId);
-
-        System.out.println("Query: " + query);
-        System.out.println("CenterId: " + centerId);
-
+//        System.out.println("userCode: " + userCode);
+//
 //        Query nativeQuery = entityManager.createNativeQuery(query);
-//        nativeQuery.setParameter("courseId", userCode);
-
+//        nativeQuery.setParameter("userCode", userCode);
+//
 //        List<Object[]> resultList = nativeQuery.getResultList();
 //        List<Map<String, Object>> notifications = new ArrayList<>();
-
-
-
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userId", userId);
-        nativeQuery.setParameter("centerId", centerId);
-
-        List<Object[]> resultList = nativeQuery.getResultList();
-        List<Map<String, Object>> notifications = new ArrayList<>();
-
-        for (Object[] result : resultList) {
-            Map<String, Object> notificationMap = new HashMap<>();
-            notificationMap.put("title", result[0]);
-            notificationMap.put("content", result[1]);
-            notificationMap.put("createdAt", result[2]);
-            notificationMap.put("updatedAt", result[3]);
-
-            notifications.add(notificationMap);
-        }
-
-        return notifications;
-    }
+//
+////        System.out.println("Query: " + query);
+////        System.out.println("CourseId: " + courseId);
+//
+//
+//
+////        List<Object[]> resultList = nativeQuery.getResultList();
+////        List<Map<String, Object>> students = new ArrayList<>();
+//
+//        for (Object[] result : resultList) {
+//            Map<String, Object> notificationMap = new HashMap<>();
+//            notificationMap.put("title", result[0]);
+//            notificationMap.put("content", result[1]);
+//            notificationMap.put("createdAt", result[2]);
+//            notificationMap.put("updatedAt", result[3]);
+//
+//            notifications.add(notificationMap);
+//        }
+//
+//        return notifications;
+//    }
+//
+//    @Transactional
+//    @Override
+//    public List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId) {
+//        String query = "SELECT n.C20_TITLE as title, n.C20_CONTENT as content, n.C20_CREATED_AT as createdAt, n.C20_UPDATED_AT as updatedAt " +
+//                "FROM t20_public_notifications n " +
+//                "JOIN t16_user_center uc ON n.C20_CENTER_ID = uc.C16_CENTER_ID " +
+//                "WHERE uc.C16_USER_ID = :userId AND n.C20_CENTER_ID = :centerId";
+//
+//
+//        System.out.println("Query: " + query);
+//        System.out.println("UserId: " + userId);
+//
+//        System.out.println("Query: " + query);
+//        System.out.println("CenterId: " + centerId);
+//
+////        Query nativeQuery = entityManager.createNativeQuery(query);
+////        nativeQuery.setParameter("courseId", userCode);
+//
+////        List<Object[]> resultList = nativeQuery.getResultList();
+////        List<Map<String, Object>> notifications = new ArrayList<>();
+//
+//
+//
+//        Query nativeQuery = entityManager.createNativeQuery(query);
+//        nativeQuery.setParameter("userId", userId);
+//        nativeQuery.setParameter("centerId", centerId);
+//
+//        List<Object[]> resultList = nativeQuery.getResultList();
+//        List<Map<String, Object>> notifications = new ArrayList<>();
+//
+//        for (Object[] result : resultList) {
+//            Map<String, Object> notificationMap = new HashMap<>();
+//            notificationMap.put("title", result[0]);
+//            notificationMap.put("content", result[1]);
+//            notificationMap.put("createdAt", result[2]);
+//            notificationMap.put("updatedAt", result[3]);
+//
+//            notifications.add(notificationMap);
+//        }
+//
+//        return notifications;
+//    }
 
     @Transactional
     @Override
@@ -363,16 +365,17 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
         String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
-                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName " +
+                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName, a.C09_ATTENDANCE_STATUS as attendanceStatus " +
                 "FROM t02_slot s " +
                 "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
                 "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
                 "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
                 "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
+                "LEFT JOIN t09_attendance a ON a.C09_SLOT_ID = s.C02_SLOT_ID AND a.C09_STUDENT_ID = u.C14_USER_ID " +
                 "WHERE u.C14_USER_ID = :studentId";
 
         System.out.println("Query: " + query);
-        System.out.println("CourseId: " + studentId);
+        System.out.println("StudentId: " + studentId);
 
         Query nativeQuery = entityManager.createNativeQuery(query);
         nativeQuery.setParameter("studentId", studentId);
@@ -387,6 +390,7 @@ public class StudentServiceImpl implements StudentService {
             slotMap.put("slotEndTime", result[2]);
             slotMap.put("courseName", result[3]);
             slotMap.put("roomName", result[4]);
+            slotMap.put("attendanceStatus", result[5]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
 
             slots.add(slotMap);
         }
@@ -420,7 +424,63 @@ public class StudentServiceImpl implements StudentService {
         return results;
     }
 
+//    @Autowired
+//    private JdbcTemplate jdbcTemplate;
 
+//    @Override
+//    public List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode) {
+//        String sql = "SELECT C20_TITLE, C20_CONTENT, C20_HAS_SEEN, C20_SEEN_TIME " +
+//                "FROM t20_individual_notification " +
+//                "WHERE C20_SEND_TO_USER = ?";
+//
+//        return jdbcTemplate.query(sql, new Object[]{userCode}, new RowMapper<Map<String, Object>>() {
+//            @Override
+//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
+//                Map<String, Object> notification = new HashMap<>();
+//                notification.put("title", rs.getString("C20_TITLE"));
+//                notification.put("content", rs.getString("C20_CONTENT"));
+//                notification.put("hasSeen", rs.getBoolean("C20_HAS_SEEN"));
+//                notification.put("seenTime", rs.getTimestamp("C20_SEEN_TIME"));
+//                return notification;
+//            }
+//        });
+//    }
 
+//    @Override
+//    public List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId) {
+//        String sql = "SELECT C22_TITLE, C22_CONTENT, C23_SEEN_TIME " +
+//                "FROM t22_center_notification " +
+//                "JOIN t23_view_center_notification ON t22_center_notification.C22_ID = t23_view_center_notification.C23_CENTER_NOTIFICATION_ID " +
+//                "WHERE C23_HAS_SEEN_BY = ? AND C22_CENTER_ID = ?";
+//
+//        return jdbcTemplate.query(sql, new Object[]{userId, centerId}, new RowMapper<Map<String, Object>>() {
+//            @Override
+//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
+//                Map<String, Object> notification = new HashMap<>();
+//                notification.put("title", rs.getString("C22_TITLE"));
+//                notification.put("content", rs.getString("C22_CONTENT"));
+//                notification.put("seenTime", rs.getTimestamp("C23_SEEN_TIME"));
+//                return notification;
+//            }
+//        });
+//    }
+//
+//
+//    @Override
+//    public List<Map<String, Object>> getAllNotifications() {
+//        String sql = "SELECT id, title, content, seen, seen_time FROM notifications";
+//        return jdbcTemplate.query(sql, new RowMapper<Map<String, Object>>() {
+//            @Override
+//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
+//                Map<String, Object> notification = new HashMap<>();
+//                notification.put("id", rs.getLong("id"));
+//                notification.put("title", rs.getString("title"));
+//                notification.put("content", rs.getString("content"));
+//                notification.put("seen", rs.getBoolean("seen"));
+//                notification.put("seen_time", rs.getTimestamp("seen_time"));
+//                return notification;
+//            }
+//        });
+//    }
 
 }
