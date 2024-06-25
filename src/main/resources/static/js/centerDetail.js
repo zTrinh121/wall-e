@@ -1,6 +1,11 @@
 
 var centerIdz;
-
+document.addEventListener("DOMContentLoaded", () => {
+    // Toggle sidebar collapse
+    $(".nva").click(function () {
+        $(".wrapper").toggleClass("collapse");
+    });
+});
 // Định nghĩa hàm showToast ở phạm vi toàn cục
 function showToast(message) {
     var toast = $('#toast'); // Chuyển toast vào trong hàm
