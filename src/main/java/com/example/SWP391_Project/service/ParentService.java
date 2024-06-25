@@ -25,10 +25,14 @@ public interface ParentService {
 
     List<User> getStudentsByParentId(int parentId);
 
+    // -------------------------- NOTIFICATION ------------------------------
     ParentNotificationResponse getAllNotifications(int parentId);
 
     ViewSystemNotification updateViewSystemNotification(int notificationId, User parent);
 
     IndividualNotification updateIndividualNotification(int notificationId);
+
+    Boolean checkHasSeenSystemNotification(int systemNotificationId,
+                                           int parentId);
 
 }

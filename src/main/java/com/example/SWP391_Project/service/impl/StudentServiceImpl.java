@@ -442,6 +442,7 @@ public class StudentServiceImpl implements StudentService {
                 (Sort.by(Sort.Direction.DESC, "id"));
     }
 
+    // --------------------- NOTIFICATION --------------------------
     @Override
     public NotificationResponse getAllNotifications(int studentId) {
         List<IndividualNotification> individualNotifications
@@ -472,10 +473,11 @@ public class StudentServiceImpl implements StudentService {
         }
         CenterNotification notification1 = notification.get();
 
-        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
-        viewCenterNotification.setCenterNotification(notification1);
-        viewCenterNotification.setHasSeenBy(student);
-        viewCenterNotification.setSeenTime(new Date());
+        ViewCenterNotification viewCenterNotification = ViewCenterNotification.builder()
+                .centerNotification(notification1)
+                .hasSeenBy(student)
+                .seenTime(new Date())
+                .build();
         return viewCenterNotificationRepository.save(viewCenterNotification);
     }
 
@@ -487,11 +489,32 @@ public class StudentServiceImpl implements StudentService {
         }
         SystemNotification notification1 = notification.get();
 
-        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
-        viewSystemNotification.setSystemNotification(notification1);
-        viewSystemNotification.setHasSeenBy(student);
-        viewSystemNotification.setSeenTime(new Date());
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(student)
+                .seenTime(new Date())
+                .build();
         return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenCenterNotification(int centerNotificationId, int studentId) {
+        ViewCenterNotification hasView = viewCenterNotificationRepository
+                .findByCenterNotificationIdAndUserId(centerNotificationId, studentId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int studentId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, studentId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
     }
 }
 

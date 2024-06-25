@@ -16,7 +16,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/teachers")
+@RequestMapping("/api/teacher")
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
@@ -86,39 +86,7 @@ public class TeacherController {
         return ResponseEntity.ok(schedule);
     }
 
-//    // Lấy ra 3 loại thông báo
-//    @GetMapping("/notifications/private")
-//    public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
-//        List<PrivateNotification> notifications = teacherService.getAllPrivateNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/notifications/public")
-//    public ResponseEntity<List<PublicNotification>> getAllPublicNotifications() {
-//        List<PublicNotification> notifications = teacherService.getAllPublicNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/notifications/system")
-//    public ResponseEntity<List<SystemNotification>> getAllSystemNotifications() {
-//        List<SystemNotification> notifications = teacherService.getAllSystemNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    // in ra cả 3
-//    @GetMapping("/notifications/all")
-//    public ResponseEntity<NotificationResponse> getAllNotifications() {
-//        NotificationResponse notifications = teacherService.getAllNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    // tạo thông báo private
-//    @PostMapping(value = "/notifications/private", consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<Void> addPrivateNotification(@RequestBody PrivateNotification notification) {
-//        teacherService.addPrivateNotification(notification);
-//        return ResponseEntity.ok().build();
-//    }
-
+    // ----------------------- MATERIALS -------------------------
     @PostMapping("PDF/File/upload")
     public ResponseEntity<?> uploadMaterialPdf(
             @RequestPart("file") MultipartFile file,
@@ -156,6 +124,7 @@ public class TeacherController {
         return new ResponseEntity<>(materials, HttpStatus.OK);
     }
 
+    // --------------------------- NOTIFICATION -------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
         Integer teacherId = (Integer) session.getAttribute("authid");
@@ -171,7 +140,7 @@ public class TeacherController {
         return teacherService.updateIndividualNotification(notificationId);
     }
 
-    @PatchMapping("/viewCenterNotification/update/{notificationId}")
+    @PostMapping("/viewCenterNotification/update/{notificationId}")
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User teacher = (User) session.getAttribute("authid");
@@ -181,7 +150,7 @@ public class TeacherController {
         return teacherService.updateViewCenterNotification(notificationId, teacher);
     }
 
-    @PatchMapping("/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User teacher = (User) session.getAttribute("authid");
@@ -189,6 +158,31 @@ public class TeacherController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
         }
         return teacherService.updateViewSystemNotification(notificationId, teacher);
+    }
+
+    @GetMapping("/centerNotification/{centerNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenCenterNotification(
+            @PathVariable int centerNotificationId,
+            HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+        Boolean hasSeen = teacherService.checkHasSeenCenterNotification(centerNotificationId, teacherId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    // API endpoint for checking if a system notification has been seen by a student
+    @GetMapping("/systemNotification/{systemNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenSystemNotification(
+            @PathVariable int systemNotificationId,
+            HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+        Boolean hasSeen = teacherService.checkHasSeenSystemNotification(systemNotificationId, teacherId);
+        return ResponseEntity.ok(hasSeen);
     }
 
 }
