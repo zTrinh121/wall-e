@@ -874,7 +874,7 @@ public class UserController {
             }
             teacherService.uploadPdfFile(file, subjectName, materialsName, user);
 
-            return "redirect:/material-create?status=success";
+            return "redirect:/material";
         } catch (Exception e) {
             System.err.println("Error uploading PDF: " + e.getMessage());
             return "redirect:/material";
