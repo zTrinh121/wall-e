@@ -23,8 +23,10 @@ public interface TeacherService {
 
 
     // CRUD điểm
-    List<Object[]> getResultsByCourseIdAndStudentId(Long courseId, Long studentId);
-    Result createResult(Result result);
+    public List<Map<String, Object>> getResultsByCourseIdAndStudentId(Long courseId, Long studentId);
+
+     Result updateResult(Long resultId, Map<String, Object> updates);
+
     Result updateResult(Result result);
     void deleteResult(Long resultId);
 

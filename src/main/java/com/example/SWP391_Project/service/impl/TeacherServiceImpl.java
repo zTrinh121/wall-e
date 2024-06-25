@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.dto.MaterialDto;
+import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.EnrollmentRepository;
 import com.example.SWP391_Project.repository.MaterialRepository;
@@ -102,14 +103,41 @@ public class TeacherServiceImpl implements TeacherService {
 
     // CRUD điểm
     @Override
-    public List<Object[]> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
-        return teacherRepository.findResultsByCourseIdAndStudentId(courseId, studentId);
+    public List<Map<String, Object>> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
+        List<Object[]> results = teacherRepository.findResultsByCourseIdAndStudentId(courseId, studentId);
+        List<Map<String, Object>> resultMaps = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("courseId", result[0]);
+            resultMap.put("studentId", result[1]);
+            resultMap.put("type", result[2]);
+            resultMap.put("value", result[3]);
+            resultMaps.add(resultMap);
+        }
+        return resultMaps;
     }
 
-    @Override
-    public Result createResult(Result result) {
-        return resultRepository.save(result);
+
+//nnnn
+@Override
+public Result updateResult(Long resultId, Map<String, Object> updates) {
+    // Tìm Result từ cơ sở dữ liệu
+    Result result = resultRepository.findResultById(resultId);
+    if (result == null) {
+        throw new ResourceNotFoundException("Result not found for this id :: " + resultId);
     }
+
+    // Cập nhật các trường cần thiết
+    if (updates.containsKey("type")) {
+        result.setType((int) updates.get("type"));
+    }
+    if (updates.containsKey("value")) {
+        result.setValue((int) updates.get("value"));
+    }
+
+    // Lưu kết quả đã cập nhật vào cơ sở dữ liệu
+    return resultRepository.save(result);
+}
 
     @Override
     public Result updateResult(Result result) {

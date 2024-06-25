@@ -35,7 +35,7 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
 
 
 
-    @Query("SELECT r.type, r.value FROM Result r WHERE r.course.id = :courseId AND r.student.id = :studentId")
+    @Query("SELECT r.course.id, r.student.id, r.type, r.value FROM Result r WHERE r.course.id = :courseId AND r.student.id = :studentId")
     List<Object[]> findResultsByCourseIdAndStudentId(@Param("courseId") Long courseId, @Param("studentId") Long studentId);
 
 

@@ -53,23 +53,27 @@ public ResponseEntity<List<Map<String, Object>>> getScheduleByCourseId(@PathVari
 
     // CRUD điểm
     @GetMapping("/courses/{courseId}/students/{studentId}/results")
-    public ResponseEntity<List<Object[]>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
-        List<Object[]> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
+    public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
+        List<Map<String, Object>> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
         return ResponseEntity.ok(results);
     }
 
-    @PostMapping("/courses/{courseId}/students/{studentId}/results")
-    public ResponseEntity<Result> createResult(@RequestBody Result result) {
-        Result createdResult = teacherService.createResult(result);
-        return ResponseEntity.ok(createdResult);
-    }
+
+
+@PatchMapping("/results/{resultId}")
+public ResponseEntity<Result> updateResult(@PathVariable Long resultId, @RequestBody Map<String, Object> updates) {
+    Result updatedResult = teacherService.updateResult(resultId, updates);
+    return ResponseEntity.ok(updatedResult);
+}
+
 
     @PutMapping("/results/{resultId}")
     public ResponseEntity<Result> updateResult(@PathVariable int resultId, @RequestBody Result result) {
         result.setId(resultId);
         Result updatedResult = teacherService.updateResult(result);
-        return ResponseEntity.ok(updatedResult);
+        return   ResponseEntity.ok(updatedResult);
     }
+
 
     @DeleteMapping("/results/{resultId}")
     public ResponseEntity<Void> deleteResult(@PathVariable Long resultId) {
