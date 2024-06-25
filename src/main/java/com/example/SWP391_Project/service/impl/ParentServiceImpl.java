@@ -3,13 +3,14 @@ package com.example.SWP391_Project.service.impl;
 import com.example.SWP391_Project.dto.EnrollmentDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
+import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.ParentNotificationResponse;
 import com.example.SWP391_Project.service.ParentService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class ParentServiceImpl implements ParentService {
@@ -31,6 +32,15 @@ public class ParentServiceImpl implements ParentService {
 
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
+
+    @Autowired
+    private SystemNotificationRepository systemNotificationRepository;
+
+    @Autowired
+    private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
 
     @Override
@@ -89,5 +99,40 @@ public class ParentServiceImpl implements ParentService {
     @Override
     public List<User> getStudentsByParentId(int parentId) {
         return userRepository.getStudentsByParentId(parentId);
+    }
+
+    @Override
+    public ParentNotificationResponse getAllNotifications(int parentId) {
+        List<IndividualNotification> individualNotifications
+                = individualNotificationRepository.findNotificationsByUserId(parentId);
+        List<SystemNotification> systemNotifications
+                = systemNotificationRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<NotificationResponse> notificationResponses = new ArrayList<>();
+        return new ParentNotificationResponse(individualNotifications, systemNotifications);
+    }
+
+    @Override
+    public IndividualNotification updateIndividualNotification(int notificationId) {
+        IndividualNotification notification = individualNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
+        notification.setHasSeen(true);
+        notification.setSeenTime(new Date());
+        return individualNotificationRepository.save(notification);
+    }
+
+    @Override
+    public ViewSystemNotification updateViewSystemNotification(int notificationId, User parent) {
+        Optional<SystemNotification> notification = systemNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The system notification not found!!");
+        }
+        SystemNotification notification1 = notification.get();
+
+        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
+        viewSystemNotification.setSystemNotification(notification1);
+        viewSystemNotification.setHasSeenBy(parent);
+        viewSystemNotification.setSeenTime(new Date());
+        return viewSystemNotificationRepository.save(viewSystemNotification);
     }
 }

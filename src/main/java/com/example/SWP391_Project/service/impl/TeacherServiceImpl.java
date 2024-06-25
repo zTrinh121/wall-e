@@ -2,12 +2,10 @@ package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.repository.EnrollmentRepository;
-import com.example.SWP391_Project.repository.MaterialRepository;
-import com.example.SWP391_Project.repository.ResultRepository;
+import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
-import com.example.SWP391_Project.repository.TeacherRepository;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
@@ -15,22 +13,39 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
+
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
     @Autowired
     private ResultRepository resultRepository;
+
     @Autowired
     private CloudinaryService cloudinaryService;
+
     @Autowired
     private MaterialRepository materialRepository;
+
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
+
+    @Autowired
+    private CenterNotificationRepository centerNotificationRepository;
+
+    @Autowired
+    private SystemNotificationRepository systemNotificationRepository;
+
+    @Autowired
+    private ViewCenterNotificationRepository viewCenterNotificationRepository;
+
+    @Autowired
+    private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
     @Override
     public List<String> getCourseNamesByTeacherId(Long teacherId) {
@@ -158,5 +173,57 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
     public List<Material> getMaterialsByTeacherId(int teacherId) {
         Optional<List<Material>> materials = materialRepository.findByTeacher_Id(teacherId);
         return materials.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public NotificationResponse getAllNotifications(int teacherId) {
+        List<IndividualNotification> individualNotifications
+                = individualNotificationRepository.findNotificationsByUserId(teacherId);
+        List<CenterNotification> centerNotifications
+                = centerNotificationRepository.findCenterNotificationsByUserId(teacherId);
+        List<SystemNotification> systemNotifications
+                = systemNotificationRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<NotificationResponse> notificationResponses = new ArrayList<>();
+        return new NotificationResponse(individualNotifications, centerNotifications, systemNotifications);
+    }
+
+    @Override
+    public IndividualNotification updateIndividualNotification(int notificationId) {
+        IndividualNotification notification = individualNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
+        notification.setHasSeen(true);
+        notification.setSeenTime(new Date());
+        return individualNotificationRepository.save(notification);
+    }
+
+    @Override
+    public ViewCenterNotification updateViewCenterNotification(int notificationId, User teacher) {
+        Optional<CenterNotification> notification = centerNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The center notification not found!!");
+        }
+        CenterNotification notification1 = notification.get();
+
+        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
+        viewCenterNotification.setCenterNotification(notification1);
+        viewCenterNotification.setHasSeenBy(teacher);
+        viewCenterNotification.setSeenTime(new Date());
+        return viewCenterNotificationRepository.save(viewCenterNotification);
+    }
+
+    @Override
+    public ViewSystemNotification updateViewSystemNotification(int notificationId, User teacher) {
+        Optional<SystemNotification> notification = systemNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The system notification not found!!");
+        }
+        SystemNotification notification1 = notification.get();
+
+        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
+        viewSystemNotification.setSystemNotification(notification1);
+        viewSystemNotification.setHasSeenBy(teacher);
+        viewSystemNotification.setSeenTime(new Date());
+        return viewSystemNotificationRepository.save(viewSystemNotification);
     }
 }

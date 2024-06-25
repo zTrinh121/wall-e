@@ -2,12 +2,15 @@ package com.example.SWP391_Project.controller.parent;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.ParentNotificationResponse;
 import com.example.SWP391_Project.service.ParentService;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -102,5 +105,30 @@ public class ParentController {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Failed to fetch students: " + e.getMessage());
         }
+    }
+
+    @GetMapping("/parent/notifications/all")
+    public ResponseEntity<ParentNotificationResponse> getAllNotifications(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+        ParentNotificationResponse notificationResponse = parentService.getAllNotifications(parentId);
+        return ResponseEntity.ok(notificationResponse);
+    }
+
+    @PatchMapping("/parent/individualNotification/update/{notificationId}")
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
+        return parentService.updateIndividualNotification(notificationId);
+    }
+
+    @PatchMapping("/parent/viewSystemNotification/update/{notificationId}")
+    public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
+                                                               HttpSession session) {
+        User parent = (User) session.getAttribute("authid");
+        if (parent == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
+        }
+        return parentService.updateViewSystemNotification(notificationId, parent);
     }
 }
