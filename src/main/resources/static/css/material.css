@@ -868,3 +868,16 @@ button.active {
   background-color: #f3f4f6 !important; /* Hover color */
 }
 /*End list of material and list*/
+
+/*Start material detail*/
+#material-detail{
+  display: flex;
+  gap: 1rem;
+}
+.detail-material-intro{
+  background: #fff;
+  height: max-content;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+/*End material detail*/

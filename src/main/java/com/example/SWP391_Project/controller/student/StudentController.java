@@ -87,7 +87,7 @@ public class StudentController {
 //    }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
-    @GetMapping("/{studentId}/courses")
+    @GetMapping("/{studentId}/timetable")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getStudentSchedule(@PathVariable int studentId) {
         List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
@@ -243,6 +243,13 @@ public class StudentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
         return studentService.updateViewSystemNotification(notificationId, student);
+    }
+
+    @GetMapping("/{studentId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
+        return ResponseEntity.ok(courses);
     }
 }
 

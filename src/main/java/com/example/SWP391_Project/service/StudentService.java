@@ -39,4 +39,6 @@ public interface StudentService {
 
     ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
 
+    List<Map<String, Object>> getStudentCourse(int studentId);
+
 }

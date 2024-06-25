@@ -35,20 +35,20 @@ document.addEventListener("DOMContentLoaded", () => {
     function viewCourseDetails(courseData) {
         const courseNameElement = document.querySelector(".detail-header h3");
         const courseDesc = document.querySelector(".roadmap h3")
-        const courseStartTime = document.querySelector(".start-time p");
-        let startTime = courseData.startTime.split('T')[0]; // Get only the date part
+        const courseStartTime = document.querySelector(".start-time h3");
+        let startTime = courseData.startTime.split('T')[0];
         let parts = startTime.split('-');
         let formattedDateStart = `${parts[2]}/${parts[1]}/${parts[0]}`;
-        const courseEndTime = document.querySelector(" .end-time p");
+        const courseEndTime = document.querySelector(" .end-time h3");
         let endTime = courseData.endTime.split('T')[0];
         let ends = endTime.split('-');
         let formattedDateEnd = `${ends[2]}/${ends[1]}/${ends[0]}`;
         const teacherName = courseData.teacherName;
         const courseName = courseData.courseName;
-        courseNameElement.textContent = `Khóa học: ${courseName} - Giáo viên ${teacherName}`;
-        courseDesc.textContent = `Mô tả khóa học: ${courseData.courseDesc}`;
-        courseStartTime.textContent = `Bắt đầu khóa học: ${formattedDateStart}`;
-        courseEndTime.textContent = `Kết thúc khóa học: ${formattedDateEnd}`;
+        courseNameElement.innerHTML = `<span style="font-weight: 600">Khóa học: </span> ${courseName} - Giáo viên ${teacherName}`;
+        courseDesc.innerHTML = `<span style="font-weight: 600">Mô tả khóa học:</span> ${courseData.courseDesc}`;
+        courseStartTime.innerHTML = `<span style="font-weight: 600"> Bắt đầu khóa học: </span> ${formattedDateStart}`;
+        courseEndTime.innerHTML = `<span style="font-weight: 600"> Kết thúc khóa học: </span> ${formattedDateEnd}`;
 
     }
 
@@ -68,7 +68,6 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function populateClassListModal(classListData) {
-        console.log(classListData)
         const classListBody = document.getElementById("classListBody");
         classListBody.innerHTML = "";
 
@@ -99,44 +98,7 @@ document.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    function attachScoreLinksEvent() {
-        const scoreLinks = document.querySelectorAll(".score-link");
-        scoreLinks.forEach(link => {
-            link.addEventListener('click', function(event) {
-                event.preventDefault();
-                const studentId = this.getAttribute("data-student-id");
-                console.log(studentId)
-                showEvaluationModal(studentId);
-            });
-        });
-    }
 
-    
-
-    function showEvaluationModal(studentId) {
-        document.getElementById("scoresTableBody").innerHTML = "";
-
-        const scores = [
-            { exam: "Midterm", score: 85 },
-            { exam: "Final", score: 90 }
-        ];
-
-        scores.forEach(score => {
-            const row = document.createElement("tr");
-            row.innerHTML = `
-                <td>${score.exam}</td>
-                <td>${score.score}</td>
-            `;
-            document.getElementById("scoresTableBody").appendChild(row);
-        });
-
-        evaluationModal.style.display = 'block';
-    }
-    window.addEventListener('click', function (event) {
-        if (event.target == evaluationModal) {
-            evaluationModal.style.display = "none";
-        }
-    });
 
 
     function openFeedbackModal() {
@@ -219,38 +181,49 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function openEvaluationModal(grades) {
-        const shortTestScores = grades.filter(grade => grade.resultType === 1);
-        const longTestScores = grades.filter(grade => grade.resultType === 2);
-        const examScores = grades.filter(grade => grade.resultType === 3);
+        const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
+        const longTestScores = grades.filter(grade => grade.resultType === 2).map(grade => grade.resultValue);
+        const examScores = grades.filter(grade => grade.resultType === 3).map(grade => grade.resultValue);
 
         // Clear previous table content
         const tableBody = document.getElementById("scoresTableBody");
         tableBody.innerHTML = '';
 
-        const addScoresToTable = (scores, type) => {
-            scores.forEach(score => {
-                const row = document.createElement("tr");
+        const addRowToTable = (type, scores) => {
+            const row = document.createElement("tr");
 
-                const typeCell = document.createElement("td");
-                typeCell.textContent = type;
-                row.appendChild(typeCell);
+            const typeCell = document.createElement("td");
+            typeCell.textContent = type;
+            row.appendChild(typeCell);
 
-                const scoreCell = document.createElement("td");
-                scoreCell.textContent = score.resultValue;
-                row.appendChild(scoreCell);
+            const scoreCell = document.createElement("td");
+            scoreCell.textContent = scores.join(', ');
+            row.appendChild(scoreCell);
 
-                tableBody.appendChild(row);
-            });
+            tableBody.appendChild(row);
         };
 
-        addScoresToTable(shortTestScores, 'Kiểm tra 15 phút');
-        addScoresToTable(longTestScores, 'Kiểm tra 1 tiết');
-        addScoresToTable(examScores, 'Kiểm tra cuối kỳ');
+        const feedbackMessages = [];
 
-        document.getElementById("teacherFeedback").textContent = grades.map(grade => `Bạn đã đạt ${grade.resultValue} điểm trong ${grade.resultType === 1 ? 'kiểm tra 15 phút' : grade.resultType === 2 ? 'kiểm tra 1 tiết' : 'kiểm tra cuối kỳ'}`).join('. ');
+        if (shortTestScores.length > 0) {
+            addRowToTable('Kiểm tra 15 phút', shortTestScores);
+            feedbackMessages.push(`Bạn đã đạt ${shortTestScores.join(', ')} điểm trong kiểm tra 15 phút`);
+        }
+        if (longTestScores.length > 0) {
+            addRowToTable('Kiểm tra 1 tiết', longTestScores);
+            feedbackMessages.push(`Bạn đã đạt ${longTestScores.join(', ')} điểm trong kiểm tra 1 tiết`);
+        }
+        if (examScores.length > 0) {
+            addRowToTable('Kiểm tra cuối kỳ', examScores);
+            feedbackMessages.push(`Bạn đã đạt ${examScores.join(', ')} điểm trong kiểm tra cuối kỳ`);
+        }
+
+        document.getElementById("teacherFeedback").textContent = feedbackMessages.join('. ');
 
         evaluationModal.style.display = "block";
     }
+
+
 
 
     function closeEvaluationModal() {

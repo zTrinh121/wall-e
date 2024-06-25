@@ -622,11 +622,11 @@ public class UserController {
         return "teacherFragments";
     }
 
-    @GetMapping("/teacher-notification")
-    public String teacherNotification(HttpSession session) {
-        session.invalidate();
-        return "teacher-notification";
-    }
+//    @GetMapping("/teacher-notification")
+//    public String teacherNotification(HttpSession session) {
+//        session.invalidate();
+//        return "teacher-notification";
+//    }
 
     @GetMapping("/detailCenter-teacher")
     public String detailCenterTeacher(HttpSession session) {
@@ -679,27 +679,27 @@ public class UserController {
         return "timetableViewOnly";
     }
 
-    @GetMapping("/student-notification")
-    public String viewNotification(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "studentNotification";
-    }
+//    @GetMapping("/student-notification")
+//    public String viewNotification(HttpSession session, Model model) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+//        return "studentNotification";
+//    }
 
 
-    @GetMapping("/parent-notification")
-    public String viewNotificationParent(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-
-        return "parentNotification";
-    }
+//    @GetMapping("/parent-notification")
+//    public String viewNotificationParent(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+//
+//        return "parentNotification";
+//    }
 
     @GetMapping("/parent")
     public String viewDashboardParent(HttpSession session) {
@@ -835,11 +835,11 @@ public class UserController {
 
     @GetMapping("/notification")
     public String notification(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "notificationDetail";
     }
 
@@ -879,6 +879,16 @@ public class UserController {
             System.err.println("Error uploading PDF: " + e.getMessage());
             return "redirect:/material";
         }
+    }
+
+    @GetMapping("/material-detail")
+    public String materialDetail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "material-detail";
     }
 
 
