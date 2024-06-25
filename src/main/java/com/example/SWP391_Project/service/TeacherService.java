@@ -3,6 +3,7 @@ package com.example.SWP391_Project.service;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -47,5 +48,13 @@ public interface TeacherService {
     List<Material> getAllMaterials();
 
     List<Material> getMaterialsByTeacherId(int teacherId);
+
+    NotificationResponse getAllNotifications(int studentId);
+
+    ViewSystemNotification updateViewSystemNotification(int notificationId, User teacher);
+
+    IndividualNotification updateIndividualNotification(int notificationId);
+
+    ViewCenterNotification updateViewCenterNotification(int notificationId, User teacher);
 
 }

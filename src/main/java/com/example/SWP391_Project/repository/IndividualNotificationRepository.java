@@ -14,4 +14,8 @@ public interface IndividualNotificationRepository extends JpaRepository<Individu
 
     @Query("SELECT n FROM IndividualNotification n WHERE n.actor.id = :actorID AND n.hasSeen = true")
     Optional<List<IndividualNotification>> findByActorIdAndHasSeen(@Param("actorID") int actorID);
+
+    @Query(value = "SELECT * FROM t20_individual_notification WHERE C20_SEND_TO_USER = (SELECT C14_USERNAME FROM t14_user WHERE C14_USER_ID = :userId ORDER BY c20_create_at DESC", nativeQuery = true)
+    List<IndividualNotification> findNotificationsByUserId(@Param("userId") int userId);
+
 }

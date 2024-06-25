@@ -1,12 +1,14 @@
 package com.example.SWP391_Project.controller.student;
 
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailService;
 import com.example.SWP391_Project.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -14,6 +16,7 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
@@ -205,6 +208,41 @@ public class StudentController {
         } else {
             return ResponseEntity.ok(materials);
         }
+    }
+
+    @GetMapping("notifications/all")
+    public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        NotificationResponse notificationResponse = studentService.getAllNotifications(studentId);
+        return ResponseEntity.ok(notificationResponse);
+    }
+
+    @PatchMapping("/individualNotification/update/{notificationId}")
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
+        return studentService.updateIndividualNotification(notificationId);
+    }
+
+    @PatchMapping("/viewCenterNotification/update/{notificationId}")
+    public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
+                                                               HttpSession session) {
+        User student = (User) session.getAttribute("authid");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        return studentService.updateViewCenterNotification(notificationId, student);
+    }
+
+    @PatchMapping("/viewSystemNotification/update/{notificationId}")
+    public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
+                                                               HttpSession session) {
+        User student = (User) session.getAttribute("authid");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        return studentService.updateViewSystemNotification(notificationId, student);
     }
 }
 

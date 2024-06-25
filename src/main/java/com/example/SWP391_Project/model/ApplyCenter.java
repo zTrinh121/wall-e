@@ -43,4 +43,5 @@ public class ApplyCenter {
     @JoinColumn(name = "C12_CENTER_ID")
     @JsonManagedReference
     Center center;
+
 }

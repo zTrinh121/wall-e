@@ -5,6 +5,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "t17_student_slot",
         uniqueConstraints = {@UniqueConstraint(
@@ -32,5 +34,7 @@ public class StudentSlot {
     @JsonManagedReference
     Slot slot;
 
-    // Constructors, getters, setters, and other methods
+    @Column(name = "C17_ATTENDANCE_STATUS", nullable = false)
+    Boolean attendanceStatus;
+
 }

@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.NotificationResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -29,5 +30,13 @@ public interface StudentService {
     List<Map<String, String>> search(String keyword);
 
     List<Material> getAllMaterials();
+
+    NotificationResponse getAllNotifications(int studentId);
+
+    ViewSystemNotification updateViewSystemNotification(int notificationId, User student);
+
+    IndividualNotification updateIndividualNotification(int notificationId);
+
+    ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
 
 }
