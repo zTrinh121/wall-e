@@ -205,10 +205,11 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         CenterNotification notification1 = notification.get();
 
-        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
-        viewCenterNotification.setCenterNotification(notification1);
-        viewCenterNotification.setHasSeenBy(teacher);
-        viewCenterNotification.setSeenTime(new Date());
+        ViewCenterNotification viewCenterNotification = ViewCenterNotification.builder()
+                .centerNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewCenterNotificationRepository.save(viewCenterNotification);
     }
 
@@ -220,10 +221,31 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         SystemNotification notification1 = notification.get();
 
-        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
-        viewSystemNotification.setSystemNotification(notification1);
-        viewSystemNotification.setHasSeenBy(teacher);
-        viewSystemNotification.setSeenTime(new Date());
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenCenterNotification(int centerNotificationId, int teacherId) {
+        ViewCenterNotification hasView = viewCenterNotificationRepository
+                .findByCenterNotificationIdAndUserId(centerNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int teacherId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
     }
 }
