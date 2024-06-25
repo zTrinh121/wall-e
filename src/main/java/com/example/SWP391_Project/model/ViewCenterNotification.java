@@ -27,9 +27,9 @@ public class ViewCenterNotification {
     CenterNotification centerNotification;
 
     @ManyToOne
-    @JoinColumn(name = "C23_HAS_SEEN_BY", nullable = false)
+    @JoinColumn(name = "C23_HAS_SEEN_BY", referencedColumnName = "C14_USER_ID", nullable = false)
     @JsonManagedReference
-    UserCenter userCenter;
+    User hasSeenBy;
 
     @Column(name = "C23_SEEN_TIME", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     Date seenTime;

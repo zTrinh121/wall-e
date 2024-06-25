@@ -12,4 +12,17 @@ public interface CenterNotificationRepository extends JpaRepository<CenterNotifi
 
     @Query("SELECT cn FROM CenterNotification cn JOIN cn.center c WHERE c.manager.id = :managerId")
     Optional<List<CenterNotification>> findAllByManagerId(@Param("managerId") int managerId);
+
+    @Query("SELECT n FROM CenterNotification n JOIN UserCenter uc ON n.center.id = uc.center.id WHERE uc.user.id = :userId ORDER BY n.createdAt DESC")
+    List<CenterNotification> findCenterNotificationsByUserId(@Param("userId") int userId);
+
+    Optional<CenterNotification> findById(int id);
+
+//    @Query("SELECT DISTINCT n FROM CenterNotification n " +
+//            "JOIN UserCenter uc ON n.center.id = uc.center.id " +
+//            "JOIN User u ON uc.user.id = u.id " +
+//            "WHERE u.parent.id = :parentId " +
+//            "ORDER BY n.createdAt DESC")
+//    List<CenterNotification> findCenterNotificationsOfStudentByParentId(@Param("parentId") int parentId);
+
 }

@@ -1,16 +1,13 @@
 package com.example.SWP391_Project.service.impl;
 
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Feedback;
-import com.example.SWP391_Project.model.Slot;
-import com.example.SWP391_Project.model.User;
-import com.example.SWP391_Project.repository.CourseRepository;
-import com.example.SWP391_Project.repository.FeedbackRepository;
-import com.example.SWP391_Project.repository.SlotRepository;
-import com.example.SWP391_Project.repository.StudentRepository;
+import com.example.SWP391_Project.dto.CourseDto;
+import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.repository.*;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
@@ -21,10 +18,7 @@ import jakarta.persistence.PersistenceContext;
 
 
 import java.sql.ResultSet;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -45,6 +39,24 @@ public class StudentServiceImpl implements StudentService {
     private EntityManager entityManager;
     @Autowired
     private SlotRepository slotRepository;
+
+    @Autowired
+    private MaterialRepository materialRepository;
+
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
+
+    @Autowired
+    private CenterNotificationRepository centerNotificationRepository;
+
+    @Autowired
+    private SystemNotificationRepository systemNotificationRepository;
+
+    @Autowired
+    private ViewCenterNotificationRepository viewCenterNotificationRepository;
+
+    @Autowired
+    private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
     @Override
     public User getStudentById(int studentId) {
@@ -424,63 +436,62 @@ public class StudentServiceImpl implements StudentService {
         return results;
     }
 
-//    @Autowired
-//    private JdbcTemplate jdbcTemplate;
+    @Override
+    public List<Material> getAllMaterials() {
+        return materialRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
 
-//    @Override
-//    public List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode) {
-//        String sql = "SELECT C20_TITLE, C20_CONTENT, C20_HAS_SEEN, C20_SEEN_TIME " +
-//                "FROM t20_individual_notification " +
-//                "WHERE C20_SEND_TO_USER = ?";
-//
-//        return jdbcTemplate.query(sql, new Object[]{userCode}, new RowMapper<Map<String, Object>>() {
-//            @Override
-//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
-//                Map<String, Object> notification = new HashMap<>();
-//                notification.put("title", rs.getString("C20_TITLE"));
-//                notification.put("content", rs.getString("C20_CONTENT"));
-//                notification.put("hasSeen", rs.getBoolean("C20_HAS_SEEN"));
-//                notification.put("seenTime", rs.getTimestamp("C20_SEEN_TIME"));
-//                return notification;
-//            }
-//        });
-//    }
+    @Override
+    public NotificationResponse getAllNotifications(int studentId) {
+        List<IndividualNotification> individualNotifications
+                = individualNotificationRepository.findNotificationsByUserId(studentId);
+        List<CenterNotification> centerNotifications
+                = centerNotificationRepository.findCenterNotificationsByUserId(studentId);
+        List<SystemNotification> systemNotifications
+                = systemNotificationRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
 
-//    @Override
-//    public List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId) {
-//        String sql = "SELECT C22_TITLE, C22_CONTENT, C23_SEEN_TIME " +
-//                "FROM t22_center_notification " +
-//                "JOIN t23_view_center_notification ON t22_center_notification.C22_ID = t23_view_center_notification.C23_CENTER_NOTIFICATION_ID " +
-//                "WHERE C23_HAS_SEEN_BY = ? AND C22_CENTER_ID = ?";
-//
-//        return jdbcTemplate.query(sql, new Object[]{userId, centerId}, new RowMapper<Map<String, Object>>() {
-//            @Override
-//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
-//                Map<String, Object> notification = new HashMap<>();
-//                notification.put("title", rs.getString("C22_TITLE"));
-//                notification.put("content", rs.getString("C22_CONTENT"));
-//                notification.put("seenTime", rs.getTimestamp("C23_SEEN_TIME"));
-//                return notification;
-//            }
-//        });
-//    }
-//
-//
-//    @Override
-//    public List<Map<String, Object>> getAllNotifications() {
-//        String sql = "SELECT id, title, content, seen, seen_time FROM notifications";
-//        return jdbcTemplate.query(sql, new RowMapper<Map<String, Object>>() {
-//            @Override
-//            public Map<String, Object> mapRow(ResultSet rs, int rowNum) throws java.sql.SQLException {
-//                Map<String, Object> notification = new HashMap<>();
-//                notification.put("id", rs.getLong("id"));
-//                notification.put("title", rs.getString("title"));
-//                notification.put("content", rs.getString("content"));
-//                notification.put("seen", rs.getBoolean("seen"));
-//                notification.put("seen_time", rs.getTimestamp("seen_time"));
-//                return notification;
-//            }
-//        });
-//    }
+        List<NotificationResponse> notificationResponses = new ArrayList<>();
+        return new NotificationResponse(individualNotifications, centerNotifications, systemNotifications);
+    }
 
+    @Override
+    public IndividualNotification updateIndividualNotification(int notificationId) {
+        IndividualNotification notification = individualNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
+        notification.setHasSeen(true);
+        notification.setSeenTime(new Date());
+        return individualNotificationRepository.save(notification);
+    }
+
+    @Override
+    public ViewCenterNotification updateViewCenterNotification(int notificationId, User student) {
+        Optional<CenterNotification> notification = centerNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The center notification not found!!");
+        }
+        CenterNotification notification1 = notification.get();
+
+        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
+        viewCenterNotification.setCenterNotification(notification1);
+        viewCenterNotification.setHasSeenBy(student);
+        viewCenterNotification.setSeenTime(new Date());
+        return viewCenterNotificationRepository.save(viewCenterNotification);
+    }
+
+    @Override
+    public ViewSystemNotification updateViewSystemNotification(int notificationId, User student) {
+        Optional<SystemNotification> notification = systemNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The system notification not found!!");
+        }
+        SystemNotification notification1 = notification.get();
+
+        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
+        viewSystemNotification.setSystemNotification(notification1);
+        viewSystemNotification.setHasSeenBy(student);
+        viewSystemNotification.setSeenTime(new Date());
+        return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
 }
+

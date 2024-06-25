@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.NotificationResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -22,23 +23,20 @@ public interface StudentService {
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
 
-//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
-//
-//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
-
     List<Map<String, Object>> getStudentAttendance(int studentId);
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
     List<Map<String, String>> search(String keyword);
 
-    //--------------
+    List<Material> getAllMaterials();
 
-//    List<Map<String, Object>> getPrivateNotificationsByUserCode(String userCode);
-//
-//    List<Map<String, Object>> getPublicNotificationsByUserIdAndCenterId(int userId, int centerId);
-//
-//    List<Map<String, Object>> getAllNotifications();
-//
-//    List<Notification> getCenterNotifications(int centerId);
+    NotificationResponse getAllNotifications(int studentId);
+
+    ViewSystemNotification updateViewSystemNotification(int notificationId, User student);
+
+    IndividualNotification updateIndividualNotification(int notificationId);
+
+    ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
+
 }

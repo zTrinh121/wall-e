@@ -27,7 +27,7 @@ public class ApplyCenter {
     @Column(name = "C12_TITLE")
     String title;
 
-    @Column(name = "C12_CONTENT")
+    @Column(name = "C12_CONTENT", columnDefinition = "TEXT")
     String content;
 
     @Enumerated(EnumType.STRING)
@@ -43,4 +43,5 @@ public class ApplyCenter {
     @JoinColumn(name = "C12_CENTER_ID")
     @JsonManagedReference
     Center center;
+
 }

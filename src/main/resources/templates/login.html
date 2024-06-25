@@ -13,7 +13,7 @@
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            width: 900px;
+            width: 100vw;
             height: auto
         }
     </style>
@@ -90,7 +90,14 @@
                     <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
                 </select>
                 </div>
-                <button type="submit" class="button">Đăng ký</button>
+                <div>
+
+                </div>
+                <div class="field btn">
+                    <div class="btn-layer"></div>
+                    <input type="submit" value="Đăng ký">
+                </div>
+                <div class="register-link">Đã có Tài khoản? <a href="">Đăng Nhập</a></div>
             </form>
         </div>
     </div>
