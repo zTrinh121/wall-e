@@ -38,7 +38,7 @@ public class Feedback {
     User actor;
 
     @ManyToOne
-    @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USER_CODE")
+    @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USERNAME")
     @JsonManagedReference
     User sendToUser;
 

@@ -1,10 +1,12 @@
 <!DOCTYPE html>
+
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Guest Page</title>
     <link rel="stylesheet" th:href="@{/css/guest.css}"/>
+
     <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
     <link
             rel="stylesheet"
@@ -13,6 +15,37 @@
             crossorigin="anonymous"
             referrerpolicy="no-referrer"
     />
+    <style>
+        .search {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+        .search-content {
+            display: flex;
+            align-items: center;
+        }
+        .result-box {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            z-index: 10;
+            background-color: #fff;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            display: none;
+        }
+        .search-item {
+            padding: 10px;
+            border-bottom: 1px solid #ccc;
+            cursor: pointer;
+        }
+        .search-item:hover {
+            background-color: #f0f0f0;
+        }
+    </style>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
 </head>
 <body>
 <div class="wrapper">
@@ -31,7 +64,7 @@
                     <input type="text" autocomplete="off" id="searchInput" placeholder="Tìm kiếm lớp học, trung tâm, ...">
                     <button type="submit">Tìm</button>
                 </div>
-                <div class="result-box"></div>
+                <div class="result-box" id="search-results"></div>
             </form>
             <ul>
                 <li>
@@ -101,6 +134,7 @@
 
         </div>
     </section> -->
+
 
 
 <section id="tranding">

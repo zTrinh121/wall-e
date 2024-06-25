@@ -24,7 +24,7 @@ public class CenterNotification {
     @Column(name = "C22_TITLE", nullable = false)
     String title;
 
-    @Column(name = "C22_CONTENT", nullable = false)
+    @Column(name = "C22_CONTENT", nullable = false, columnDefinition = "TEXT")
     String content;
 
     @Temporal(TemporalType.TIMESTAMP)

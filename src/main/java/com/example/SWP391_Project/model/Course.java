@@ -50,7 +50,7 @@ public class Course {
     @JoinColumn(name = "C01_CENTER_ID", nullable = false)
     @JsonManagedReference
     Center center;
-    
+
     @ManyToOne
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
     @JsonManagedReference

@@ -12,7 +12,6 @@ import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
-import jakarta.servlet.http.HttpSession;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -38,9 +37,6 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
     private CourseRepository courseRepository;
-
-//    @Autowired
-//    private SubjectRepository subjectRepository;
 
     @Autowired
     private UserRepository userRepository;
@@ -77,128 +73,6 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Autowired
     private ViewCenterNotificationRepository viewCenterNotificationRepository;
-
-//    // ----------------------- Private notification ----------------------------
-//    @Override
-//    public List<PrivateNotification> getAllPrivateNotification() {
-//        return privateNotificationRepository
-//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
-//    }
-//
-//    @Override
-//    public PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDto) {
-//        String sendTo = privateNotificationDto.getSendTo();
-//        if (sendTo.startsWith("USER")) {
-//            Optional<User> userCode = userRepository.findByCode(privateNotificationDto.getSendTo());
-//            if (userCode.isPresent()) {
-//                PrivateNotification privateNotification = PrivateNotification.builder()
-//                        .title(privateNotificationDto.getTitle())
-//                        .content(privateNotificationDto.getContent())
-//                        .createdAt(new Date())
-//                        //.actor(Actor.MANAGER)
-//                        .actor(RoleDescription.MANAGER)
-//                        .userSendTo(userCode.get())
-//                        .centerSendTo(null)
-//                        .build();
-//                return privateNotificationRepository.save(privateNotification);
-//            } else {
-//                throw new IllegalArgumentException("User not found");
-//            }
-//        } else if (sendTo.startsWith("CENTER")) {
-//            Optional<Center> centerOptional = centerRepository.findByCode(privateNotificationDto.getSendTo());
-//            if (centerOptional.isPresent()) {
-//                PrivateNotification privateNotification = PrivateNotification.builder()
-//                        .title(privateNotificationDto.getTitle())
-//                        .content(privateNotificationDto.getContent())
-//                        .createdAt(new Date())
-//                       // .actor(Actor.MANAGER)
-//                        .actor(RoleDescription.MANAGER)
-//                        .userSendTo(null)
-//                        .centerSendTo(centerOptional.get())
-//                        .build();
-//                return privateNotificationRepository.save(privateNotification);
-//            } else {
-//                throw new IllegalArgumentException("Center not found");
-//            }
-//        } else {
-//            throw new IllegalArgumentException("Invalid sendTo value");
-//        }
-//    }
-//
-//    @Override
-//    public PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto) {
-//        PrivateNotification privateNotification = privateNotificationRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("The private notification hasn't been existed ! "));
-//
-//        privateNotification.setTitle(privateNotificationDto.getTitle());
-//        privateNotification.setContent(privateNotificationDto.getContent());
-//        privateNotification.setUpdatedAt(new Date());
-//
-//        return privateNotificationRepository.save(privateNotification);
-//    }
-//
-//    @Override
-//    public boolean deletePrivateNotification(int id) {
-//        try {
-//            privateNotificationRepository.deleteById(id);
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-//    // ------------------------------------------------------------------------
-//
-//
-//    // ----------------------- Public notification ----------------------------
-//    @Override
-//    public List<PublicNotification> getAllPublicNotification() {
-//        return publicNotificationRepository
-//                .findAll(Sort.by(Sort.Direction.DESC, "id"));
-//    }
-//
-//    @Override
-//    public PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto) {
-//        Optional<Center> centerOtp = centerRepository.findByCode(publicNotificationDto.getCenterSendTo());
-//        if (!centerOtp.isPresent()) {
-//            throw new IllegalArgumentException("Center not found when finding by code !");
-//        }
-//        Center center = centerOtp.get();
-//
-//        PublicNotification publicNotification = PublicNotification.builder()
-//                .title(publicNotificationDto.getTitle())
-//                .content(publicNotificationDto.getContent())
-//                .createdAt(new Date())
-//                .center(center)
-//                .build();
-//        return publicNotificationRepository.save(publicNotification);
-//    }
-//
-//    public PublicNotification findPublicNotificationById(int id) {
-//        return publicNotificationRepository.findById(id)
-//                .orElseThrow(() -> new RuntimeException("The public notification hasn't been existed ! "));
-//    }
-//
-//    @Override
-//    public PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto) {
-//        PublicNotification publicNotification = findPublicNotificationById(id);
-//
-//        publicNotification.setTitle(publicNotificationDto.getTitle());
-//        publicNotification.setContent(publicNotificationDto.getContent());
-//        publicNotification.setUpdatedAt(new Date());
-//
-//        return publicNotificationRepository.save(publicNotification);
-//    }
-//
-//    @Override
-//    public boolean deletePublicNotification(int id) {
-//        try {
-//            publicNotificationRepository.deleteById(id);
-//            return true;
-//        } catch (Exception e) {
-//            return false;
-//        }
-//    }
-    // ------------------------------------------------------------------------
 
 
     // -------------------------- Center Post -------------------------------
@@ -312,13 +186,13 @@ public class ManagerServiceImpl implements ManagerService {
         Center center = centerRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("The center hasn't been existed"));
 
-//        center.setName(centerDto.getName());
+        center.setName(centerDto.getName());
         center.setDescription((centerDto.getDescription()));
-//        center.setAddress(centerDto.getAddress());
-//        center.setPhone(centerDto.getPhone());
-//        center.setEmail(centerDto.getEmail());
-//        center.setRegulation(centerDto.getRegulation());
-//        center.setImagePath(centerDto.getImagePath());
+        center.setAddress(centerDto.getAddress());
+        center.setPhone(centerDto.getPhone());
+        center.setEmail(centerDto.getEmail());
+        center.setRegulation(centerDto.getRegulation());
+        center.setImagePath(centerDto.getImagePath());
 
         return centerRepository.save(center);
     }
@@ -377,33 +251,11 @@ public class ManagerServiceImpl implements ManagerService {
         Center center = centerOtp.get();
 
         // Find Teacher by code
-        Optional<User> teacherOtp = userRepository.findByCode(courseDto.getTeacherCode());
+        Optional<User> teacherOtp = userRepository.findByUsernamee(courseDto.getTeacherCode());
         if (!teacherOtp.isPresent()) {
             throw new IllegalArgumentException("Teacher not found");
         }
         User teacher = teacherOtp.get();
-
-//        // Lấy thông tin từ CourseDto
-//        Date startDate = courseDto.getStartDate();
-//        Date endDate = courseDto.getEndDate();
-//        float courseFee = courseDto.getCourseFee();
-//
-//        // Chuyển Date thành Calendar để tính toán
-//        Calendar startCalendar = Calendar.getInstance();
-//        startCalendar.setTime(startDate);
-//        int startYear = startCalendar.get(Calendar.YEAR);
-//        int startMonth = startCalendar.get(Calendar.MONTH);
-//
-//        Calendar endCalendar = Calendar.getInstance();
-//        endCalendar.setTime(endDate);
-//        int endYear = endCalendar.get(Calendar.YEAR);
-//        int endMonth = endCalendar.get(Calendar.MONTH);
-//
-//        // Tính số tháng giữa startDate và endDate
-//        int totalMonths = (endYear - startYear) * 12 + (endMonth - startMonth) + 1;
-//
-//        // Tính totalCourseFee
-//        float totalCourseFee = totalMonths * courseFee;
 
         Course course = Course.builder()
                 .name(courseDto.getName())
@@ -709,7 +561,7 @@ public class ManagerServiceImpl implements ManagerService {
         List<Object[]> results = courseRepository.findTeacherInfoAndCoursesByTeacherId(teacherId, centerId);
         return results.stream()
                 .map(obj -> new TeacherCoursesResponse(
-                        (String) obj[0],      // teacherCode
+                        (String) obj[0],      // teacherUsername
                         (String) obj[1],      // teacherName
                         (String) obj[2],      // teacherPhone
                         (String) obj[3],      // teacherAddress
@@ -726,17 +578,24 @@ public class ManagerServiceImpl implements ManagerService {
         List<Object[]> results = enrollmentRepository.findStudentInfoAndCoursesByStudentId(studentId, centerId);
         return results.stream()
                 .map(obj -> new StudentCoursesResponse(
-                        (String) obj[0],      // studentCode
+                        (String) obj[0],      // studentUsername
                         (String) obj[1],      // studentName
                         (String) obj[2],      // studentPhone
                         (String) obj[3],      // studentAddress
                         (java.util.Date) obj[4], // studentDob
-                        (boolean) obj[5],     // studentGender
+                        (Boolean) obj[5],     // studentGender
                         (String) obj[6],      // studentEmail
-                        (String) obj[7]       // courseNames
+                        (String) obj[7],      // courseNames
+                        (String) obj[8],      // parentUsername
+                        (String) obj[9],      // parentName
+                        (String) obj[10],      // parentPhone
+                        (java.util.Date) obj[11], // parentDob
+                        (Boolean) obj[12],    // parentGender
+                        (String) obj[13]     // parentEmail
                 ))
                 .collect(Collectors.toList());
     }
+
 
     // ------------------------- Individual notification ---------------------------
     @Override

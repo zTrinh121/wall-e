@@ -14,8 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 @Getter
 @Setter
-public class NotificationResponse {
+public class ParentNotificationResponse {
     private List<IndividualNotification> individualNotifications;
-    private List<CenterNotification> centerNotifications;
     private List<SystemNotification> systemNotifications;
 }

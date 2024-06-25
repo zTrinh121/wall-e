@@ -24,7 +24,7 @@ public class IndividualNotification {
     @Column(name = "C20_TITLE", nullable = false)
     String title;
 
-    @Column(name = "C20_CONTENT", nullable = false)
+    @Column(name = "C20_CONTENT", nullable = false, columnDefinition = "TEXT")
     String content;
 
     @ManyToOne
