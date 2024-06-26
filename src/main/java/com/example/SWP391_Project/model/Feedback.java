@@ -38,13 +38,11 @@ public class Feedback {
     User actor;
 
     @ManyToOne
-    @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USERNAME")
+    @JoinColumn(name = "C06_SEND_TO_USER", referencedColumnName = "C14_USER_ID")
     @JsonManagedReference
     User sendToUser;
 
-    @ManyToOne
-    @JoinColumn(name = "C06_COURSE_ID", nullable = false)
-    @JsonManagedReference
-    Course course;
+    @Column(name = "C06_RATING", nullable = false)
+    int rating;
 
 }

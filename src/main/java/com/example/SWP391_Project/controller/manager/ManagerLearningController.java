@@ -67,7 +67,7 @@ public class ManagerLearningController {
 
     @PostMapping("/create")
     public ResponseEntity<Center> createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession httpSession) {
-        User managerInfo = (User) httpSession.getAttribute("authid");
+        User managerInfo = (User) httpSession.getAttribute("user");
         Center createdCenter = managerService.createCenter(centerDto, managerInfo);
         return ResponseEntity.status(HttpStatus.CREATED).body(createdCenter);
     }

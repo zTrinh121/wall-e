@@ -70,7 +70,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
-                // Transform API data into FullCalendar event format
+                console.log(data)
                 var events = data.map(item => ({
                     title: item.courseName,
                     start: item.slotDate + 'T' + item.slotStartTime,

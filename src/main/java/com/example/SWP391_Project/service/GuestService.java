@@ -27,6 +27,6 @@ public interface GuestService {
     // View slots in a certain course
     List<Slot> getSlotsInCertainCourse(int courseId);
 
-// lấy ra các khóa học trong center
+    // lấy ra các khóa học trong center
     List<Map<String, Object>> getCoursesInCenter(int centerId);
 }

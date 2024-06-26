@@ -166,6 +166,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             feedbackModal.style.display = "none";
         }
 
+
         switch (roleUser){
             case "STUDENT":
                 feedbackBtn.addEventListener("click", openFeedbackModal);
@@ -370,10 +371,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         // Đợi cho tất cả các promise hoàn thành
         Promise.all(promises)
             .then(() => {
-                alert('Cập nhật điểm thành công');
+                showToast(`<div class="success-toast"><i class="fas fa-check"></i> Cập nhật điểm thành công</div>`);
             })
             .catch(() => {
-                alert('Cập nhật điểm thất bại');
+
+                showToast(`<div class="error-toast">
+                                <i class="fas fa-xmark"></i> Cập nhật điểm thất bại
+                            </div>`);
             });
     }
 

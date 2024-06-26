@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.service;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
@@ -57,5 +58,16 @@ public interface TeacherService {
 
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int teacherId);
+
+  // ------------------- FEEDBACK -------------------------
+  // xem những feedback mà student gửi đến
+  List<Feedback> fetchStudentFeedback(int teacherId);
+
+  // xem những feedback mà chính teacher này tạo ra
+  List<Feedback> viewFeedbackToStudent(int teacherId);
+
+  Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto);
+
+  Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto);
 
 }

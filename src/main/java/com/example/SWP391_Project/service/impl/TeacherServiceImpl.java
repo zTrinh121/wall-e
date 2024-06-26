@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
@@ -47,6 +48,12 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     private ViewSystemNotificationRepository viewSystemNotificationRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private UserRepository userRepository;
 
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
@@ -325,5 +332,50 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
             return false;
         }
         return true;
+    }
+
+    // ---------------------- FEEDBACK --------------------------
+
+    @Override
+    public List<Feedback> fetchStudentFeedback(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToStudent(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto) {
+        Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
+        if (viewer.isEmpty()) {
+            throw new IllegalArgumentException("Student not found when finding by id !");
+        }
+        User student = viewer.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToUser(student)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
     }
 }

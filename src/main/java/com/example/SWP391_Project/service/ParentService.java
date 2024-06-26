@@ -35,4 +35,7 @@ public interface ParentService {
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int parentId);
 
+    // ------------------------- FEEDBACK -----------------------------
+    List<Feedback> parentFeedbackViewer(int parentId);
+
 }

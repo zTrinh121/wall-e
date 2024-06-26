@@ -24,9 +24,6 @@ public class ParentServiceImpl implements ParentService {
     @Autowired
     private CourseRepository courseRepository;
 
-//    @Autowired
-//    private AttendanceRepository attendanceRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -41,6 +38,9 @@ public class ParentServiceImpl implements ParentService {
 
     @Autowired
     private ViewSystemNotificationRepository viewSystemNotificationRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
 
     @Override
@@ -146,5 +146,14 @@ public class ParentServiceImpl implements ParentService {
             return false;
         }
         return true;
+    }
+
+    // ----------------------- FEEDBACK ------------------------
+
+    @Override
+    public List<Feedback> parentFeedbackViewer(int parentId) {
+        Optional<List<Feedback>> feedbacks
+                = feedbackRepository.getFeedbacksTeacherSendToStudent(parentId);
+        return feedbacks.orElse(Collections.emptyList());
     }
 }

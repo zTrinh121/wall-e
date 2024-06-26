@@ -148,42 +148,6 @@ public class AdminController {
         }
     }
 
-//    // ------------------------------- Private notification
-//    // ---------------------------------
-//    @GetMapping("/admin-privateNotifications")
-//    @ResponseBody
-//    public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
-//        List<PrivateNotification> privateNotifications = adminService.getAllPrivateNotifications();
-//        return ResponseEntity.ok().body(privateNotifications);
-//    }
-//
-//    @PostMapping("/admin-privateNotification/create")
-//    @ResponseBody
-//    public ResponseEntity<PrivateNotification> createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-//        PrivateNotification createdNotification = adminService.createPrivateNotification(privateNotificationDto);
-//        return ResponseEntity.ok().body(createdNotification);
-//    }
-//
-//    @PutMapping("/admin-privateNotification/update/{id}")
-//    public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
-//            @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-//        PrivateNotification updatedNotification = adminService.updatePrivateNotification(id, privateNotificationDto);
-//        if (updatedNotification != null) {
-//            return ResponseEntity.ok(updatedNotification);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @DeleteMapping("/admin-privateNotification/delete/{id}")
-//    public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
-//        boolean deleted = adminService.deletePrivateNotification(id);
-//        if (deleted) {
-//            return ResponseEntity.ok("Deleted the private notification where ID = " + id);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
     // ----------------------- Individual notification ----------------------
 
     @GetMapping("/individualNotifications")
@@ -199,7 +163,7 @@ public class AdminController {
     @PostMapping("/individualNotification/create")
     @ResponseBody
     public ResponseEntity<IndividualNotification> createIndividualNotification(@RequestBody @Valid IndividualNotificationDto individualNotificationDto, HttpSession httpSession) {
-        User adminInfo = (User) httpSession.getAttribute("authid");
+        User adminInfo = (User) httpSession.getAttribute("user");
         IndividualNotification notification = adminService.createIndividualNotification(individualNotificationDto, adminInfo);
         return ResponseEntity.ok().body(notification);
     }

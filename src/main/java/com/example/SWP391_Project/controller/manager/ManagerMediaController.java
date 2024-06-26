@@ -149,8 +149,9 @@ public class ManagerMediaController {
 
     @PostMapping("/individualNotification/create")
     @ResponseBody
-    public ResponseEntity<IndividualNotification> createIndividualNotification(@RequestBody @Valid IndividualNotificationDto individualNotificationDto, HttpSession httpSession) {
-        User managerInfo = (User) httpSession.getAttribute("authid");
+    public ResponseEntity<IndividualNotification> createIndividualNotification(@RequestBody @Valid IndividualNotificationDto individualNotificationDto,
+                                                                               HttpSession httpSession) {
+        User managerInfo = (User) httpSession.getAttribute("user");
         IndividualNotification notification = managerService.createIndividualNotification(individualNotificationDto, managerInfo);
         return ResponseEntity.ok().body(notification);
     }
