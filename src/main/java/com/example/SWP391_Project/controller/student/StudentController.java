@@ -106,7 +106,7 @@ public class StudentController {
     @GetMapping("/feedback/{userCode}")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserCode(userCode);
+        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserName(userCode);
         return ResponseEntity.ok(feedbacks);
     }
 
