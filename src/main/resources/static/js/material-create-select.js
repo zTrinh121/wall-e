@@ -1,8 +1,5 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Define the subjects
-    const userRole = document.getElementById("roleUser").innerHTML;
-    const uploadBtn = document.getElementById("upload-btn");
-    console.log(userRole + " vai tro user")
     const subjects = [
         "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD",
         "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
@@ -20,52 +17,7 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    async function getAllMaterials(url){
-        try {
-            const response = await fetch(url);
-            if(!response.ok){
-                throw new Error('Network response was not ok ' + response.statusText);
-            }
-            materials = await response.json()
-            displayMaterials(materials)
-            console.log(materials)
-        }catch (error){
-            console.error('Error fetching materials:', error);
-        }
-    }
-
-    function displayMaterials(materials){
-        const materialContainer = document.getElementById("materials-container");
-        materialContainer.innerHTML = '';
-
-        materials.forEach(material => {
-            const materialElement = document.createElement('div');
-            materialElement.classList.add('student-exam-result-up');
-            materialElement.innerHTML = `
-                <a href="/material-detail?id=${material.id}">
-                 <div class="image-fit">
-                                    <img alt="pdf-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/pdf.svg">
-                                </div>
-                                <div class="text-left">
-                                    <div class="azt-student-name">
-                                        <span class="font-medium truncate">${material.materialsName}</span>
-                                    </div>
-                                    <div class="info">
-                                        <span class="text-slate-500 font-medium">Phân loại: </span>
-                                        <span class="text-black font-medium">${material.subjectName}</span>
-                                    </div>
-                                    <div class="info">
-                                        <span class="text-slate-500 font-medium">Người soạn: </span>
-                                        <span class="text-black font-medium">${material.teacher.name}</span>
-                                    </div>
-                                </div>
-                </a>
-               
-            `;
-            materialContainer.appendChild(materialElement);
-        })
-    }
-
+    // Handle grade selection
     function selectGrade(grade, button) {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('grade', grade);
@@ -106,9 +58,13 @@ document.addEventListener("DOMContentLoaded", function() {
     // Handle subject selection
     function selectSubject(subject, button) {
         const urlParams = new URLSearchParams(window.location.search);
+        const grade = urlParams.get('grade');
         urlParams.set('subject', subject);
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
         highlightSelectedButton(button, 'subject');
+
+        // Redirect to material-create with selected grade and subject
+        window.location.href = `material-create?grade=${grade}&subject=${subject}`;
     }
 
     // Highlight selected button
@@ -132,21 +88,5 @@ document.addEventListener("DOMContentLoaded", function() {
                 button.classList.add('active');
             }
         });
-    }
-
-    switch (userRole){
-        case "PARENT":
-            uploadBtn.style.display = "none";
-            getAllMaterials(`api/students/allMaterials`);
-            break;
-        case "STUDENT":
-            getAllMaterials(`api/students/allMaterials`);
-            uploadBtn.style.display = "none";
-            break;
-        case "TEACHER":
-            getAllMaterials(`/api/teachers/allMaterials`);
-            uploadBtn.style.display = "block";
-
-
     }
 });

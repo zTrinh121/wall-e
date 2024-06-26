@@ -21,6 +21,10 @@ body {
     top: 0;
     right: 10px !important;
 }
+.mapping{
+    color: #2e4ead;
+    font-weight: 700;
+}
 
 .wrapper .top_navbar .hamburger {
     width: 70px;
@@ -613,3 +617,6 @@ main .header{
 
 
 /*End timetable*/
+
+
+/**/

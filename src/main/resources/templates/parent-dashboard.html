@@ -11,11 +11,12 @@
 <body>
 <div class="wrapper">
     <div th:replace="fragments :: header"></div>
-
     <div class="main_container">
         <section id="content">
             <!-- MAIN -->
             <main>
+                <p th:text="${user.id}" id="userId"></p>
+
                 <div class="header">Khóa học của con</div>
                 <div class="box-container" id="courseBoxes">
                 </div>

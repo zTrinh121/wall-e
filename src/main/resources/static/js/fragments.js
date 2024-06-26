@@ -7,6 +7,22 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationTitle = document.getElementById("notificationTitle");
     const notificationDetails = document.getElementById("notificationDetails");
     const closeModal = document.getElementById("viewNotificationModalClose");
+    const userRole = document.getElementById("user-role").innerHTML;
+    console.log("Vai tro: " + userRole);
+    let apiNotificationUrlGet;
+    let allNotifications = [];
+
+    switch (userRole){
+        case "PARENT":
+            apiNotificationUrlGet = `/parent/notifications/all`;
+            break;
+        case "STUDENT":
+            apiNotificationUrlGet = `api/students/notifications/all`
+            break;
+        case "TEACHER":
+            apiNotificationUrlGet = `api/teachers/notifications/all`
+            break;
+    }
 
     function toggleProfileDropdown() {
         profileDropdownList.classList.toggle("active");
@@ -18,7 +34,7 @@ document.addEventListener("DOMContentLoaded", function () {
             contentNotification.style.display = "none";
         } else {
             contentNotification.style.display = "block";
-            fetchNotifications();
+            fetchNotifications(apiNotificationUrlGet);
         }
         profileDropdownList.classList.remove("active");
     }
@@ -58,13 +74,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Start: notification
     let notificationCount = 5; // Example count
-
-    // Get the notification count element
     const notificationCountElement = document.getElementById('notificationCount');
 
-    // Update the count and show the badge if count is greater than 0
     if (notificationCount > 0) {
         notificationCountElement.textContent = notificationCount;
         notificationCountElement.style.display = 'inline-block';
@@ -72,14 +84,24 @@ document.addEventListener("DOMContentLoaded", function () {
         notificationCountElement.style.display = 'none';
     }
 
-    function fetchNotifications() {
-        fetch('api/teachers/notifications/system')
+    function fetchNotifications(url) {
+        fetch(url)
             .then(response => response.json())
             .then(data => {
-                displayNotifications(data); // Assuming response contains notifications array
+                allNotifications.push(...data.individualNotifications);
+                if(userRole != "PARENT"){
+                    allNotifications.push(...data.centerNotifications);
+                }
+                allNotifications.push(...data.systemNotifications);
+                allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                console.log(allNotifications)
+                notificationCount = allNotifications.length;
+                console.log(allNotifications.length)
+                displayNotifications(allNotifications); // Assuming response contains notifications array
             })
             .catch(error => console.error('Error fetching notifications:', error));
     }
+
 
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
@@ -94,15 +116,29 @@ document.addEventListener("DOMContentLoaded", function () {
                 notificationItem.classList.add('notification-item');
 
                 // Create the icon element
-                const icon = document.createElement('i');
-                icon.classList.add('fas', 'fa-info-circle'); // Example icon, change to the desired one
+                const icon = document.createElement('img');
+                icon.classList.add('bell-decor');
+                icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`
+
+                // Create a container for the text and time
+                const textContainer = document.createElement('div');
+                textContainer.classList.add('text-container');
 
                 // Create the text element
                 const text = document.createElement('span');
+                text.classList.add('notification-title');
                 text.textContent = notification.title; // Adjust based on your notification structure
 
+                // Create the time element
+                const time = document.createElement('span');
+                time.classList.add('notification-time');
+                time.textContent = timeAgo(notification.createdAt);
+
+                textContainer.appendChild(text);
+                textContainer.appendChild(time);
+
                 notificationItem.appendChild(icon);
-                notificationItem.appendChild(text);
+                notificationItem.appendChild(textContainer);
 
                 notificationItem.addEventListener('click', () => {
                     window.location.href = `/notification?id=${notification.id}`; // Redirect to notification details page
@@ -133,15 +169,10 @@ document.addEventListener("DOMContentLoaded", function () {
             moreButton = document.createElement('div');
             moreButton.classList.add('notification-item', 'more-button');
 
-
-            const moreIcon = document.createElement('i');
-
-
             // Create the text element for the "More" button
             const moreText = document.createElement('span');
             moreText.textContent = 'Xem thông báo trước';
 
-            moreButton.appendChild(moreIcon);
             moreButton.appendChild(moreText);
 
             moreButton.addEventListener('click', loadMoreNotifications);
@@ -150,11 +181,34 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-    function showNotificationDetails(notification) {
-        notificationTitle.textContent = notification.title;
-        notificationDetails.textContent = notification.content; // Adjust based on your notification structure
-        notificationModal.style.display = "block";
+
+    function timeAgo(date) {
+        const now = new Date();
+        const diff = now - new Date(date);
+        const seconds = Math.floor(diff / 1000);
+        const minutes = Math.floor(seconds / 60);
+        const hours = Math.floor(minutes / 60);
+        const days = Math.floor(hours / 24);
+        const weeks = Math.floor(days / 7);
+        const months = Math.floor(days / 30);
+        const years = Math.floor(days / 365);
+
+        if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
+        if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
+        if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
+        if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
+        if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
+        if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
+        return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
     }
+
+
+    //
+    // function showNotificationDetails(notification) {
+    //     notificationTitle.textContent = notification.title;
+    //     notificationDetails.textContent = notification.content; // Adjust based on your notification structure
+    //     notificationModal.style.display = "block";
+    // }
 
     closeModal.addEventListener('click', () => {
         notificationModal.style.display = "none";
@@ -189,7 +243,6 @@ document.addEventListener("DOMContentLoaded", function () {
     const chatboxMessage = document.querySelector('.chatbox-message-wrapper');
 
     if (chatboxToggle) {
-        console.log("chatboxToggle element found:", chatboxToggle);
         chatboxToggle.addEventListener('click', function () {
             console.log("It show"); // Check if this logs to the console
             chatboxMessage.classList.toggle('show');
@@ -274,8 +327,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
     // End chat box
 
-    // Execute the fetchNotifications function initially to load notifications
-    fetchNotifications();
 });
 $(document).ready(function() {
     $('#search-input').on('input', function() {
