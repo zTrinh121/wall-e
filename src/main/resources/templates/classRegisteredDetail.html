@@ -15,9 +15,11 @@
         <section id="content">
             <!-- MAIN -->
             <main>
+<!--                <p th:text="${user.id}"></p>-->
                 <div class="head-title">
+                    <i class="return fas fa-arrow-left" onclick="history.back()"></i>
+
                     <div class="left">
-                        <h1>Chi tiết khóa học</h1>
                         <p th:text="${user.role.getDescription()}" style="display: none" id="role-user"></p>
                         <div>
                             <button id="feedback-btn">Đánh giá giáo viên</button>
@@ -32,10 +34,10 @@
                         <div class="roadmap">
                             <h3 class="roadmap-header">Mô tả khóa học</h3>
                             <div class="start-time">
-                                <p></p>
+                                <h3></h3>
                             </div>
                             <div class="end-time">
-                                <p></p>
+                                <h3></h3>
                             </div>
                         </div>
                         <div class="report">
@@ -53,6 +55,7 @@
                                         <tr>
                                             <th>Số thứ tự</th>
                                             <th>Tên học sinh</th>
+                                            <th id="scoreHeader" style="display: none;">Bảng điểm</th>
                                         </tr>
                                         </thead>
                                         <tbody id="classListBody">
@@ -62,16 +65,25 @@
                         </div>
                     </div>
                     <!-- Modal điểm kiểm tra -->
-                    <div id="evaluationModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" id="closeEvaluationModal">&times;</span>
-                            <h2>Chi tiết kết quả/đánh giá</h2>
-                            <p>Điểm kiểm tra hệ số 1: <strong id="shortTestScore"></strong></p>
-                            <p>Điểm kiểm tra hệ số 2: <strong id="longTestScore"></strong></p>
-                            <p>Đánh giá của giáo viên: <strong id="teacherFeedback">Bạn X đã tiến bộ rất tốt trong tuần qua.</strong></p>
-                        </div>
+                <div id="evaluationModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeEvaluationModal">&times;</span>
+                        <table id="scoresTable">
+                            <thead>
+                            <tr>
+                                <th>Hệ số bài kiểm tra</th>
+                                <th>Cột điểm</th>
+                            </tr>
+                            </thead>
+                            <tbody id="scoresTableBody">
+                            </tbody>
+                        </table>
+                        <p id="teacherFeedback"></p>
+                        <button id="saveScoresButton">Lưu</button>
                     </div>
-                    <!-- Modal điểm danh -->
+                </div>
+
+                <!-- Modal điểm danh -->
                     <div id="attendanceModal" class="modal">
                         <div class="modal-content">
                             <span class="close" id="closeAttendanceModal">&times;</span>
@@ -94,13 +106,24 @@
                                     <label for="feedbackContent">Feedback:</label>
                                     <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
                                 </div>
+                                <div class="rate-box">
+                                    <input type="radio" name="star" id="star0"/>
+                                    <label class="star" for="star0"></label>
+                                    <input type="radio" name="star" id="star1"/>
+                                    <label class="star" for="star1"></label>
+                                    <input type="radio" name="star" id="star2" checked="checked"/>
+                                    <label class="star" for="star2"></label>
+                                    <input type="radio" name="star" id="star3"/>
+                                    <label class="star" for="star3"></label>
+                                    <input type="radio" name="star" id="star4"/>
+                                    <label class="star" for="star4"></label>
+                                </div>
                                 <button type="submit">Submit</button>
                             </form>
                         </div>
                     </div>
                     <!--Toast-->
                     <div id="toastContainer" class="toast-container"></div>
-                <a class="back" onclick="history.back()"> Quay lại</a>
             </main>
             <!-- MAIN -->
         </section>

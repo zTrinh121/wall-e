@@ -8,8 +8,9 @@ document.addEventListener("DOMContentLoaded", () => {
     // });
     // console.log(userId)
     const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
-    var itemsPerPage = 4; // Number of posts per page
+    const apiUrl = `/api/student/${userId}/courses`;
+    console.log(apiUrl)
+    var itemsPerPage = 4;
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
     var paginationControls = document.getElementById("paginationControls");

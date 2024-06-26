@@ -21,6 +21,10 @@ body {
     top: 0;
     right: 10px !important;
 }
+.mapping{
+    color: #2e4ead;
+    font-weight: 700;
+}
 
 .wrapper .top_navbar .hamburger {
     width: 70px;
@@ -592,6 +596,10 @@ main .header{
      color: #2e4ead;
  }
 
+.fc-event{
+    background: #fff !important;
+}
+
 .fc-timegrid-event .fc-event-main{
     background: #fff;
     color: #000000;
@@ -613,3 +621,24 @@ main .header{
 
 
 /*End timetable*/
+.event-item {
+    border: 1px solid #ccc;
+    padding: 5px;
+    margin-bottom: 5px;
+}
+
+.event-item b {
+    display: block;
+}
+
+.event-item b.red {
+    color: red;
+}
+
+.event-item b.green {
+    color: green;
+}
+
+
+
+/**/

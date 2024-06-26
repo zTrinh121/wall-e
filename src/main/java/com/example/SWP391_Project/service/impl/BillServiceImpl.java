@@ -26,8 +26,6 @@ public class BillServiceImpl implements BillService {
                 .status(status)
                 .createdAt(new Date())
                 .enrollment(enrollment)
-                .student(enrollment.getStudent())
-                .course(enrollment.getCourse())
                 .paymentMethod(paymentMethod)
                 .build();
         return billRepository.save(bill);

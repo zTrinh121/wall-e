@@ -1,5 +1,7 @@
 package com.example.SWP391_Project.service;
 
+import com.example.SWP391_Project.dto.CenterPostDto;
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 
@@ -13,23 +15,21 @@ public interface StudentService {
 
     Course getCourseById(int courseId);
 
-    Feedback createFeedback(Feedback feedback);
-
     List<Map<String, Object>> getStudentSchedule(int studentId);
 
     List<Map<String, Object>> getStudentGrades(int studentId);
 
-    List<Map<String, Object>> getFeedbackByUserCode(String userCode);
+    List<Map<String, Object>> getFeedbackByUserName(String userName);
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
-
-    List<Map<String, Object>> getStudentAttendance(int studentId);
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
     List<Map<String, String>> search(String keyword);
 
     List<Material> getAllMaterials();
+
+    // --------------------- NOTIFICATION ------------------------
 
     NotificationResponse getAllNotifications(int studentId);
 
@@ -38,5 +38,26 @@ public interface StudentService {
     IndividualNotification updateIndividualNotification(int notificationId);
 
     ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
+
+    Boolean checkHasSeenCenterNotification(int centerNotificationId,
+                                           int studentId);
+
+    Boolean checkHasSeenSystemNotification(int systemNotificationId,
+                                           int studentId);
+
+    // ----------------------- FEEDBACK -----------------------------
+    // xem những feedback mà teacher gửi đến
+    List<Feedback> fetchTeacherFeedback(int studentId);
+
+    // xem những feedback mà chính student này tạo ra
+    List<Feedback> viewFeedbackToTeacher(int studentId);
+
+    Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
+
+    Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
+
+  // ------------------------------------------------------------------
+    List<Map<String, Object>> getStudentCourse(int studentId);
+
 
 }

@@ -473,7 +473,8 @@ box-shadow: var(--shadow); */
 }
 
 .class-detail h3 {
-  font-weight: 600;
+  font-weight: 400;
+  margin-bottom: 1rem;
 }
 
 .class-detail .detail>div {
@@ -636,12 +637,12 @@ tr:hover {
 }
 
 /* Start: TOAST */
-.toast-container {
+.toast-container, .toast {
   position: fixed;
   top: 4rem;
   right: 1.2rem;
   z-index: 1000;
-  background: red;
+  /*background: red;*/
   color: #fff;
   height: 3rem;
   border-radius: 0.5rem;
@@ -651,6 +652,26 @@ tr:hover {
   padding-right: 1rem;
   opacity: 0;
   visibility: hidden; /* Để ẩn khi không hiển thị */
+}
+
+.success-toast{
+  background: #4CAF50;
+  padding: 1rem;
+}
+
+error-toast{
+  background: red;
+  padding: 1rem;
+}
+
+#saveScoresButton{
+  width: 4rem;
+  height: 1.8rem;
+  border-radius: 1rem;
+  border: none;
+  color: #fff;
+  background: #2548a0;
+  margin-top: 0.5rem;
 }
 
 .toast-container.show {
@@ -668,3 +689,5 @@ tr:hover {
   color: #fff;
   margin-right: 0.5rem;
 }
+
+/*Academic Transcript*/

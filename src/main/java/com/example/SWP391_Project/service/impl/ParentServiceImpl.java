@@ -24,9 +24,6 @@ public class ParentServiceImpl implements ParentService {
     @Autowired
     private CourseRepository courseRepository;
 
-//    @Autowired
-//    private AttendanceRepository attendanceRepository;
-
     @Autowired
     private UserRepository userRepository;
 
@@ -41,6 +38,9 @@ public class ParentServiceImpl implements ParentService {
 
     @Autowired
     private ViewSystemNotificationRepository viewSystemNotificationRepository;
+
+    @Autowired
+    private FeedbackRepository feedbackRepository;
 
 
     @Override
@@ -101,6 +101,7 @@ public class ParentServiceImpl implements ParentService {
         return userRepository.getStudentsByParentId(parentId);
     }
 
+    // ----------------------------- NOTIFICATION -------------------------------
     @Override
     public ParentNotificationResponse getAllNotifications(int parentId) {
         List<IndividualNotification> individualNotifications
@@ -129,10 +130,30 @@ public class ParentServiceImpl implements ParentService {
         }
         SystemNotification notification1 = notification.get();
 
-        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
-        viewSystemNotification.setSystemNotification(notification1);
-        viewSystemNotification.setHasSeenBy(parent);
-        viewSystemNotification.setSeenTime(new Date());
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(parent)
+                .seenTime(new Date())
+                .build();
         return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int parentId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, parentId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    // ----------------------- FEEDBACK ------------------------
+
+    @Override
+    public List<Feedback> parentFeedbackViewer(int parentId) {
+        Optional<List<Feedback>> feedbacks
+                = feedbackRepository.getFeedbacksTeacherSendToStudent(parentId);
+        return feedbacks.orElse(Collections.emptyList());
     }
 }

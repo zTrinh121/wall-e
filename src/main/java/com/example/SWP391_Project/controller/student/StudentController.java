@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.controller.student;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
@@ -23,7 +24,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Controller
-@RequestMapping("/api/students")
+@RequestMapping("/api/student")
 public class StudentController {
 
     @Autowired
@@ -60,39 +61,13 @@ public class StudentController {
         return "student-details";
     }
 
-
-    // Lấy ra các khóa học mà thằng học sinh đó đang học( đang sai bỏ)
-//    @GetMapping("/{studentId}/courses")
-//    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
-//        List<Map<String, Object>> courses = studentService.getCoursesByStudentId(studentId);
-//        return ResponseEntity.ok(courses);
-//    }
-
-    // Tạo feedback cho giáo viên
-    // Tạo feedback cho giáo viên
-//    @PostMapping("/{studentId}/courses/{courseId}/feedback")
-//    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
-//                                                   @PathVariable int courseId,
-//                                                   @RequestBody Feedback feedback) {
-//        Course course = studentService.getCourseById(courseId);
-//        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        feedback.getActor();
-//
-//        feedback.setCourse(course);
-//        Feedback savedFeedback = studentService.createFeedback(feedback);
-//        return ResponseEntity.ok(savedFeedback);
-//    }
-
     // lấy ra các khó hjc mà thằng học sinh đó đang học
-    @GetMapping("/{studentId}/courses")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getStudentSchedule(@PathVariable int studentId) {
-        List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
-        return ResponseEntity.ok(schedule);
-    }
+//    @GetMapping("/{studentId}/timetable")
+//    @ResponseBody
+//    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+//        List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
+//        return ResponseEntity.ok(schedule);
+//    }
 
     // lấy ra bảng điểm của học sinh đó
     @GetMapping("/{studentId}/grades")
@@ -103,10 +78,10 @@ public class StudentController {
     }
 
     // Feedback
-    @GetMapping("/feedback/{userCode}")
+    @GetMapping("/feedback/{userName}")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserCode(userCode);
+    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserName(@PathVariable String userName) {
+        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserName(userName);
         return ResponseEntity.ok(feedbacks);
     }
 
@@ -116,13 +91,6 @@ public class StudentController {
     public ResponseEntity<List<Map<String, Object>>> getStudentsByCourseId(@PathVariable int courseId) {
         List<Map<String, Object>> students = studentService.getStudentsByCourseId(courseId);
         return ResponseEntity.ok(students);
-    }
-
-    @GetMapping("/{studentId}/attendance")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getStudentAttendance(@PathVariable int studentId) {
-        List<Map<String, Object>> attendance = studentService.getStudentAttendance(studentId);
-        return ResponseEntity.ok(attendance);
     }
 
     @GetMapping("/{studentId}/slots")
@@ -137,8 +105,6 @@ public class StudentController {
     public List<Map<String, String>> search(@RequestParam String keyword) {
         return studentService.search(keyword);
     }
-
-
 
     @Autowired
     private UserService userService;
@@ -199,7 +165,7 @@ public class StudentController {
         }
     }
 
-
+    // ---------------------- GET ALL MATERIALS ----------------------------
     @GetMapping("/allMaterials")
     public ResponseEntity<List<Material>> getAllMaterials() {
         List<Material> materials = studentService.getAllMaterials();
@@ -210,6 +176,8 @@ public class StudentController {
         }
     }
 
+
+    // ------------------------- NOTIFICATION -----------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
         Integer studentId = (Integer) session.getAttribute("authid");
@@ -225,24 +193,97 @@ public class StudentController {
         return studentService.updateIndividualNotification(notificationId);
     }
 
-    @PatchMapping("/viewCenterNotification/update/{notificationId}")
+    @PostMapping("/viewCenterNotification/update/{notificationId}")
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User student = (User) session.getAttribute("authid");
+        User student = (User) session.getAttribute("user");
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
         return studentService.updateViewCenterNotification(notificationId, student);
     }
 
-    @PatchMapping("/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User student = (User) session.getAttribute("authid");
+        User student = (User) session.getAttribute("user");
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
         return studentService.updateViewSystemNotification(notificationId, student);
+    }
+
+    @GetMapping("/centerNotification/{centerNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenCenterNotification(
+            @PathVariable int centerNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenCenterNotification(centerNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    // API endpoint for checking if a system notification has been seen by a student
+    @GetMapping("/systemNotification/{systemNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenSystemNotification(
+            @PathVariable int systemNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenSystemNotification(systemNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    // ----------------------------- ????????????? ---------------------------
+    @GetMapping("/{studentId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
+        return ResponseEntity.ok(courses);
+    }
+
+    // ---------------------------- FEEDBACK ------------------------------
+
+    // Lấy ra những feedback mà teacher gửi đến
+    @GetMapping("/fetch-teacher-feedback")
+    public ResponseEntity<List<Feedback>> fetchTeacherFeedback(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        List<Feedback> feedbacks = studentService.fetchTeacherFeedback(studentId);
+        return ResponseEntity.ok(feedbacks);
+    }
+
+    // Lấy ra những feedback mà student này đã tạo ra
+    @GetMapping("/view-feedback-to-teacher")
+    public ResponseEntity<List<Feedback>> viewFeedbackToTeacher(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        List<Feedback> feedbacks = studentService.viewFeedbackToTeacher(studentId);
+        return ResponseEntity.ok(feedbacks);
+    }
+
+    @PostMapping("/create-feedback-to-teacher")
+    public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
+        User actor = (User) session.getAttribute("user");
+        if (actor == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        Feedback createdFeedback = studentService.createFeedbackToTeacher(actor, feedbackDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFeedback);
+    }
+
+    @PutMapping("/update-feedback-to-teacher/{feedbackId}")
+    public ResponseEntity<Feedback> updateFeedbackToTeacher(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
+        Feedback updatedFeedback = studentService.updateFeedbackToTeacher(id, feedbackDto);
+        return ResponseEntity.ok(updatedFeedback);
     }
 }
 

@@ -21,6 +21,7 @@
 <body>
 
 <div th:fragment="header">
+    <p th:text="${user.role.getDescription().name()}" id="user-role" style="display: none"></p>
     <div class="top_navbar">
         <div class="hamburger">
             <div class="one"></div>
@@ -91,12 +92,15 @@
                             </a>
                         </li>
 
-                        <li class="profile-dropdown-list-item">
-                            <a href="/mapping">
-                                <i class="fas fa-link"></i>
-                                Kết nối với phụ huynh/con
-                            </a>
-                        </li>
+                        <div th:unless="${user.role.getDescription().name() == 'TEACHER'}">
+                            <li class="profile-dropdown-list-item">
+                                <a href="/mapping">
+                                    <i class="fas fa-link"></i>
+                                    Kết nối với phụ huynh/con
+                                </a>
+                            </li>
+                        </div>
+
 
                         <hr />
 
@@ -143,15 +147,7 @@
         </ul>
     </div>
 
-    <!-- Start Modal notification details -->
-    <div id="notificationModal" class="modal">
-        <div class="modal-content">
-            <span class="close" id="viewNotificationModalClose">&times;</span>
-            <h2 id="notificationTitle">Tiêu đề thông báo</h2>
-            <p id="notificationDetails">Nội dung thông báo</p>
-        </div>
-    </div>
-    <!-- End Modal notification details -->
+
 
     <!-- Chat box start -->
     <div class="chatbox-wrapper">

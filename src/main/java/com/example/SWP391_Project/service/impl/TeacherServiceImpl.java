@@ -1,6 +1,8 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
+import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
@@ -47,18 +49,48 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
+    @Autowired
+    private CourseRepository courseRepository;
+
     @Override
-    public List<String> getCourseNamesByTeacherId(Long teacherId) {
-        return teacherRepository.findCourseNamesByTeacherId(teacherId);
+    public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
+        List<Object[]> results = teacherRepository.findCourseNamesByTeacherId(teacherId);
+        List<Map<String, Object>> courseInfos = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> courseInfo = new HashMap<>();
+            courseInfo.put("courseName", result[0]);
+            courseInfo.put("courseId", result[1]);
+            courseInfo.put("courseCode", result[2]);
+            courseInfo.put("courseDescription", result[3]);
+            courseInfo.put("courseStartDate", result[4]);
+            courseInfo.put("courseEndDate", result[5]);
+            courseInfo.put("amountOfStudents", result[6]);
+            courseInfo.put("roomName", result[7]);
+            courseInfo.put("centerName", result[8]);
+            courseInfos.add(courseInfo);
+        }
+        return courseInfos;
     }
 
-// List ra các thông tin học sinh trng lớp học đó
+
+
+
+
+
+
+    // List ra các thông tin học sinh trng lớp học đó
     @Override
     public List<User> getStudentsByCourseId(Long courseId) {
         return teacherRepository.findStudentsByCourseId(courseId);
     }
 
-// Tìm kiếm hjc sinh trng 1 lớp học theo tên
+    // Tìm kiếm hjc sinh trng 1 lớp học theo tên
     @Override
     public List<User> searchStudentsByCourseIdAndName(Long courseId, String studentName) {
         return enrollmentRepository.findStudentsByCourseIdAndName(courseId, studentName);
@@ -73,21 +105,65 @@ public class TeacherServiceImpl implements TeacherService {
 
     // Lấy ra 3 thông tin
     @Override
-    public List<Object[]> getScheduleByCourseId(Long courseId) {
-        return teacherRepository.findScheduleByCourseId(courseId);
+    public List<Map<String, Object>> getScheduleByCourseId(Long courseId) {
+        List<Object[]> results = teacherRepository.findScheduleByCourseId(courseId);
+        List<Map<String, Object>> schedules = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> schedule = new HashMap<>();
+            schedule.put("slotDate", result[0]);
+            schedule.put("slotStartTime", result[1]);
+            schedule.put("slotEndTime", result[2]);
+            schedule.put("dayName", result[3]);
+            schedule.put("roomName", result[4]);
+            schedules.add(schedule);
+        }
+        return schedules;
     }
+
+
+
+
+
 
 
     // CRUD điểm
     @Override
-    public List<Object[]> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
-        return teacherRepository.findResultsByCourseIdAndStudentId(courseId, studentId);
+    public List<Map<String, Object>> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
+        List<Object[]> results = teacherRepository.findResultsByCourseIdAndStudentId(courseId, studentId);
+        List<Map<String, Object>> resultMaps = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("Id", result[0]);
+            resultMap.put("courseId", result[1]);
+            resultMap.put("studentId", result[2]);
+            resultMap.put("type", result[3]);
+            resultMap.put("value", result[4]);
+            resultMaps.add(resultMap);
+        }
+        return resultMaps;
     }
 
-    @Override
-    public Result createResult(Result result) {
-        return resultRepository.save(result);
+
+//nnnn
+@Override
+public Result updateResult(Long resultId, Map<String, Object> updates) {
+    // Tìm Result từ cơ sở dữ liệu
+    Result result = resultRepository.findResultById(resultId);
+    if (result == null) {
+        throw new ResourceNotFoundException("Result not found for this id :: " + resultId);
     }
+
+    // Cập nhật các trường cần thiết
+    if (updates.containsKey("type")) {
+        result.setType((int) updates.get("type"));
+    }
+    if (updates.containsKey("value")) {
+        result.setValue((int) updates.get("value"));
+    }
+
+    // Lưu kết quả đã cập nhật vào cơ sở dữ liệu
+    return resultRepository.save(result);
+}
 
     @Override
     public Result updateResult(Result result) {
@@ -99,11 +175,23 @@ public class TeacherServiceImpl implements TeacherService {
         resultRepository.deleteById(resultId);
     }
 
-// Lấy ra toàn bộ thời khóa biểu của giáo viên đó
-@Override
-public List<Object[]> getScheduleByTeacherId(Long teacherId) {
-    return teacherRepository.findScheduleByTeacherId(teacherId);
-}
+    // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
+    @Override
+    public List<Map<String, Object>> getScheduleByTeacherId(Long teacherId) {
+        List<Object[]> results = teacherRepository.findScheduleByTeacherId(teacherId);
+        List<Map<String, Object>> schedules = new ArrayList<>();
+        for (Object[] result : results) {
+            Map<String, Object> schedule = new HashMap<>();
+            schedule.put("slotDate", result[0]);
+            schedule.put("slotStartTime", result[1]);
+            schedule.put("slotEndTime", result[2]);
+            schedule.put("courseName", result[3]);
+            schedule.put("roomName", result[4]);
+            schedules.add(schedule);
+        }
+        return schedules;
+    }
+
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @Override
@@ -111,48 +199,16 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
-//    // Lấy ra 3 loại thông báo
-//    @Override
-//    public List<PrivateNotification> getAllPrivateNotifications() {
-//        return teacherRepository.findAllPrivateNotifications();
-//    }
-//
-//    @Override
-//    public List<PublicNotification> getAllPublicNotifications() {
-//        return teacherRepository.findAllPublicNotifications();
-//    }
-//
-//    @Override
-//    public List<SystemNotification> getAllSystemNotifications() {
-//        return teacherRepository.findAllSystemNotifications();
-//    }
-//// in ra cả 3
-//    @Override
-//    public NotificationResponse getAllNotifications() {
-//        List<PrivateNotification> privateNotifications = getAllPrivateNotifications();
-//        List<PublicNotification> publicNotifications = getAllPublicNotifications();
-//        List<SystemNotification> systemNotifications = getAllSystemNotifications();
-//        return new NotificationResponse(privateNotifications, publicNotifications, systemNotifications);
-//    }
-//
-//    // tạo thông báo private
-//    @Override
-//    public void addPrivateNotification(PrivateNotification notification) {
-//        privateNotificationRepository.save(notification); // Lưu private notification vào database
-//    }
-
-
     @Transactional
-    public void uploadPdfFile(MultipartFile file, MaterialDto materialDto, User teacher) {
+    public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
         try {
             String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
             CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
-
             Material material = new Material();
-            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
-            material.setSubjectName(materialDto.getSubjectName());
+            material.setMaterialsName(materialsName); // ten file FPD
+            material.setSubjectName(subjectName);
             material.setTeacher(teacher);
             material.setPdfPath(response.getUrl());
             material.setCloudinaryPdfId(response.getPublicId());
@@ -205,10 +261,11 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         CenterNotification notification1 = notification.get();
 
-        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
-        viewCenterNotification.setCenterNotification(notification1);
-        viewCenterNotification.setHasSeenBy(teacher);
-        viewCenterNotification.setSeenTime(new Date());
+        ViewCenterNotification viewCenterNotification = ViewCenterNotification.builder()
+                .centerNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewCenterNotificationRepository.save(viewCenterNotification);
     }
 
@@ -220,10 +277,92 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         SystemNotification notification1 = notification.get();
 
-        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
-        viewSystemNotification.setSystemNotification(notification1);
-        viewSystemNotification.setHasSeenBy(teacher);
-        viewSystemNotification.setSeenTime(new Date());
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenCenterNotification(int centerNotificationId, int teacherId) {
+        ViewCenterNotification hasView = viewCenterNotificationRepository
+                .findByCenterNotificationIdAndUserId(centerNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int teacherId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    // ---------------------- FEEDBACK --------------------------
+
+    @Override
+    public List<Feedback> fetchStudentFeedback(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToStudent(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto) {
+        Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
+        if (viewer.isEmpty()) {
+            throw new IllegalArgumentException("Student not found when finding by id !");
+        }
+        User student = viewer.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToUser(student)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Result createResult(int courseId, int studentId, int type, int value) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
+
+        Result result = new Result();
+        result.setCourse(course);
+        result.setStudent(student);
+        result.setType(type);
+        result.setValue(value);
+
+        return resultRepository.save(result);
     }
 }
