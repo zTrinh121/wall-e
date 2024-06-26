@@ -15,11 +15,11 @@
         <section id="content">
             <!-- MAIN -->
             <main>
+<!--                <p th:text="${user.id}"></p>-->
                 <div class="head-title">
                     <i class="return fas fa-arrow-left" onclick="history.back()"></i>
 
                     <div class="left">
-                        <h1>Chi tiết khóa học</h1>
                         <p th:text="${user.role.getDescription()}" style="display: none" id="role-user"></p>
                         <div>
                             <button id="feedback-btn">Đánh giá giáo viên</button>
@@ -71,16 +71,16 @@
                         <table id="scoresTable">
                             <thead>
                             <tr>
-                                <th>Bài kiểm tra</th>
-                                <th>Điểm</th>
+                                <th>Hệ số bài kiểm tra</th>
+                                <th>Cột điểm</th>
                             </tr>
                             </thead>
                             <tbody id="scoresTableBody">
                             </tbody>
                         </table>
                         <p id="teacherFeedback"></p>
+                        <button id="saveScoresButton">Lưu</button>
                     </div>
-
                 </div>
 
                 <!-- Modal điểm danh -->
@@ -105,6 +105,18 @@
                                 <div class="feedbackDetail">
                                     <label for="feedbackContent">Feedback:</label>
                                     <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
+                                </div>
+                                <div class="rate-box">
+                                    <input type="radio" name="star" id="star0"/>
+                                    <label class="star" for="star0"></label>
+                                    <input type="radio" name="star" id="star1"/>
+                                    <label class="star" for="star1"></label>
+                                    <input type="radio" name="star" id="star2" checked="checked"/>
+                                    <label class="star" for="star2"></label>
+                                    <input type="radio" name="star" id="star3"/>
+                                    <label class="star" for="star3"></label>
+                                    <input type="radio" name="star" id="star4"/>
+                                    <label class="star" for="star4"></label>
                                 </div>
                                 <button type="submit">Submit</button>
                             </form>

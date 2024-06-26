@@ -41,9 +41,13 @@ public class Slot {
     @JsonManagedReference
     Course course;
 
+//    @ManyToOne
+//    @JoinColumn(name = "C02_ROOM_ID")
+//    @JsonManagedReference
+//    Room room;
+
     @ManyToOne
-    @JoinColumn(name = "C02_ROOM_ID")
-    @JsonManagedReference
+    @JoinColumn(name = "C02_ROOM_ID", nullable = false)
     Room room;
 
 //    @ManyToOne

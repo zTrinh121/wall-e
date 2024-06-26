@@ -746,3 +746,7 @@ body {
 .search-item:last-child {
     border-bottom: none;
 }
+
+.page-button{
+    background: none;
+}

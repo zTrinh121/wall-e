@@ -92,12 +92,15 @@
                             </a>
                         </li>
 
-                        <li class="profile-dropdown-list-item">
-                            <a href="/mapping">
-                                <i class="fas fa-link"></i>
-                                Kết nối với phụ huynh/con
-                            </a>
-                        </li>
+                        <div th:unless="${user.role.getDescription().name() == 'TEACHER'}">
+                            <li class="profile-dropdown-list-item">
+                                <a href="/mapping">
+                                    <i class="fas fa-link"></i>
+                                    Kết nối với phụ huynh/con
+                                </a>
+                            </li>
+                        </div>
+
 
                         <hr />
 

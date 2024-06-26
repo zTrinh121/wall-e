@@ -1,10 +1,8 @@
 document.addEventListener('DOMContentLoaded', function() {
     var calendarEl = document.getElementById('calendar');
     const userId = document.getElementById("userId").innerHTML.trim();
-    const studentApiUrl = `students`;
+    const studentApiUrl = `/api/parent/studentsByParent`;
     const userRole = document.getElementById("userRole").innerHTML.trim();
-    console.log(userRole === 'TEACHER');
-    console.log(userId);
     var studentId;
     const noResultDiv = document.getElementById("no-result");
     var calendarDisplay = document.getElementById("calendar");
@@ -53,9 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log("Fetched students: ", data);
             studentId = data[0].id;
-            console.log("Id student: " + studentId);
             await fetchEvents(`/api/student/${studentId}/slots`);
         } catch (error) {
             console.error("Error fetching students:", error);
