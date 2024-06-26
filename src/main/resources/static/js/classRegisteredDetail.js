@@ -19,7 +19,7 @@ document.addEventListener("DOMContentLoaded", () => {
     let courseName = "";
 
     function fetchPosts() {
-        fetch(`/api/students/${userId}/courses`)
+        fetch(`/api/student/${userId}/courses`)
             .then(response => response.json())
             .then(data => {
                 const courseDetail = data.find(course => course.courseId == courseId);
@@ -59,7 +59,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function fetchClassList() {
-        fetch(`/api/teachers/courses/${courseId}/students`)
+        fetch(`/api/teacher/courses/${courseId}/students`)
             .then(response => response.json())
             .then(data => {
                 populateClassListModal(data);
@@ -134,7 +134,7 @@ document.addEventListener("DOMContentLoaded", () => {
         event.preventDefault();
         const feedbackContent = document.getElementById("feedbackContent").value;
 
-        fetch(`/api/students/${userId}/courses/${courseId}/feedback`, {
+        fetch(`/api/student/${userId}/courses/${courseId}/feedback`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -165,7 +165,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function fetchCourseGrades(courseId) {
-        fetch(`/api/students/${userId}/grades`)
+        fetch(`/api/student/${userId}/grades`)
             .then(response => response.json())
             .then(data => {
                 console.log(data)

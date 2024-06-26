@@ -56,7 +56,7 @@ document.addEventListener('DOMContentLoaded', function() {
             console.log("Fetched students: ", data);
             studentId = data[0].id;
             console.log("Id student: " + studentId);
-            await fetchEvents(`/api/students/${studentId}/slots`);
+            await fetchEvents(`/api/student/${studentId}/slots`);
         } catch (error) {
             console.error("Error fetching students:", error);
             calendarDisplay.style.display = "none";
@@ -96,10 +96,10 @@ document.addEventListener('DOMContentLoaded', function() {
             fetchStudents();
             break;
         case "STUDENT":
-            fetchEvents(`/api/students/${userId}/slots`);
+            fetchEvents(`/api/student/${userId}/slots`);
             break;
         case "TEACHER":
-            fetchEvents(`/api/teachers/${userId}/schedule`);
+            fetchEvents(`/api/teacher/${userId}/schedule`);
             break;
     }
 });

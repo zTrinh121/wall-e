@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    //var userId = document.getElementById("userId").innerHTML;
-    var userId = 158;
+    var userId = document.getElementById("userId").innerHTML;
     const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
+    const apiUrl = `/api/teacher/${userId}/courses`;
     var itemsPerPage = 4; // Number of posts per page
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
