@@ -59,10 +59,11 @@ document.addEventListener("DOMContentLoaded", () => {
 
 
     function fetchClassList() {
-        fetch(`/api/teachers/courses/${courseId}/students`)
+        fetch(`/api/teacher/courses/${courseId}/students`)
             .then(response => response.json())
             .then(data => {
                 populateClassListModal(data);
+                console.log("Danh sách hs: "+ data)
             })
             .catch(error => console.error("Error fetching class list:", error));
     }

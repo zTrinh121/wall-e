@@ -7,6 +7,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name = "t01_course")
@@ -55,5 +56,10 @@ public class Course {
     @JoinColumn(name = "C01_TEACHER_ID", nullable = false)
     @JsonManagedReference
     User teacher;
+
+    @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JsonIgnore
+    List<Slot> slots;
 }
+
 

@@ -14,4 +14,7 @@ public interface ResultRepository extends JpaRepository<Result, Long> {
 
     @Query("SELECT r FROM Result r JOIN r.student u WHERE u.parent.id = :parentId")
     Optional<List<Result>> findAllResultsWithParentUserId(@Param("parentId") int parentId);
+
+    @Query("SELECT r FROM Result r WHERE r.id = :id")
+    Result findResultById(@Param("id") Long id);
 }

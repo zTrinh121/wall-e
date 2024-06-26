@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
     var paginationControls = document.getElementById("paginationControls");
-
+    console.log("API: " + apiUrl)
     function fetchPosts() {
         fetch(apiUrl)
             .then(response => response.json())
@@ -31,7 +31,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="box" id="${post.courseId}">
                         <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
                         <h3>${post.courseName}</h3>
-                        <p>Giáo viên: ${post.teacherName} tại trung tâm ${post.centerName}</p>
                         <p>Số lượng học sinh: ${post.amountOfStudents}</p>
                         <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId} 
                         data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode} 

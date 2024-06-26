@@ -187,16 +187,22 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public List<Map<String, Object>> getFeedbackByUserName(String userName) {
-        String query = "SELECT f.C06_FEEDBACK_ID, f.C06_FEEDBACK_DESC, f.C06_CREATED_AT, f.C06_UPDATED_AT, f.C06_ACTOR_ID, f.C06_SEND_TO_USER, f.C06_COURSE_ID " +
+        String query = "SELECT f.C06_FEEDBACK_DESC as feedbackDesc " +
                 "FROM t06_feedback f " +
-                "JOIN t14_user u ON f.C06_SEND_TO_USER = u.C14_USERNAME " +
-                "WHERE u.C14_USERNAME = :userCode";
+                "JOIN t14_user u ON f.C06_USER_ID = u.C14_USER_ID " +
+                "WHERE u.C14_USERNAME = :userName";
 
         System.out.println("Query: " + query);
-        System.out.println("User Code: " + userName);
+        System.out.println("Student ID: " + userName);
 
-        Query nativeQuery = entityManager.createNativeQuery(query, Tuple.class);
-        nativeQuery.setParameter("userCode", userName);
+//        Query nativeQuery = entityManager.createNativeQuery(query);
+//        nativeQuery.setParameter("studentId", userCode);
+
+//        List<Object[]> resultList = nativeQuery.getResultList();
+//        List<Map<String, Object>> grades = new ArrayList<>();
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("userName", userName);
 
         List<Tuple> resultList = nativeQuery.getResultList();
         List<Map<String, Object>> feedbacks = new ArrayList<>();
