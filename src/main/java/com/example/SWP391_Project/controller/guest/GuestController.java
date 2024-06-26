@@ -59,8 +59,6 @@ public class GuestController {
         return slots.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(slots);
     }
 
-
-
     @GetMapping("/courses-in-center/{centerId}")
     public ResponseEntity<List<Map<String, Object>>> getCoursesInCenter(@PathVariable int centerId) {
         List<Map<String, Object>> courses = guestService.getCoursesInCenter(centerId);

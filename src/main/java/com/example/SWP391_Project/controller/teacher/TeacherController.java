@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.controller.teacher;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
@@ -218,6 +219,46 @@ public class TeacherController {
         }
         Boolean hasSeen = teacherService.checkHasSeenSystemNotification(systemNotificationId, teacherId);
         return ResponseEntity.ok(hasSeen);
+    }
+
+    // -------------------------- FEEDBACK ---------------------------
+
+    // Lấy ra những feedback mà student gửi đến
+    @GetMapping("/fetch-student-feedback")
+    public ResponseEntity<List<Feedback>> fetchStudentFeedback(HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+        List<Feedback> feedbacks = teacherService.fetchStudentFeedback(teacherId);
+        return ResponseEntity.ok(feedbacks);
+    }
+
+    // Lấy ra những feedback mà teacher này đã tạo ra
+    @GetMapping("/view-feedback-to-student")
+    public ResponseEntity<List<Feedback>> viewFeedbackToStudent(HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+        List<Feedback> feedbacks = teacherService.viewFeedbackToStudent(teacherId);
+        return ResponseEntity.ok(feedbacks);
+    }
+
+    @PostMapping("/create-feedback-to-student")
+    public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
+        User actor = (User) session.getAttribute("user");
+        if (actor == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
+        }
+        Feedback createdFeedback = teacherService.createFeedbackToStudent(actor, feedbackDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFeedback);
+    }
+
+    @PutMapping("/update-feedback-to-student/{feedbackId}")
+    public ResponseEntity<Feedback> updateFeedbackToTeacher(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
+        Feedback updatedFeedback = teacherService.updateFeedbackToStudent(id, feedbackDto);
+        return ResponseEntity.ok(updatedFeedback);
     }
 
 }
