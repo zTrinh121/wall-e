@@ -3,8 +3,7 @@
 <head>
     <title>Trang chủ</title>
     <link rel="stylesheet" href="/css/material.css" />
-
-    <script src="/js/parentDashboard.js"></script>
+    <script src="/js/material-create.js"></script>
     <script th:src="@{/js/fragments.js}" type="module"></script>
     <th:block th:replace="fragments :: head"></th:block>
 </head>
@@ -16,6 +15,7 @@
         <section id="content">
             <!-- MAIN -->
             <main>
+                <i class="return fas fa-arrow-left" onclick="history.back()"></i>
                 <div class="header">Đóng góp tài liệu</div>
                 <!--                Start upload material-->
                 <div
@@ -44,9 +44,13 @@
                                 </svg>
                             </div>
                             <div class="mt-3">
-
-                                <form method="post" action="/profile-image">
-                                    <input type="file" value="Chọn File hoặc kéo thả File vào đây" class="font-medium upload-bo" />
+                                <form id="uploadForm" enctype="multipart/form-data" method="post" action="/PDF/File/upload">
+                                    <label>Tên tài liệu</label>
+                                    <input type="text" value="" name="materialsName" id="materialsNameInput" placeholder="Tên tài liệu" required>
+                                    <input type="file" name="file" value="Chọn File hoặc kéo thả File vào đây" class="font-medium upload-bo" required />
+                                    <br>
+                                    <input type="hidden" name="subjectName" id="subjectInput" placeholder="Môn học" required>
+                                    <button type="submit">Tải lên</button>
                                 </form>
                                 <div class="text-slate-500 text-xs mt-1">
                                     Hỗ trợ các định dạng .pdf, .docx, .xlsx. <br>
@@ -61,7 +65,6 @@
                                         >
                                             <span>Đề mẫu Wall-E Pdf</span>
                                         </a>
-                                        <!----><!---->
                                         &nbsp;|&nbsp;
                                         <a
                                                 class="text-primary ng-star-inserted"

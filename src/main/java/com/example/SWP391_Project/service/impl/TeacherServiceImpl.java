@@ -111,6 +111,7 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
+
 //    // Lấy ra 3 loại thông báo
 //    @Override
 //    public List<PrivateNotification> getAllPrivateNotifications() {
@@ -143,16 +144,15 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
 
 
     @Transactional
-    public void uploadPdfFile(MultipartFile file, MaterialDto materialDto, User teacher) {
+    public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
         try {
             String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
             CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
-
             Material material = new Material();
-            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
-            material.setSubjectName(materialDto.getSubjectName());
+            material.setMaterialsName(materialsName); // ten file FPD
+            material.setSubjectName(subjectName);
             material.setTeacher(teacher);
             material.setPdfPath(response.getUrl());
             material.setCloudinaryPdfId(response.getPublicId());
@@ -205,10 +205,11 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         CenterNotification notification1 = notification.get();
 
-        ViewCenterNotification viewCenterNotification = new ViewCenterNotification();
-        viewCenterNotification.setCenterNotification(notification1);
-        viewCenterNotification.setHasSeenBy(teacher);
-        viewCenterNotification.setSeenTime(new Date());
+        ViewCenterNotification viewCenterNotification = ViewCenterNotification.builder()
+                .centerNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewCenterNotificationRepository.save(viewCenterNotification);
     }
 
@@ -220,10 +221,31 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         }
         SystemNotification notification1 = notification.get();
 
-        ViewSystemNotification viewSystemNotification = new ViewSystemNotification();
-        viewSystemNotification.setSystemNotification(notification1);
-        viewSystemNotification.setHasSeenBy(teacher);
-        viewSystemNotification.setSeenTime(new Date());
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
         return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenCenterNotification(int centerNotificationId, int teacherId) {
+        ViewCenterNotification hasView = viewCenterNotificationRepository
+                .findByCenterNotificationIdAndUserId(centerNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int teacherId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
     }
 }

@@ -17,6 +17,9 @@
         <section id="content">
             <!-- MAIN -->
             <main>
+                <p th:text="${user.id}" id="userId"></p>
+                <p th:text="${user.role.getDescription().name()}" id="userRole" style="display: none"></p>
+                <div id="no-result">No result</div>
                 <!--                Start timetable-->
                 <div id='calendar'></div>
                 <!--                End timetable-->
