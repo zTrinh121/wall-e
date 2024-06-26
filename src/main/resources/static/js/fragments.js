@@ -17,10 +17,10 @@ document.addEventListener("DOMContentLoaded", function () {
             apiNotificationUrlGet = `/parent/notifications/all`;
             break;
         case "STUDENT":
-            apiNotificationUrlGet = `api/students/notifications/all`
+            apiNotificationUrlGet = `api/student/notifications/all`
             break;
         case "TEACHER":
-            apiNotificationUrlGet = `api/teachers/notifications/all`
+            apiNotificationUrlGet = `api/teacher/notifications/all`
             break;
     }
 

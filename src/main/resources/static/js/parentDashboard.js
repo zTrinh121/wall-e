@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
     const boxCourses = document.getElementById("courseBoxes");
-    const studentApiUrl = `students`;
+    const studentApiUrl = `/api/parent/studentsByParent`;
     const itemsPerPage = 4;
     let currentPage = 1;
     const noResultDiv = document.getElementById("no-result");
@@ -15,9 +15,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log("Fetched students: ", data);
             studentId = data[0].id;
-            console.log("Id student: " + studentId);
             // After fetching students, proceed to fetch posts
             await fetchPosts();
         } catch (error) {
@@ -29,16 +27,14 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     async function fetchPosts() {
-        const apiUrl = `/api/students/${studentId}/courses`;
-        console.log("API url trang parent: " + apiUrl);
+        const apiUrl = `/api/student/${studentId}/courses`;
         try {
             const response = await fetch(apiUrl);
             if (!response.ok) {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            currentPage = 1; // Reset to first page
-            console.log(data);
+            currentPage = 1;
             renderTable(data);
         } catch (error) {
             console.error("Error fetching posts:", error);
@@ -52,7 +48,6 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
         } else {
             noResultDiv.style.display = "none";
-            console.log(studentId)
             posts.forEach(post => {
                 const row = `      
                     <div class="box" id="${post.courseId}">
@@ -74,7 +69,6 @@ document.addEventListener("DOMContentLoaded", () => {
     function renderTable(postList) {
         const start = (currentPage - 1) * itemsPerPage;
         const end = start + itemsPerPage;
-        console.log(postList);
         const postsToDisplay = postList.slice(start, end);
 
         displayPosts(postsToDisplay);

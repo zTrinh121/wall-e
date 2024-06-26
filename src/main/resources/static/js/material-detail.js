@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function() {
 
     async function fetchMaterialDetail(id) {
         try {
-            const response = await fetch(`/api/students/allMaterials`);
+            const response = await fetch(`/api/student/allMaterials`);
             if(!response.ok){
                 throw new Error('Network response was not ok ' + response.statusText);
             }
