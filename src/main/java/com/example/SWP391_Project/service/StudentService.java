@@ -18,7 +18,7 @@ public interface StudentService {
 
     List<Map<String, Object>> getStudentGrades(int studentId);
 
-    List<Map<String, Object>> getFeedbackByUserCode(String userCode);
+    List<Map<String, Object>> getFeedbackByUserName(String userName);
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
 

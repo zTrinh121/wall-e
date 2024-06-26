@@ -115,7 +115,7 @@ public ResponseEntity<Result> updateResult(@PathVariable Long resultId, @Request
 //        return ResponseEntity.ok(notifications);
 //    }
 //
-//    // in ra cả 3
+    // in ra cả 3
 //    @GetMapping("/notifications/all")
 //    public ResponseEntity<NotificationResponse> getAllNotifications() {
 //        NotificationResponse notifications = teacherService.getAllNotifications();

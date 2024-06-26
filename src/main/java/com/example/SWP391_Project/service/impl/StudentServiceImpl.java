@@ -173,14 +173,14 @@ public class StudentServiceImpl implements StudentService {
 
     @Transactional
     @Override
-    public List<Map<String, Object>> getFeedbackByUserCode(String userCode) {
+    public List<Map<String, Object>> getFeedbackByUserName(String userName) {
         String query = "SELECT f.C06_FEEDBACK_DESC as feedbackDesc " +
                 "FROM t06_feedback f " +
                 "JOIN t14_user u ON f.C06_USER_ID = u.C14_USER_ID " +
-                "WHERE u.C14_USER_CODE = :userCode";
+                "WHERE u.C14_USERNAME = :userName";
 
         System.out.println("Query: " + query);
-        System.out.println("Student ID: " + userCode);
+        System.out.println("Student ID: " + userName);
 
 //        Query nativeQuery = entityManager.createNativeQuery(query);
 //        nativeQuery.setParameter("studentId", userCode);
@@ -189,7 +189,7 @@ public class StudentServiceImpl implements StudentService {
 //        List<Map<String, Object>> grades = new ArrayList<>();
 
         Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userCode", userCode);
+        nativeQuery.setParameter("userName", userName);
 
         List<Object[]> resultList = nativeQuery.getResultList();
         List<Map<String, Object>> feedbacks = new ArrayList<>();

@@ -104,10 +104,10 @@ public class StudentController {
     }
 
     // Feedback
-    @GetMapping("/feedback/{userCode}")
+    @GetMapping("/feedback/{userName}")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserCode(userCode);
+    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserName(@PathVariable String userName) {
+        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserName(userName);
         return ResponseEntity.ok(feedbacks);
     }
 
