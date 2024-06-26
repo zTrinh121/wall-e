@@ -8,7 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // });
     // console.log(userId)
     const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
+    const apiUrl = `/api/student/${userId}/courses`;
     console.log(apiUrl)
     var itemsPerPage = 4;
     var currentPage = 1;

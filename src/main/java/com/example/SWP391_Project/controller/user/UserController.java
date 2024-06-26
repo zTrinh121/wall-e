@@ -7,7 +7,9 @@ import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
-import java.util.UUID;
+
+import java.util.*;
+
 import jakarta.mail.internet.InternetAddress;
 import jakarta.mail.internet.MimeMessage;
 import jakarta.servlet.http.HttpSession;
@@ -17,14 +19,11 @@ import org.apache.catalina.Group;
 import org.apache.catalina.UserDatabase;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Properties;
 
 @Controller
 public class UserController {
@@ -252,36 +251,44 @@ public class UserController {
         model.addAttribute("roles", roles);
         return "register";
     }
-
-    @PostMapping("/register")
-    public String registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
-        if (userService.findByUsername(user.getUsername()) != null) {
-            model.addAttribute("error", "Tên người dùng đã tồn tại");
-            return "register";
-        }
-        if (userService.findByEmail(user.getEmail()) != null) {
-            model.addAttribute("error", "Email đã tồn tại");
-            return "register";
-        }
-
-        // Tạo và gán mã người dùng
-        String userCode = userService.generateUserCode();
-        user.setCode(userCode); // Gán mã người dùng
-
-        Role role = userService.findRoleById(roleId);
-        user.setRole(role);
-        user.setStatus(false);  // Ban đầu là false cho đến khi xác nhận email
-
-        // Tạo mã xác nhận
-        String verificationCode = userService.generateVerificationCode();
-        session.setAttribute("userToRegister", user);
-        session.setAttribute("verificationCode", verificationCode);
-
-        // Gửi mã xác nhận qua email
-        userService.sendEmail(user.getEmail(), verificationCode);
-
-        return "redirect:/verify-email";  // Chuyển hướng tới trang xác nhận email
+/// test
+@PostMapping("/register")
+@ResponseBody
+public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
+    Map<String, String> errors = new HashMap<>();
+    if (userService.findByUsername(user.getUsername()) != null) {
+        errors.put("usernameError", "Tên người dùng đã tồn tại");
     }
+    if (userService.findByEmail(user.getEmail()) != null) {
+        errors.put("emailError", "Email đã tồn tại");
+    }
+
+    if (!errors.isEmpty()) {
+        return ResponseEntity.badRequest().body(errors);
+    }
+
+    // Tạo và gán mã người dùng
+    String userCode = userService.generateUserCode();
+    user.setCode(userCode);
+
+    Role role = userService.findRoleById(roleId);
+    user.setRole(role);
+    user.setStatus(false);
+
+    // Tạo mã xác nhận và gửi email
+    String verificationCode = userService.generateVerificationCode();
+    session.setAttribute("userToRegister", user);
+    session.setAttribute("verificationCode", verificationCode);
+    userService.sendEmail(user.getEmail(), verificationCode);
+
+    //errors.put("redirect", "/verify-email");  // URL cho trang nhập mã xác nhận
+//    return ResponseEntity.ok(errors);
+    return ResponseEntity.ok().body(Map.of("redirect", "/verify-email"));
+}
+
+
+
+
 
 
 

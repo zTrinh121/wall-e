@@ -137,14 +137,14 @@ document.addEventListener("DOMContentLoaded", function() {
     switch (userRole){
         case "PARENT":
             uploadBtn.style.display = "none";
-            getAllMaterials(`api/students/allMaterials`);
+            getAllMaterials(`api/student/allMaterials`);
             break;
         case "STUDENT":
-            getAllMaterials(`api/students/allMaterials`);
+            getAllMaterials(`api/student/allMaterials`);
             uploadBtn.style.display = "none";
             break;
         case "TEACHER":
-            getAllMaterials(`/api/teachers/allMaterials`);
+            getAllMaterials(`/api/teacher/allMaterials`);
             uploadBtn.style.display = "block";
 
 

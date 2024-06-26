@@ -1,8 +1,7 @@
 document.addEventListener("DOMContentLoaded", () => {
-    //var userId = document.getElementById("userId").innerHTML;
-    var userId = 158;
+    var userId = document.getElementById("userId").innerHTML;
     const boxCourses = document.getElementById("courseBoxes");
-    const apiUrl = `/api/students/${userId}/courses`;
+    const apiUrl = `/api/teacher/${userId}/courses`;
     var itemsPerPage = 4; // Number of posts per page
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
@@ -31,7 +30,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     <div class="box" id="${post.courseId}">
                         <img src="https://cdn3d.iconscout.com/3d/premium/thumb/online-course-7893341-6323813.png?f=webp" alt="">
                         <h3>${post.courseName}</h3>
-                        <p>Giáo viên: ${post.teacherName} tại trung tâm ${post.centerName}</p>
+                        
                         <p>Số lượng học sinh: ${post.amountOfStudents}</p>
                         <a href="/course-details?userId=${userId}&courseId=${post.courseId}" data-courseId=${post.courseId} 
                         data-teacherId={post.teacherId} data-studentId={post.studentId} data-courseCode={post.courseCode} 
