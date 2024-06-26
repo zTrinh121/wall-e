@@ -32,7 +32,7 @@ CREATE TABLE `t22_center_notification` (
   PRIMARY KEY (`C22_ID`),
   KEY `FK_T22_T03` (`C22_CENTER_ID`),
   CONSTRAINT `FK_T22_T03` FOREIGN KEY (`C22_CENTER_ID`) REFERENCES `t03_center` (`C03_CENTER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +41,7 @@ CREATE TABLE `t22_center_notification` (
 
 LOCK TABLES `t22_center_notification` WRITE;
 /*!40000 ALTER TABLE `t22_center_notification` DISABLE KEYS */;
-INSERT INTO `t22_center_notification` VALUES (1,'Thông báo lịch nghỉ lễ','Kính gửi quý thầy cô và các em học sinh, trung tâm thông báo lịch nghỉ lễ từ ngày 30/04 đến ngày 03/05/2024. Mong quý vị và các em chuẩn bị kế hoạch hợp lý để nghỉ ngơi và thư giãn.','2024-07-10 09:00:00',NULL,1),(2,'Thông báo nâng cấp phòng học','Trung tâm sẽ tiến hành nâng cấp phòng học vào ngày 10/06/2024. Mong quý thầy cô và các em học sinh thông cảm và hợp tác trong quá trình này.','2024-08-15 10:30:00',NULL,1),(3,'Thông báo quy định đi học đầy đủ','Để đảm bảo chất lượng giáo dục, trung tâm nhắc nhở các em học sinh về quy định đi học đầy đủ và đúng giờ. Mong quý phụ huynh và các em học sinh chú ý thực hiện.','2024-09-20 13:45:00',NULL,1),(4,'Thông báo về việc đóng học phí','Trung tâm nhắc nhở quý phụ huynh và các em học sinh về việc đóng học phí cho kỳ học mới. Mong quý vị và các em thực hiện đúng thời hạn để không gặp khó khăn trong quá trình học tập.','2024-10-25 15:00:00',NULL,1),(5,'Thông báo khóa học mới','Trung tâm sẽ khai giảng các khóa học mới vào tháng 7/2024. Quý thầy cô và các em học sinh vui lòng chú ý đăng ký và tham gia các khóa học phù hợp.','2024-11-30 08:30:00',NULL,1);
+INSERT INTO `t22_center_notification` VALUES (1,'Thông báo lịch nghỉ lễ','Kính gửi quý thầy cô và các em học sinh, trung tâm thông báo lịch nghỉ lễ từ ngày 30/04 đến ngày 03/05/2024. Mong quý vị và các em chuẩn bị kế hoạch hợp lý để nghỉ ngơi và thư giãn.','2024-06-10 09:00:00',NULL,1),(2,'Thông báo nâng cấp phòng học','Trung tâm sẽ tiến hành nâng cấp phòng học vào ngày 10/06/2024. Mong quý thầy cô và các em học sinh thông cảm và hợp tác trong quá trình này.','2024-05-15 10:30:00',NULL,1),(3,'Thông báo quy định đi học đầy đủ','Để đảm bảo chất lượng giáo dục, trung tâm nhắc nhở các em học sinh về quy định đi học đầy đủ và đúng giờ. Mong quý phụ huynh và các em học sinh chú ý thực hiện.','2024-04-20 13:45:00',NULL,1),(4,'Thông báo về việc đóng học phí','Trung tâm nhắc nhở quý phụ huynh và các em học sinh về việc đóng học phí cho kỳ học mới. Mong quý vị và các em thực hiện đúng thời hạn để không gặp khó khăn trong quá trình học tập.','2024-01-25 15:00:00',NULL,1),(5,'Thông báo khóa học mới','Trung tâm sẽ khai giảng các khóa học mới vào tháng 7/2024. Quý thầy cô và các em học sinh vui lòng chú ý đăng ký và tham gia các khóa học phù hợp.','2024-02-20 08:30:00',NULL,1),(6,'Thông báo khóa học mới','Trung tâm sẽ khai giảng các khóa học mới vào tháng 7/2024. Quý thầy cô và các em học sinh vui lòng chú ý đăng ký và tham gia các khóa học phù hợp.','2024-04-30 08:30:00',NULL,2);
 /*!40000 ALTER TABLE `t22_center_notification` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -54,4 +54,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:50
+-- Dump completed on 2024-06-26 14:45:20

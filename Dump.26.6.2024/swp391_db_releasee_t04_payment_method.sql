@@ -16,32 +16,27 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t15_enrollment`
+-- Table structure for table `t04_payment_method`
 --
 
-DROP TABLE IF EXISTS `t15_enrollment`;
+DROP TABLE IF EXISTS `t04_payment_method`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t15_enrollment` (
-  `C15_ENROLLMENT_ID` int NOT NULL AUTO_INCREMENT,
-  `C15_STUDENT_ID` int NOT NULL,
-  `C15_COURSE_ID` int NOT NULL,
-  PRIMARY KEY (`C15_ENROLLMENT_ID`),
-  UNIQUE KEY `CK_T15_FK` (`C15_STUDENT_ID`,`C15_COURSE_ID`),
-  KEY `FK_ENROLLMENT_COURSE` (`C15_COURSE_ID`),
-  CONSTRAINT `FK_ENROLLMENT_COURSE` FOREIGN KEY (`C15_COURSE_ID`) REFERENCES `t01_course` (`C01_COURSE_ID`),
-  CONSTRAINT `FK_ENROLLMENT_STUDENT` FOREIGN KEY (`C15_STUDENT_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=23 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t04_payment_method` (
+  `C04_PMETHOD_ID` int NOT NULL,
+  `c04_pmethod_desc` tinyint DEFAULT NULL,
+  PRIMARY KEY (`C04_PMETHOD_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t15_enrollment`
+-- Dumping data for table `t04_payment_method`
 --
 
-LOCK TABLES `t15_enrollment` WRITE;
-/*!40000 ALTER TABLE `t15_enrollment` DISABLE KEYS */;
-INSERT INTO `t15_enrollment` VALUES (1,10,1),(12,10,2),(2,11,1),(13,11,2),(3,12,1),(14,12,2),(4,13,1),(15,13,2),(5,14,1),(16,14,2),(6,15,1),(17,15,2),(7,16,1),(18,16,2),(8,17,1),(19,17,2),(9,18,1),(20,18,2),(10,19,1),(21,19,2),(11,20,1),(22,20,2);
-/*!40000 ALTER TABLE `t15_enrollment` ENABLE KEYS */;
+LOCK TABLES `t04_payment_method` WRITE;
+/*!40000 ALTER TABLE `t04_payment_method` DISABLE KEYS */;
+INSERT INTO `t04_payment_method` VALUES (1,1),(2,2);
+/*!40000 ALTER TABLE `t04_payment_method` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +48,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:49
+-- Dump completed on 2024-06-26 14:45:21

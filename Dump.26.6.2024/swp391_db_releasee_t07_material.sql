@@ -16,27 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t05_role`
+-- Table structure for table `t07_material`
 --
 
-DROP TABLE IF EXISTS `t05_role`;
+DROP TABLE IF EXISTS `t07_material`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t05_role` (
-  `C05_ROLE_ID` int NOT NULL,
-  `C05_ROLE_DESC` enum('STUDENT','PARENT','TEACHER','MANAGER','ADMIN') NOT NULL,
-  PRIMARY KEY (`C05_ROLE_ID`)
+CREATE TABLE `t07_material` (
+  `C07_MATERIALS_ID` int NOT NULL AUTO_INCREMENT,
+  `C07_MATERIALS_NAME` varchar(100) NOT NULL,
+  `T07_SUBJECT_NAME` varchar(255) NOT NULL,
+  `C07_TEACHER_ID` int NOT NULL,
+  `c07_cloudinary_pdf_id` varchar(255) DEFAULT NULL,
+  `c07_pdf_path` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`C07_MATERIALS_ID`),
+  KEY `FK_MATERIAL_TEACHER` (`C07_TEACHER_ID`),
+  CONSTRAINT `FK_MATERIAL_TEACHER` FOREIGN KEY (`C07_TEACHER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t05_role`
+-- Dumping data for table `t07_material`
 --
 
-LOCK TABLES `t05_role` WRITE;
-/*!40000 ALTER TABLE `t05_role` DISABLE KEYS */;
-INSERT INTO `t05_role` VALUES (1,'STUDENT'),(2,'PARENT'),(3,'TEACHER'),(4,'MANAGER'),(5,'ADMIN');
-/*!40000 ALTER TABLE `t05_role` ENABLE KEYS */;
+LOCK TABLES `t07_material` WRITE;
+/*!40000 ALTER TABLE `t07_material` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t07_material` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -48,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:49
+-- Dump completed on 2024-06-26 14:45:21

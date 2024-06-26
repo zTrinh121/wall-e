@@ -16,32 +16,31 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t16_user_center`
+-- Table structure for table `t13_bank_account`
 --
 
-DROP TABLE IF EXISTS `t16_user_center`;
+DROP TABLE IF EXISTS `t13_bank_account`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t16_user_center` (
-  `C16_USER_CENTER_ID` int NOT NULL AUTO_INCREMENT,
-  `C16_USER_ID` int NOT NULL,
-  `C16_CENTER_ID` int NOT NULL,
-  PRIMARY KEY (`C16_USER_CENTER_ID`),
-  UNIQUE KEY `CK_T16_FK` (`C16_USER_ID`,`C16_CENTER_ID`),
-  KEY `FK_T16_CENTER` (`C16_CENTER_ID`),
-  CONSTRAINT `FK_T16_CENTER` FOREIGN KEY (`C16_CENTER_ID`) REFERENCES `t03_center` (`C03_CENTER_ID`),
-  CONSTRAINT `FK_T16_USER` FOREIGN KEY (`C16_USER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t13_bank_account` (
+  `C13_ID` int NOT NULL AUTO_INCREMENT,
+  `C13_STK` varchar(50) NOT NULL,
+  `C13_BANK_NAME` varchar(100) NOT NULL,
+  `C13_USER_ID` int NOT NULL,
+  PRIMARY KEY (`C13_ID`),
+  UNIQUE KEY `CK_ACC_UNIQUE` (`C13_STK`,`C13_BANK_NAME`),
+  KEY `FK_USER_ACC` (`C13_USER_ID`),
+  CONSTRAINT `FK_USER_ACC` FOREIGN KEY (`C13_USER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t16_user_center`
+-- Dumping data for table `t13_bank_account`
 --
 
-LOCK TABLES `t16_user_center` WRITE;
-/*!40000 ALTER TABLE `t16_user_center` DISABLE KEYS */;
-INSERT INTO `t16_user_center` VALUES (1,4,1),(2,5,1),(3,10,1),(4,11,1),(5,12,1),(6,13,1),(7,14,1),(8,15,1),(9,16,1),(10,17,1),(11,18,1),(12,19,1),(13,20,1);
-/*!40000 ALTER TABLE `t16_user_center` ENABLE KEYS */;
+LOCK TABLES `t13_bank_account` WRITE;
+/*!40000 ALTER TABLE `t13_bank_account` DISABLE KEYS */;
+/*!40000 ALTER TABLE `t13_bank_account` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +52,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:50
+-- Dump completed on 2024-06-26 14:45:20

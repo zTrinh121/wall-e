@@ -16,40 +16,32 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t08_bill`
+-- Table structure for table `t16_user_center`
 --
 
-DROP TABLE IF EXISTS `t08_bill`;
+DROP TABLE IF EXISTS `t16_user_center`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t08_bill` (
-  `C08_BILL_ID` int NOT NULL AUTO_INCREMENT,
-  `c08_status` tinyint NOT NULL,
-  `C08_CREATED_AT` datetime NOT NULL,
-  `C08_STUDENT_ID` int NOT NULL,
-  `C08_COURSE_ID` int NOT NULL,
-  `C08_PMETHOD_ID` int NOT NULL,
-  `c08_enrollment_id` int DEFAULT NULL,
-  PRIMARY KEY (`C08_BILL_ID`),
-  UNIQUE KEY `CK_T08_UNIQUE` (`C08_CREATED_AT`,`C08_STUDENT_ID`,`C08_COURSE_ID`),
-  KEY `FK_BILL_STUDENT` (`C08_STUDENT_ID`),
-  KEY `FK_BILL_COURSE` (`C08_COURSE_ID`),
-  KEY `FK_BILL_PMETHOD` (`C08_PMETHOD_ID`),
-  KEY `FK2n96013cvgbh3mwei8q3ljh1e` (`c08_enrollment_id`),
-  CONSTRAINT `FK2n96013cvgbh3mwei8q3ljh1e` FOREIGN KEY (`c08_enrollment_id`) REFERENCES `t15_enrollment` (`C15_ENROLLMENT_ID`),
-  CONSTRAINT `FK_BILL_COURSE` FOREIGN KEY (`C08_COURSE_ID`) REFERENCES `t01_course` (`C01_COURSE_ID`),
-  CONSTRAINT `FK_BILL_PMETHOD` FOREIGN KEY (`C08_PMETHOD_ID`) REFERENCES `t04_payment_method` (`C04_PMETHOD_ID`),
-  CONSTRAINT `FK_BILL_STUDENT` FOREIGN KEY (`C08_STUDENT_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t16_user_center` (
+  `C16_USER_CENTER_ID` int NOT NULL AUTO_INCREMENT,
+  `C16_USER_ID` int NOT NULL,
+  `C16_CENTER_ID` int NOT NULL,
+  PRIMARY KEY (`C16_USER_CENTER_ID`),
+  UNIQUE KEY `CK_T16_FK` (`C16_USER_ID`,`C16_CENTER_ID`),
+  KEY `FK_T16_CENTER` (`C16_CENTER_ID`),
+  CONSTRAINT `FK_T16_CENTER` FOREIGN KEY (`C16_CENTER_ID`) REFERENCES `t03_center` (`C03_CENTER_ID`),
+  CONSTRAINT `FK_T16_USER` FOREIGN KEY (`C16_USER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t08_bill`
+-- Dumping data for table `t16_user_center`
 --
 
-LOCK TABLES `t08_bill` WRITE;
-/*!40000 ALTER TABLE `t08_bill` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t08_bill` ENABLE KEYS */;
+LOCK TABLES `t16_user_center` WRITE;
+/*!40000 ALTER TABLE `t16_user_center` DISABLE KEYS */;
+INSERT INTO `t16_user_center` VALUES (1,4,1),(14,4,2),(2,5,1),(3,10,1),(15,10,2),(4,11,1),(5,12,1),(6,13,1),(7,14,1),(8,15,1),(9,16,1),(10,17,1),(11,18,1),(12,19,1),(13,20,1);
+/*!40000 ALTER TABLE `t16_user_center` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -61,4 +53,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:49
+-- Dump completed on 2024-06-26 14:45:20

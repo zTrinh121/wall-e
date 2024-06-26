@@ -16,32 +16,34 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `t07_material`
+-- Table structure for table `t10_result`
 --
 
-DROP TABLE IF EXISTS `t07_material`;
+DROP TABLE IF EXISTS `t10_result`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `t07_material` (
-  `C07_MATERIALS_ID` int NOT NULL AUTO_INCREMENT,
-  `C07_MATERIALS_NAME` varchar(100) NOT NULL,
-  `T07_SUBJECT_NAME` varchar(255) NOT NULL,
-  `C07_TEACHER_ID` int NOT NULL,
-  `c07_cloudinary_pdf_id` varchar(255) DEFAULT NULL,
-  `c07_pdf_path` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`C07_MATERIALS_ID`),
-  KEY `FK_MATERIAL_TEACHER` (`C07_TEACHER_ID`),
-  CONSTRAINT `FK_MATERIAL_TEACHER` FOREIGN KEY (`C07_TEACHER_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+CREATE TABLE `t10_result` (
+  `C10_RESULT_ID` int NOT NULL AUTO_INCREMENT,
+  `C10_RESULT_TYPE` int NOT NULL,
+  `C10_RESULT_VAL` int NOT NULL,
+  `C10_STUDENT_ID` int NOT NULL,
+  `C10_COURSE_ID` int NOT NULL,
+  PRIMARY KEY (`C10_RESULT_ID`),
+  KEY `FK_RESULT_STUDENT` (`C10_STUDENT_ID`),
+  KEY `FK_RESULT_COURSE` (`C10_COURSE_ID`),
+  CONSTRAINT `FK_RESULT_COURSE` FOREIGN KEY (`C10_COURSE_ID`) REFERENCES `t01_course` (`C01_COURSE_ID`),
+  CONSTRAINT `FK_RESULT_STUDENT` FOREIGN KEY (`C10_STUDENT_ID`) REFERENCES `t14_user` (`C14_USER_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `t07_material`
+-- Dumping data for table `t10_result`
 --
 
-LOCK TABLES `t07_material` WRITE;
-/*!40000 ALTER TABLE `t07_material` DISABLE KEYS */;
-/*!40000 ALTER TABLE `t07_material` ENABLE KEYS */;
+LOCK TABLES `t10_result` WRITE;
+/*!40000 ALTER TABLE `t10_result` DISABLE KEYS */;
+INSERT INTO `t10_result` VALUES (1,1,8,10,1),(2,1,9,10,1),(3,1,9,10,1),(4,2,7,10,1),(5,2,9,10,1),(6,3,9,10,1),(7,1,5,10,2),(8,1,7,10,2),(9,1,7,10,2),(10,2,8,10,2),(11,2,7,10,2),(12,3,8,10,2),(13,1,6,11,1),(14,1,8,11,1),(15,1,9,11,1),(16,2,8,11,1),(17,2,8,11,1),(18,3,9,11,1),(19,1,5,11,2),(20,1,6,11,2),(21,1,7,11,2),(22,2,9,11,2),(23,2,7,11,2),(24,3,8,11,2);
+/*!40000 ALTER TABLE `t10_result` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -53,4 +55,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-06-25  2:18:51
+-- Dump completed on 2024-06-26 14:45:21
