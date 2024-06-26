@@ -118,38 +118,6 @@ public class TeacherServiceImpl implements TeacherService {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
-
-//    // Lấy ra 3 loại thông báo
-//    @Override
-//    public List<PrivateNotification> getAllPrivateNotifications() {
-//        return teacherRepository.findAllPrivateNotifications();
-//    }
-//
-//    @Override
-//    public List<PublicNotification> getAllPublicNotifications() {
-//        return teacherRepository.findAllPublicNotifications();
-//    }
-//
-//    @Override
-//    public List<SystemNotification> getAllSystemNotifications() {
-//        return teacherRepository.findAllSystemNotifications();
-//    }
-//// in ra cả 3
-//    @Override
-//    public NotificationResponse getAllNotifications() {
-//        List<PrivateNotification> privateNotifications = getAllPrivateNotifications();
-//        List<PublicNotification> publicNotifications = getAllPublicNotifications();
-//        List<SystemNotification> systemNotifications = getAllSystemNotifications();
-//        return new NotificationResponse(privateNotifications, publicNotifications, systemNotifications);
-//    }
-//
-//    // tạo thông báo private
-//    @Override
-//    public void addPrivateNotification(PrivateNotification notification) {
-//        privateNotificationRepository.save(notification); // Lưu private notification vào database
-//    }
-
-
     @Transactional
     public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
