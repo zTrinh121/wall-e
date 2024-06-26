@@ -33,15 +33,5 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
             "WHERE c.teacher.id = :teacherId AND ctr.id = :centerId")
     List<Object[]> findScheduleByTeacherIdAndCenterId(@Param("teacherId") Long teacherId, @Param("centerId") Long centerId);
 
-    // Lấy ra cả 3 loại thông báo
-
-//    @Query("SELECT p FROM PrivateNotification p")
-//    List<PrivateNotification> findAllPrivateNotifications();
-//
-//    @Query("SELECT p FROM PublicNotification p")
-//    List<PublicNotification> findAllPublicNotifications();
-//
-//    @Query("SELECT s FROM SystemNotification s")
-//    List<SystemNotification> findAllSystemNotifications();
 
 }

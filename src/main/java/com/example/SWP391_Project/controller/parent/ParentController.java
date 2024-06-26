@@ -69,6 +69,7 @@ public class ParentController {
         }
     }
 
+    // -----------------------------------------------------------------
     @GetMapping("/studentsByParent")
     public ResponseEntity<?> getStudentsByParentId(HttpSession session) {
         try {
@@ -87,6 +88,7 @@ public class ParentController {
         }
     }
 
+    // ----------------------- NOTIFICATION -----------------------
     @GetMapping("/notifications/all")
     public ResponseEntity<ParentNotificationResponse> getAllNotifications(HttpSession session) {
         Integer parentId = (Integer) session.getAttribute("authid");
@@ -122,5 +124,17 @@ public class ParentController {
         }
         Boolean hasSeen = parentService.checkHasSeenSystemNotification(systemNotificationId, parentId);
         return ResponseEntity.ok(hasSeen);
+    }
+
+    // ---------------------- FEEDBACK ----------------------------
+    // Lấy ra những feedback mà teacher gửi đến
+    @GetMapping("/view-student-feedback")
+    public ResponseEntity<List<Feedback>> getFeedbackTeacherSendToStudent(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+        List<Feedback> feedbacks = parentService.parentFeedbackViewer(parentId);
+        return ResponseEntity.ok(feedbacks);
     }
 }

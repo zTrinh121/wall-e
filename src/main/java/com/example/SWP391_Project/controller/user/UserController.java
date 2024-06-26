@@ -106,6 +106,7 @@ public class UserController {
             User user = userService.findByUsername(username);
             session.setAttribute("authid", user.getId());
             session.setAttribute("user", user);
+            session.setAttribute("username", user.getUsername());
 //            session.setAttribute("userId", user.getId());//***
 
             System.out.println( session.getAttribute("authid"));

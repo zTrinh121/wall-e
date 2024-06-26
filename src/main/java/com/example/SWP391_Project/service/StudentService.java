@@ -1,5 +1,7 @@
 package com.example.SWP391_Project.service;
 
+import com.example.SWP391_Project.dto.CenterPostDto;
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 
@@ -13,17 +15,11 @@ public interface StudentService {
 
     Course getCourseById(int courseId);
 
-    Feedback createFeedback(Feedback feedback);
-
     List<Map<String, Object>> getStudentSchedule(int studentId);
 
     List<Map<String, Object>> getStudentGrades(int studentId);
 
-    List<Map<String, Object>> getFeedbackByUserCode(String userCode);
-
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
-
-    List<Map<String, Object>> getStudentAttendance(int studentId);
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
@@ -31,7 +27,7 @@ public interface StudentService {
 
     List<Material> getAllMaterials();
 
-    // ------------------ NOTIFICATION -------------------------
+    // --------------------- NOTIFICATION ------------------------
 
     NotificationResponse getAllNotifications(int studentId);
 
@@ -47,4 +43,14 @@ public interface StudentService {
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int studentId);
 
+    // ----------------------- FEEDBACK -----------------------------
+    // xem những feedback mà teacher gửi đến
+    List<Feedback> fetchTeacherFeedback(int studentId);
+
+    // xem những feedback mà chính student này tạo ra
+    List<Feedback> viewFeedbackToTeacher(int studentId);
+
+    Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
+
+    Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
 }

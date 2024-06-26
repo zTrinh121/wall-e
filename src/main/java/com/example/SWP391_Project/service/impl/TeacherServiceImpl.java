@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
@@ -47,10 +48,16 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
+    @Autowired
+    private FeedbackRepository feedbackRepository;
+
+    @Autowired
+    private UserRepository userRepository;
+
     @Override
     public List<String> getCourseNamesByTeacherId(Long teacherId) {
         return teacherRepository.findCourseNamesByTeacherId(teacherId);
-    }
+    } ////////////////////////////////////
 
 // List ra các thông tin học sinh trng lớp học đó
     @Override
@@ -82,7 +89,7 @@ public class TeacherServiceImpl implements TeacherService {
     @Override
     public List<Object[]> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
         return teacherRepository.findResultsByCourseIdAndStudentId(courseId, studentId);
-    }
+    } /////////////////////////////////////////////
 
     @Override
     public Result createResult(Result result) {
@@ -99,11 +106,11 @@ public class TeacherServiceImpl implements TeacherService {
         resultRepository.deleteById(resultId);
     }
 
-// Lấy ra toàn bộ thời khóa biểu của giáo viên đó
-@Override
-public List<Object[]> getScheduleByTeacherId(Long teacherId) {
-    return teacherRepository.findScheduleByTeacherId(teacherId);
-}
+    // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
+    @Override
+    public List<Object[]> getScheduleByTeacherId(Long teacherId) {
+        return teacherRepository.findScheduleByTeacherId(teacherId);
+    } ///////////////////
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @Override
@@ -247,5 +254,50 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
             return false;
         }
         return true;
+    }
+
+    // ---------------------- FEEDBACK --------------------------
+
+    @Override
+    public List<Feedback> fetchStudentFeedback(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToStudent(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto) {
+        Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
+        if (viewer.isEmpty()) {
+            throw new IllegalArgumentException("Student not found when finding by id !");
+        }
+        User student = viewer.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToUser(student)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
     }
 }
