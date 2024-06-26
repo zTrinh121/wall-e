@@ -70,4 +70,6 @@ public interface TeacherService {
 
   Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto);
 
+  Result createResult(int courseId, int studentId, int type, int value);
+
 }

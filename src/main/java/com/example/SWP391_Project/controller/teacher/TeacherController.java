@@ -264,4 +264,17 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return ResponseEntity.ok(updatedFeedback);
     }
 
+    @PostMapping("/courses/{courseId}/students/{studentId}/results")
+    public ResponseEntity<?> createResult(@PathVariable int courseId, @PathVariable int studentId,
+                                          @RequestBody Map<String, Object> resultData) {
+        try {
+            int type = (Integer) resultData.get("type");
+            int value = (Integer) resultData.get("value");
+            Result result = teacherService.createResult(courseId, studentId, type, value);
+            return ResponseEntity.ok(result);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create result: " + e.getMessage());
+        }
+    }
+
 }

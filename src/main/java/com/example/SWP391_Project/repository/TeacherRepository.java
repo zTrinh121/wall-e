@@ -41,12 +41,16 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
 
 
     // Xem toàn bộ thời khóa biểu của giáo viên đó
-    @Query("SELECT s.slotDate, s.slotStartTime, s.slotEndTime, c.name, r.name " +
+    @Query("SELECT s.slotDate, " +
+            "DATE_FORMAT(s.slotStartTime, '%H:%i') AS slotStartTime, " +
+            "DATE_FORMAT(s.slotEndTime, '%H:%i') AS slotEndTime, " +
+            "c.name, r.name " +
             "FROM Slot s " +
             "JOIN s.course c " +
             "JOIN s.room r " +
             "WHERE c.teacher.id = :teacherId")
     List<Object[]> findScheduleByTeacherId(@Param("teacherId") Long teacherId);
+
 
 
     // Thời khóa biểu của giáo viên theo trung tâm

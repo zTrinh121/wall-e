@@ -55,6 +55,9 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private CourseRepository courseRepository;
+
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
         List<Object[]> results = teacherRepository.findCourseNamesByTeacherId(teacherId);
@@ -377,5 +380,21 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
         feedback.setRating(feedbackDto.getRating());
 
         return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Result createResult(int courseId, int studentId, int type, int value) {
+        Course course = courseRepository.findById(courseId)
+                .orElseThrow(() -> new ResourceNotFoundException("Course not found with id " + courseId));
+        User student = userRepository.findById(studentId)
+                .orElseThrow(() -> new ResourceNotFoundException("Student not found with id " + studentId));
+
+        Result result = new Result();
+        result.setCourse(course);
+        result.setStudent(student);
+        result.setType(type);
+        result.setValue(value);
+
+        return resultRepository.save(result);
     }
 }
