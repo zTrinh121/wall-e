@@ -6,6 +6,7 @@ import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -185,36 +186,37 @@ public class StudentServiceImpl implements StudentService {
 
     @Transactional
     @Override
-    public List<Map<String, Object>> getFeedbackByUserCode(String userCode) {
-        String query = "SELECT f.C06_FEEDBACK_DESC as feedbackDesc " +
+    public List<Map<String, Object>> getFeedbackByUserName(String userName) {
+        String query = "SELECT f.C06_FEEDBACK_ID, f.C06_FEEDBACK_DESC, f.C06_CREATED_AT, f.C06_UPDATED_AT, f.C06_ACTOR_ID, f.C06_SEND_TO_USER, f.C06_COURSE_ID " +
                 "FROM t06_feedback f " +
-                "JOIN t14_user u ON f.C06_USER_ID = u.C14_USER_ID " +
-                "WHERE u.C14_USER_CODE = :userCode";
+                "JOIN t14_user u ON f.C06_SEND_TO_USER = u.C14_USERNAME " +
+                "WHERE u.C14_USERNAME = :userCode";
 
         System.out.println("Query: " + query);
-        System.out.println("Student ID: " + userCode);
+        System.out.println("User Code: " + userName);
 
-//        Query nativeQuery = entityManager.createNativeQuery(query);
-//        nativeQuery.setParameter("studentId", userCode);
+        Query nativeQuery = entityManager.createNativeQuery(query, Tuple.class);
+        nativeQuery.setParameter("userCode", userName);
 
-//        List<Object[]> resultList = nativeQuery.getResultList();
-//        List<Map<String, Object>> grades = new ArrayList<>();
-
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userCode", userCode);
-
-        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Tuple> resultList = nativeQuery.getResultList();
         List<Map<String, Object>> feedbacks = new ArrayList<>();
 
-        for (Object[] result : resultList) {
+        for (Tuple result : resultList) {
             Map<String, Object> feedbackMap = new HashMap<>();
-            feedbackMap.put("feedbackDesc", result[0]);
-
+            feedbackMap.put("feedbackId", result.get(0));
+            feedbackMap.put("feedbackDesc", result.get(1));
+            feedbackMap.put("createdAt", result.get(2));
+            feedbackMap.put("updatedAt", result.get(3));
+            feedbackMap.put("actorId", result.get(4));
+            feedbackMap.put("sendToUser", result.get(5));
+            feedbackMap.put("courseId", result.get(6));
             feedbacks.add(feedbackMap);
         }
 
         return feedbacks;
     }
+
+
 
 
     // danh sách học sinh của lớp đó
