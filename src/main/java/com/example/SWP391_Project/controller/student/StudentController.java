@@ -239,7 +239,7 @@ public class StudentController {
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User student = (User) session.getAttribute("authid");
-        if (student == null) {
+        if tudent == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
         return studentService.updateViewSystemNotification(notificationId, student);
