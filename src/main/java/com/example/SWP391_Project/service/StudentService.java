@@ -53,4 +53,9 @@ public interface StudentService {
     Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
 
     Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
+
+  // ------------------------------------------------------------------
+    List<Map<String, Object>> getStudentCourse(int studentId);
+
+
 }

@@ -3,6 +3,7 @@ package com.example.SWP391_Project.controller.user;
 import com.example.SWP391_Project.model.Role;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.service.EmailService;
+import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
@@ -32,6 +33,8 @@ public class UserController {
     private UserService userService;
     @Autowired
     private EmailServiceImpl emailServiceImpl;
+    @Autowired
+    private TeacherService teacherService;
 
     @Autowired
     private EmailService emailService;
@@ -211,7 +214,7 @@ public class UserController {
                 case "STUDENT":
                     return "redirect:/student-profile";
                 case "TEACHER":
-                    return "redirect:/teacherProfile";
+                    return "redirect:/profile";
                 case "PARENT":
                     return "redirect:/profile-parent";
                 case "ADMIN":
@@ -620,11 +623,11 @@ public class UserController {
         return "teacherFragments";
     }
 
-    @GetMapping("/teacher-notification")
-    public String teacherNotification(HttpSession session) {
-        session.invalidate();
-        return "teacher-notification";
-    }
+//    @GetMapping("/teacher-notification")
+//    public String teacherNotification(HttpSession session) {
+//        session.invalidate();
+//        return "teacher-notification";
+//    }
 
     @GetMapping("/detailCenter-teacher")
     public String detailCenterTeacher(HttpSession session) {
@@ -660,6 +663,9 @@ public class UserController {
     @GetMapping("/course-details")
     public String detailCourse(HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
         model.addAttribute("user", user);
         return "classRegisteredDetail";
     }
@@ -674,27 +680,27 @@ public class UserController {
         return "timetableViewOnly";
     }
 
-    @GetMapping("/student-notification")
-    public String viewNotification(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-        return "studentNotification";
-    }
+//    @GetMapping("/student-notification")
+//    public String viewNotification(HttpSession session, Model model) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+//        return "studentNotification";
+//    }
 
 
-    @GetMapping("/parent-notification")
-    public String viewNotificationParent(Model model, HttpSession session) {
-        User user = (User) session.getAttribute("user");
-        if (user == null) {
-            return "redirect:/login";
-        }
-        model.addAttribute("user", user);
-
-        return "parentNotification";
-    }
+//    @GetMapping("/parent-notification")
+//    public String viewNotificationParent(Model model, HttpSession session) {
+//        User user = (User) session.getAttribute("user");
+//        if (user == null) {
+//            return "redirect:/login";
+//        }
+//        model.addAttribute("user", user);
+//
+//        return "parentNotification";
+//    }
 
     @GetMapping("/parent")
     public String viewDashboardParent(HttpSession session) {
@@ -799,11 +805,11 @@ public class UserController {
 
     @GetMapping("/teacher-dashboard")
     public String teacherDashboard(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "teacher-dashboard";
     }
 
@@ -820,23 +826,74 @@ public class UserController {
 
     @GetMapping("/material-create")
     public String materialCreate(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "material-create";
     }
 
     @GetMapping("/notification")
     public String notification(Model model, HttpSession session) {
-//        User user = (User) session.getAttribute("user");
-//        if (user == null) {
-//            return "redirect:/login";
-//        }
-//        model.addAttribute("user", user);
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
         return "notificationDetail";
     }
+
+    @GetMapping("/material-create-select")
+    public String materialCreateSelect(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "material-create-select";
+    }
+
+
+    @PostMapping("PDF/File/upload")
+    public String uploadMaterialPdf(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("materialsName") String materialsName,
+            @RequestParam("subjectName") String subjectName,
+            HttpSession httpSession) {
+
+        try {
+            User user = (User) httpSession.getAttribute("user");
+
+            if (user == null) {
+                return "redirect:/login";
+            }
+            if (!file.getContentType().equals("application/pdf")) {
+                // Handle the case where the uploaded file is not a PDF
+                System.err.println("Only PDF files are allowed.");
+                return "redirect:/material-create?status=invalid_file_type";
+            }
+            teacherService.uploadPdfFile(file, subjectName, materialsName, user);
+
+            return "redirect:/material";
+        } catch (Exception e) {
+            System.err.println("Error uploading PDF: " + e.getMessage());
+            return "redirect:/material";
+        }
+    }
+
+    @GetMapping("/material-detail")
+    public String materialDetail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "material-detail";
+    }
+
+
+
 
 
 

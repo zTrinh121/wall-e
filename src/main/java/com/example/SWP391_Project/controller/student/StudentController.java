@@ -62,7 +62,7 @@ public class StudentController {
     }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
-    @GetMapping("/{studentId}/courses")
+    @GetMapping("/{studentId}/timetable")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
         List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
@@ -230,7 +230,15 @@ public class StudentController {
         return ResponseEntity.ok(hasSeen);
     }
 
-    // -------------------------- FEEDBACK ---------------------------
+  // ----------------------------- ????????????? ---------------------------
+    @GetMapping("/{studentId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
+        return ResponseEntity.ok(courses);
+    }
+  
+   // ---------------------------- FEEDBACK ------------------------------
 
     // Lấy ra những feedback mà teacher gửi đến
     @GetMapping("/fetch-teacher-feedback")
@@ -268,7 +276,6 @@ public class StudentController {
     public ResponseEntity<Feedback> updateFeedbackToTeacher(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
         Feedback updatedFeedback = studentService.updateFeedbackToTeacher(id, feedbackDto);
         return ResponseEntity.ok(updatedFeedback);
-    }
 }
 
 

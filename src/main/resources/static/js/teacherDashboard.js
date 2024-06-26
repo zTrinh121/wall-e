@@ -1,12 +1,6 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // var currentUrl = window.location.href;
-    // var urlParams = new URLSearchParams(currentUrl);
-    // console.log('URL Params:', urlParams);
-    var userId = document.getElementById("userId").innerHTML;
-    // urlParams.forEach(function(value, key) {
-    //     userId = value;
-    // });
-    // console.log(userId)
+    //var userId = document.getElementById("userId").innerHTML;
+    var userId = 158;
     const boxCourses = document.getElementById("courseBoxes");
     const apiUrl = `/api/students/${userId}/courses`;
     var itemsPerPage = 4; // Number of posts per page

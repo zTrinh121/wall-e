@@ -8,6 +8,7 @@ import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
+import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -280,8 +281,52 @@ public class StudentServiceImpl implements StudentService {
         return materialRepository.findAll
                 (Sort.by(Sort.Direction.DESC, "id"));
     }
+    
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getStudentCourse(int studentId) {
+        String query = """
+        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
+        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
+        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
+        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
+        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+        e.C15_STUDENT_ID as studentId
+        FROM t15_enrollment e
+        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
+        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
+        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
+        WHERE e.C15_STUDENT_ID = :studentId
+        """;
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
 
-    // --------------------- NOTIFICATION --------------------------
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> schedule = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> scheduleMap = new HashMap<>();
+            scheduleMap.put("courseId", result[0]);
+            scheduleMap.put("courseCode", result[1]);
+            scheduleMap.put("courseDesc", result[2]);
+            scheduleMap.put("courseName", result[3]);
+            scheduleMap.put("startTime", result[4]);
+            scheduleMap.put("endTime", result[5]);
+            scheduleMap.put("amountOfStudents", result[6]);
+            scheduleMap.put("centerName", result[7]);
+            scheduleMap.put("teacherName", result[8]);
+            scheduleMap.put("teacherId", result[9]);
+            scheduleMap.put("studentId", result[10]);
+            schedule.add(scheduleMap);
+        }
+
+        return schedule;
+    }
+  
+  // --------------------- NOTIFICATION --------------------------
     @Override
     public NotificationResponse getAllNotifications(int studentId) {
         List<IndividualNotification> individualNotifications

@@ -5,6 +5,7 @@ document.addEventListener("DOMContentLoaded", function() {
     const loginBtn = document.querySelector("label.login");
     const signupBtn = document.querySelector("label.signup");
     const signupLink = document.querySelector("form .signup-link a");
+    const registerLink = document.querySelector("form .register-link");
 
     signupBtn.onclick = () => {
         loginForm.style.marginLeft = "-50%";
@@ -20,6 +21,11 @@ document.addEventListener("DOMContentLoaded", function() {
         signupBtn.click();
         return false;
     };
+
+    registerLink.onclick = () => {
+        loginBtn.click();
+        return false
+    }
 
     loginForm.addEventListener('submit', function(event) {
         event.preventDefault();

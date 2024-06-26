@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/material.css" />
+    <script src="/js/material-create-select.js"></script>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="fragments :: header"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <main>
+                <i class="return fas fa-arrow-left" onclick="history.back()"></i>
+                <div class="header">
+                    <div>Chọn trước khi upload tài liệu</div>
+                </div>
+
+                <div class="container">
+
+                    <div class="button-group">
+                        <div class="header-container">
+                            <h2>Chọn khối</h2>
+                        </div>
+                        <div  id="grade-buttons">
+
+                        </div>
+                    </div>
+                    <div class="button-group-subject" style="display: none;">
+                        <h2>Chọn môn học</h2>
+                        <div id="subject-buttons" ></div>
+                    </div>
+                </div>
+            </main>
+        </section>
+    </div>
+</div>
+
+</body>
+</html>

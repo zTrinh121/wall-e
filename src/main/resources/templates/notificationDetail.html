@@ -3,8 +3,8 @@
 <head>
     <title>Trang chủ</title>
     <link rel="stylesheet" href="/css/timetable.css" />
-
-    <script src="/js/teacherDashboard.js"></script>
+    <link rel="stylesheet" href="/css/notificationDetail.css" />
+    <script src="/js/notificationDetail.js"></script>
     <script th:src="@{/js/fragments.js}" type="module"></script>
     <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js"></script>
     <th:block th:replace="fragments :: head"></th:block>
@@ -19,19 +19,16 @@
             <main>
                 <div class="head-title">
                     <div class="left">
+                        <p th:text="${user.id}" id="userId"></p>
+                        <p th:text="${user.role.getDescription().name()}" id="userRole" style="display: none"></p>
+
                         <h1>Chi tiết thông báo</h1>
 
                     </div>
                 </div>
-                <div class="class-detail">
-                    <div class="detail-header">
-                        <h3>Tiêu đề thông báo</h3>
-                    </div>
-                    <div class="detail">
-
-
-                    </div>
-
+                <div id="notificationDetailsContainer">
+                    <h2 id="notificationTitle">Notification Title Placeholder</h2><br>
+                    <p id="notificationContent"></p>
                 </div>
 
             </main>
