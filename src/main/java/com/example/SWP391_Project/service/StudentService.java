@@ -31,6 +31,8 @@ public interface StudentService {
 
     List<Material> getAllMaterials();
 
+    // ------------------ NOTIFICATION -------------------------
+
     NotificationResponse getAllNotifications(int studentId);
 
     ViewSystemNotification updateViewSystemNotification(int notificationId, User student);
@@ -38,6 +40,12 @@ public interface StudentService {
     IndividualNotification updateIndividualNotification(int notificationId);
 
     ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
+
+    Boolean checkHasSeenCenterNotification(int centerNotificationId,
+                                           int studentId);
+
+    Boolean checkHasSeenSystemNotification(int systemNotificationId,
+                                           int studentId);
 
     List<Map<String, Object>> getStudentCourse(int studentId);
 

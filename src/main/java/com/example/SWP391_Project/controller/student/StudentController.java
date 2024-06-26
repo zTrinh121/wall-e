@@ -23,7 +23,7 @@ import java.util.Map;
 import java.util.Random;
 
 @Controller
-@RequestMapping("/api/students")
+@RequestMapping("/api/student")
 public class StudentController {
 
     @Autowired
@@ -59,32 +59,6 @@ public class StudentController {
 
         return "student-details";
     }
-
-
-    // Lấy ra các khóa học mà thằng học sinh đó đang học( đang sai bỏ)
-//    @GetMapping("/{studentId}/courses")
-//    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
-//        List<Map<String, Object>> courses = studentService.getCoursesByStudentId(studentId);
-//        return ResponseEntity.ok(courses);
-//    }
-
-    // Tạo feedback cho giáo viên
-    // Tạo feedback cho giáo viên
-//    @PostMapping("/{studentId}/courses/{courseId}/feedback")
-//    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
-//                                                   @PathVariable int courseId,
-//                                                   @RequestBody Feedback feedback) {
-//        Course course = studentService.getCourseById(courseId);
-//        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
-//            return ResponseEntity.badRequest().build();
-//        }
-//
-//        feedback.getActor();
-//
-//        feedback.setCourse(course);
-//        Feedback savedFeedback = studentService.createFeedback(feedback);
-//        return ResponseEntity.ok(savedFeedback);
-//    }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
     @GetMapping("/{studentId}/timetable")
@@ -199,7 +173,7 @@ public class StudentController {
         }
     }
 
-
+    // ---------------------- GET ALL MATERIALS ----------------------------
     @GetMapping("/allMaterials")
     public ResponseEntity<List<Material>> getAllMaterials() {
         List<Material> materials = studentService.getAllMaterials();
@@ -210,6 +184,8 @@ public class StudentController {
         }
     }
 
+
+    // ------------------------- NOTIFICATION -----------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
         Integer studentId = (Integer) session.getAttribute("authid");
@@ -225,7 +201,7 @@ public class StudentController {
         return studentService.updateIndividualNotification(notificationId);
     }
 
-    @PatchMapping("/viewCenterNotification/update/{notificationId}")
+    @PostMapping("/viewCenterNotification/update/{notificationId}")
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User student = (User) session.getAttribute("authid");
@@ -235,14 +211,39 @@ public class StudentController {
         return studentService.updateViewCenterNotification(notificationId, student);
     }
 
-    @PatchMapping("/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User student = (User) session.getAttribute("authid");
-        if tudent == null) {
+        if student == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
         return studentService.updateViewSystemNotification(notificationId, student);
+    }
+
+    @GetMapping("/centerNotification/{centerNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenCenterNotification(
+            @PathVariable int centerNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenCenterNotification(centerNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    // API endpoint for checking if a system notification has been seen by a student
+    @GetMapping("/systemNotification/{systemNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenSystemNotification(
+            @PathVariable int systemNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenSystemNotification(systemNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
     }
 
     @GetMapping("/{studentId}/courses")

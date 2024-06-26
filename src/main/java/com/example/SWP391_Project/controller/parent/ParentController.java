@@ -15,12 +15,13 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 
 @RestController
+@RequestMapping("/api/parent")
 public class ParentController {
 
     @Autowired
     private ParentService parentService;
 
-    @GetMapping("parent/results")
+    @GetMapping("/studentResults")
     public ResponseEntity<List<Result>> getStudentResults(HttpSession session) {
         int parentId = (int) session.getAttribute("authid");
         List<Result> results = parentService.getStudentResults(parentId);
@@ -30,7 +31,7 @@ public class ParentController {
         return new ResponseEntity<>(results, HttpStatus.OK);
     }
 
-    @GetMapping("parent/slots")
+    @GetMapping("/studentSlots")
     public ResponseEntity<List<Slot>> getStudentSlots(HttpSession session) {
         int parentId = (int) session.getAttribute("authid");
         List<Slot> slots = parentService.getStudentSlots(parentId);
@@ -40,7 +41,7 @@ public class ParentController {
         return new ResponseEntity<>(slots, HttpStatus.OK);
     }
 
-    @GetMapping("parent/courses")
+    @GetMapping("/studentCourses")
     public ResponseEntity<List<Course>> getStudentCourses(HttpSession session) {
         Integer parentIdObj = (Integer) session.getAttribute("authid");
 
@@ -57,28 +58,7 @@ public class ParentController {
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
 
-
-//    @GetMapping("parent/courses/{parentId}")
-//    public ResponseEntity<List<Course>> getStudentCourses(@PathVariable int parentId) {;
-//        List<Course> courses = parentService.getStudentCourses(parentId);
-//        System.out.println("Khóa học của con: " + courses);
-//        if (courses.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(courses, HttpStatus.OK);
-//    }
-
-//    @GetMapping("parent/attendances")
-//    public ResponseEntity<List<Attendance>> getStudentAttendances(HttpSession session) {
-//        int parentId = (int) session.getAttribute("authid");
-//        List<Attendance> attendances = parentService.getStudentAttendances(parentId);
-//        if (attendances.isEmpty()) {
-//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-//        }
-//        return new ResponseEntity<>(attendances, HttpStatus.OK);
-//    }
-
-    @PostMapping("parent/enrollment")
+    @PostMapping("/studentEnrollment")
     public ResponseEntity<String> enrollStudentInCourse(@RequestBody EnrollmentDto enrollmentDto, HttpSession session) {
         try {
             int parentId = (int) session.getAttribute("authid");
@@ -89,7 +69,7 @@ public class ParentController {
         }
     }
 
-    @GetMapping("/students")
+    @GetMapping("/studentsByParent")
     public ResponseEntity<?> getStudentsByParentId(HttpSession session) {
         try {
             int parentId = (int) session.getAttribute("authid");
@@ -107,7 +87,7 @@ public class ParentController {
         }
     }
 
-    @GetMapping("/parent/notifications/all")
+    @GetMapping("/notifications/all")
     public ResponseEntity<ParentNotificationResponse> getAllNotifications(HttpSession session) {
         Integer parentId = (Integer) session.getAttribute("authid");
         if (parentId == null) {
@@ -117,12 +97,12 @@ public class ParentController {
         return ResponseEntity.ok(notificationResponse);
     }
 
-    @PatchMapping("/parent/individualNotification/update/{notificationId}")
+    @PatchMapping("/individualNotification/update/{notificationId}")
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return parentService.updateIndividualNotification(notificationId);
     }
 
-    @PatchMapping("/parent/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/parent/viewSystemNotification/update/{notificationId}")
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
         User parent = (User) session.getAttribute("authid");
@@ -130,5 +110,17 @@ public class ParentController {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
         }
         return parentService.updateViewSystemNotification(notificationId, parent);
+    }
+
+    @GetMapping("/systemNotification/{systemNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenSystemNotification(
+            @PathVariable int systemNotificationId,
+            HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "ParentD is not found in the session!");
+        }
+        Boolean hasSeen = parentService.checkHasSeenSystemNotification(systemNotificationId, parentId);
+        return ResponseEntity.ok(hasSeen);
     }
 }
