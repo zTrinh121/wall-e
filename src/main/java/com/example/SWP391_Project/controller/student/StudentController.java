@@ -168,7 +168,6 @@ public class StudentController {
         }
     }
 
-
     // ------------------------- NOTIFICATION -----------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
@@ -230,15 +229,7 @@ public class StudentController {
         return ResponseEntity.ok(hasSeen);
     }
 
-  // ----------------------------- ????????????? ---------------------------
-    @GetMapping("/{studentId}/courses")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
-        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
-        return ResponseEntity.ok(courses);
-    }
-  
-   // ---------------------------- FEEDBACK ------------------------------
+    // ---------------------------- FEEDBACK ------------------------------
 
     // Lấy ra những feedback mà teacher gửi đến
     @GetMapping("/fetch-teacher-feedback")
@@ -276,6 +267,7 @@ public class StudentController {
     public ResponseEntity<Feedback> updateFeedbackToTeacher(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
         Feedback updatedFeedback = studentService.updateFeedbackToTeacher(id, feedbackDto);
         return ResponseEntity.ok(updatedFeedback);
+    }
 }
 
 
