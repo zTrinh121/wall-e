@@ -61,7 +61,7 @@ public class TeacherController {
         return ResponseEntity.ok(createdResult);
     }
 
-    @PutMapping("/results/{resultId}")
+        @PutMapping("/results/{resultId}")
     public ResponseEntity<Result> updateResult(@PathVariable int resultId, @RequestBody Result result) {
         result.setId(resultId);
         Result updatedResult = teacherService.updateResult(result);
