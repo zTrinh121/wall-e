@@ -111,6 +111,7 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
+
 //    // Lấy ra 3 loại thông báo
 //    @Override
 //    public List<PrivateNotification> getAllPrivateNotifications() {
@@ -143,16 +144,15 @@ public List<Object[]> getScheduleByTeacherId(Long teacherId) {
 
 
     @Transactional
-    public void uploadPdfFile(MultipartFile file, MaterialDto materialDto, User teacher) {
+    public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
         try {
             String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
             CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
-
             Material material = new Material();
-            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
-            material.setSubjectName(materialDto.getSubjectName());
+            material.setMaterialsName(materialsName); // ten file FPD
+            material.setSubjectName(subjectName);
             material.setTeacher(teacher);
             material.setPdfPath(response.getUrl());
             material.setCloudinaryPdfId(response.getPublicId());

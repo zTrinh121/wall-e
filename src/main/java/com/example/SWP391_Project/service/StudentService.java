@@ -47,4 +47,6 @@ public interface StudentService {
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int studentId);
 
+    List<Map<String, Object>> getStudentCourse(int studentId);
+
 }

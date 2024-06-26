@@ -32,7 +32,7 @@ public interface TeacherService {
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
      List<Object[]> getScheduleByTeacherIdAndCenterId(Long teacherId, Long centerId);
 
-    void uploadPdfFile(final MultipartFile file, MaterialDto materialDto, User teacher);
+  void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher);
 
     List<Material> getAllMaterials();
 

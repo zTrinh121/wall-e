@@ -61,7 +61,7 @@ public class StudentController {
     }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
-    @GetMapping("/{studentId}/courses")
+    @GetMapping("/{studentId}/timetable")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getStudentSchedule(@PathVariable int studentId) {
         List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
@@ -244,6 +244,13 @@ public class StudentController {
         }
         Boolean hasSeen = studentService.checkHasSeenSystemNotification(systemNotificationId, studentId);
         return ResponseEntity.ok(hasSeen);
+    }
+
+    @GetMapping("/{studentId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
+        return ResponseEntity.ok(courses);
     }
 }
 
