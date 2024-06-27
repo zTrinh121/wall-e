@@ -8,26 +8,27 @@ document.addEventListener("DOMContentLoaded", function () {
     var urlCenParts = urlParams.split("centerIdn=");
     var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
 
-    // Extract stuId from the URL
-    var urlStuParts = urlParams.split("stuIdn=");
-    var stuIdz = urlStuParts.length > 1 ? urlStuParts[1].split("&")[0] : null;
+    // Extract teaId from the URL
+    var urlTeaParts = urlParams.split("teaIdn=");
+    var teaIdz = urlTeaParts.length > 1 ? urlTeaParts[1].split("&")[0] : null;
 
     console.log("Center ID:", centerIdz);
-    console.log("Student ID:", stuIdz);
+    console.log("teacher ID:", teaIdz);
 //End getting
 //turnBack
     var turnBack = document.getElementById("turnBack");
 
     turnBack.addEventListener("click", function(event) {
         event.preventDefault();
-            var url = `/manager/qlhv?centerId=`;
+            var url = `/manager/qlgv?centerId=`;
             url += encodeURIComponent(centerIdz);
             window.location.href = url;
     });
 //Ending
+
 //Fetch API
-    function fetchStudents(centerIdz, stuIdz) {
-      var URL = `/manager/student-detail/${stuIdz}/${centerIdz}`;
+    function  fetchTeachers(centerIdz, teaIdz) {
+      var URL = `/manager/teacher-detail/${teaIdz}/${centerIdz}`;
       console.log(URL);
       //get-center-name-in-fetch
       fetch(URL)
@@ -39,22 +40,18 @@ document.addEventListener("DOMContentLoaded", function () {
         })
         .then((data) => {
         console.log("Data received from API:", data[0]);
-        document.getElementById("studentNameHeading").innerText = "Thông tin cơ bản của " + data[0].studentName;
-        document.getElementById("nameParent").innerText = "Phụ huynh " + data[0].parentName;
-        document.getElementById("genderStu").innerText = returnGender(data[0].studentGender);
-        document.getElementById("genderP").innerText = returnGender(data[0].parentGender);
-        document.getElementById("phoneStu").innerText = data[0].studentPhone;
-        document.getElementById("phoneP").innerText = data[0].parentPhone;
-        document.getElementById("mailStu").innerText = data[0].studentEmail;
-        document.getElementById("mailP").innerText = data[0].parentEmail;
-        document.getElementById("addressStu").innerText = data[0].studentAddress;
-        document.getElementById("courseStu").innerText = data[0].courseNames;
-        document.getElementById("feedbackStu").innerText = data[0].studentEmail;
+        document.getElementById("teacherNameHeading").innerText = "Thông tin cơ bản của " + data[0].teacherName;
+        document.getElementById("genderTea").innerText = returnGender(data[0].teacherGender);
+        document.getElementById("phoneTea").innerText = data[0].teacherPhone;
+        document.getElementById("mailTea").innerText = data[0].teacherEmail;
+        document.getElementById("addressTea").innerText = data[0].teacherAddress;
+        document.getElementById("courseTea").innerText = data[0].courseNames;
+        document.getElementById("feedbackTea").innerText = data[0].teacherEmail;
         })
-        .catch((err) => console.error("loi lay student: ", err));
+        .catch((err) => console.error("loi lay teacher: ", err));
     }
-    fetchStudents(centerIdz, stuIdz);
-    //Geting real gender
+     fetchTeachers(centerIdz, teaIdz);
+    //Getting real gender
     function returnGender(g){
         if(g)   return "Nam";
         if(!g)  return "Nữ";

@@ -28,7 +28,7 @@ public class ManagerController
 {
     @Autowired
     ManagerService managerService;
-    @GetMapping("/manager")
+    @GetMapping("/managerHome")
     public String managerHome() {
         return "managerHome";
     }
@@ -65,5 +65,18 @@ public class ManagerController
     public String mnPost() {
         return "managerPost";
     }
+    @GetMapping("/qlkh")
+    public String mnCourse() {
+        return "courseDetail";
+    }
+    @GetMapping("/ttkh")
+    public String courseInfo() {
+        return "courseInfo";
+    }
+    @GetMapping("/dthu")
+    public String revenueMn() {
+        return "managerRevenue";
+    }
+
 
 }

@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 function fetchCount(centerIdzzz) {
     var URLs = `/manager/student-count/${centerIdzzz}`;
     var URLt = `/manager/teacher-count/${centerIdzzz}`;
-//    var URLc = `/manager/course-count/${centerIdzzz}`;
+    var URLc = `/manager/course-count/${centerIdzzz}`;
 
     fetch(URLs)
             .then((response) => {
@@ -33,18 +33,18 @@ function fetchCount(centerIdzzz) {
                 document.getElementById("numt").innerText = data;
             })
             .catch((error) => console.error("Error fetching centers:", error));
-//    fetch(URLc)
-//            .then((response) => {
-//                if (!response.ok) {
-//                    throw new Error("Network response was not ok");
-//                }
-//                return response.json();
-//            })
-//            .then((data) => {
-//                  document.getElementById("numc").innerText = data;
+    fetch(URLc)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                  document.getElementById("numc").innerText = data;
 
-//            })
-//            .catch((error) => console.error("Error fetching centers:", error));
+            })
+            .catch((error) => console.error("Error fetching centers:", error));
 }
 fetchCount(centerIdzzz);
 });

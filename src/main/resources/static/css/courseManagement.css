@@ -200,11 +200,6 @@ body {
 	transition: .3s ease;
 }
 
-#sidebar.hide~#content {
-	width: calc(100% - 60px);
-	left: 60px;
-}
-
 
 /* NAVBAR */
 #content nav {
@@ -457,10 +452,6 @@ body {
 #content main .box-info li .text p {
 	color: #342E37;
 }
-
-
-
-
 
 #content main .table-data {
 	display: flex;
@@ -716,6 +707,7 @@ body {
     text-decoration: none;
     cursor: pointer;
 }
+
 #turnBack {
 	border: none;
 	width: 5rem;
