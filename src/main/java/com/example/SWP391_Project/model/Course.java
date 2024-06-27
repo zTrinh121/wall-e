@@ -32,10 +32,10 @@ public class Course {
     @Column(name = "C01_COURSE_DESC", nullable = false, columnDefinition = "TEXT")
     String description;
 
-    @Column(name = "C01_COURSE_START_DATE", nullable = false)
+    @Column(name = "C01_COURSE_START_DATE", columnDefinition = "DATE", nullable = false)
     Date startDate;
 
-    @Column(name = "C01_COURSE_END_DATE", nullable = false)
+    @Column(name = "C01_COURSE_END_DATE", columnDefinition = "DATE", nullable = false)
     Date endDate;
 
     @Column(name = "C01_AMOUNT_OF_STUDENTS", nullable = false)

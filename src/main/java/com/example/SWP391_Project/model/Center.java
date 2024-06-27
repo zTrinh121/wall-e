@@ -43,7 +43,7 @@ public class Center {
     @Column(name = "C03_CENTER_REGULATIONS", columnDefinition = "TEXT")
     String regulation;
 
-    @Column(name = "C03_CREATED_AT")
+    @Column(name = "C03_CREATED_AT", columnDefinition = "DATE")
     Date createdAt;
 
     @Column(name = "C03_CENTER_STATUS")
