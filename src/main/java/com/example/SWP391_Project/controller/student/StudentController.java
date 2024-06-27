@@ -60,6 +60,33 @@ public class StudentController {
         return "student-details";
     }
 
+
+    // Lấy ra các khóa học mà thằng học sinh đó đang học( đang sai bỏ)
+//    @GetMapping("/{studentId}/courses")
+//    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+//        List<Map<String, Object>> courses = studentService.getCoursesByStudentId(studentId);
+//        return ResponseEntity.ok(courses);
+//    }
+
+
+    // Tạo feedback cho giáo viên
+//    @PostMapping("/{studentId}/courses/{courseId}/feedback")
+//    public ResponseEntity<Feedback> createFeedback(@PathVariable int studentId,
+//                                                   @PathVariable int courseId,
+//                                                   @RequestBody Feedback feedback) {
+//        Course course = studentService.getCourseById(courseId);
+//
+//        if (course == null || !course.getStudents().stream().anyMatch(student -> student.getId() == studentId)) {
+//            return ResponseEntity.badRequest().build();
+//        }
+//
+//        feedback.getActor();
+//
+//        feedback.setCourse(course);
+//        Feedback savedFeedback = studentService.createFeedback(feedback);
+//        return ResponseEntity.ok(savedFeedback);
+//    }
+
     // lấy ra các khó hjc mà thằng học sinh đó đang học
     @GetMapping("/{studentId}/timetable")
     @ResponseBody
@@ -77,10 +104,10 @@ public class StudentController {
     }
 
     // Feedback
-    @GetMapping("/feedback/{userCode}")
+    @GetMapping("/feedback/{userName}")
     @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserCode(@PathVariable String userCode) {
-        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserName(userCode);
+    public ResponseEntity<List<Map<String, Object>>> getFeedbackByUserName(@PathVariable String userName) {
+        List<Map<String, Object>> feedbacks = studentService.getFeedbackByUserName(userName);
         return ResponseEntity.ok(feedbacks);
     }
 

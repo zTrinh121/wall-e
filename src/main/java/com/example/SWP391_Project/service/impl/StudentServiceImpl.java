@@ -193,10 +193,16 @@ public class StudentServiceImpl implements StudentService {
                 "WHERE u.C14_USERNAME = :userCode";
 
         System.out.println("Query: " + query);
-        System.out.println("User Code: " + userName);
+        System.out.println("Student ID: " + userName);
 
-        Query nativeQuery = entityManager.createNativeQuery(query, Tuple.class);
-        nativeQuery.setParameter("userCode", userName);
+//        Query nativeQuery = entityManager.createNativeQuery(query);
+//        nativeQuery.setParameter("studentId", userCode);
+
+//        List<Object[]> resultList = nativeQuery.getResultList();
+//        List<Map<String, Object>> grades = new ArrayList<>();
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("userName", userName);
 
         List<Tuple> resultList = nativeQuery.getResultList();
         List<Map<String, Object>> feedbacks = new ArrayList<>();

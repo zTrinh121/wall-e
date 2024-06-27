@@ -104,28 +104,35 @@ public class UserController {
 
     @PostMapping("/login")
     public String loginUser(@RequestParam String username, @RequestParam String password, @RequestParam int roleId, Model model, HttpSession session) {
-        if (userService.authenticateUser(username, password, roleId)) {
-            User user = userService.findByUsername(username);
-            session.setAttribute("authid", user.getId());
-            session.setAttribute("user", user);
+
+        User user = userService.findByUsername(username);
+        if (user != null) {
+            System.out.println("Hash on login: " + user.getPassword());
+
+            if (userService.authenticateUser(username, password, roleId)) {
+                //User user = userService.findByUsername(username);
+                session.setAttribute("authid", user.getId());
+                session.setAttribute("user", user);
+                session.setAttribute("username", user.getUsername());
 //            session.setAttribute("userId", user.getId());//***
 
-            System.out.println( session.getAttribute("authid"));
-            String roleDesc = user.getRole().getDescription().name();
+                System.out.println(session.getAttribute("authid"));
+                String roleDesc = user.getRole().getDescription().name();
 
-            switch (roleDesc) {
-                case "ADMIN":
-                    return "redirect:/admin";
-                case "STUDENT":
-                    return "redirect:/student-dashboard";
-                case "PARENT":
-                    return "redirect:/parent-dashboard";
-                case "TEACHER":
-                    return "redirect:/teacher-dashboard";
-                case "MANAGER":
-                    return "managerHome";
-                default:
-                    return "redirect:/login";
+                switch (roleDesc) {
+                    case "ADMIN":
+                        return "redirect:/admin";
+                    case "STUDENT":
+                        return "redirect:/student-dashboard";
+                    case "PARENT":
+                        return "redirect:/parent-dashboard";
+                    case "TEACHER":
+                        return "redirect:/teacher-dashboard";
+                    case "MANAGER":
+                        return "managerHome";
+                    default:
+                        return "redirect:/login";
+                }
             }
         }
 
@@ -250,21 +257,21 @@ public class UserController {
         model.addAttribute("roles", roles);
         return "register";
     }
-/// test
-@PostMapping("/register")
-@ResponseBody
-public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
-    Map<String, String> errors = new HashMap<>();
-    if (userService.findByUsername(user.getUsername()) != null) {
-        errors.put("usernameError", "Tên người dùng đã tồn tại");
-    }
-    if (userService.findByEmail(user.getEmail()) != null) {
-        errors.put("emailError", "Email đã tồn tại");
-    }
+    /// test
+    @PostMapping("/register")
+    @ResponseBody
+    public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
+        Map<String, String> errors = new HashMap<>();
+        if (userService.findByUsername(user.getUsername()) != null) {
+            errors.put("usernameError", "Tên người dùng đã tồn tại");
+        }
+        if (userService.findByEmail(user.getEmail()) != null) {
+            errors.put("emailError", "Email đã tồn tại");
+        }
 
-    if (!errors.isEmpty()) {
-        return ResponseEntity.badRequest().body(errors);
-    }
+        if (!errors.isEmpty()) {
+            return ResponseEntity.badRequest().body(errors);
+        }
 
     // Tạo và gán mã người dùng
     String userCode = userService.generateUserCode();
@@ -274,16 +281,16 @@ public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam i
     user.setRole(role);
     user.setStatus(false);
 
-    // Tạo mã xác nhận và gửi email
-    String verificationCode = userService.generateVerificationCode();
-    session.setAttribute("userToRegister", user);
-    session.setAttribute("verificationCode", verificationCode);
-    userService.sendEmail(user.getEmail(), verificationCode);
+        // Tạo mã xác nhận và gửi email
+        String verificationCode = userService.generateVerificationCode();
+        session.setAttribute("userToRegister", user);
+        session.setAttribute("verificationCode", verificationCode);
+        userService.sendEmail(user.getEmail(), verificationCode);
 
-    //errors.put("redirect", "/verify-email");  // URL cho trang nhập mã xác nhận
+        //errors.put("redirect", "/verify-email");  // URL cho trang nhập mã xác nhận
 //    return ResponseEntity.ok(errors);
-    return ResponseEntity.ok().body(Map.of("redirect", "/verify-email"));
-}
+        return ResponseEntity.ok().body(Map.of("redirect", "/verify-email"));
+    }
 
 
 
@@ -427,18 +434,25 @@ public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam i
         model.addAttribute("newPassword", "");
         return "reset-password";
     }
-
+    // làm
     @PostMapping("/reset-password")
-    public String resetPassword(@RequestParam String newPassword, HttpSession session, Model model) {
+    public String resetPassword(@RequestParam String newPassword, @RequestParam String confirmPassword, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
         if (user != null) {
+            if (!newPassword.equals(confirmPassword)) {
+                model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp");
+                return "reset-password";
+            }
+
             user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
             userService.saveUser(user);
+            session.invalidate();  // Hủy session hiện tại để yêu cầu đăng nhập lại
             return "redirect:/login";
         }
         model.addAttribute("error", "Invalid reset process");
         return "reset-password";
     }
+
 
     @GetMapping("/change-password")
     public String changePassword(Model model) {
@@ -537,20 +551,30 @@ public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam i
         model.addAttribute("roles", roles);
         return "change-password";
     }
-
+    // làm
     @PostMapping("/change-password")
-    public String changePassword(@RequestParam String email, @RequestParam String userCode, @RequestParam int roleId,
-                                 @RequestParam String currentPassword, @RequestParam String newPassword, HttpSession session, Model model) {
-        User user = userService.findByEmailAndCode(email, userCode);
-        if (user == null || user.getRole().getId() != roleId || !BCrypt.checkpw(currentPassword, user.getPassword())) {
-            model.addAttribute("error", "Invalid credentials");
+    public String changePassword(@RequestParam String currentPassword, @RequestParam String newPassword, @RequestParam String confirmPassword, HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        if (!BCrypt.checkpw(currentPassword, user.getPassword())) {
+            model.addAttribute("error", "Mật khẩu hiện tại không đúng");
             return "change-password";
         }
-        user.setPassword(BCrypt.hashpw(newPassword, BCrypt.gensalt()));
+        if (!newPassword.equals(confirmPassword)) {
+            model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp");
+            return "change-password";
+        }
+        String newHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
+        System.out.println("New hash: " + newHash); // Log new hash
+        user.setPassword(newHash);
         userService.saveUser(user);
-        session.invalidate(); // Invalidate session after password change
         return "redirect:/login";
     }
+
+
+
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {

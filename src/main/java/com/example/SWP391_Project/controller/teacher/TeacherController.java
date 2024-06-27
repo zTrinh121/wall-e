@@ -15,18 +15,23 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api/teacher")
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
+//mmm
+@GetMapping("/{teacherId}/courses")
+public ResponseEntity<List<Map<String, Object>>> getCoursesByTeacherId(@PathVariable Long teacherId) {
+    List<Map<String, Object>> courseNames = teacherService.getCourseNamesByTeacherId(teacherId);
+    return ResponseEntity.ok(courseNames);
+}
 
-    @GetMapping("/{teacherId}/courses")
-    public ResponseEntity<List<String>> getCoursesByTeacherId(@PathVariable Long teacherId) {
-        List<String> courseNames = teacherService.getCourseNamesByTeacherId(teacherId);
-        return ResponseEntity.ok(courseNames);
-    }
+
+
+
 
     @GetMapping("/courses/{courseId}/students")
 
@@ -40,33 +45,39 @@ public class TeacherController {
         List<User> students = teacherService.searchStudentsByCourseIdAndName(courseId, studentName);
         return ResponseEntity.ok(students);
     }
+// ssx
+@GetMapping("/courses/{courseId}/schedule")
+public ResponseEntity<List<Map<String, Object>>> getScheduleByCourseId(@PathVariable Long courseId) {
+    List<Map<String, Object>> schedule = teacherService.getScheduleByCourseId(courseId);
+    return ResponseEntity.ok(schedule);
+}
 
-    @GetMapping("/courses/{courseId}/schedule")
-    public ResponseEntity<List<Object[]>> getScheduleByCourseId(@PathVariable Long courseId) {
-        List<Object[]> schedule = teacherService.getScheduleByCourseId(courseId);
-        return ResponseEntity.ok(schedule);
-    }
+
 
 
     // CRUD điểm
     @GetMapping("/courses/{courseId}/students/{studentId}/results")
-    public ResponseEntity<List<Object[]>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
-        List<Object[]> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
+    public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
+        List<Map<String, Object>> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
         return ResponseEntity.ok(results);
     }
 
-    @PostMapping("/courses/{courseId}/students/{studentId}/results")
-    public ResponseEntity<Result> createResult(@RequestBody Result result) {
-        Result createdResult = teacherService.createResult(result);
-        return ResponseEntity.ok(createdResult);
-    }
+
+
+@PatchMapping("/results/{resultId}")
+public ResponseEntity<Result> updateResult(@PathVariable Long resultId, @RequestBody Map<String, Object> updates) {
+    Result updatedResult = teacherService.updateResult(resultId, updates);
+    return ResponseEntity.ok(updatedResult);
+}
+
 
     @PutMapping("/results/{resultId}")
     public ResponseEntity<Result> updateResult(@PathVariable int resultId, @RequestBody Result result) {
         result.setId(resultId);
         Result updatedResult = teacherService.updateResult(result);
-        return ResponseEntity.ok(updatedResult);
+        return   ResponseEntity.ok(updatedResult);
     }
+
 
     @DeleteMapping("/results/{resultId}")
     public ResponseEntity<Void> deleteResult(@PathVariable Long resultId) {
@@ -76,10 +87,11 @@ public class TeacherController {
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
     @GetMapping("/{teacherId}/schedule")
-    public ResponseEntity<List<Object[]>> getScheduleByTeacherId(@PathVariable Long teacherId) {
-        List<Object[]> schedule = teacherService.getScheduleByTeacherId(teacherId);
+    public ResponseEntity<List<Map<String, Object>>> getScheduleByTeacherId(@PathVariable Long teacherId) {
+        List<Map<String, Object>> schedule = teacherService.getScheduleByTeacherId(teacherId);
         return ResponseEntity.ok(schedule);
     }
+
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
     @GetMapping("/{teacherId}/schedule/{centerId}")
@@ -107,7 +119,7 @@ public class TeacherController {
 //        return ResponseEntity.ok(notifications);
 //    }
 //
-//    // in ra cả 3
+    // in ra cả 3
 //    @GetMapping("/notifications/all")
 //    public ResponseEntity<NotificationResponse> getAllNotifications() {
 //        NotificationResponse notifications = teacherService.getAllNotifications();
