@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded", function () {
     const bell = document.getElementById("bell");
     const contentNotification = document.querySelector(".content-notification");
+    const systemNotification = document.querySelector(".system-notification");
     const profileDropdownList = document.querySelector(".profile-dropdown-list");
     const profileDropdownBtn = document.querySelector(".profile-dropdown-btn");
     const notificationModal = document.getElementById("notificationModal");
@@ -8,25 +9,38 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationDetails = document.getElementById("notificationDetails");
     const closeModal = document.getElementById("viewNotificationModalClose");
     const userRole = document.getElementById("user-role").innerHTML;
-    console.log("Vai tro: " + userRole);
+    let apiRole;
     let apiNotificationUrlGet;
     let allNotifications = [];
+    let allNotificationsUnseen = [];
+    let allNotificationSeen = [];
+    let allNotificationSystem = [];
+    let allNotificationSystemUnseen = [];
+    let allNotificationSystemSeen = [];
+    let allNotificationCenter = [];
+    let allNotificationCenterSeen = [];
+    let allNotificationCenterUnseen = [];
+    let allNotificationPrivate = [];
+    let allNotificationPrivateUnseen = [];
+    let allNotificationPrivateSeen = [];
 
     switch (userRole){
         case "PARENT":
-            apiNotificationUrlGet = `/parent/notifications/all`;
+            apiNotificationUrlGet = `api/parent/notifications/all`;
+            apiRole = `api/parent`;
             break;
         case "STUDENT":
             apiNotificationUrlGet = `api/student/notifications/all`
+            apiRole = `api/student`;
             break;
         case "TEACHER":
             apiNotificationUrlGet = `api/teacher/notifications/all`
+            apiRole = `api/teacher`;
             break;
     }
-
     function toggleProfileDropdown() {
         profileDropdownList.classList.toggle("active");
-        contentNotification.style.display = "none"; // Hide notification dropdown
+        contentNotification.style.display = "none";
     }
 
     function toggleNotificationDropdown() {
@@ -34,12 +48,14 @@ document.addEventListener("DOMContentLoaded", function () {
             contentNotification.style.display = "none";
         } else {
             contentNotification.style.display = "block";
+            systemNotification.style.display = "block";
             fetchNotifications(apiNotificationUrlGet);
         }
         profileDropdownList.classList.remove("active");
     }
 
     bell.addEventListener("click", function () {
+        console.log("Bell clicked"); // Kiểm tra xem sự kiện click có được kích hoạt hay không
         toggleNotificationDropdown();
     });
 
@@ -47,7 +63,6 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleProfileDropdown();
     });
 
-    // Close both dropdowns if the user clicks outside of them
     window.addEventListener("click", function (event) {
         if (
             !bell.contains(event.target) &&
@@ -84,10 +99,22 @@ document.addEventListener("DOMContentLoaded", function () {
         notificationCountElement.style.display = 'none';
     }
 
-    function fetchNotifications(url) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
+    // function fetchNotifications(url) {
+    //     fetch(url)
+    //         .then(response => response.json())
+    //         .then(data => {
+    //             allNotificationCenter = data.centerNotifications;
+    //             allNotificationPrivate = data.individualNotifications;
+    //             allNotificationSystem = data.systemNotifications;
+    //
+    //             for (const notification of allNotificationSystem){
+    //                 const hasSeen = await checkHasSeenSystemNotification(notification.id);
+    //                 if(hasSeen){
+    //                     allNotificationS
+    //                 }
+    //             }
+
+
                 allNotifications.push(...data.individualNotifications);
                 if(userRole != "PARENT"){
                     allNotifications.push(...data.centerNotifications);
@@ -96,12 +123,19 @@ document.addEventListener("DOMContentLoaded", function () {
                 allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
                 console.log(allNotifications)
                 notificationCount = allNotifications.length;
-                console.log(allNotifications.length)
-                displayNotifications(allNotifications); // Assuming response contains notifications array
+                displayNotifications(allNotifications);
             })
             .catch(error => console.error('Error fetching notifications:', error));
     }
 
+    async function checkHasSeenSystemNotification(systemNotificationId){
+        const response = await fetch(`${apiRole}/systemNotification/${systemNotificationId}/check`);
+        if (!response.ok) {
+            throw new Error('Error checking system notification status');
+        }
+        const hasSeen = await response.json();
+        return hasSeen;
+    }
 
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
@@ -115,21 +149,17 @@ document.addEventListener("DOMContentLoaded", function () {
                 const notificationItem = document.createElement('div');
                 notificationItem.classList.add('notification-item');
 
-                // Create the icon element
                 const icon = document.createElement('img');
                 icon.classList.add('bell-decor');
                 icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`
 
-                // Create a container for the text and time
                 const textContainer = document.createElement('div');
                 textContainer.classList.add('text-container');
 
-                // Create the text element
                 const text = document.createElement('span');
                 text.classList.add('notification-title');
                 text.textContent = notification.title; // Adjust based on your notification structure
 
-                // Create the time element
                 const time = document.createElement('span');
                 time.classList.add('notification-time');
                 time.textContent = timeAgo(notification.createdAt);
@@ -147,7 +177,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 contentNotification.appendChild(notificationItem);
             });
 
-            // Move "More" button to the end
             if (moreButton) {
                 contentNotification.appendChild(moreButton);
             }
@@ -181,7 +210,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
     function timeAgo(date) {
         const now = new Date();
         const diff = now - new Date(date);
@@ -203,13 +231,6 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    //
-    // function showNotificationDetails(notification) {
-    //     notificationTitle.textContent = notification.title;
-    //     notificationDetails.textContent = notification.content; // Adjust based on your notification structure
-    //     notificationModal.style.display = "block";
-    // }
-
     closeModal.addEventListener('click', () => {
         notificationModal.style.display = "none";
     });
@@ -220,7 +241,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    // Start chat box
     const textarea = document.querySelector('.chatbox-message-input');
     const chatboxForm = document.querySelector('.chatbox-message-form');
 
@@ -347,8 +367,8 @@ $(document).ready(function() {
                     // Thêm sự kiện click cho mỗi kết quả tìm kiếm
                     $('.search-item').click(function() {
                         var url = $(this).data('url');
-                        sessionStorage.setItem('searchDetails', $(this).text()); // Lưu tên vào sessionStorage
-                        window.location.href = url; // Chuyển hướng tới trang chi tiết
+                        sessionStorage.setItem('searchDetails', $(this).text());
+                        window.location.href = url;
                     });
                 },
                 error: function(error) {
