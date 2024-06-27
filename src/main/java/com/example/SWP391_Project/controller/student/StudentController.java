@@ -176,7 +176,6 @@ public class StudentController {
         }
     }
 
-
     // ------------------------- NOTIFICATION -----------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
@@ -238,13 +237,6 @@ public class StudentController {
         return ResponseEntity.ok(hasSeen);
     }
 
-    // ----------------------------- ????????????? ---------------------------
-    @GetMapping("/{studentId}/courses")
-    @ResponseBody
-    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
-        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
-        return ResponseEntity.ok(courses);
-    }
 
     // ---------------------------- FEEDBACK ------------------------------
 
