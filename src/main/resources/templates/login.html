@@ -6,14 +6,14 @@
     <title>Login & Register Form</title>
     <link rel="stylesheet" href="/css/authSignIn.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
-<!--    <img src="/images/book3d.png" alt="Description of the image" style="width: 300px; height: auto;">-->
+    <!--    <img src="/images/book3d.png" alt="Description of the image" style="width: 300px; height: auto;">-->
     <style>
         body {
             background-image: url('/images/edudesc.jpg');
             background-size: cover;
             background-position: center;
             background-repeat: no-repeat;
-            width: 900px;
+            width: 100vw;
             height: auto
         }
     </style>
@@ -43,7 +43,7 @@
                     <input type="text" required placeholder="Tên người dùng" name="username" th:value="${username}">
                 </div>
                 <div class="field">
-                    <input type="password" required placeholder="Nhập mật khẩu" name="password" th:value="${password}">
+                    <input type="password" required placeholder="Nhập mật khẩu" name="password">
                 </div>
                 <div class="field">
                     <select name="roleId" required>
@@ -55,42 +55,64 @@
                     <div class="btn-layer"></div>
                     <input type="submit" value="Đăng Nhập">
                 </div>
-                <div class="signup-link">Chưa có Tài khoản? <a href="">Đăng Kí</a></div>
+                <!-- Thêm thông báo lỗi ở đây -->
+                <div th:if="${error}" class="error-message" th:text="${error}"></div>
+
+                <div class="signup-link">Chưa có Tài khoản? <a th:href="@{/register}">Đăng Kí</a></div>
             </form>
-            <form th:action="@{/register}" method="post">
-<!--                <div class="field">-->
-<!--                <input type="text" required placeholder="Họ và tên" name="name">-->
-<!--                </div>-->
+
+
+            <form id="registrationForm" th:action="@{/register}" method="post">
+                <!--                <div class="field">-->
+                <!--                <input type="text" required placeholder="Họ và tên" name="name">-->
+                <!--                </div>-->
+                <!--                <div id="errorMessage" style="color: red;"></div>-->
                 <div class="field">
-                <input type="text" required placeholder="Tên người dùng" name="username">
+                    <input type="text" id="username" required placeholder="Tên người dùng" name="username">
+                    <div id="usernameError" class="error-message"></div>
                 </div>
+
+                <!--                    <label for="user name">Username:</label>-->
+                <!--                    <input type="text" id="username" name="username" required>-->
+                <!--                    <div id="usernameError" class="error-message"></div>-->
+
                 <div th:if="${usernameError}" class="error-message">
                     <p th:text="${usernameError}"></p>
                 </div>
                 <div class="field">
-                <input type="email" required placeholder="Nhập email" name="email">
+                    <input type="email" id="email" required placeholder="Nhập email" name="email">
+                    <div id="emailError" class="error-message"></div>
                 </div>
                 <div th:if="${emailError}" class="error-message">
                     <p th:text="${emailError}"></p>
                 </div>
                 <div class="field">
-                <input type="password" required placeholder="Nhập mật khẩu" name="password" id="password">
+                    <input type="password" required placeholder="Nhập mật khẩu" name="password" id="password">
+                    <div id="passwordError" class="error-message"></div>
                 </div>
-                    <div class="field">
-                <input type="password" required placeholder="Xác nhận mật khẩu" name="confirmPassword" id="confirmPassword" >
-                    </div>
+
                 <div class="field">
-                <input type="text" required placeholder="Số điện thoại" name="phone">
+                    <input type="password" required placeholder="Xác nhận mật khẩu" name="confirmPassword" id="confirmPassword" >
                 </div>
-<!--                <div class="field">-->
-<!--                <input type="text" required placeholder="Mã người dùng" name="code">-->
-<!--                </div>-->
                 <div class="field">
-                <select name="roleId" required>
-                    <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
-                </select>
+                    <input type="text" required placeholder="Số điện thoại" name="phone">
                 </div>
-                <button type="submit" class="button">Đăng ký</button>
+                <!--                <div class="field">-->
+                <!--                <input type="text" required placeholder="Mã người dùng" name="code">-->
+                <!--                </div>-->
+                <div class="field">
+                    <select name="roleId" required>
+                        <option th:each="role : ${roles}" th:value="${role.id}" th:text="${role.description}"></option>
+                    </select>
+                </div>
+                <div>
+
+                </div>
+                <div class="field btn">
+                    <div class="btn-layer"></div>
+                    <input type="submit" value="Đăng ký" id="registerButton">
+                </div>
+                <div class="register-link">Đã có Tài khoản? <a href="">Đăng Nhập</a></div>
             </form>
         </div>
     </div>
@@ -129,4 +151,121 @@
 <!--<img src="/images/book3d.png" alt="Description of the image" style="width: 300px; height: auto;">-->
 
 </body>
+
+<!-- Modal -->
+<div id="verifyEmailModal" class="modal">
+    <div class="modal-content">
+        <span class="close">&times;</span>
+        <div class="form-header">
+            <div class="title">Xác Nhận Email</div>
+            <p>Chúng tôi đã gửi một mã xác nhận đến email của bạn. Vui lòng nhập mã đó vào ô dưới đây.</p>
+        </div>
+        <form action="/verify-email" method="post">
+            <div class="otp-field">
+                <input type="text" required placeholder="Mã xác nhận" name="code">
+            </div>
+            <div class="field btn">
+                <input type="submit" value="Xác Nhận">
+            </div>
+            <div class="error" style="display: none;">
+                <p>Một lỗi đã xảy ra, vui lòng thử lại.</p>
+            </div>
+            <div class="countdown">
+                <div class="circle">
+                    <div class="timer" id="timer">60</div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+
 </html>
+
+<script>
+    // Đăng ký form và xử lý mật khẩu
+    document.getElementById("registrationForm").addEventListener("submit", function(event) {
+        event.preventDefault(); // Ngăn không cho form gửi đi ngay lập tức
+
+        var password = document.getElementById("password").value;
+        var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        var passwordError = document.getElementById("passwordError");
+
+        if (!passwordRegex.test(password)) {
+            passwordError.innerHTML = "<div class='error-message'>Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ cái in hoa, chữ cái thường, số và ký tự đặc biệt.</div>";
+            return; // Ngăn form gửi nếu mật khẩu không hợp lệ
+        } else {
+            passwordError.innerHTML = ''; // Xóa thông báo lỗi nếu mật khẩu hợp lệ
+        }
+
+        // Gửi form nếu mật khẩu hợp lệ
+        var formData = new FormData(this);
+
+        fetch('/register', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => {
+                if (!response.ok) {
+                    return response.json().then(data => Promise.reject(data));  // Chuyển thành lỗi nếu phản hồi không ok
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Chuyển hướng nếu đăng ký thành công
+                window.location.href = data.redirect;
+            })
+            .catch(data => {
+                console.error('Error:', data);
+                // Xóa các thông báo lỗi cũ
+                document.getElementById("usernameError").innerText = '';
+                document.getElementById("emailError").innerText = '';
+
+                // Cập nhật lỗi dựa trên dữ liệu từ server
+                if (data.usernameError) {
+                    document.getElementById("usernameError").innerText = data.usernameError;
+                }
+                if (data.emailError) {
+                    document.getElementById("emailError").innerText = data.emailError;
+                }
+            });
+    });
+
+    // Đóng modal xác nhận email khi nhấp vào nút đóng
+    document.querySelector('.close').addEventListener('click', function() {
+        document.getElementById('verifyEmailModal').style.display = 'none';
+    });
+
+    // Kiểm tra nhấp ngoài modal để đóng modal
+    window.onclick = function(event) {
+        var modal = document.getElementById('verifyEmailModal');
+        if (event.target == modal) {
+            modal.style.display = 'none';
+        }
+    };
+
+    // Bộ đếm thời gian cho modal xác nhận email
+    var timeLeft = 60;
+    var timerId = null;
+
+    function startCountdown() {
+        if (timerId) {
+            clearInterval(timerId); // Đảm bảo chỉ có một bộ đếm thời gian chạy
+        }
+        timerId = setInterval(countdown, 1000);
+    }
+
+    function countdown() {
+        if (timeLeft == 0) {
+            clearTimeout(timerId);
+            document.getElementById('verifyEmailModal').style.display = 'none';
+        } else {
+            document.getElementById("timer").innerHTML = timeLeft;
+            timeLeft--;
+        }
+    }
+</script>
+
+
+
+
