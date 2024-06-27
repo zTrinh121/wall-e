@@ -99,36 +99,68 @@ document.addEventListener("DOMContentLoaded", function () {
         notificationCountElement.style.display = 'none';
     }
 
-    // function fetchNotifications(url) {
-    //     fetch(url)
-    //         .then(response => response.json())
-    //         .then(data => {
-    //             allNotificationCenter = data.centerNotifications;
-    //             allNotificationPrivate = data.individualNotifications;
-    //             allNotificationSystem = data.systemNotifications;
-    //
-    //             for (const notification of allNotificationSystem){
-    //                 const hasSeen = await checkHasSeenSystemNotification(notification.id);
-    //                 if(hasSeen){
-    //                     allNotificationS
-    //                 }
-    //             }
+    async function fetchNotifications(url) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
 
+            if (userRole != "PARENT") {
+                allNotifications.push(...data.centerNotifications);
+                allNotificationCenter = data.centerNotifications;
 
-                allNotifications.push(...data.individualNotifications);
-                if(userRole != "PARENT"){
-                    allNotifications.push(...data.centerNotifications);
-                }
-                allNotifications.push(...data.systemNotifications);
-                allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                console.log(allNotifications)
-                notificationCount = allNotifications.length;
-                displayNotifications(allNotifications);
+                const centerNotificationPromises = allNotificationCenter.map(async (notification) => {
+                    const hasSeen = await checkHasSeenCenterNotification(notification.id);
+                    if (hasSeen) {
+                        allNotificationCenterSeen.push(notification);
+                    } else {
+                        allNotificationCenterUnseen.push(notification);
+                    }
+                });
+                await Promise.all(centerNotificationPromises);
+            }
+
+            allNotificationPrivate = data.individualNotifications;
+            allNotificationPrivateSeen = data.individualNotifications.filter(notification => {
+                return notification.hasSeen === true;
             })
-            .catch(error => console.error('Error fetching notifications:', error));
+            allNotificationPrivateUnseen = data.individualNotifications.filter(notification => {
+                return notification.hasSeen !== true;
+            })
+
+            allNotificationSystem = data.systemNotifications;
+
+            const systemNotificationPromises = allNotificationSystem.map(async (notification) => {
+                const hasSeen = await checkHasSeenSystemNotification(notification.id);
+                if (hasSeen) {
+                    allNotificationSystemSeen.push(notification);
+                } else {
+                    allNotificationSystemUnseen.push(notification);
+                }
+            });
+            await Promise.all(systemNotificationPromises);
+            console.log("Notification: ");
+            console.log(allNotificationPrivateUnseen)
+            allNotifications.push(...data.individualNotifications);
+            allNotifications.push(...data.systemNotifications);
+            allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            notificationCount = allNotifications.length;
+            displayNotifications(allNotifications);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
     }
 
-    async function checkHasSeenSystemNotification(systemNotificationId){
+    async function checkHasSeenCenterNotification(centerNotificationId) {
+        const response = await fetch(`${apiRole}/centerNotification/${centerNotificationId}/check`);
+        if (!response.ok) {
+            throw new Error('Error checking center notification status');
+        }
+        const hasSeen = await response.json();
+        return hasSeen;
+    }
+
+    async function checkHasSeenSystemNotification(systemNotificationId) {
         const response = await fetch(`${apiRole}/systemNotification/${systemNotificationId}/check`);
         if (!response.ok) {
             throw new Error('Error checking system notification status');
@@ -136,6 +168,7 @@ document.addEventListener("DOMContentLoaded", function () {
         const hasSeen = await response.json();
         return hasSeen;
     }
+
 
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
@@ -230,10 +263,6 @@ document.addEventListener("DOMContentLoaded", function () {
         return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
     }
 
-
-    closeModal.addEventListener('click', () => {
-        notificationModal.style.display = "none";
-    });
 
     window.addEventListener('click', (event) => {
         if (event.target === notificationModal) {
