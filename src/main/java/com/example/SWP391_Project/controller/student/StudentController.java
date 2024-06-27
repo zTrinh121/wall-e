@@ -1,15 +1,14 @@
 package com.example.SWP391_Project.controller.student;
 
-import com.example.SWP391_Project.model.Course;
-import com.example.SWP391_Project.model.Feedback;
-import com.example.SWP391_Project.model.Slot;
-import com.example.SWP391_Project.model.User;
+import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.StudentService;
 import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailService;
 import com.example.SWP391_Project.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -17,13 +16,14 @@ import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 
 @Controller
-@RequestMapping("/api/students")
+@RequestMapping("/api/student")
 public class StudentController {
 
     @Autowired
@@ -88,7 +88,7 @@ public class StudentController {
 //    }
 
     // lấy ra các khó hjc mà thằng học sinh đó đang học
-    @GetMapping("/{studentId}/courses")
+    @GetMapping("/{studentId}/timetable")
     @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getStudentSchedule(@PathVariable int studentId) {
         List<Map<String, Object>> schedule = studentService.getStudentSchedule(studentId);
@@ -118,21 +118,6 @@ public class StudentController {
         List<Map<String, Object>> students = studentService.getStudentsByCourseId(courseId);
         return ResponseEntity.ok(students);
     }
-
-//    @GetMapping("/private-notifications/{userCode}")
-//    @ResponseBody
-//    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
-//        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/public-notifications/{userId}/{centerId}")
-//    @ResponseBody
-//    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(
-//            @PathVariable int userId, @PathVariable int centerId) {
-//        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
-//        return ResponseEntity.ok(notifications);
-//    }
 
     @GetMapping("/{studentId}/attendance")
     @ResponseBody
@@ -215,32 +200,85 @@ public class StudentController {
         }
     }
 
+    // ---------------------- GET ALL MATERIALS ----------------------------
+    @GetMapping("/allMaterials")
+    public ResponseEntity<List<Material>> getAllMaterials() {
+        List<Material> materials = studentService.getAllMaterials();
+        if (materials.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        } else {
+            return ResponseEntity.ok(materials);
+        }
+    }
 
-    //--------------------------------------
-//    @GetMapping("/private-notifications/{userCode}")
-//    @ResponseBody
-//    public ResponseEntity<List<Map<String, Object>>> getPrivateNotificationsByUserCode(@PathVariable String userCode) {
-//        List<Map<String, Object>> notifications = studentService.getPrivateNotificationsByUserCode(userCode);
-//        return notifications.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/public-notifications/{userId}/{centerId}")
-//    @ResponseBody
-//    public ResponseEntity<List<Map<String, Object>>> getPublicNotificationsByUserIdAndCenterId(@PathVariable int userId, @PathVariable int centerId) {
-//        List<Map<String, Object>> notifications = studentService.getPublicNotificationsByUserIdAndCenterId(userId, centerId);
-//        return notifications.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(notifications);
-//    }
 
-//    @GetMapping("/notifications")
-//    @ResponseBody
-//    public ResponseEntity<List<Map<String, Object>>> getAllNotifications() {
-//        List<Map<String, Object>> notifications = studentService.getAllNotifications();
-//        if (notifications.isEmpty()) {
-//            return ResponseEntity.noContent().build();
-//        }
-//        return ResponseEntity.ok(notifications);
-//    }
+    // ------------------------- NOTIFICATION -----------------------------
+    @GetMapping("notifications/all")
+    public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        NotificationResponse notificationResponse = studentService.getAllNotifications(studentId);
+        return ResponseEntity.ok(notificationResponse);
+    }
 
+    @PatchMapping("/individualNotification/update/{notificationId}")
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
+        return studentService.updateIndividualNotification(notificationId);
+    }
+
+    @PostMapping("/viewCenterNotification/update/{notificationId}")
+    public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
+                                                               HttpSession session) {
+        User student = (User) session.getAttribute("authid");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        return studentService.updateViewCenterNotification(notificationId, student);
+    }
+
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
+    public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
+                                                               HttpSession session) {
+        User student = (User) session.getAttribute("authid");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        return studentService.updateViewSystemNotification(notificationId, student);
+    }
+
+    @GetMapping("/centerNotification/{centerNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenCenterNotification(
+            @PathVariable int centerNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenCenterNotification(centerNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    // API endpoint for checking if a system notification has been seen by a student
+    @GetMapping("/systemNotification/{systemNotificationId}/check")
+    public ResponseEntity<Boolean> checkHasSeenSystemNotification(
+            @PathVariable int systemNotificationId,
+            HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        Boolean hasSeen = studentService.checkHasSeenSystemNotification(systemNotificationId, studentId);
+        return ResponseEntity.ok(hasSeen);
+    }
+
+    @GetMapping("/{studentId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getStudentCourses(@PathVariable int studentId) {
+        List<Map<String, Object>> courses = studentService.getStudentCourse(studentId);
+        return ResponseEntity.ok(courses);
+    }
 }
 
 

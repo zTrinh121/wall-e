@@ -29,7 +29,7 @@ public class ViewSystemNotification {
     @ManyToOne
     @JoinColumn(name = "C19_HAS_SEEN_BY", nullable = false)
     @JsonManagedReference
-    User user;
+    User hasSeenBy;
 
     @Column(name = "C19_SEEN_TIME", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
     Date seenTime;

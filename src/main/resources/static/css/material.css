@@ -775,9 +775,14 @@ main .header button{
   line-height: 1rem;
 }
 
+.return{
+  font-size: 1rem;
+  cursor: pointer;
+}
+
 
 /* Upload button */
-#upload-btn, .button-item button {
+#upload-btn, .button-item button, #grade-buttons button, #subject-buttons button {
   display: flex;
   align-items: center;
   justify-content: center;
@@ -792,8 +797,38 @@ main .header button{
   cursor: pointer;
 }
 #upload-btn{
-  
+  width: 10rem;
+  color: #fff;
+  background: #2e4ead;
 }
+
+button.active {
+  background-color: #2e4ead !important; /* Blue color as an example */
+  color: white !important;
+}
+
+
+.item-material {
+  margin-top: 1rem;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.5rem; /* Adjust as needed */
+}
+
+
+#grade-buttons, #subject-buttons{
+  display: flex;
+  flex-wrap: wrap;
+}
+#grade-buttons button{
+  width: 6rem;
+}
+
+#subject-buttons button{
+  width: 7rem;
+}
+
+
 
 
 #upload-btn:hover, .button-item button:hover {
@@ -833,3 +868,16 @@ main .header button{
   background-color: #f3f4f6 !important; /* Hover color */
 }
 /*End list of material and list*/
+
+/*Start material detail*/
+#material-detail{
+  display: flex;
+  gap: 1rem;
+}
+.detail-material-intro{
+  background: #fff;
+  height: max-content;
+  padding: 1rem;
+  border-radius: 1rem;
+}
+/*End material detail*/

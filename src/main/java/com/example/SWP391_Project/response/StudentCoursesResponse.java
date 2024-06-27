@@ -10,19 +10,22 @@ import java.util.Date;
 @AllArgsConstructor
 @NoArgsConstructor
 public class StudentCoursesResponse {
-    private String studentCode;
 
+    private String studentUsername;
     private String studentName;
-
     private String studentPhone;
-
     private String studentAddress;
-
     private Date studentDob;
-
     private boolean studentGender;
-
     private String studentEmail;
 
     private String courseNames;
+
+    private String parentUsername;
+    private String parentName;
+    private String parentPhone;
+    private Date parentDob;
+    private Boolean parentGender;
+    private String parentEmail;
+
 }

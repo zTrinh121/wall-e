@@ -273,13 +273,13 @@ public class UserController {
             return ResponseEntity.badRequest().body(errors);
         }
 
-        // Tạo và gán mã người dùng
-        String userCode = userService.generateUserCode();
-        user.setCode(userCode);
+    // Tạo và gán mã người dùng
+    String userCode = userService.generateUserCode();
+    user.setCode(userCode);
 
-        Role role = userService.findRoleById(roleId);
-        user.setRole(role);
-        user.setStatus(false);
+    Role role = userService.findRoleById(roleId);
+    user.setRole(role);
+    user.setStatus(false);
 
         // Tạo mã xác nhận và gửi email
         String verificationCode = userService.generateVerificationCode();
@@ -885,32 +885,32 @@ public class UserController {
     }
 
 
-//    @PostMapping("PDF/File/upload")
-//    public String uploadMaterialPdf(
-//            @RequestParam("file") MultipartFile file,
-//            @RequestParam("materialsName") String materialsName,
-//            @RequestParam("subjectName") String subjectName,
-//            HttpSession httpSession) {
-//
-//        try {
-//            User user = (User) httpSession.getAttribute("user");
-//
-//            if (user == null) {
-//                return "redirect:/login";
-//            }
-//            if (!file.getContentType().equals("application/pdf")) {
-//                // Handle the case where the uploaded file is not a PDF
-//                System.err.println("Only PDF files are allowed.");
-//                return "redirect:/material-create?status=invalid_file_type";
-//            }
-//            teacherService.uploadPdfFile(file, subjectName, materialsName, user);
-//
-//            return "redirect:/material";
-//        } catch (Exception e) {
-//            System.err.println("Error uploading PDF: " + e.getMessage());
-//            return "redirect:/material";
-//        }
-//    }
+    @PostMapping("PDF/File/upload")
+    public String uploadMaterialPdf(
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("materialsName") String materialsName,
+            @RequestParam("subjectName") String subjectName,
+            HttpSession httpSession) {
+
+        try {
+            User user = (User) httpSession.getAttribute("user");
+
+            if (user == null) {
+                return "redirect:/login";
+            }
+            if (!file.getContentType().equals("application/pdf")) {
+                // Handle the case where the uploaded file is not a PDF
+                System.err.println("Only PDF files are allowed.");
+                return "redirect:/material-create?status=invalid_file_type";
+            }
+            teacherService.uploadPdfFile(file, subjectName, materialsName, user);
+
+            return "redirect:/material";
+        } catch (Exception e) {
+            System.err.println("Error uploading PDF: " + e.getMessage());
+            return "redirect:/material";
+        }
+    }
 
     @GetMapping("/material-detail")
     public String materialDetail(Model model, HttpSession session) {

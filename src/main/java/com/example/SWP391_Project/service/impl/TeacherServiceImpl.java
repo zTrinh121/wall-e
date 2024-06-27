@@ -3,14 +3,13 @@ package com.example.SWP391_Project.service.impl;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
-import com.example.SWP391_Project.repository.EnrollmentRepository;
-import com.example.SWP391_Project.repository.MaterialRepository;
-import com.example.SWP391_Project.repository.ResultRepository;
+import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
-import com.example.SWP391_Project.repository.TeacherRepository;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -24,14 +23,33 @@ import java.util.Map;
 public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private TeacherRepository teacherRepository;
+
     @Autowired
     private EnrollmentRepository enrollmentRepository;
+
     @Autowired
     private ResultRepository resultRepository;
+
     @Autowired
     private CloudinaryService cloudinaryService;
+
     @Autowired
     private MaterialRepository materialRepository;
+
+    @Autowired
+    private IndividualNotificationRepository individualNotificationRepository;
+
+    @Autowired
+    private CenterNotificationRepository centerNotificationRepository;
+
+    @Autowired
+    private SystemNotificationRepository systemNotificationRepository;
+
+    @Autowired
+    private ViewCenterNotificationRepository viewCenterNotificationRepository;
+
+    @Autowired
+    private ViewSystemNotificationRepository viewSystemNotificationRepository;
 
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
@@ -173,6 +191,7 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
         return teacherRepository.findScheduleByTeacherIdAndCenterId(teacherId, centerId);
     }
 
+
 //    // Lấy ra 3 loại thông báo
 //    @Override
 //    public List<PrivateNotification> getAllPrivateNotifications() {
@@ -205,16 +224,15 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
 
 
     @Transactional
-    public void uploadPdfFile(MultipartFile file, MaterialDto materialDto, User teacher) {
+    public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
         try {
             String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
             CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
-
             Material material = new Material();
-            material.setMaterialsName(materialDto.getMaterialsName()); // ten file FPD
-            material.setSubjectName(materialDto.getSubjectName());
+            material.setMaterialsName(materialsName); // ten file FPD
+            material.setSubjectName(subjectName);
             material.setTeacher(teacher);
             material.setPdfPath(response.getUrl());
             material.setCloudinaryPdfId(response.getPublicId());
@@ -223,5 +241,91 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload PDF file and save material: " + e.getMessage());
         }
+    }
+
+    @Override
+    public List<Material> getAllMaterials() {
+        return materialRepository.findAll
+                (Sort.by(Sort.Direction.DESC, "id"));
+    }
+
+    @Override
+    public List<Material> getMaterialsByTeacherId(int teacherId) {
+        Optional<List<Material>> materials = materialRepository.findByTeacher_Id(teacherId);
+        return materials.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public NotificationResponse getAllNotifications(int teacherId) {
+        List<IndividualNotification> individualNotifications
+                = individualNotificationRepository.findNotificationsByUserId(teacherId);
+        List<CenterNotification> centerNotifications
+                = centerNotificationRepository.findCenterNotificationsByUserId(teacherId);
+        List<SystemNotification> systemNotifications
+                = systemNotificationRepository.findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
+
+        List<NotificationResponse> notificationResponses = new ArrayList<>();
+        return new NotificationResponse(individualNotifications, centerNotifications, systemNotifications);
+    }
+
+    @Override
+    public IndividualNotification updateIndividualNotification(int notificationId) {
+        IndividualNotification notification = individualNotificationRepository.findById(notificationId)
+                .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
+        notification.setHasSeen(true);
+        notification.setSeenTime(new Date());
+        return individualNotificationRepository.save(notification);
+    }
+
+    @Override
+    public ViewCenterNotification updateViewCenterNotification(int notificationId, User teacher) {
+        Optional<CenterNotification> notification = centerNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The center notification not found!!");
+        }
+        CenterNotification notification1 = notification.get();
+
+        ViewCenterNotification viewCenterNotification = ViewCenterNotification.builder()
+                .centerNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
+        return viewCenterNotificationRepository.save(viewCenterNotification);
+    }
+
+    @Override
+    public ViewSystemNotification updateViewSystemNotification(int notificationId, User teacher) {
+        Optional<SystemNotification> notification = systemNotificationRepository.findById(notificationId);
+        if (!notification.isPresent()) {
+            throw new IllegalArgumentException("The system notification not found!!");
+        }
+        SystemNotification notification1 = notification.get();
+
+        ViewSystemNotification viewSystemNotification = ViewSystemNotification.builder()
+                .systemNotification(notification1)
+                .hasSeenBy(teacher)
+                .seenTime(new Date())
+                .build();
+        return viewSystemNotificationRepository.save(viewSystemNotification);
+    }
+
+    @Override
+    public Boolean checkHasSeenCenterNotification(int centerNotificationId, int teacherId) {
+        ViewCenterNotification hasView = viewCenterNotificationRepository
+                .findByCenterNotificationIdAndUserId(centerNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public Boolean checkHasSeenSystemNotification(int systemNotificationId, int teacherId) {
+        ViewSystemNotification hasView = viewSystemNotificationRepository
+                .findBySystemNotificationIdAndUserId(systemNotificationId, teacherId);
+        if (hasView == null) {
+            return false;
+        }
+        return true;
     }
 }

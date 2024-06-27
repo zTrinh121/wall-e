@@ -11,6 +11,7 @@ html, body {
   display: grid;
   height: 100%;
   width: 100vw;
+  width: 100vw;
   place-items: center;
   background: #ccc;
 }

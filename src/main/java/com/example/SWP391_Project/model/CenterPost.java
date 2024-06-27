@@ -25,7 +25,7 @@ public class CenterPost {
     @Column(name = "C21_TITLE", nullable = false)
     String title;
 
-    @Column(name = "C21_CONTENT", nullable = false)
+    @Column(name = "C21_CONTENT", nullable = false, columnDefinition = "TEXT")
     String content;
 
     @Column(name = "C21_POST_STATUS", nullable = false)

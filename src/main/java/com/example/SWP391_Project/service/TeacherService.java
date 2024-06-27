@@ -3,6 +3,7 @@ package com.example.SWP391_Project.service;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CloudinaryResponse;
+import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.utils.FileUploadUtil;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -36,17 +37,25 @@ public interface TeacherService {
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
      List<Object[]> getScheduleByTeacherIdAndCenterId(Long teacherId, Long centerId);
 
-//     // Lấy ra cả 3 loại thông báo
-//      List<PrivateNotification> getAllPrivateNotifications();
-//    List<PublicNotification> getAllPublicNotifications();
-//    List<SystemNotification> getAllSystemNotifications();
-//    // In ra car 3
-//    NotificationResponse getAllNotifications();
-//
-//
-//    // tạo thông báo private
-//    void addPrivateNotification(PrivateNotification notification);
+  void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher);
 
-    void uploadPdfFile(final MultipartFile file, MaterialDto materialDto, User teacher);
+    List<Material> getAllMaterials();
+
+    List<Material> getMaterialsByTeacherId(int teacherId);
+
+    // ------------------- NOTIFICATION -------------------
+    NotificationResponse getAllNotifications(int studentId);
+
+    ViewSystemNotification updateViewSystemNotification(int notificationId, User teacher);
+
+    IndividualNotification updateIndividualNotification(int notificationId);
+
+    ViewCenterNotification updateViewCenterNotification(int notificationId, User teacher);
+
+    Boolean checkHasSeenCenterNotification(int centerNotificationId,
+                                           int teacherId);
+
+    Boolean checkHasSeenSystemNotification(int systemNotificationId,
+                                           int teacherId);
 
 }
