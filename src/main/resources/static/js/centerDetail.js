@@ -191,44 +191,25 @@ document.addEventListener("DOMContentLoaded", () => {
     centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
     console.log("Center ID:", centerIdz);
 
-    var openDeleteModal = document.getElementById('openDeleteModal');
-    var deleteModaling = document.getElementById('deleteModaling');
-    var confirmDele = document.getElementById('confirmDele');
-    var cancelDeleBtn = document.getElementById('cancelDeleBtn');
-    //open modal
-    openDeleteModal.addEventListener("click", () => {
-        deleteModaling.style.display = 'block';
-    });
-    //cloe modal
-    cancelDeleBtn.addEventListener("click", () => {
-        deleteModaling.style.display = 'none';
-    });
-    var closeButton = document.querySelectorAll(".close");
-    closeButton.forEach((button) => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            deleteModaling.style.display = "none";
-        });
-    });
     //CONFIRM - DELETE
-    confirmDele.addEventListener("click", () => {
-        if (centerIdz) {
-            console.log("Confirm delete for center ID:", centerIdz);
-            fetch(`/manager/center/delete/${centerIdz}`, {
-                method: "DELETE"
-            })
-            .then(response => {
-                if (response.ok) {
-                    deleteModaling.style.display = "none";
-                    showToast("Xóa thành công trung tâm");
-                    console.log("Center deleted successfully");
-                } else {
-                    console.error("Error deleting center:", response.statusText);
-                }
-            })
-            .catch(error => console.error("Error deleting center:", error));
-        }
-    });
+//    confirmDele.addEventListener("click", () => {
+//        if (centerIdz) {
+//            console.log("Confirm delete for center ID:", centerIdz);
+//            fetch(`/manager/center/delete/${centerIdz}`, {
+//                method: "DELETE"
+//            })
+//            .then(response => {
+//                if (response.ok) {
+//                    deleteModaling.style.display = "none";
+//                    showToast("Xóa thành công trung tâm");
+//                    console.log("Center deleted successfully");
+//                } else {
+//                    console.error("Error deleting center:", response.statusText);
+//                }
+//            })
+//            .catch(error => console.error("Error deleting center:", error));
+//        }
+//    });
 });
 
 

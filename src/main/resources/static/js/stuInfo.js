@@ -40,13 +40,13 @@ document.addEventListener("DOMContentLoaded", function () {
         .then((data) => {
         console.log("Data received from API:", data[0]);
         document.getElementById("studentNameHeading").innerText = "Thông tin cơ bản của " + data[0].studentName;
-        document.getElementById("nameParent").innerText = "Phụ huynh " + data[0].studentName;
+        document.getElementById("nameParent").innerText = "Phụ huynh " + data[0].parentName;
         document.getElementById("genderStu").innerText = returnGender(data[0].studentGender);
-        document.getElementById("genderP").innerText = returnGender(data[0].studentGender);
+        document.getElementById("genderP").innerText = returnGender(data[0].parentGender);
         document.getElementById("phoneStu").innerText = data[0].studentPhone;
-        document.getElementById("phoneP").innerText = data[0].studentPhone;
+        document.getElementById("phoneP").innerText = data[0].parentPhone;
         document.getElementById("mailStu").innerText = data[0].studentEmail;
-        document.getElementById("mailP").innerText = data[0].studentEmail;
+        document.getElementById("mailP").innerText = data[0].parentEmail;
         document.getElementById("addressStu").innerText = data[0].studentAddress;
         document.getElementById("courseStu").innerText = data[0].courseNames;
         document.getElementById("feedbackStu").innerText = data[0].studentEmail;

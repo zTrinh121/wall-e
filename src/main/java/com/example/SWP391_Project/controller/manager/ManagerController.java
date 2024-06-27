@@ -73,6 +73,10 @@ public class ManagerController
     public String courseInfo() {
         return "courseInfo";
     }
+    @GetMapping("/dthu")
+    public String revenueMn() {
+        return "managerRevenue";
+    }
 
 
 }

@@ -99,12 +99,6 @@
                     <span class="title">Thông báo</span></a>
             </li>
             <li>
-                <a href="#">
-                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
-                    <span class="title">Doanh thu</span>
-                </a>
-            </li>
-            <li>
                 <a href="/manager/mpost">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
@@ -127,21 +121,21 @@
                             <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
                         </i>
                         <span class="text">
-                            <a href=`/manager/qlhv?centerId=${center.id}` data-id="${center.id}" id="boxInfos">
-                                <h3 id="nums">0</h3>
-                                <p>Học viên</p>
-                            </a>
-                        </span>
+                  <a href="/manager/qlhv" id="boxInfos">
+                    <h3 id="nums">0</h3>
+                    <p>Học viên</p>
+                  </a>
+                </span>
                     </li>
                     <li>
                         <i class='bx bxs-group'>
                             <i class="fa-solid fa-person-chalkboard"></i>
                         </i>
                         <span class="text">
-                        <a href=`/manager/qlgv?centerId=${center.id}` data-id="${center.id}" id="boxInfot">
-                            <h3 id="numt">0</h3>
-                            <p>Giáo viên</p>
-                        </a>
+                  <a href="/manager/qlgv" id="boxInfot">
+                    <h3 id="numt">0</h3>
+                    <p>Giáo viên</p>
+                  </a>
                 </span>
                     </li>
                     <li>
@@ -149,10 +143,21 @@
                             <i class="fa-solid fa-layer-group"></i>
                         </i>
                         <span class="text">
-                  <a href="#" data-id="${center.id}" id="boxInfoc">
-                    <h3 id="numc">0</h3>
-                  <p>Khoá học</p>
-                  </a>
+                    <a href=`/manager/qlkh?centerId=${center.id}` data-id="${center.id}" id="boxInfoc">
+                        <h3 id="numc">0</h3>
+                        <p>Khoá học</p>
+                    </a>
+                </span>
+                    </li>
+                    <li>
+                        <i class='bx bxs-dollar-circle'>
+                            <i class="fa-solid fa-money-bill-trend-up"></i>
+                        </i>
+                        <span class="text">
+                    <a href=`/manager/dthu` data-id="${center.id}" id="boxInfom">
+                        <h3 id="moneyC">0</h3>
+                        <p>Doanh thu</p>
+                    </a>
                 </span>
                     </li>
                 </ul>
