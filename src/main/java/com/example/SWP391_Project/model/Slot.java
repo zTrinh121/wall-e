@@ -27,13 +27,13 @@ public class Slot {
     @Column(name = "C02_SLOT_ID")
     int id;
 
-    @Column(name = "C02_SLOT_DATE", nullable = false)
+    @Column(name = "C02_SLOT_DATE", columnDefinition = "DATE", nullable = false)
     Date slotDate;
 
-    @Column(name = "C02_SLOT_START_TIME", nullable = false)
+    @Column(name = "C02_SLOT_START_TIME", columnDefinition = "TIME", nullable = false)
     Date slotStartTime;
 
-    @Column(name = "C02_SLOT_END_TIME", nullable = false)
+    @Column(name = "C02_SLOT_END_TIME", columnDefinition = "TIME", nullable = false)
     Date slotEndTime;
 
     @ManyToOne
@@ -41,17 +41,8 @@ public class Slot {
     @JsonManagedReference
     Course course;
 
-//    @ManyToOne
-//    @JoinColumn(name = "C02_ROOM_ID")
-//    @JsonManagedReference
-//    Room room;
-
     @ManyToOne
     @JoinColumn(name = "C02_ROOM_ID", nullable = false)
     Room room;
 
-//    @ManyToOne
-//    @JoinColumn(name = "C02_STUDENT_ID")
-//    @JsonManagedReference
-//    StudentSlot student;  // Add this line
 }

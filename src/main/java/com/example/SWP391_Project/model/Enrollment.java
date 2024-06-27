@@ -6,6 +6,7 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
 import java.util.List;
 
 @Entity
@@ -31,6 +32,9 @@ public class Enrollment {
     @JoinColumn(name = "C15_COURSE_ID")
     @JsonManagedReference
     Course course;
+
+    @Column(name = "C15_ENROLL_DATE", columnDefinition = "DATE")
+    Date enrollDate;
 
     @OneToMany(mappedBy = "enrollment")
     @JsonBackReference
