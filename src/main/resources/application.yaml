@@ -3,7 +3,7 @@ server:
 
 spring:
   application:
-    name: crud-practice
+    name: Wall-E
   datasource:
     url: "jdbc:mysql://localhost:3306/swp391_db_releasee"
     username: root
