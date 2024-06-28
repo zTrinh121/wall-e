@@ -320,6 +320,10 @@ body {
     display: inline-block;
 }
 
+.system-notification {
+    display: none;
+}
+
 .content-notification{
 
 }
