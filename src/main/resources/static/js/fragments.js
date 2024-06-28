@@ -1,4 +1,4 @@
-document.addEventListener("DOMContentLoaded", function () {
+document.addEventListener("DOMContentLoaded", async function () {
     const bell = document.getElementById("bell");
     const contentNotification = document.querySelector(".content-notification");
     const systemNotification = document.querySelector(".system-notification");
@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", function () {
     let allNotificationPrivateUnseen = [];
     let allNotificationPrivateSeen = [];
 
+
     switch (userRole){
         case "PARENT":
             apiNotificationUrlGet = `api/parent/notifications/all`;
@@ -38,6 +39,9 @@ document.addEventListener("DOMContentLoaded", function () {
             apiRole = `api/teacher`;
             break;
     }
+
+    await fetchNotifications(apiNotificationUrlGet);
+
     function toggleProfileDropdown() {
         profileDropdownList.classList.toggle("active");
         contentNotification.style.display = "none";
@@ -49,13 +53,24 @@ document.addEventListener("DOMContentLoaded", function () {
         } else {
             contentNotification.style.display = "block";
             systemNotification.style.display = "block";
+            allNotifications = [];
+            allNotificationsUnseen = [];
+            allNotificationSeen = [];
+            allNotificationSystem = [];
+            allNotificationSystemUnseen = [];
+            allNotificationSystemSeen = [];
+            allNotificationCenter = [];
+            allNotificationCenterSeen = [];
+            allNotificationCenterUnseen = [];
+            allNotificationPrivate = [];
+            allNotificationPrivateUnseen = [];
+            allNotificationPrivateSeen = [];
             fetchNotifications(apiNotificationUrlGet);
         }
         profileDropdownList.classList.remove("active");
     }
 
     bell.addEventListener("click", function () {
-        console.log("Bell clicked"); // Kiểm tra xem sự kiện click có được kích hoạt hay không
         toggleNotificationDropdown();
     });
 
@@ -89,15 +104,9 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    let notificationCount = 5; // Example count
+    let notificationCount = 10;
     const notificationCountElement = document.getElementById('notificationCount');
 
-    if (notificationCount > 0) {
-        notificationCountElement.textContent = notificationCount;
-        notificationCountElement.style.display = 'inline-block';
-    } else {
-        notificationCountElement.style.display = 'none';
-    }
 
     async function fetchNotifications(url) {
         try {
@@ -112,8 +121,10 @@ document.addEventListener("DOMContentLoaded", function () {
                     const hasSeen = await checkHasSeenCenterNotification(notification.id);
                     if (hasSeen) {
                         allNotificationCenterSeen.push(notification);
+                        allNotificationSeen.push(notification);
                     } else {
                         allNotificationCenterUnseen.push(notification);
+                        allNotificationsUnseen.push(notification);
                     }
                 });
                 await Promise.all(centerNotificationPromises);
@@ -133,13 +144,30 @@ document.addEventListener("DOMContentLoaded", function () {
                 const hasSeen = await checkHasSeenSystemNotification(notification.id);
                 if (hasSeen) {
                     allNotificationSystemSeen.push(notification);
+                    allNotificationSeen.push(notification);
                 } else {
                     allNotificationSystemUnseen.push(notification);
+                    allNotificationsUnseen.push(notification)
                 }
             });
-            await Promise.all(systemNotificationPromises);
-            console.log("Notification: ");
-            console.log(allNotificationPrivateUnseen)
+            allNotificationSeen.push(...allNotificationPrivateSeen);
+            allNotificationsUnseen.push(...allNotificationPrivateUnseen);
+
+            console.log(allNotificationsUnseen)
+
+            
+            notificationCount = allNotificationsUnseen.length;
+            if(notificationCount > 0){
+                console.log("Is that")
+                notificationCountElement.textContent = notificationCount;
+                notificationCountElement.style.display = 'inline-block';
+            }else{
+                notificationCountElement.style.display = 'none';
+            }
+
+
+
+            console.log(notificationCount);
             allNotifications.push(...data.individualNotifications);
             allNotifications.push(...data.systemNotifications);
             allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
@@ -168,6 +196,8 @@ document.addEventListener("DOMContentLoaded", function () {
         const hasSeen = await response.json();
         return hasSeen;
     }
+
+
 
 
     function displayNotifications(notifications) {
@@ -409,7 +439,6 @@ $(document).ready(function() {
         }
     });
 
-    // Ẩn kết quả tìm kiếm khi nhấn vào bất kỳ nơi nào bên ngoài
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();
