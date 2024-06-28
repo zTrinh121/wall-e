@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", () => {
     // console.log(userId)
     const boxCourses = document.getElementById("courseBoxes");
     const apiUrl = `/api/student/${userId}/courses`;
-    console.log(apiUrl)
     var itemsPerPage = 4;
     var currentPage = 1;
     var noResultDiv = document.getElementById("no-result");
@@ -19,8 +18,7 @@ document.addEventListener("DOMContentLoaded", () => {
         fetch(apiUrl)
             .then(response => response.json())
             .then(data => {
-                currentPage = 1; // Reset to first page
-                console.log(data)
+                currentPage = 1;
                 renderTable(data);
             })
             .catch(error => console.error("Error fetching posts:", error));

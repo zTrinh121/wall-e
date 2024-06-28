@@ -221,7 +221,6 @@ public class StudentController {
         return ResponseEntity.ok(hasSeen);
     }
 
-    // API endpoint for checking if a system notification has been seen by a student
     @GetMapping("/systemNotification/{systemNotificationId}/check")
     public ResponseEntity<Boolean> checkHasSeenSystemNotification(
             @PathVariable int systemNotificationId,
