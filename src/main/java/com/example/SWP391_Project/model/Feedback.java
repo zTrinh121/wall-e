@@ -34,7 +34,7 @@ public class Feedback {
     @ManyToOne
     @JoinColumn(name = "C06_ACTOR_ID", referencedColumnName = "C14_USER_ID")
     @JsonManagedReference
-    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     User actor;
 
     @ManyToOne

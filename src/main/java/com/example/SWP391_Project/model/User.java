@@ -55,7 +55,7 @@ public class User {
     @Column(name = "C14_USER_ADDRESS", nullable = true)
     String address;
 
-    @Column(name = "C14_USER_DOB", nullable = true)
+    @Column(name = "C14_USER_DOB", columnDefinition = "DATE", nullable = true)
     Date dob;
 
     @Column(name = "C14_USER_GENDER", nullable = true)

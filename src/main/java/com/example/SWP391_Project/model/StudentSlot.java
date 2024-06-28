@@ -34,7 +34,7 @@ public class StudentSlot {
     @JsonManagedReference
     Slot slot;
 
-    @Column(name = "C17_ATTENDANCE_STATUS", nullable = false)
+    @Column(name = "C17_ATTENDANCE_STATUS", columnDefinition = "BIT(1)", nullable = false)
     Boolean attendanceStatus;
 
 }
