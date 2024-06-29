@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service.impl;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
@@ -155,5 +156,67 @@ public class ParentServiceImpl implements ParentService {
         Optional<List<Feedback>> feedbacks
                 = feedbackRepository.getFeedbacksTeacherSendToStudent(parentId);
         return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
+        Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
+        if (viewer.isEmpty()) {
+            throw new IllegalArgumentException("Teacher not found when finding by id !");
+        }
+        User teacher = viewer.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToUser(teacher)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto) {
+        Optional<Course> courseCheck = courseRepository.findById(feedbackDto.getSendToUser_Id());
+        if (courseCheck.isEmpty()) {
+            throw new IllegalArgumentException("Course not found when finding by id !");
+        }
+        Course course = courseCheck.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToCourse(course)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
     }
 }

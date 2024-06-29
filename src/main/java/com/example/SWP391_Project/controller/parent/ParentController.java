@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.controller.parent;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.response.ParentNotificationResponse;
@@ -126,7 +127,7 @@ public class ParentController {
         return ResponseEntity.ok(hasSeen);
     }
 
-    // ---------------------- FEEDBACK ----------------------------
+    // ----------------------------- FEEDBACK -------------------------------
     // Lấy ra những feedback mà teacher gửi đến
     @GetMapping("/view-student-feedback")
     public ResponseEntity<List<Feedback>> getFeedbackTeacherSendToStudent(HttpSession session) {
@@ -136,5 +137,37 @@ public class ParentController {
         }
         List<Feedback> feedbacks = parentService.parentFeedbackViewer(parentId);
         return ResponseEntity.ok(feedbacks);
+    }
+
+    @PostMapping("/create-feedback-to-teacher")
+    public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
+        User actor = (User) session.getAttribute("user");
+        if (actor == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
+        }
+        Feedback createdFeedback = parentService.createFeedbackToTeacher(actor, feedbackDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFeedback);
+    }
+
+    @PutMapping("/update-feedback-to-teacher/{feedbackId}")
+    public ResponseEntity<Feedback> updateFeedbackToTeacher(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
+        Feedback updatedFeedback = parentService.updateFeedbackToTeacher(id, feedbackDto);
+        return ResponseEntity.ok(updatedFeedback);
+    }
+
+    @PostMapping("/create-feedback-to-course")
+    public ResponseEntity<Feedback> createFeedbackToCourse(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
+        User actor = (User) session.getAttribute("user");
+        if (actor == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
+        }
+        Feedback createdFeedback = parentService.createFeedbackToCourse(actor, feedbackDto);
+        return ResponseEntity.status(HttpStatus.CREATED).body(createdFeedback);
+    }
+
+    @PutMapping("/update-feedback-to-course/{feedbackId}")
+    public ResponseEntity<Feedback> updateFeedbackToCourse(@PathVariable("feedbackId") int id, @RequestBody FeedbackDto feedbackDto) {
+        Feedback updatedFeedback = parentService.updateFeedbackToCourse(id, feedbackDto);
+        return ResponseEntity.ok(updatedFeedback);
     }
 }
