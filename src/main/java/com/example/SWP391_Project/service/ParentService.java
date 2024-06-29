@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.service;
 
 import com.example.SWP391_Project.dto.EnrollmentDto;
+import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.response.ParentNotificationResponse;
@@ -36,6 +37,15 @@ public interface ParentService {
                                            int parentId);
 
     // ------------------------- FEEDBACK -----------------------------
+    // xem feedbacks mà teacher gửi đến con của mình
     List<Feedback> parentFeedbackViewer(int parentId);
+
+    Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
+
+    Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
+
+    Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
+
+    Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
 
 }

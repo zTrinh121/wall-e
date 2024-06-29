@@ -36,6 +36,8 @@ public class Enrollment {
     @Column(name = "C15_ENROLL_DATE", columnDefinition = "DATE")
     Date enrollDate;
 
+    // chỗ này sai
+    // bill và enrollment là one-to-one
     @OneToMany(mappedBy = "enrollment")
     @JsonBackReference
     List<Bill> bills;

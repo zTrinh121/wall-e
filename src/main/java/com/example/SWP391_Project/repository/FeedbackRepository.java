@@ -28,4 +28,5 @@ public interface FeedbackRepository extends JpaRepository<Feedback, Integer> {
             "WHERE f.sendToUser.parent.id = :parentId ")
     Optional<List<Feedback>> getFeedbacksTeacherSendToStudent(@Param("parentId") int parentId);
 
+//    Optional<List<Feedback>> findFeedbacksToCourse(int courseId);
 }

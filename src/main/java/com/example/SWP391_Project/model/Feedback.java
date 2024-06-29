@@ -42,6 +42,11 @@ public class Feedback {
     @JsonManagedReference
     User sendToUser;
 
+    @ManyToOne
+    @JoinColumn(name = "C06_SEND_TO_COURSE", referencedColumnName = "C01_COURSE_ID")
+    @JsonManagedReference
+    Course sendToCourse;
+
     @Column(name = "C06_RATING", nullable = false)
     int rating;
 

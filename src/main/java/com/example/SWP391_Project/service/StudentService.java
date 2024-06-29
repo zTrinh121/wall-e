@@ -43,7 +43,7 @@ public interface StudentService {
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int studentId);
 
-    // ----------------------- FEEDBACK -----------------------------
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
     // xem những feedback mà teacher gửi đến
     List<Feedback> fetchTeacherFeedback(int studentId);
 
@@ -54,8 +54,19 @@ public interface StudentService {
 
     Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
 
-  // ------------------------------------------------------------------
+   // ------------------------------------------------------------------
     List<Map<String, Object>> getStudentCourse(int studentId);
+
+    // ----------------------- FEEDBACK TO COURSE -----------------------------
+
+    // xem những feedback mà chính student này tạo ra
+    List<Feedback> viewFeedbackToCourse(int studentId);
+
+    Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
+
+    Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
+
+    // ------------------------------------------------------------------
 
 
 }
