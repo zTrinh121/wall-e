@@ -147,7 +147,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentGrades(int studentId) {
         String query = "SELECT g.C10_RESULT_ID as resultId, g.C10_RESULT_TYPE as resultType, g.C10_RESULT_VAL as resultValue, " +
-                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode " +
+                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode, c.C01_COURSE_ID as courseId " +
                 "FROM t10_result g " +
                 "JOIN t01_course c ON g.C10_COURSE_ID = c.C01_COURSE_ID " +
                 "WHERE g.C10_STUDENT_ID = :studentId";
@@ -171,6 +171,7 @@ public class StudentServiceImpl implements StudentService {
             gradeMap.put("resultValue", result[2]);
             gradeMap.put("courseName", result[3]);
             gradeMap.put("courseCode", result[4]);
+            gradeMap.put("courseId", result[5]);
 
             grades.add(gradeMap);
         }

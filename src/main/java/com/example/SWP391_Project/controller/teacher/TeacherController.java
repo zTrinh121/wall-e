@@ -124,14 +124,16 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     @PatchMapping("/individualNotification/update/{notificationId}")
+    @ResponseBody
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return teacherService.updateIndividualNotification(notificationId);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")
+    @ResponseBody
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User teacher = (User) session.getAttribute("authid");
+        User teacher = (User) session.getAttribute("user");
         if (teacher == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
         }
@@ -139,9 +141,10 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     @PostMapping("/viewSystemNotification/update/{notificationId}")
+    @ResponseBody
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User teacher = (User) session.getAttribute("authid");
+        User teacher = (User) session.getAttribute("user");
         if (teacher == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
         }
