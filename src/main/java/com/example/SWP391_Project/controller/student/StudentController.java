@@ -185,14 +185,16 @@ public class StudentController {
     }
 
     @PatchMapping("/individualNotification/update/{notificationId}")
+    @ResponseBody
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return studentService.updateIndividualNotification(notificationId);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")
+    @ResponseBody
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User student = (User) session.getAttribute("authid");
+        User student = (User) session.getAttribute("user");
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
@@ -200,13 +202,20 @@ public class StudentController {
     }
 
     @PostMapping("/viewSystemNotification/update/{notificationId}")
+    @ResponseBody
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User student = (User) session.getAttribute("authid");
+        User student = (User) session.getAttribute("user");
         if (student == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
         }
-        return studentService.updateViewSystemNotification(notificationId, student);
+        try{
+            return studentService.updateViewSystemNotification(notificationId, student);
+        }catch (Exception e) {
+            System.err.println("Error updating center notification: " + e.getMessage());
+            throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "An error occurred while updating the notification");
+        }
+
     }
 
     @GetMapping("/centerNotification/{centerNotificationId}/check")

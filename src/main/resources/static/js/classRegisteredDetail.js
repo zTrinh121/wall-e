@@ -1,6 +1,6 @@
 document.addEventListener("DOMContentLoaded", async () => {
     const urlParams = new URLSearchParams(window.location.search);
-    const userId = urlParams.get('userId') || 1;
+    const userId = parseInt(urlParams.get('userId'));
     const courseId = parseInt(urlParams.get('courseId'));
     const classListModal = document.getElementById("classListModal");
     const closeClassListModal = document.getElementById("closeClassListModal");
@@ -224,8 +224,12 @@ document.addEventListener("DOMContentLoaded", async () => {
             fetch(`/api/student/${userId}/grades`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
+
                     if (data.length > 0) {
+
                         const result = data.filter(course => courseId === course.courseId)
+                        console.log(result)
                         openEvaluationModal(result)
                     } else {
                         console.log("No grades found for the student in this course.");
@@ -383,52 +387,66 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     function openEvaluationModal(grades) {
-            const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
-            const longTestScores = grades.filter(grade => grade.resultType === 2).map(grade => grade.resultValue);
-            const examScores = grades.filter(grade => grade.resultType === 3).map(grade => grade.resultValue);
-            // Clear previous table content
-            const tableBody = document.getElementById("scoresTableBody");
-            tableBody.innerHTML = '';
-            const addRowToTable = (type, scores) => {
-                const row = document.createElement("tr");
+        const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
+        const longTestScores = grades.filter(grade => grade.resultType === 2).map(grade => grade.resultValue);
+        const examScores = grades.filter(grade => grade.resultType === 3).map(grade => grade.resultValue);
+        const maxColumns = Math.max(shortTestScores.length, longTestScores.length, examScores.length);
 
-                const typeCell = document.createElement("td");
-                typeCell.textContent = type;
-                row.appendChild(typeCell);
+        const tableBody = document.getElementById("scoresTableBody");
+        const scoresTable = document.getElementById('scoresTable');
 
+        tableBody.innerHTML = '';
+
+        const addRowToTable = (type, scores) => {
+            const row = document.createElement("tr");
+
+            const typeCell = document.createElement("td");
+            typeCell.textContent = type;
+            row.appendChild(typeCell);
+
+            for (let i = 0; i < maxColumns; i++) {
                 const scoreCell = document.createElement("td");
-                scoreCell.textContent = scores.join(', ');
+                scoreCell.classList.add('editable-score');
+                scoreCell.setAttribute('contenteditable', 'true');
+                if (scores[i] !== undefined) {
+                    scoreCell.textContent = scores[i];
+                    scoreCell.setAttribute('data-id', grades[i].id);
+                    scoreCell.setAttribute('data-type', grades[i].resultType);
+                } else {
+                    scoreCell.textContent = '';
+                }
                 row.appendChild(scoreCell);
-
-                tableBody.appendChild(row);
-            };
-
-            const feedbackMessages = [];
-
-            if (shortTestScores.length > 0) {
-                addRowToTable('Kiểm tra 15 phút', shortTestScores);
-                feedbackMessages.push(`Bạn đã đạt ${shortTestScores.join(', ')} điểm trong kiểm tra 15 phút`);
-            }
-            if (longTestScores.length > 0) {
-                addRowToTable('Kiểm tra 1 tiết', longTestScores);
-                feedbackMessages.push(`Bạn đã đạt ${longTestScores.join(', ')} điểm trong kiểm tra 1 tiết`);
-            }
-            if (examScores.length > 0) {
-                addRowToTable('Kiểm tra cuối kỳ', examScores);
-                feedbackMessages.push(`Bạn đã đạt ${examScores.join(', ')} điểm trong kiểm tra cuối kỳ`);
             }
 
-            // Display feedback messages
-            const teacherFeedback = document.getElementById("teacherFeedback");
-            teacherFeedback.innerHTML = feedbackMessages.join('<br>');
+            tableBody.appendChild(row);
+        };
 
-            // Show the evaluation modal
-            const evaluationModal = document.getElementById("evaluationModal");
-            evaluationModal.style.display = "block";
+        const feedbackMessages = [];
+
+        if (shortTestScores.length > 0) {
+            addRowToTable('Kiểm tra 15 phút', shortTestScores);
+            feedbackMessages.push(`Bạn đã đạt ${shortTestScores.join(', ')} điểm trong kiểm tra 15 phút`);
+        }
+        if (longTestScores.length > 0) {
+            addRowToTable('Kiểm tra 1 tiết', longTestScores);
+            feedbackMessages.push(`Bạn đã đạt ${longTestScores.join(', ')} điểm trong kiểm tra 1 tiết`);
+        }
+        if (examScores.length > 0) {
+            addRowToTable('Kiểm tra cuối kỳ', examScores);
+            feedbackMessages.push(`Bạn đã đạt ${examScores.join(', ')} điểm trong kiểm tra cuối kỳ`);
         }
 
+        const teacherFeedback = document.getElementById("teacherFeedback");
+        teacherFeedback.innerHTML = feedbackMessages.join('<br>');
 
-        function closeEvaluationModal() {
+        const evaluationModal = document.getElementById("evaluationModal");
+        evaluationModal.style.display = "block";
+    }
+
+
+
+
+    function closeEvaluationModal() {
             evaluationModal.style.display = "none";
         }
 

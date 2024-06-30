@@ -1,3 +1,6 @@
+let notificationCount = 0;
+const notificationCountElement = document.getElementById('notificationCount');
+
 document.addEventListener("DOMContentLoaded", async function () {
     const bell = document.getElementById("bell");
     const contentNotification = document.querySelector(".content-notification");
@@ -23,6 +26,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     let allNotificationPrivate = [];
     let allNotificationPrivateUnseen = [];
     let allNotificationPrivateSeen = [];
+
 
 
     switch (userRole){
@@ -104,8 +108,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     });
 
-    let notificationCount = 10;
-    const notificationCountElement = document.getElementById('notificationCount');
 
 
     async function fetchNotifications(url) {
@@ -113,7 +115,7 @@ document.addEventListener("DOMContentLoaded", async function () {
             const response = await fetch(url);
             const data = await response.json();
 
-            if (userRole != "PARENT") {
+            if (userRole !== "PARENT") {
                 allNotifications.push(...data.centerNotifications);
                 allNotificationCenter = data.centerNotifications;
 
@@ -131,12 +133,8 @@ document.addEventListener("DOMContentLoaded", async function () {
             }
 
             allNotificationPrivate = data.individualNotifications;
-            allNotificationPrivateSeen = data.individualNotifications.filter(notification => {
-                return notification.hasSeen === true;
-            })
-            allNotificationPrivateUnseen = data.individualNotifications.filter(notification => {
-                return notification.hasSeen !== true;
-            })
+            allNotificationPrivateSeen = data.individualNotifications.filter(notification => notification.hasSeen === true);
+            allNotificationPrivateUnseen = data.individualNotifications.filter(notification => notification.hasSeen !== true);
 
             allNotificationSystem = data.systemNotifications;
 
@@ -147,37 +145,35 @@ document.addEventListener("DOMContentLoaded", async function () {
                     allNotificationSeen.push(notification);
                 } else {
                     allNotificationSystemUnseen.push(notification);
-                    allNotificationsUnseen.push(notification)
+                    allNotificationsUnseen.push(notification);
                 }
             });
+            await Promise.all(systemNotificationPromises);
+
             allNotificationSeen.push(...allNotificationPrivateSeen);
             allNotificationsUnseen.push(...allNotificationPrivateUnseen);
 
-            console.log(allNotificationsUnseen)
 
-            
             notificationCount = allNotificationsUnseen.length;
-            if(notificationCount > 0){
-                console.log("Is that")
+            console.log(notificationCount);
+
+            if (notificationCount > 0) {
                 notificationCountElement.textContent = notificationCount;
                 notificationCountElement.style.display = 'inline-block';
-            }else{
+            } else {
                 notificationCountElement.style.display = 'none';
             }
 
-
-
-            console.log(notificationCount);
             allNotifications.push(...data.individualNotifications);
             allNotifications.push(...data.systemNotifications);
             allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-            notificationCount = allNotifications.length;
             displayNotifications(allNotifications);
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
     }
+
 
     async function checkHasSeenCenterNotification(centerNotificationId) {
         const response = await fetch(`${apiRole}/centerNotification/${centerNotificationId}/check`);
@@ -198,8 +194,6 @@ document.addEventListener("DOMContentLoaded", async function () {
     }
 
 
-
-
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
 
@@ -211,17 +205,46 @@ document.addEventListener("DOMContentLoaded", async function () {
             notificationsToRender.forEach(notification => {
                 const notificationItem = document.createElement('div');
                 notificationItem.classList.add('notification-item');
+                let systemNotificationUnSeen;
+                let centerNotificationUnSeen;
+
+                if (notification.center) {
+                    notificationItem.classList.add('notification-center');
+                    const isSeen = allNotificationCenterSeen.some(seenNotification => seenNotification.id === notification.id);
+                    if (isSeen) {
+                        notificationItem.classList.add('center-seen');
+                    } else {
+                        notificationItem.classList.add('center-unseen');
+                        centerNotificationUnSeen = notification;
+                    }
+                } else if (notification.actor) {
+                    notificationItem.classList.add('notification-private');
+                    if (notification.hasSeen) {
+                        notificationItem.classList.add('private-seen');
+                    } else {
+                        notificationItem.classList.add('private-unseen');
+                    }
+                } else {
+                    notificationItem.classList.add('notification-system');
+                    const isSeen = allNotificationSystemSeen.some(seenNotification => seenNotification.id === notification.id);
+                    if (isSeen) {
+                        notificationItem.classList.add('system-seen');
+                    } else {
+                        notificationItem.classList.add('system-unseen');
+                        systemNotificationUnSeen = notification;
+                    }
+                }
 
                 const icon = document.createElement('img');
                 icon.classList.add('bell-decor');
-                icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`
+                icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`;
 
                 const textContainer = document.createElement('div');
                 textContainer.classList.add('text-container');
 
                 const text = document.createElement('span');
                 text.classList.add('notification-title');
-                text.textContent = notification.title; // Adjust based on your notification structure
+                text.textContent = notification.title;
 
                 const time = document.createElement('span');
                 time.classList.add('notification-time');
@@ -233,8 +256,38 @@ document.addEventListener("DOMContentLoaded", async function () {
                 notificationItem.appendChild(icon);
                 notificationItem.appendChild(textContainer);
 
-                notificationItem.addEventListener('click', () => {
-                    window.location.href = `/notification?id=${notification.id}`; // Redirect to notification details page
+                notificationItem.addEventListener('click', async () => {
+                    try {
+                        let response;
+                        if (systemNotificationUnSeen) {
+                            response = await fetch(`${apiRole}/viewSystemNotification/update/${systemNotificationUnSeen.id}`, { method: 'POST' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('system-unseen');
+                                notificationItem.classList.add('system-seen');
+                            }
+                        } else if (centerNotificationUnSeen) {
+                            response = await fetch(`${apiRole}/viewCenterNotification/update/${centerNotificationUnSeen.id}`, { method: 'POST' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('center-unseen');
+                                notificationItem.classList.add('center-seen');
+                            }
+                        } else {
+                            response = await fetch(`${apiRole}/individualNotification/update/${notification.id}`, { method: 'PATCH' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('private-unseen');
+                                notificationItem.classList.add('private-seen');
+                            }
+                        }
+
+                        if (!response.ok) {
+                            throw new Error('Error updating notification status');
+                        }
+
+                        // Redirect after updating
+                        window.location.href = `/notification?id=${notification.id}`;
+                    } catch (error) {
+                        console.error('Error updating notifications:', error);
+                    }
                 });
 
                 contentNotification.appendChild(notificationItem);

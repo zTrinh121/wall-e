@@ -602,8 +602,11 @@ main .header{
 
 .fc-timegrid-event .fc-event-main{
     background: #fff;
+    font-size: 12px;
     color: #000000;
     border: #000000 ;
+    line-height: 9px;
+
 }
 
 .fc-timegrid-event-harness-inset a{

@@ -90,6 +90,7 @@ public class ParentController {
 
     // ----------------------- NOTIFICATION -----------------------
     @GetMapping("/notifications/all")
+    @ResponseBody
     public ResponseEntity<ParentNotificationResponse> getAllNotifications(HttpSession session) {
         Integer parentId = (Integer) session.getAttribute("authid");
         if (parentId == null) {
@@ -100,14 +101,16 @@ public class ParentController {
     }
 
     @PatchMapping("/individualNotification/update/{notificationId}")
+    @ResponseBody
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return parentService.updateIndividualNotification(notificationId);
     }
 
-    @PostMapping("/parent/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
+    @ResponseBody
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User parent = (User) session.getAttribute("authid");
+        User parent = (User) session.getAttribute("user");
         if (parent == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
         }
@@ -115,6 +118,7 @@ public class ParentController {
     }
 
     @GetMapping("/systemNotification/{systemNotificationId}/check")
+    @ResponseBody
     public ResponseEntity<Boolean> checkHasSeenSystemNotification(
             @PathVariable int systemNotificationId,
             HttpSession session) {
@@ -129,6 +133,7 @@ public class ParentController {
     // ---------------------- FEEDBACK ----------------------------
     // Lấy ra những feedback mà teacher gửi đến
     @GetMapping("/view-student-feedback")
+    @ResponseBody
     public ResponseEntity<List<Feedback>> getFeedbackTeacherSendToStudent(HttpSession session) {
         Integer parentId = (Integer) session.getAttribute("authid");
         if (parentId == null) {

@@ -9,25 +9,27 @@ document.addEventListener('DOMContentLoaded', function() {
     var eventDetailModal = document.getElementById('eventDetailModal');
     var eventDetailContent = document.getElementById('eventDetailContent');
 
-
-    // Custom event content function to display course name and room name
     function renderEventContent(eventInfo) {
         const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
         const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
 
-        if(userRole === 'TEACHER'){
+        if (userRole === 'TEACHER') {
             return {
-                html: `${eventInfo.event.title}<br><b>Phòng: ${eventInfo.event.extendedProps.location}</b>`
+                html: `
+                    ${eventInfo.event.title}<br>
+                    <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
+                    <b style="color: ${attendanceColor};">${attendanceText}</b>
+                `
             };
-        }else{
+        } else {
             return {
                 html: `
                     <b>${eventInfo.event.title}</b><br>
                     <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
+                    <b style="color: ${attendanceColor};">${attendanceText}</b>
                 `
             };
         }
-
     }
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
@@ -52,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMinTime: '07:00:00',
         slotMaxTime: '22:00:00',
         slotDuration: '02:00:00',
-        events: [],  // Initialize with empty array
+        events: [],
         eventOverlap: false,
         firstDay: 1,
         eventContent: renderEventContent,
@@ -62,9 +64,9 @@ document.addEventListener('DOMContentLoaded', function() {
             const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
 
             eventDetailContent.innerHTML = `
-                <b>${event.title}</b><br>
-                <b>Phòng: ${event.extendedProps.location}</b><br>
-                <b style="color: ${attendanceColor};">${attendanceText}</b>
+                <p>${event.title}</p>
+                <p>Phòng: ${event.extendedProps.location}</p>
+                <p style="color: ${attendanceColor};">${attendanceText}</p>
             `;
 
             eventDetailModal.style.display = 'block';
@@ -100,29 +102,36 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 var events;
-                console.log(data)
-                if(userRole !== "TEACHER"){
-                     events = data.map(item => {
+                console.log(data);
+                if (userRole !== "TEACHER") {
+                    events = data.map(item => {
                         const attendanceColor = item.attendanceStatus === 0 ? 'red' : 'green';
 
-                        return{
+                        return {
                             title: item.courseName,
                             start: item.slotDate + 'T' + item.slotStartTime,
                             end: item.slotDate + 'T' + item.slotEndTime,
                             location: item.roomName,
-                             classNames: ['event-item'],
-                             backgroundColor: attendanceColor
-                    }});
-                }else{
+                            classNames: ['event-item'],
+                            backgroundColor: attendanceColor,
+                            extendedProps: {
+                                attendanceStatus: item.attendanceStatus
+                            }
+                        };
+                    });
+                } else {
                     events = data.map(item => {
                         const dateObj = new Date(item.slotDate);
-                        const slotDateISO = dateObj.toISOString().split('T')[0]; // Chuyển đổi thành ISO 8601
+                        const slotDateISO = dateObj.toISOString().split('T')[0];
 
                         return {
                             title: item.courseName,
                             start: slotDateISO + 'T' + item.slotStartTime,
                             end: slotDateISO + 'T' + item.slotEndTime,
-                            location: item.roomName
+                            location: item.roomName,
+                            extendedProps: {
+                                attendanceStatus: item.attendanceStatus
+                            }
                         };
                     });
                 }
