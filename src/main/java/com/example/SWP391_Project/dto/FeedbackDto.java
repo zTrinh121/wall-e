@@ -17,4 +17,6 @@ public class FeedbackDto {
     int rating;
 
     int sendToUser_Id;
+
+    int sendToCourse_Id;
 }

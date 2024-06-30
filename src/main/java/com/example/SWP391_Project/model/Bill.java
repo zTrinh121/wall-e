@@ -29,6 +29,8 @@ public class Bill {
     @Column(name = "C08_CREATED_AT", nullable = false)
     Date createdAt;
 
+    // chỗ này sai
+    // bill và enrollment là one-to-one
     @ManyToOne
     @JoinColumn(name = "C08_ENROLLMENT_ID")
     @JsonManagedReference

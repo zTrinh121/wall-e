@@ -359,20 +359,7 @@ public class StudentServiceImpl implements StudentService {
         return true;
     }
 
-    // ----------------------- FEEDBACK -----------------------------
-
-    @Override
-    public List<Feedback> fetchTeacherFeedback(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    @Override
-    public List<Feedback> viewFeedbackToTeacher(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
     @Override
     public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -403,7 +390,7 @@ public class StudentServiceImpl implements StudentService {
 
         return feedbackRepository.save(feedback);
     }
-
+    // -------------------------------------------------------------------
 
     @Transactional
     @Override
@@ -448,6 +435,67 @@ public class StudentServiceImpl implements StudentService {
 
         return schedule;
     }
+
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
+    @Override
+    public Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto) {
+        Optional<Course> courseCheck = courseRepository.findById(feedbackDto.getSendToUser_Id());
+        if (courseCheck.isEmpty()) {
+            throw new IllegalArgumentException("Course not found when finding by id !");
+        }
+        Course course = courseCheck.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToCourse(course)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
+    }
+    // -------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    @Override
+    public List<Feedback> fetchTeacherFeedback(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToTeacher(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToTeacher(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToCourse(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToCourse(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -------------------------------------------------------------------
+
+
 
 
 }

@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -20,76 +21,6 @@ public class ManagerMediaController {
 
     @Autowired
     ManagerService managerService;
-
-//    // ---------------------- PRIVATE NOTIFICATION -------------------------
-//    @GetMapping("/privateNotifications")
-//    public ResponseEntity<List<PrivateNotification>> getPrivateNotifications() {
-//        List<PrivateNotification> notifications = managerService.getAllPrivateNotification();
-//        return ResponseEntity.ok().body(notifications);
-//    }
-//
-//    @PostMapping("/privateNotification/create")
-//    public PrivateNotification createPrivateNotification(@RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-//        return managerService.createPrivateNotification(privateNotificationDto);
-//    }
-//
-//    @PutMapping("/privateNotification/update/{id}")
-//    public ResponseEntity<PrivateNotification> updatePrivateNotification(@PathVariable int id,
-//                                                                         @RequestBody @Valid PrivateNotificationDto privateNotificationDto) {
-//        PrivateNotification notification = managerService.updatePrivateNotification(id, privateNotificationDto);
-//        if (notification != null) {
-//            return ResponseEntity.ok(notification);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @DeleteMapping("/privateNotification/delete/{id}")
-//    public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
-//        boolean deleted = managerService.deletePrivateNotification(id);
-//        if (deleted) {
-//            return ResponseEntity.ok("Delete the private notification where ID = " + id);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//    // ---------------------------------------------------------------------
-//
-//
-//    // ---------------------- PUBLIC NOTIFICATION -------------------------
-//    @GetMapping("/publicNotifications")
-//    public ResponseEntity<List<PublicNotification>> getPublicNotifications() {
-//        List<PublicNotification> notifications = managerService.getAllPublicNotification();
-//        return ResponseEntity.ok().body(notifications);
-//    }
-//
-//    @PostMapping("/publicNotification/create")
-//    public PublicNotification createPublicNotification(@RequestBody @Valid PublicNotificationDto publicNotificationDto) {
-//        return managerService.createPublicNotification(publicNotificationDto);
-//    }
-//
-//    @PutMapping("/publicNotification/update/{id}")
-//    public ResponseEntity<PublicNotification> updatePublicNotification(@PathVariable int id,
-//                                                                       @RequestBody @Valid PublicNotificationDto publicNotificationDto) {
-//        PublicNotification notification = managerService.updatePublicNotification(id, publicNotificationDto);
-//        if (notification != null) {
-//            return ResponseEntity.ok(notification);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//
-//    @DeleteMapping("/publicNotification/delete/{id}")
-//    public ResponseEntity<String> deletePublicNotification(@PathVariable int id) {
-//        boolean deleted = managerService.deletePublicNotification(id);
-//        if (deleted) {
-//            return ResponseEntity.ok("Delete the public notification where ID = " + id);
-//        } else {
-//            return ResponseEntity.notFound().build();
-//        }
-//    }
-//    // --------------------------------------------------------------------
-
 
     // --------------------------- CENTER POST -----------------------------
     @GetMapping("/centerPosts")
@@ -126,14 +57,6 @@ public class ManagerMediaController {
         }
     }
     // ---------------------------------------------------------------------
-
-
-    // --------------------------- FEEDBACKS -----------------------------
-    @GetMapping("/feedbacks")
-    public ResponseEntity<List<Feedback>> getAllFeedbacks() {
-        List<Feedback> feedbacks = managerService.getAllFeedbacks();
-        return ResponseEntity.ok().body(feedbacks);
-    }
 
     // ----------------------- Individual notification ----------------------
 
@@ -227,12 +150,57 @@ public class ManagerMediaController {
     @GetMapping("/centerNotification/viewers/{notificationId}")
     public ResponseEntity<List<ViewCenterNotification>> getListViewersCenterNotification(@PathVariable int notificationId) {
         List<ViewCenterNotification> viewers = managerService.getListViewersCenterNotification(notificationId);
-        if (!viewers.isEmpty()) {
-            return ResponseEntity.ok(viewers);
-        } else {
-            return ResponseEntity.notFound().build();
+        if (viewers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(viewers, HttpStatus.OK);
     }
 
+    // -------------------------- VIEW FEEDBACKS ---------------------------
+    @GetMapping("/feedbacks/teacher/{teacherId}")
+    public ResponseEntity<List<Feedback>> viewFeedbacksToCertainTeacherInCenter(@PathVariable int teacherId) {
+        List<Feedback> feedbacks = managerService.viewFeedbacksToCertainTeacherInCenter(teacherId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/feedbacks/course/{courseId}")
+    public ResponseEntity<List<Feedback>> viewFeedbacksToCertainCourseInCenter(@PathVariable int courseId) {
+        List<Feedback> feedbacks = managerService.viewFeedbacksToCertainCourseInCenter(courseId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/allFeedbacks/teachersInCenter")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacksToTeacher(HttpSession session) {
+        Integer managerId = (Integer) session.getAttribute("authid");
+        if (managerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = managerService.viewAllFeedbacksToTeachers(managerId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/allFeedbacks/coursesInCenter")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacksToCourse(HttpSession session) {
+        Integer managerId = (Integer) session.getAttribute("authid");
+        if (managerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = managerService.viewAllFeedbacksToCourses(managerId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
 }
 

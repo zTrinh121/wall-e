@@ -128,15 +128,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
     // ------------------------------------------------------------------------
 
-    // ----------------------------- Feedback --------------------------------
-    @Override
-    public List<Feedback> getAllFeedbacks() {
-        return feedbackRepository.findAll
-                (Sort.by(Sort.Direction.DESC, "id"));
-    }
-    // -----------------------------------------------------------------------
-
-
     // ------------------------- Manager center ----------------------------
     @Override
     public List<Center> getCenters(int managerId) {
@@ -652,7 +643,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     // ---------------------------- Center notification ---------------------------
-
     @Override
     public List<CenterNotification> getAllCenterNotifications(int managerId) {
         Optional<List<CenterNotification>> optionalNotifications = centerNotificationRepository.findAllByManagerId(managerId);
@@ -703,6 +693,32 @@ public class ManagerServiceImpl implements ManagerService {
         Optional<List<ViewCenterNotification>> optionalList = viewCenterNotificationRepository.findByCenterNotification_Id(notificationId);
         return optionalList.orElse(Collections.emptyList());
     }
+
+    // ------------------------- VIEW FEEDBACKS ---------------------------
+    @Override
+    public List<Feedback> viewFeedbacksToCertainTeacherInCenter(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbacksToCertainCourseInCenter(int courseId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToCourse_Id(courseId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewAllFeedbacksToTeachers(int managerId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.managerViewTeacherFeedbacks(managerId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewAllFeedbacksToCourses(int managerId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.managerViewCourseFeedbacks(managerId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // ------------------------------------------------------------------
 }
 
 
