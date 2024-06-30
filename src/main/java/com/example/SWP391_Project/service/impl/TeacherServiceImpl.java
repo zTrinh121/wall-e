@@ -301,19 +301,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     // ---------------------- FEEDBACK --------------------------
-
-    @Override
-    public List<Feedback> fetchStudentFeedback(int teacherId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    @Override
-    public List<Feedback> viewFeedbackToStudent(int teacherId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -360,4 +347,30 @@ public class TeacherServiceImpl implements TeacherService {
 
         return resultRepository.save(result);
     }
+
+    // ------------------- VIEW FEEDBACKS -----------------------
+    @Override
+    public List<Feedback> fetchStudentFeedback(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToStudent(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> fetchFeedbackToCourses(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.teacherViewCourseFeedback(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> fetchFeedbackToCertainCourse(int courseId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToCourse_Id(courseId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -----------------------------------------------------------
 }

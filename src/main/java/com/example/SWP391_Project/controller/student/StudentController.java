@@ -240,29 +240,6 @@ public class StudentController {
     }
 
     // ---------------------------- FEEDBACK TO TEACHER ------------------------------
-
-    // Lấy ra những feedback mà teacher gửi đến
-    @GetMapping("/fetch-teacher-feedback")
-    public ResponseEntity<List<Feedback>> fetchTeacherFeedback(HttpSession session) {
-        Integer studentId = (Integer) session.getAttribute("authid");
-        if (studentId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = studentService.fetchTeacherFeedback(studentId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
-    // Lấy ra những feedback cho teacher mà student này đã tạo ra
-    @GetMapping("/view-feedback-to-teacher")
-    public ResponseEntity<List<Feedback>> viewFeedbackToTeacher(HttpSession session) {
-        Integer studentId = (Integer) session.getAttribute("authid");
-        if (studentId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = studentService.viewFeedbackToTeacher(studentId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
     @PostMapping("/create-feedback-to-teacher")
     public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
         User actor = (User) session.getAttribute("user");
@@ -278,21 +255,9 @@ public class StudentController {
         Feedback updatedFeedback = studentService.updateFeedbackToTeacher(id, feedbackDto);
         return ResponseEntity.ok(updatedFeedback);
     }
-    // --------------------------------------------------------------
+    // --------------------------------------------------------------------------
 
     // ---------------------------- FEEDBACK TO COURSE ------------------------------
-
-    // Lấy ra những feedback cho course mà student này đã tạo ra
-    @GetMapping("/view-feedback-to-course")
-    public ResponseEntity<List<Feedback>> viewFeedbackToCourse(HttpSession session) {
-        Integer studentId = (Integer) session.getAttribute("authid");
-        if (studentId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = studentService.viewFeedbackToCourse(studentId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
     @PostMapping("/create-feedback-to-course")
     public ResponseEntity<Feedback> createFeedbackToCourse(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
         User actor = (User) session.getAttribute("user");
@@ -308,7 +273,69 @@ public class StudentController {
         Feedback updatedFeedback = studentService.updateFeedbackToCourse(id, feedbackDto);
         return ResponseEntity.ok(updatedFeedback);
     }
-    // --------------------------------------------------------------
+    // -----------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    // View ra những feedback mà teacher gửi đến
+    @GetMapping("/fetch-teacher-feedback")
+    public ResponseEntity<List<Feedback>> fetchTeacherFeedback(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = studentService.fetchTeacherFeedback(studentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra những feedback cho teacher mà student này đã tạo ra
+    @GetMapping("/view-feedback-to-teacher")
+    public ResponseEntity<List<Feedback>> viewFeedbackToTeacher(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = studentService.viewFeedbackToTeacher(studentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra những feedback cho course mà student này đã tạo ra
+    @GetMapping("/view-feedback-to-course")
+    public ResponseEntity<List<Feedback>> viewFeedbackToCourse(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = studentService.viewFeedbackToCourse(studentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra tất cả các feedbacks mà student này tạo ra <gồm 2 loại>
+    @GetMapping("/view-all-feedbacks")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacks(HttpSession session) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = studentService.getAllFeedbacks(studentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+    // ---------------------------------------------------------------------
 }
 
 

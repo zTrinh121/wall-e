@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -56,14 +57,6 @@ public class ManagerMediaController {
         }
     }
     // ---------------------------------------------------------------------
-
-
-    // --------------------------- FEEDBACKS -----------------------------
-    @GetMapping("/feedbacks")
-    public ResponseEntity<List<Feedback>> getAllFeedbacks() {
-        List<Feedback> feedbacks = managerService.getAllFeedbacks();
-        return ResponseEntity.ok().body(feedbacks);
-    }
 
     // ----------------------- Individual notification ----------------------
 
@@ -157,12 +150,57 @@ public class ManagerMediaController {
     @GetMapping("/centerNotification/viewers/{notificationId}")
     public ResponseEntity<List<ViewCenterNotification>> getListViewersCenterNotification(@PathVariable int notificationId) {
         List<ViewCenterNotification> viewers = managerService.getListViewersCenterNotification(notificationId);
-        if (!viewers.isEmpty()) {
-            return ResponseEntity.ok(viewers);
-        } else {
-            return ResponseEntity.notFound().build();
+        if (viewers.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
+        return new ResponseEntity<>(viewers, HttpStatus.OK);
     }
 
+    // -------------------------- VIEW FEEDBACKS ---------------------------
+    @GetMapping("/feedbacks/teacher/{teacherId}")
+    public ResponseEntity<List<Feedback>> viewFeedbacksToCertainTeacherInCenter(@PathVariable int teacherId) {
+        List<Feedback> feedbacks = managerService.viewFeedbacksToCertainTeacherInCenter(teacherId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/feedbacks/course/{courseId}")
+    public ResponseEntity<List<Feedback>> viewFeedbacksToCertainCourseInCenter(@PathVariable int courseId) {
+        List<Feedback> feedbacks = managerService.viewFeedbacksToCertainCourseInCenter(courseId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/allFeedbacks/teachersInCenter")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacksToTeacher(HttpSession session) {
+        Integer managerId = (Integer) session.getAttribute("authid");
+        if (managerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = managerService.viewAllFeedbacksToTeachers(managerId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    @GetMapping("/allFeedbacks/coursesInCenter")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacksToCourse(HttpSession session) {
+        Integer managerId = (Integer) session.getAttribute("authid");
+        if (managerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = managerService.viewAllFeedbacksToCourses(managerId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
 }
 
