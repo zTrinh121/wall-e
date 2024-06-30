@@ -412,7 +412,7 @@ $(document).ready(function() {
         var keyword = $(this).val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/students/search',
+                url: '/api/student/search',
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function(response) {
