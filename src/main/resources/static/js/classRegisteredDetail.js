@@ -391,7 +391,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const longTestScores = grades.filter(grade => grade.resultType === 2).map(grade => grade.resultValue);
         const examScores = grades.filter(grade => grade.resultType === 3).map(grade => grade.resultValue);
         const maxColumns = Math.max(shortTestScores.length, longTestScores.length, examScores.length);
-
+        const saveButton = document.getElementById("saveScoresButton");
+        saveButton.style.display = "none";
         const tableBody = document.getElementById("scoresTableBody");
         const scoresTable = document.getElementById('scoresTable');
 
