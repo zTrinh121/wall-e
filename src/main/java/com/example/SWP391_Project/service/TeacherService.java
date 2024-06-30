@@ -60,16 +60,26 @@ public interface TeacherService {
                                            int teacherId);
 
   // ------------------- FEEDBACK -------------------------
-  // xem những feedback mà student gửi đến
-  List<Feedback> fetchStudentFeedback(int teacherId);
-
-  // xem những feedback mà chính teacher này tạo ra
-  List<Feedback> viewFeedbackToStudent(int teacherId);
-
   Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto);
 
   Feedback updateFeedbackToStudent(int id, FeedbackDto feedbackDto);
 
   Result createResult(int courseId, int studentId, int type, int value);
+  // ---------------------------------------------------------
+
+  // ------------------- VIEW FEEDBACKS -----------------------
+  // xem những feedback mà student gửi đến teacher này
+  List<Feedback> fetchStudentFeedback(int teacherId);
+
+  // xem những feedback mà student gửi đến tất cả khóa học mà mình đang dạy
+  List<Feedback> fetchFeedbackToCourses(int teacherId);
+
+  // xem những feedback mà student gửi đến một khóa học cụ thể mà mình đang dạy
+  List<Feedback> fetchFeedbackToCertainCourse(int courseId);
+
+  // xem những feedback mà chính teacher này tạo ra
+  List<Feedback> viewFeedbackToStudent(int teacherId);
+
+  // ------------------- VIEW FEEDBACKS -----------------------
 
 }

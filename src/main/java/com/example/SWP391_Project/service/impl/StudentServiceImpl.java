@@ -359,20 +359,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // ----------------------- FEEDBACK TO TEACHER -----------------------------
-
-    @Override
-    public List<Feedback> fetchTeacherFeedback(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    // lỗi thêm sendToCourse = null
-    @Override
-    public List<Feedback> viewFeedbackToTeacher(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -450,14 +436,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // ----------------------- FEEDBACK TO TEACHER -----------------------------
-
-    // lỗi thêm sendToTeacher = null
-    @Override
-    public List<Feedback> viewFeedbackToCourse(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto) {
         Optional<Course> courseCheck = courseRepository.findById(feedbackDto.getSendToUser_Id());
@@ -489,6 +467,34 @@ public class StudentServiceImpl implements StudentService {
         return feedbackRepository.save(feedback);
     }
     // -------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    @Override
+    public List<Feedback> fetchTeacherFeedback(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToTeacher(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToTeacher(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToCourse(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToCourse(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -------------------------------------------------------------------
+
+
 
 
 }
