@@ -93,11 +93,15 @@
                 </div>
 
                 <div class="field">
-                    <input type="password" required placeholder="Xác nhận mật khẩu" name="confirmPassword" id="confirmPassword" >
+                    <input type="password" required placeholder="Xác nhận mật khẩu" name="confirmPassword" id="confirmPassword">
+                    <div id="confirmPasswordError" class="error-message"></div>
                 </div>
+
                 <div class="field">
-                    <input type="text" required placeholder="Số điện thoại" name="phone">
+                    <input type="text" required placeholder="Số điện thoại" name="phone" id="phone">
+                    <div id="phoneError" class="error-message"></div>
                 </div>
+
                 <!--                <div class="field">-->
                 <!--                <input type="text" required placeholder="Mã người dùng" name="code">-->
                 <!--                </div>-->
@@ -128,7 +132,7 @@
         var confirmPassword = document.getElementById("confirmPassword").value;
         var phone = document.getElementById("phone").value;
         var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
-        var phoneRegex = /^[0-9]{10,11}$/;
+        var phoneRegex = /^0[1-9][0-9]{8,9}$/;
 
         if (!passwordRegex.test(password)) {
             alert("Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ cái in hoa, chữ cái thường, số và ký tự đặc biệt.");
@@ -141,7 +145,7 @@
         }
 
         if (!phoneRegex.test(phone)) {
-            alert("Số điện thoại không hợp lệ.");
+            alert("Số điện thoại không hợp lệ. Số điện thoại phải là 10 hoặc 11 số và bắt đầu bằng số 0.");
             return false;
         }
 
@@ -189,9 +193,15 @@
         event.preventDefault(); // Ngăn không cho form gửi đi ngay lập tức
 
         var password = document.getElementById("password").value;
+        var confirmPassword = document.getElementById("confirmPassword").value;
+        var phone = document.getElementById("phone").value;
         var passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/;
+        var phoneRegex = /^0[1-9][0-9]{8,9}$/;
         var passwordError = document.getElementById("passwordError");
+        var confirmPasswordError = document.getElementById("confirmPasswordError");
+        var phoneError = document.getElementById("phoneError");
 
+        // Kiểm tra mật khẩu
         if (!passwordRegex.test(password)) {
             passwordError.innerHTML = "<div class='error-message'>Mật khẩu phải có ít nhất 8 ký tự, bao gồm chữ cái in hoa, chữ cái thường, số và ký tự đặc biệt.</div>";
             return; // Ngăn form gửi nếu mật khẩu không hợp lệ
@@ -199,7 +209,23 @@
             passwordError.innerHTML = ''; // Xóa thông báo lỗi nếu mật khẩu hợp lệ
         }
 
-        // Gửi form nếu mật khẩu hợp lệ
+        // Kiểm tra xác nhận mật khẩu
+        if (password !== confirmPassword) {
+            confirmPasswordError.innerHTML = "<div class='error-message'>Mật khẩu và xác nhận mật khẩu không khớp.</div>";
+            return; // Ngăn form gửi nếu mật khẩu và xác nhận mật khẩu không khớp
+        } else {
+            confirmPasswordError.innerHTML = ''; // Xóa thông báo lỗi nếu mật khẩu và xác nhận mật khẩu khớp
+        }
+
+        // Kiểm tra số điện thoại
+        if (!phoneRegex.test(phone)) {
+            phoneError.innerHTML = "<div class='error-message'>Số điện thoại không hợp lệ.</div>";
+            return; // Ngăn form gửi nếu số điện thoại không hợp lệ
+        } else {
+            phoneError.innerHTML = ''; // Xóa thông báo lỗi nếu số điện thoại hợp lệ
+        }
+
+        // Gửi form nếu tất cả kiểm tra hợp lệ
         var formData = new FormData(this);
 
         fetch('/register', {
@@ -221,6 +247,7 @@
                 // Xóa các thông báo lỗi cũ
                 document.getElementById("usernameError").innerText = '';
                 document.getElementById("emailError").innerText = '';
+                document.getElementById("phoneError").innerText = '';
 
                 // Cập nhật lỗi dựa trên dữ liệu từ server
                 if (data.usernameError) {
@@ -229,8 +256,14 @@
                 if (data.emailError) {
                     document.getElementById("emailError").innerText = data.emailError;
                 }
+                if (data.phoneError) {
+                    document.getElementById("phoneError").innerText = data.phoneError;
+                }
             });
     });
+
+
+
 
     // Đóng modal xác nhận email khi nhấp vào nút đóng
     document.querySelector('.close').addEventListener('click', function() {

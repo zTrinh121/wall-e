@@ -8,6 +8,7 @@ import com.example.SWP391_Project.service.UserService;
 import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
 
+import java.time.LocalDate;
 import java.util.*;
 
 import jakarta.mail.internet.InternetAddress;
@@ -19,6 +20,7 @@ import org.apache.catalina.Group;
 import org.apache.catalina.UserDatabase;
 import org.mindrot.jbcrypt.BCrypt;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -231,18 +233,21 @@ public class UserController {
     }
 
     @PostMapping("/update-profile")
-    public String updateProfile(@RequestParam String name, @RequestParam String email, HttpSession session) {
-        User currenUser = (User) session.getAttribute("user");
-        if (currenUser == null) {
+    public String updateProfile(@RequestParam String name, @RequestParam String email, @RequestParam String address, @RequestParam String phone, @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate dob, HttpSession session) {
+        User currentUser = (User) session.getAttribute("user");
+        if (currentUser == null) {
             return "redirect:/login";
         }
-        currenUser.setName(name);
-        currenUser.setEmail(email);
-        currenUser.setPhone(currenUser.getPhone());
-        userService.saveUser(currenUser);
-        session.setAttribute("userrr", currenUser);
+        currentUser.setName(name);
+        currentUser.setEmail(email);
+        currentUser.setAddress(address);
+        currentUser.setPhone(phone);
+        currentUser.setDob(java.sql.Date.valueOf(dob));  // Chuyển đổi LocalDate sang java.sql.Date
+        userService.saveUser(currentUser);
+        session.setAttribute("user", currentUser);
         return "redirect:/profile";
     }
+
 
     @GetMapping("/register")
     public String register(Model model) {
@@ -255,24 +260,33 @@ public class UserController {
     @ResponseBody
     public ResponseEntity<?> registerUser(@ModelAttribute User user, @RequestParam int roleId, Model model, HttpSession session) {
         Map<String, String> errors = new HashMap<>();
+
+        // Kiểm tra tên người dùng đã tồn tại
         if (userService.findByUsername(user.getUsername()) != null) {
             errors.put("usernameError", "Tên người dùng đã tồn tại");
         }
+
+        // Kiểm tra email đã tồn tại
         if (userService.findByEmail(user.getEmail()) != null) {
             errors.put("emailError", "Email đã tồn tại");
+        }
+
+        // Kiểm tra số điện thoại đã tồn tại
+        if (userService.findByPhone(user.getPhone()) != null) {
+            errors.put("phoneError", "Số điện thoại đã được sử dụng");
         }
 
         if (!errors.isEmpty()) {
             return ResponseEntity.badRequest().body(errors);
         }
 
-    // Tạo và gán mã người dùng
-    String userCode = userService.generateUserCode();
-    user.setCode(userCode);
+        // Tạo và gán mã người dùng
+        String userCode = userService.generateUserCode();
+        user.setCode(userCode);
 
-    Role role = userService.findRoleById(roleId);
-    user.setRole(role);
-    user.setStatus(false);
+        Role role = userService.findRoleById(roleId);
+        user.setRole(role);
+        user.setStatus(false);
 
         // Tạo mã xác nhận và gửi email
         String verificationCode = userService.generateVerificationCode();
@@ -280,10 +294,9 @@ public class UserController {
         session.setAttribute("verificationCode", verificationCode);
         userService.sendEmail(user.getEmail(), verificationCode);
 
-        //errors.put("redirect", "/verify-email");  // URL cho trang nhập mã xác nhận
-//    return ResponseEntity.ok(errors);
         return ResponseEntity.ok().body(Map.of("redirect", "/verify-email"));
     }
+
 
 
 
@@ -546,6 +559,28 @@ public class UserController {
         return "change-password";
     }
     // làm
+
+    private String validatePassword(String password) {
+        if (password.length() < 8) {
+            return "Mật khẩu phải có ít nhất 8 ký tự.";
+        }
+        if (!password.matches(".*[a-z].*")) {
+            return "Mật khẩu phải có ít nhất một chữ cái viết thường.";
+        }
+        if (!password.matches(".*[A-Z].*")) {
+            return "Mật khẩu phải có ít nhất một chữ cái viết hoa.";
+        }
+        if (!password.matches(".*\\d.*")) {
+            return "Mật khẩu phải có ít nhất một chữ số.";
+        }
+        if (!password.matches(".*[@#$%^&+=].*")) {
+            return "Mật khẩu phải có ít nhất một ký tự đặc biệt (@#$%^&+=).";
+        }
+        return "";  // Trả về chuỗi rỗng nếu không có lỗi nào
+    }
+
+
+
     @PostMapping("/change-password")
     public String changePassword(@RequestParam String currentPassword, @RequestParam String newPassword, @RequestParam String confirmPassword, HttpSession session, Model model) {
         User user = (User) session.getAttribute("user");
@@ -560,12 +595,21 @@ public class UserController {
             model.addAttribute("error", "Mật khẩu mới và xác nhận mật khẩu không khớp");
             return "change-password";
         }
+
+        String passwordError = validatePassword(newPassword);
+        if (!passwordError.isEmpty()) {
+            model.addAttribute("error", passwordError);
+            return "change-password";
+        }
+
+        // Thực hiện hash mật khẩu mới và cập nhật
         String newHash = BCrypt.hashpw(newPassword, BCrypt.gensalt());
-        System.out.println("New hash: " + newHash); // Log new hash
         user.setPassword(newHash);
         userService.saveUser(user);
-        return "redirect:/login";
+
+        return "redirect:/login";  // Chuyển hướng người dùng đến trang đăng nhập sau khi cập nhật thành công
     }
+
 
     @GetMapping("/logout")
     public String logout(HttpSession session) {

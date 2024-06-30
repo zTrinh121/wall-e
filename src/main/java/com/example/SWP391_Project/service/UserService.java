@@ -17,6 +17,8 @@ public interface UserService {
 
     User findByEmail(String email);
 
+    User findByPhone(String phone);
+
     Role findRoleById(int id);
 
     List<Role> findAllRoles();
