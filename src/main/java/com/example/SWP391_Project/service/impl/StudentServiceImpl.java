@@ -217,14 +217,54 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
-        String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
-                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName, ss.C17_ATTENDANCE_STATUS as attendanceStatus " +
-                "FROM t02_slot s " +
-                "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
-                "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
-                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
-                "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
-                "WHERE u.C14_USER_ID = :studentId";
+        String query = "SELECT \n" +
+                "    s.C02_SLOT_ID as slotId,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    ss.C17_ATTENDANCE_STATUS as attendanceStatus,\n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID \n" +
+                "    JOIN t14_user u_student ON ss.C17_STUDENT_ID = u_student.C14_USER_ID \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "WHERE \n" +
+                "    u_student.C14_USER_ID = :studentId \n" +
+                "\n" +
+                "UNION\n" +
+                "\n" +
+                "SELECT \n" +
+                "    NULL as slotId,\n" +
+                "    NULL as slotDate, \n" +
+                "    NULL as slotStartTime, \n" +
+                "    NULL as slotEndTime, \n" +
+                "    NULL as courseName, \n" +
+                "    NULL as roomName, \n" +
+                "    NULL as attendanceStatus,\n" +
+                "    u.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s\n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID\n" +
+                "    JOIN t14_user u ON u.C14_USER_ID = c.C01_TEACHER_ID\n" +
+                "WHERE \n" +
+                "    NOT EXISTS (\n" +
+                "        SELECT 1\n" +
+                "        FROM t02_slot s2\n" +
+                "        JOIN t01_course c2 ON s2.C02_COURSE_ID = c2.C01_COURSE_ID\n" +
+                "        WHERE s2.C02_SLOT_ID = s.C02_SLOT_ID\n" +
+                "          AND (s2.C02_SLOT_ID IS NOT NULL\n" +
+                "               OR s2.C02_SLOT_DATE IS NOT NULL\n" +
+                "               OR s2.C02_SLOT_START_TIME IS NOT NULL\n" +
+                "               OR s2.C02_SLOT_END_TIME IS NOT NULL\n" +
+                "               OR c2.C01_COURSE_NAME IS NOT NULL\n" +
+                "               OR u.C14_NAME IS NOT NULL))\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
 
         System.out.println("Query: " + query);
         System.out.println("StudentId: " + studentId);
@@ -237,12 +277,14 @@ public class StudentServiceImpl implements StudentService {
 
         for (Object[] result : resultList) {
             Map<String, Object> slotMap = new HashMap<>();
-            slotMap.put("slotDate", result[0]);
-            slotMap.put("slotStartTime", result[1]);
-            slotMap.put("slotEndTime", result[2]);
-            slotMap.put("courseName", result[3]);
-            slotMap.put("roomName", result[4]);
-            slotMap.put("attendanceStatus", result[5]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("slotId", result[0]);
+            slotMap.put("slotDate", result[1]);
+            slotMap.put("slotStartTime", result[2]);
+            slotMap.put("slotEndTime", result[3]);
+            slotMap.put("courseName", result[4]);
+            slotMap.put("roomName", result[5]);
+            slotMap.put("attendanceStatus", result[6]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("teacherName", result[7]);
 
             slots.add(slotMap);
         }
