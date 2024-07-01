@@ -136,6 +136,16 @@ public class ManagerMediaController {
         }
     }
 
+    @GetMapping("/centerNotifications/center/{centerId}")
+    public ResponseEntity<List<CenterNotification>> getAllCenterNotifications(@PathVariable int centerId) {
+        List<CenterNotification> notifications = managerService.findByCenterId(centerId);
+        if (notifications.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(notifications, HttpStatus.OK);
+        }
+    }
+
     @PostMapping("/centerNotification/create")
     public ResponseEntity<CenterNotification> createCenterNotification(@RequestBody @Valid CenterNotificationDto centerNotificationDto) {
         CenterNotification createdNotification = managerService.createCenterNotification(centerNotificationDto);

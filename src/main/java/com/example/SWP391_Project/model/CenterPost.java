@@ -40,11 +40,11 @@ public class CenterPost {
     String cloudinaryImageId;
 
     @Column(name = "C21_CREATED_AT", columnDefinition = "DATE", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date createdAt;
 
     @Column(name = "C21_UPDATED_AT", columnDefinition = "DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date updatedAt;
 
     @ManyToOne
