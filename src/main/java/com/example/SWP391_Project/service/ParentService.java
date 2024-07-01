@@ -37,9 +37,6 @@ public interface ParentService {
                                            int parentId);
 
     // ------------------------- FEEDBACK -----------------------------
-    // xem feedbacks mà teacher gửi đến con của mình
-    List<Feedback> parentFeedbackViewer(int parentId);
-
     Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
 
     Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
@@ -47,5 +44,21 @@ public interface ParentService {
     Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
 
     Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
+
+    // --------------------- VIEW FEEDBACKS --------------------------
+    // xem feedbacks mà teacher gửi đến con của mình
+    List<Feedback> parentFeedbackViewer(int parentId);
+
+    // xem những feedback gửi đến teacher mà chính parent này tạo ra
+    List<Feedback> viewFeedbackToTeacher(int parentId);
+
+    // xem những feedback gửi đến course mà chính parent này tạo ra
+    List<Feedback> viewFeedbackToCourse(int parentId);
+
+    // xem tất cả các feedback mà parent này tạo ra <2 loại feedback gộp chung>
+    List<Feedback> getAllFeedbacks(int parentId);
+
+
+    // ---------------------------------------------------------------
 
 }

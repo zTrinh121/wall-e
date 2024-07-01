@@ -27,9 +27,9 @@ public interface UserService {
 
     List<User> findAllUsers();
 
-    void sendVerificationCode(User user);
-
-    void sendPasswordResetCode(User user);
+//    void sendVerificationCode(User user);
+//
+//    void sendPasswordResetCode(User user);
 
     User uploadProfileImage(final int userId, final MultipartFile file);
 

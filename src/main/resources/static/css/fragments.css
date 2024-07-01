@@ -328,6 +328,19 @@ body {
 
 }
 
+.notification-item.notification-title{
+    font-weight: 600;
+}
+
+.center-seen span, .private-seen span, .system-seen span{
+    color: #ccc ;
+
+}
+
+{
+
+}
+
 /* Dropdown menu styling */
 .notification .content-notification {
     display: none; /*Hidden by default */

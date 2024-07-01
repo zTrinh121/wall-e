@@ -150,14 +150,6 @@ public class ParentServiceImpl implements ParentService {
     }
 
     // ----------------------- FEEDBACK ------------------------
-
-    @Override
-    public List<Feedback> parentFeedbackViewer(int parentId) {
-        Optional<List<Feedback>> feedbacks
-                = feedbackRepository.getFeedbacksTeacherSendToStudent(parentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -219,4 +211,31 @@ public class ParentServiceImpl implements ParentService {
 
         return feedbackRepository.save(feedback);
     }
+
+    // --------------------- VIEW FEEDBACKS --------------------------
+    @Override
+    public List<Feedback> parentFeedbackViewer(int parentId) {
+        Optional<List<Feedback>> feedbacks
+                = feedbackRepository.getFeedbacksTeacherSendToStudent(parentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToTeacher(int parentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToTeacher(parentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToCourse(int parentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToCourse(parentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks(int parentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(parentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // ---------------------------------------------------------------
 }

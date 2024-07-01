@@ -17,29 +17,6 @@ import java.util.List;
 
 @Service
 public interface ManagerService {
-
-//    // ------------- private Notifications --------------
-//    List<PrivateNotification> getAllPrivateNotification();
-//
-//    PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDtoDto);
-//
-//    PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto);
-//
-//    boolean deletePrivateNotification(int id);
-//    // --------------------------------------------------
-//
-//
-//    // ------------- public Notifications --------------
-//    List<PublicNotification> getAllPublicNotification();
-//
-//    PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto);
-//
-//    PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto);
-//
-//    boolean deletePublicNotification(int id);
-//    // --------------------------------------------------
-
-
     // ----------------- center Posts ------------------
     List<CenterPost> getAllCenterPost();
 
@@ -211,9 +188,6 @@ public interface ManagerService {
 
     // -------------------------------------------------------
 
-    // View feedback --> maybe bỏ qua Media Controller
-    List<Feedback> getAllFeedbacks();
-
     // ---------------------- BỔ SUNG ----------------------
     int countTeachersByCenter(int centerId);
 
@@ -222,7 +196,6 @@ public interface ManagerService {
     int countCourseByCenter(int centerId);
 
     List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId);
-
 
     List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId);
 
@@ -248,7 +221,16 @@ public interface ManagerService {
     boolean deleteCenterNotification(int id);
 
     List<ViewCenterNotification> getListViewersCenterNotification(int notificationId);
-
     // --------------------------------------------------
+
+    // --------------- VIEW FEEDBACK -------------------
+    // view fb đến 1 teacher, 1 course cụ thể
+    List<Feedback> viewFeedbacksToCertainTeacherInCenter(int teacherId);
+    List<Feedback> viewFeedbacksToCertainCourseInCenter(int courseId);
+
+    // view fb đến toàn bộ teacher, course trong trung tâm
+    List<Feedback> viewAllFeedbacksToTeachers(int managerId);
+    List<Feedback> viewAllFeedbacksToCourses(int managerId);
+    // ------------------------------------------------
 
 }

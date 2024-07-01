@@ -147,7 +147,7 @@ public class StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentGrades(int studentId) {
         String query = "SELECT g.C10_RESULT_ID as resultId, g.C10_RESULT_TYPE as resultType, g.C10_RESULT_VAL as resultValue, " +
-                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode " +
+                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode, c.C01_COURSE_ID as courseId " +
                 "FROM t10_result g " +
                 "JOIN t01_course c ON g.C10_COURSE_ID = c.C01_COURSE_ID " +
                 "WHERE g.C10_STUDENT_ID = :studentId";
@@ -171,6 +171,7 @@ public class StudentServiceImpl implements StudentService {
             gradeMap.put("resultValue", result[2]);
             gradeMap.put("courseName", result[3]);
             gradeMap.put("courseCode", result[4]);
+            gradeMap.put("courseId", result[5]);
 
             grades.add(gradeMap);
         }
@@ -217,14 +218,26 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
-        String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
-                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName, ss.C17_ATTENDANCE_STATUS as attendanceStatus " +
-                "FROM t02_slot s " +
-                "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
-                "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
-                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
-                "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
-                "WHERE u.C14_USER_ID = :studentId";
+        String query = "SELECT DISTINCT\n" +
+                "    s.C02_SLOT_ID as slot,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    ss.C17_ATTENDANCE_STATUS as attendanceStatus,\n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID \n" +
+                "    JOIN t16_user_center uc ON ss.C17_STUDENT_ID = uc.C16_USER_ID \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "WHERE \n" +
+                "    uc.C16_USER_ID = :studentId\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
 
         System.out.println("Query: " + query);
         System.out.println("StudentId: " + studentId);
@@ -237,12 +250,14 @@ public class StudentServiceImpl implements StudentService {
 
         for (Object[] result : resultList) {
             Map<String, Object> slotMap = new HashMap<>();
-            slotMap.put("slotDate", result[0]);
-            slotMap.put("slotStartTime", result[1]);
-            slotMap.put("slotEndTime", result[2]);
-            slotMap.put("courseName", result[3]);
-            slotMap.put("roomName", result[4]);
-            slotMap.put("attendanceStatus", result[5]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("slotId", result[0]);
+            slotMap.put("slotDate", result[1]);
+            slotMap.put("slotStartTime", result[2]);
+            slotMap.put("slotEndTime", result[3]);
+            slotMap.put("courseName", result[4]);
+            slotMap.put("roomName", result[5]);
+            slotMap.put("attendanceStatus", result[6]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("teacherName", result[7]);
 
             slots.add(slotMap);
         }
@@ -359,20 +374,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // ----------------------- FEEDBACK TO TEACHER -----------------------------
-
-    @Override
-    public List<Feedback> fetchTeacherFeedback(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    // lỗi thêm sendToCourse = null
-    @Override
-    public List<Feedback> viewFeedbackToTeacher(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -450,14 +451,6 @@ public class StudentServiceImpl implements StudentService {
     }
 
     // ----------------------- FEEDBACK TO TEACHER -----------------------------
-
-    // lỗi thêm sendToTeacher = null
-    @Override
-    public List<Feedback> viewFeedbackToCourse(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto) {
         Optional<Course> courseCheck = courseRepository.findById(feedbackDto.getSendToUser_Id());
@@ -489,6 +482,34 @@ public class StudentServiceImpl implements StudentService {
         return feedbackRepository.save(feedback);
     }
     // -------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    @Override
+    public List<Feedback> fetchTeacherFeedback(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToTeacher(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToTeacher(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToCourse(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToCourse(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -------------------------------------------------------------------
+
+
 
 
 }

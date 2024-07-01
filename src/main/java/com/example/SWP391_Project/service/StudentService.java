@@ -44,27 +44,30 @@ public interface StudentService {
                                            int studentId);
 
     // ----------------------- FEEDBACK TO TEACHER -----------------------------
-    // xem những feedback mà teacher gửi đến
-    List<Feedback> fetchTeacherFeedback(int studentId);
-
-    // xem những feedback mà chính student này tạo ra
-    List<Feedback> viewFeedbackToTeacher(int studentId);
-
     Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
-
     Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
 
    // ------------------------------------------------------------------
     List<Map<String, Object>> getStudentCourse(int studentId);
 
     // ----------------------- FEEDBACK TO COURSE -----------------------------
+    Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
+    Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
 
-    // xem những feedback mà chính student này tạo ra
+    // ------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    // xem những feedback gửi đến tacher mà chính student này tạo ra
+    List<Feedback> viewFeedbackToTeacher(int studentId);
+
+    // xem những feedback gửi đến course mà chính student này tạo ra
     List<Feedback> viewFeedbackToCourse(int studentId);
 
-    Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
+    // xem tất cả các feedback mà student này tạo ra <2 loại feedback gộp chung>
+    List<Feedback> getAllFeedbacks(int studentId);
 
-    Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
+    // xem những feedback mà teacher gửi đến
+    List<Feedback> fetchTeacherFeedback(int studentId);
 
     // ------------------------------------------------------------------
 

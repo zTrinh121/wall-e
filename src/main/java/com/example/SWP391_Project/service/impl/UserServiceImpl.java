@@ -223,33 +223,33 @@ public class UserServiceImpl implements UserService {
         return String.valueOf(code);
     }
 
-    @Override
-    public void sendVerificationCode(User user) {
-        String code = generateVerificationCode();
-        user.setVerificationCode(code);
-        userRepository.save(user);
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Your Verification Code");
-        message.setText("Your verification code is: " + code);
-        mailSender.send(message);
-    }
-
-    @Override
-    public void sendPasswordResetCode(User user) {
-        String code = generateVerificationCode();
-        user.setVerificationCode(code);
-        userRepository.save(user);
-
-        SimpleMailMessage message = new SimpleMailMessage();
-        message.setTo(user.getEmail());
-        message.setSubject("Your Password Reset Code");
-        message.setText("Your password reset code is: " + code);
-        mailSender.send(message);
-    }
-
-
+//    @Override
+//    public void sendVerificationCode(User user) {
+//        String code = generateVerificationCode();
+//        user.setVerificationCode(code);
+//        userRepository.save(user);
+//
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(user.getEmail());
+//        message.setSubject("Your Verification Code");
+//        message.setText("Your verification code is: " + code);
+//        mailSender.send(message);
+//    }
+//
+//    @Override
+//    public void sendPasswordResetCode(User user) {
+//        String code = generateVerificationCode();
+//        user.setVerificationCode(code);
+//        userRepository.save(user);
+//
+//        SimpleMailMessage message = new SimpleMailMessage();
+//        message.setTo(user.getEmail());
+//        message.setSubject("Your Password Reset Code");
+//        message.setText("Your password reset code is: " + code);
+//        mailSender.send(message);
+//    }
+//
+//
 
 
     public String generateUserCode() {

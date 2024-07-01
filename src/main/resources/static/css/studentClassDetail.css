@@ -586,6 +586,11 @@ td {
   border: 1px solid #ddd;
 }
 
+
+#scoresTable thead tr th{
+  background: #2548a0;
+}
+
 th,
 td {
   padding: 8px;

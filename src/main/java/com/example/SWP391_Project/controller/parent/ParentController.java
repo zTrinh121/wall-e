@@ -91,6 +91,7 @@ public class ParentController {
 
     // ----------------------- NOTIFICATION -----------------------
     @GetMapping("/notifications/all")
+    @ResponseBody
     public ResponseEntity<ParentNotificationResponse> getAllNotifications(HttpSession session) {
         Integer parentId = (Integer) session.getAttribute("authid");
         if (parentId == null) {
@@ -101,14 +102,16 @@ public class ParentController {
     }
 
     @PatchMapping("/individualNotification/update/{notificationId}")
+    @ResponseBody
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return parentService.updateIndividualNotification(notificationId);
     }
 
-    @PostMapping("/parent/viewSystemNotification/update/{notificationId}")
+    @PostMapping("/viewSystemNotification/update/{notificationId}")
+    @ResponseBody
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User parent = (User) session.getAttribute("authid");
+        User parent = (User) session.getAttribute("user");
         if (parent == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
         }
@@ -116,6 +119,7 @@ public class ParentController {
     }
 
     @GetMapping("/systemNotification/{systemNotificationId}/check")
+    @ResponseBody
     public ResponseEntity<Boolean> checkHasSeenSystemNotification(
             @PathVariable int systemNotificationId,
             HttpSession session) {
@@ -128,17 +132,6 @@ public class ParentController {
     }
 
     // ----------------------------- FEEDBACK -------------------------------
-    // Lấy ra những feedback mà teacher gửi đến
-    @GetMapping("/view-student-feedback")
-    public ResponseEntity<List<Feedback>> getFeedbackTeacherSendToStudent(HttpSession session) {
-        Integer parentId = (Integer) session.getAttribute("authid");
-        if (parentId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = parentService.parentFeedbackViewer(parentId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
     @PostMapping("/create-feedback-to-teacher")
     public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
         User actor = (User) session.getAttribute("user");
@@ -170,4 +163,67 @@ public class ParentController {
         Feedback updatedFeedback = parentService.updateFeedbackToCourse(id, feedbackDto);
         return ResponseEntity.ok(updatedFeedback);
     }
+
+    // --------------------- VIEW FEEDBACKS --------------------------
+    // Lấy ra những feedback mà teacher gửi đến con của mình
+    @GetMapping("/view-student-feedback")
+    @ResponseBody
+    public ResponseEntity<List<Feedback>> getFeedbackTeacherSendToStudent(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = parentService.parentFeedbackViewer(parentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra những feedback cho teacher mà parent này đã tạo ra
+    @GetMapping("/view-feedback-to-teacher")
+    public ResponseEntity<List<Feedback>> viewFeedbackToTeacher(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = parentService.viewFeedbackToTeacher(parentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra những feedback cho course mà parent này đã tạo ra
+    @GetMapping("/view-feedback-to-course")
+    public ResponseEntity<List<Feedback>> viewFeedbackToCourse(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = parentService.viewFeedbackToCourse(parentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // View ra tất cả các feedbacks mà parent này tạo ra <gồm 2 loại>
+    @GetMapping("/view-all-feedbacks")
+    public ResponseEntity<List<Feedback>> viewAllFeedbacks(HttpSession session) {
+        Integer parentId = (Integer) session.getAttribute("authid");
+        if (parentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = parentService.getAllFeedbacks(parentId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+    // ---------------------------------------------------------------
 }

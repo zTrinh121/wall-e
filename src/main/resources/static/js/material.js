@@ -1,15 +1,20 @@
 document.addEventListener("DOMContentLoaded", function() {
-    // Define the subjects
+    const currentUrl = window.location.href;
+    const url = new URL(currentUrl);
+    const gradeValue = url.searchParams.get('grade');
+    const subject = url.searchParams.get('subject');
+    const toast = document.getElementById("toast");
+    const toastInfo = document.getElementById("toast-info");
+
     const userRole = document.getElementById("roleUser").innerHTML;
     const uploadBtn = document.getElementById("upload-btn");
-    console.log(userRole + " vai tro user")
+
     const subjects = [
         "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD",
         "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
         "Mỹ thuật", "GDQP-AN", "Tin học", "Khác"
     ];
 
-    // Create grade buttons
     const gradeButtonsContainer = document.getElementById('grade-buttons');
     if (gradeButtonsContainer) {
         for (let i = 1; i <= 12; i++) {
@@ -20,68 +25,85 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    async function getAllMaterials(url){
+    async function getAllMaterials(apiUrl) {
         try {
-            const response = await fetch(url);
-            if(!response.ok){
+            const response = await fetch(apiUrl);
+            if (!response.ok) {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
-            materials = await response.json()
-            displayMaterials(materials)
-            console.log(materials)
-        }catch (error){
+            const materials = await response.json();
+            filterAndDisplayMaterials(materials);
+        } catch (error) {
             console.error('Error fetching materials:', error);
         }
     }
 
-    function displayMaterials(materials){
+    function filterAndDisplayMaterials(materials) {
+        const urlParams = new URLSearchParams(window.location.search);
+        const grade = urlParams.get('grade');
+        const subject = urlParams.get('subject');
+
+        const filteredMaterials = materials.filter(material => {
+            const [materialSubject, materialGrade] = material.subjectName.split(" ");
+            const matchesGrade = grade ? grade === materialGrade : true;
+            const matchesSubject = subject ? subject === materialSubject : true;
+            return matchesGrade && matchesSubject;
+        });
+
+        displayMaterials(filteredMaterials);
+    }
+
+    function displayMaterials(materials) {
         const materialContainer = document.getElementById("materials-container");
         materialContainer.innerHTML = '';
 
-        materials.forEach(material => {
-            const materialElement = document.createElement('div');
-            materialElement.classList.add('student-exam-result-up');
-            materialElement.innerHTML = `
-                <a href="/material-detail?id=${material.id}">
-                 <div class="image-fit">
-                                    <img alt="pdf-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/pdf.svg">
-                                </div>
-                                <div class="text-left">
-                                    <div class="azt-student-name">
-                                        <span class="font-medium truncate">${material.materialsName}</span>
-                                    </div>
-                                    <div class="info">
-                                        <span class="text-slate-500 font-medium">Phân loại: </span>
-                                        <span class="text-black font-medium">${material.subjectName}</span>
-                                    </div>
-                                    <div class="info">
-                                        <span class="text-slate-500 font-medium">Người soạn: </span>
-                                        <span class="text-black font-medium">${material.teacher.name}</span>
-                                    </div>
-                                </div>
-                </a>
-               
-            `;
-            materialContainer.appendChild(materialElement);
-        })
+        if (materials.length !== 0) {
+            materials.forEach(material => {
+                const materialElement = document.createElement('div');
+                materialElement.classList.add('student-exam-result-up');
+                materialElement.innerHTML = `
+                    <a href="/material-detail?id=${material.id}">
+                        <div class="image-fit">
+                            <img alt="pdf-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/pdf.svg">
+                        </div>
+                        <div class="text-left">
+                            <div class="azt-student-name">
+                                <span class="font-medium truncate">${material.materialsName}</span>
+                            </div>
+                            <div class="info">
+                                <span class="text-slate-500 font-medium">Phân loại: </span>
+                                <span class="text-black font-medium">${material.subjectName}</span>
+                            </div>
+                            <div class="info">
+                                <span class="text-slate-500 font-medium">Người soạn: </span>
+                                <span class="text-black font-medium">${material.teacher.name}</span>
+                            </div>
+                        </div>
+                    </a>
+                `;
+                materialContainer.appendChild(materialElement);
+            });
+        } else {
+            showToast("Không tìm thấy tài liệu phù hợp", "red", "times-circle");
+            materialContainer.innerHTML = `<div class="no-result">Không tìm thấy tài liệu phù hợp</div>`;
+        }
     }
 
     function selectGrade(grade, button) {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('grade', grade);
-        urlParams.delete('subject'); // Remove subject if grade is changed
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
         showSubjectButtons();
         highlightSelectedButton(button, 'grade');
+        fetchMaterials();
     }
 
-    // Show subject buttons
     function showSubjectButtons() {
         const subjectChoose = document.getElementsByClassName("button-group-subject")[0];
         const subjectButtonsContainer = document.getElementById('subject-buttons');
         subjectChoose.style.display = "block";
         subjectButtonsContainer.style.display = 'flex';
-        subjectButtonsContainer.innerHTML = ''; // Clear previous buttons
+        subjectButtonsContainer.innerHTML = '';
 
         subjects.forEach(subject => {
             const button = document.createElement('button');
@@ -90,9 +112,7 @@ document.addEventListener("DOMContentLoaded", function() {
             subjectButtonsContainer.appendChild(button);
         });
 
-        // Highlight selected subject if available in URL
-        const urlParams = new URLSearchParams(window.location.search);
-        const selectedSubject = urlParams.get('subject');
+        const selectedSubject = url.searchParams.get('subject');
         if (selectedSubject) {
             const subjectButtons = document.querySelectorAll('#subject-buttons button');
             subjectButtons.forEach(button => {
@@ -103,50 +123,67 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     }
 
-    // Handle subject selection
     function selectSubject(subject, button) {
         const urlParams = new URLSearchParams(window.location.search);
-        urlParams.set('subject', subject);
+        const currentSubject = urlParams.get('subject');
+
+        if (currentSubject === subject) {
+            urlParams.delete('subject');
+            button.classList.remove('active');
+        } else {
+            urlParams.set('subject', subject);
+            highlightSelectedButton(button, 'subject');
+        }
+
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
-        highlightSelectedButton(button, 'subject');
+        fetchMaterials();
     }
 
-    // Highlight selected button
     function highlightSelectedButton(button, type) {
-        // Remove active class from previously selected button of the same type
         const buttons = document.querySelectorAll(`#${type}-buttons button`);
         buttons.forEach(btn => btn.classList.remove('active'));
-
-        // Add active class to the clicked button
         button.classList.add('active');
     }
 
-    // On page load, check if grade is already selected
-    const urlParams = new URLSearchParams(window.location.search);
-    const grade = urlParams.get('grade');
-    if (grade) {
+    function fetchMaterials() {
+        if (userRole === "PARENT" || userRole === "STUDENT") {
+            getAllMaterials(`/api/student/allMaterials`);
+        } else if (userRole === "TEACHER") {
+            getAllMaterials(`/api/teacher/allMaterials`);
+        }
+    }
+
+    if (gradeValue) {
         showSubjectButtons();
         const gradeButtons = document.querySelectorAll('#grade-buttons button');
         gradeButtons.forEach(button => {
-            if (button.textContent === `Khối ${grade}`) {
+            if (button.textContent === `Khối ${gradeValue}`) {
                 button.classList.add('active');
             }
         });
     }
 
-    switch (userRole){
+    switch (userRole) {
         case "PARENT":
             uploadBtn.style.display = "none";
-            getAllMaterials(`api/student/allMaterials`);
+            getAllMaterials(`/api/student/allMaterials`);
             break;
         case "STUDENT":
-            getAllMaterials(`api/student/allMaterials`);
+            getAllMaterials(`/api/student/allMaterials`);
             uploadBtn.style.display = "none";
             break;
         case "TEACHER":
             getAllMaterials(`/api/teacher/allMaterials`);
             uploadBtn.style.display = "block";
+            break;
+    }
 
-
+    function showToast(message, backgroundColor, icon) {
+        toastInfo.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
+        toast.style.backgroundColor = backgroundColor;
+        toast.style.display = "block";
+        setTimeout(function () {
+            toast.style.display = "none";
+        }, 3000);
     }
 });
