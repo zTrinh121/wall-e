@@ -1,9 +1,9 @@
 package com.example.SWP391_Project.service;
 
-import com.example.SWP391_Project.dto.CenterPostDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -18,8 +18,6 @@ public interface StudentService {
     List<Map<String, Object>> getStudentSchedule(int studentId);
 
     List<Map<String, Object>> getStudentGrades(int studentId);
-
-    List<Map<String, Object>> getFeedbackByUserName(String userName);
 
     List<Map<String, Object>> getStudentsByCourseId(int courseId);
 
@@ -45,19 +43,40 @@ public interface StudentService {
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int studentId);
 
-    // ----------------------- FEEDBACK -----------------------------
-    // xem những feedback mà teacher gửi đến
-    List<Feedback> fetchTeacherFeedback(int studentId);
-
-    // xem những feedback mà chính student này tạo ra
-    List<Feedback> viewFeedbackToTeacher(int studentId);
-
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
     Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto);
-
     Feedback updateFeedbackToTeacher(int id, FeedbackDto feedbackDto);
 
-  // ------------------------------------------------------------------
+   // ------------------------------------------------------------------
     List<Map<String, Object>> getStudentCourse(int studentId);
+
+    // ----------------------- FEEDBACK TO COURSE -----------------------------
+    Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto);
+    Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto);
+
+    // ------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    // xem những feedback gửi đến tacher mà chính student này tạo ra
+    List<Feedback> viewFeedbackToTeacher(int studentId);
+
+    // xem những feedback gửi đến course mà chính student này tạo ra
+    List<Feedback> viewFeedbackToCourse(int studentId);
+
+    // xem tất cả các feedback mà student này tạo ra <2 loại feedback gộp chung>
+    List<Feedback> getAllFeedbacks(int studentId);
+
+    // xem những feedback mà teacher gửi đến
+    List<Feedback> fetchTeacherFeedback(int studentId);
+    // ------------------------------------------------------------------
+
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId);
+
+    List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
+
+
+    // -----------------------------------------------------------------------
 
 
 }

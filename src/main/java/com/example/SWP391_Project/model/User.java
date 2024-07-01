@@ -65,9 +65,6 @@ public class User {
     @Column(name = "C14_USER_EMAIL", nullable = false)
     String email;
 
-    @Column(name = "C14_VERIFICATION_CODE", nullable = false)
-    String verificationCode;
-
     @Column(name = "C14_PROFILE_IMAGE")
     String profileImage;
 

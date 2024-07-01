@@ -320,7 +320,24 @@ body {
     display: inline-block;
 }
 
+.system-notification {
+    display: none;
+}
+
 .content-notification{
+
+}
+
+.notification-item.notification-title{
+    font-weight: 600;
+}
+
+.center-seen span, .private-seen span, .system-seen span{
+    color: #ccc ;
+
+}
+
+{
 
 }
 

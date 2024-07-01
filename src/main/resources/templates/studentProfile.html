@@ -53,24 +53,23 @@
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Mã người dùng</label>
-                                            <input type="text" class="form-control mb-1" name="name" readonly th:value="${session.user?.code}">
+                                            <input type="text" class="form-control mb-1" name="code" readonly th:value="${session.user?.code}">
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Địa chỉ</label>
-                                            <input type="text" class="form-control mb-1" name="name" th:value="${session.user?.address}">
+                                            <input type="text" class="form-control mb-1" name="address" th:value="${session.user?.address}">
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Số điện thoại</label>
-                                            <input type="text" class="form-control mb-1" name="name" th:value="${session.user?.phone}">
+                                            <input type="text" class="form-control mb-1" name="phone" th:value="${session.user?.phone}">
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">Ngày sinh</label>
-                                            <input type="date" class="form-control mb-1" name="name" th:value="${session.user?.dob}">
+                                            <input type="date" class="form-control mb-1" name="dob" th:value="${session.user?.dob}">
                                         </div>
                                         <div class="form-group">
                                             <label class="form-label">E-mail</label>
                                             <input type="email" class="form-control mb-1" name="email" th:value="${session.user?.email}">
-
                                         </div>
 
                                         <div class="text-right mt-3">

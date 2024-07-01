@@ -1,6 +1,10 @@
-document.addEventListener("DOMContentLoaded", function () {
+let notificationCount = 0;
+const notificationCountElement = document.getElementById('notificationCount');
+
+document.addEventListener("DOMContentLoaded", async function () {
     const bell = document.getElementById("bell");
     const contentNotification = document.querySelector(".content-notification");
+    const systemNotification = document.querySelector(".system-notification");
     const profileDropdownList = document.querySelector(".profile-dropdown-list");
     const profileDropdownBtn = document.querySelector(".profile-dropdown-btn");
     const notificationModal = document.getElementById("notificationModal");
@@ -8,25 +12,43 @@ document.addEventListener("DOMContentLoaded", function () {
     const notificationDetails = document.getElementById("notificationDetails");
     const closeModal = document.getElementById("viewNotificationModalClose");
     const userRole = document.getElementById("user-role").innerHTML;
-    console.log("Vai tro: " + userRole);
+    let apiRole;
     let apiNotificationUrlGet;
     let allNotifications = [];
+    let allNotificationsUnseen = [];
+    let allNotificationSeen = [];
+    let allNotificationSystem = [];
+    let allNotificationSystemUnseen = [];
+    let allNotificationSystemSeen = [];
+    let allNotificationCenter = [];
+    let allNotificationCenterSeen = [];
+    let allNotificationCenterUnseen = [];
+    let allNotificationPrivate = [];
+    let allNotificationPrivateUnseen = [];
+    let allNotificationPrivateSeen = [];
+
+
 
     switch (userRole){
         case "PARENT":
-            apiNotificationUrlGet = `/parent/notifications/all`;
+            apiNotificationUrlGet = `api/parent/notifications/all`;
+            apiRole = `api/parent`;
             break;
         case "STUDENT":
             apiNotificationUrlGet = `api/student/notifications/all`
+            apiRole = `api/student`;
             break;
         case "TEACHER":
             apiNotificationUrlGet = `api/teacher/notifications/all`
+            apiRole = `api/teacher`;
             break;
     }
 
+    await fetchNotifications(apiNotificationUrlGet);
+
     function toggleProfileDropdown() {
         profileDropdownList.classList.toggle("active");
-        contentNotification.style.display = "none"; // Hide notification dropdown
+        contentNotification.style.display = "none";
     }
 
     function toggleNotificationDropdown() {
@@ -34,6 +56,19 @@ document.addEventListener("DOMContentLoaded", function () {
             contentNotification.style.display = "none";
         } else {
             contentNotification.style.display = "block";
+            systemNotification.style.display = "block";
+            allNotifications = [];
+            allNotificationsUnseen = [];
+            allNotificationSeen = [];
+            allNotificationSystem = [];
+            allNotificationSystemUnseen = [];
+            allNotificationSystemSeen = [];
+            allNotificationCenter = [];
+            allNotificationCenterSeen = [];
+            allNotificationCenterUnseen = [];
+            allNotificationPrivate = [];
+            allNotificationPrivateUnseen = [];
+            allNotificationPrivateSeen = [];
             fetchNotifications(apiNotificationUrlGet);
         }
         profileDropdownList.classList.remove("active");
@@ -47,7 +82,6 @@ document.addEventListener("DOMContentLoaded", function () {
         toggleProfileDropdown();
     });
 
-    // Close both dropdowns if the user clicks outside of them
     window.addEventListener("click", function (event) {
         if (
             !bell.contains(event.target) &&
@@ -74,32 +108,89 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
-    let notificationCount = 5; // Example count
-    const notificationCountElement = document.getElementById('notificationCount');
 
-    if (notificationCount > 0) {
-        notificationCountElement.textContent = notificationCount;
-        notificationCountElement.style.display = 'inline-block';
-    } else {
-        notificationCountElement.style.display = 'none';
+
+    async function fetchNotifications(url) {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+
+            if (userRole !== "PARENT") {
+                allNotifications.push(...data.centerNotifications);
+                allNotificationCenter = data.centerNotifications;
+
+                const centerNotificationPromises = allNotificationCenter.map(async (notification) => {
+                    const hasSeen = await checkHasSeenCenterNotification(notification.id);
+                    if (hasSeen) {
+                        allNotificationCenterSeen.push(notification);
+                        allNotificationSeen.push(notification);
+                    } else {
+                        allNotificationCenterUnseen.push(notification);
+                        allNotificationsUnseen.push(notification);
+                    }
+                });
+                await Promise.all(centerNotificationPromises);
+            }
+
+            allNotificationPrivate = data.individualNotifications;
+            allNotificationPrivateSeen = data.individualNotifications.filter(notification => notification.hasSeen === true);
+            allNotificationPrivateUnseen = data.individualNotifications.filter(notification => notification.hasSeen !== true);
+
+            allNotificationSystem = data.systemNotifications;
+
+            const systemNotificationPromises = allNotificationSystem.map(async (notification) => {
+                const hasSeen = await checkHasSeenSystemNotification(notification.id);
+                if (hasSeen) {
+                    allNotificationSystemSeen.push(notification);
+                    allNotificationSeen.push(notification);
+                } else {
+                    allNotificationSystemUnseen.push(notification);
+                    allNotificationsUnseen.push(notification);
+                }
+            });
+            await Promise.all(systemNotificationPromises);
+
+            allNotificationSeen.push(...allNotificationPrivateSeen);
+            allNotificationsUnseen.push(...allNotificationPrivateUnseen);
+
+
+            notificationCount = allNotificationsUnseen.length;
+            console.log(notificationCount);
+
+            if (notificationCount > 0) {
+                notificationCountElement.textContent = notificationCount;
+                notificationCountElement.style.display = 'inline-block';
+            } else {
+                notificationCountElement.style.display = 'none';
+            }
+
+            allNotifications.push(...data.individualNotifications);
+            allNotifications.push(...data.systemNotifications);
+            allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+
+            displayNotifications(allNotifications);
+        } catch (error) {
+            console.error('Error fetching notifications:', error);
+        }
     }
 
-    function fetchNotifications(url) {
-        fetch(url)
-            .then(response => response.json())
-            .then(data => {
-                allNotifications.push(...data.individualNotifications);
-                if(userRole != "PARENT"){
-                    allNotifications.push(...data.centerNotifications);
-                }
-                allNotifications.push(...data.systemNotifications);
-                allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-                console.log(allNotifications)
-                notificationCount = allNotifications.length;
-                console.log(allNotifications.length)
-                displayNotifications(allNotifications); // Assuming response contains notifications array
-            })
-            .catch(error => console.error('Error fetching notifications:', error));
+
+    async function checkHasSeenCenterNotification(centerNotificationId) {
+        const response = await fetch(`${apiRole}/centerNotification/${centerNotificationId}/check`);
+        if (!response.ok) {
+            throw new Error('Error checking center notification status');
+        }
+        const hasSeen = await response.json();
+        return hasSeen;
+    }
+
+    async function checkHasSeenSystemNotification(systemNotificationId) {
+        const response = await fetch(`${apiRole}/systemNotification/${systemNotificationId}/check`);
+        if (!response.ok) {
+            throw new Error('Error checking system notification status');
+        }
+        const hasSeen = await response.json();
+        return hasSeen;
     }
 
 
@@ -114,22 +205,47 @@ document.addEventListener("DOMContentLoaded", function () {
             notificationsToRender.forEach(notification => {
                 const notificationItem = document.createElement('div');
                 notificationItem.classList.add('notification-item');
+                let systemNotificationUnSeen;
+                let centerNotificationUnSeen;
 
-                // Create the icon element
+                if (notification.center) {
+                    notificationItem.classList.add('notification-center');
+                    const isSeen = allNotificationCenterSeen.some(seenNotification => seenNotification.id === notification.id);
+                    if (isSeen) {
+                        notificationItem.classList.add('center-seen');
+                    } else {
+                        notificationItem.classList.add('center-unseen');
+                        centerNotificationUnSeen = notification;
+                    }
+                } else if (notification.actor) {
+                    notificationItem.classList.add('notification-private');
+                    if (notification.hasSeen) {
+                        notificationItem.classList.add('private-seen');
+                    } else {
+                        notificationItem.classList.add('private-unseen');
+                    }
+                } else {
+                    notificationItem.classList.add('notification-system');
+                    const isSeen = allNotificationSystemSeen.some(seenNotification => seenNotification.id === notification.id);
+                    if (isSeen) {
+                        notificationItem.classList.add('system-seen');
+                    } else {
+                        notificationItem.classList.add('system-unseen');
+                        systemNotificationUnSeen = notification;
+                    }
+                }
+
                 const icon = document.createElement('img');
                 icon.classList.add('bell-decor');
-                icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`
+                icon.src = `https://cdn3d.iconscout.com/3d/premium/thumb/notifications-6162342-5034125.png?f=webp`;
 
-                // Create a container for the text and time
                 const textContainer = document.createElement('div');
                 textContainer.classList.add('text-container');
 
-                // Create the text element
                 const text = document.createElement('span');
                 text.classList.add('notification-title');
-                text.textContent = notification.title; // Adjust based on your notification structure
+                text.textContent = notification.title;
 
-                // Create the time element
                 const time = document.createElement('span');
                 time.classList.add('notification-time');
                 time.textContent = timeAgo(notification.createdAt);
@@ -140,14 +256,43 @@ document.addEventListener("DOMContentLoaded", function () {
                 notificationItem.appendChild(icon);
                 notificationItem.appendChild(textContainer);
 
-                notificationItem.addEventListener('click', () => {
-                    window.location.href = `/notification?id=${notification.id}`; // Redirect to notification details page
+                notificationItem.addEventListener('click', async () => {
+                    try {
+                        let response;
+                        if (systemNotificationUnSeen) {
+                            response = await fetch(`${apiRole}/viewSystemNotification/update/${systemNotificationUnSeen.id}`, { method: 'POST' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('system-unseen');
+                                notificationItem.classList.add('system-seen');
+                            }
+                        } else if (centerNotificationUnSeen) {
+                            response = await fetch(`${apiRole}/viewCenterNotification/update/${centerNotificationUnSeen.id}`, { method: 'POST' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('center-unseen');
+                                notificationItem.classList.add('center-seen');
+                            }
+                        } else {
+                            response = await fetch(`${apiRole}/individualNotification/update/${notification.id}`, { method: 'PATCH' });
+                            if (response.ok) {
+                                notificationItem.classList.remove('private-unseen');
+                                notificationItem.classList.add('private-seen');
+                            }
+                        }
+
+                        if (!response.ok) {
+                            throw new Error('Error updating notification status');
+                        }
+
+                        // Redirect after updating
+                        window.location.href = `/notification?id=${notification.id}`;
+                    } catch (error) {
+                        console.error('Error updating notifications:', error);
+                    }
                 });
 
                 contentNotification.appendChild(notificationItem);
             });
 
-            // Move "More" button to the end
             if (moreButton) {
                 contentNotification.appendChild(moreButton);
             }
@@ -181,7 +326,6 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     }
 
-
     function timeAgo(date) {
         const now = new Date();
         const diff = now - new Date(date);
@@ -203,24 +347,12 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
 
-    //
-    // function showNotificationDetails(notification) {
-    //     notificationTitle.textContent = notification.title;
-    //     notificationDetails.textContent = notification.content; // Adjust based on your notification structure
-    //     notificationModal.style.display = "block";
-    // }
-
-    closeModal.addEventListener('click', () => {
-        notificationModal.style.display = "none";
-    });
-
     window.addEventListener('click', (event) => {
         if (event.target === notificationModal) {
             notificationModal.style.display = "none";
         }
     });
 
-    // Start chat box
     const textarea = document.querySelector('.chatbox-message-input');
     const chatboxForm = document.querySelector('.chatbox-message-form');
 
@@ -347,8 +479,8 @@ $(document).ready(function() {
                     // Thêm sự kiện click cho mỗi kết quả tìm kiếm
                     $('.search-item').click(function() {
                         var url = $(this).data('url');
-                        sessionStorage.setItem('searchDetails', $(this).text()); // Lưu tên vào sessionStorage
-                        window.location.href = url; // Chuyển hướng tới trang chi tiết
+                        sessionStorage.setItem('searchDetails', $(this).text());
+                        window.location.href = url;
                     });
                 },
                 error: function(error) {
@@ -360,7 +492,6 @@ $(document).ready(function() {
         }
     });
 
-    // Ẩn kết quả tìm kiếm khi nhấn vào bất kỳ nơi nào bên ngoài
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();

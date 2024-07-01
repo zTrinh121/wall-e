@@ -1,18 +1,15 @@
 package com.example.SWP391_Project.service.impl;
 
-import com.example.SWP391_Project.dto.CenterPostDto;
-import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
-import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,7 +17,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 
-import java.sql.ResultSet;
 import java.util.*;
 
 @Service
@@ -42,7 +38,6 @@ StudentServiceImpl implements StudentService {
 
     @PersistenceContext
     private EntityManager entityManager;
-
     @Autowired
     private SlotRepository slotRepository;
 
@@ -67,7 +62,6 @@ StudentServiceImpl implements StudentService {
     @Autowired
     private UserRepository userRepository;
 
-    // -------------------------------------------------------
     @Override
     public User getStudentById(int studentId) {
         return studentRepository.findById(studentId).orElse(null);
@@ -152,7 +146,7 @@ StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentGrades(int studentId) {
         String query = "SELECT g.C10_RESULT_ID as resultId, g.C10_RESULT_TYPE as resultType, g.C10_RESULT_VAL as resultValue, " +
-                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode, c.C01_COURSE_ID " +
+                "c.C01_COURSE_NAME as courseName, c.C01_COURSE_CODE as courseCode, c.C01_COURSE_ID as courseId " +
                 "FROM t10_result g " +
                 "JOIN t01_course c ON g.C10_COURSE_ID = c.C01_COURSE_ID " +
                 "WHERE g.C10_STUDENT_ID = :studentId";
@@ -183,41 +177,6 @@ StudentServiceImpl implements StudentService {
 
         return grades;
     }
-
-
-    @Transactional
-    @Override
-    public List<Map<String, Object>> getFeedbackByUserName(String userName) {
-        String query = "SELECT f.C06_FEEDBACK_DESC as feedbackDesc " +
-                "FROM t06_feedback f " +
-                "JOIN t14_user u ON f.C06_USER_ID = u.C14_USER_ID " +
-                "WHERE u.C14_USERNAME = :userName";
-
-        System.out.println("Query: " + query);
-        System.out.println("Student ID: " + userName);
-
-//        Query nativeQuery = entityManager.createNativeQuery(query);
-//        nativeQuery.setParameter("studentId", userCode);
-
-//        List<Object[]> resultList = nativeQuery.getResultList();
-//        List<Map<String, Object>> grades = new ArrayList<>();
-
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("userName", userName);
-
-        List<Object[]> resultList = nativeQuery.getResultList();
-        List<Map<String, Object>> feedbacks = new ArrayList<>();
-
-        for (Object[] result : resultList) {
-            Map<String, Object> feedbackMap = new HashMap<>();
-            feedbackMap.put("feedbackDesc", result[0]);
-
-            feedbacks.add(feedbackMap);
-        }
-
-        return feedbacks;
-    }
-
 
     // danh sách học sinh của lớp đó
 
@@ -254,17 +213,30 @@ StudentServiceImpl implements StudentService {
         return students;
     }
 
+
     @Transactional
     @Override
     public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
-        String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
-                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName, ss.C17_ATTENDANCE_STATUS as attendanceStatus " +
-                "FROM t02_slot s " +
-                "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
-                "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
-                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
-                "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
-                "WHERE u.C14_USER_ID = :studentId";
+        String query = "SELECT DISTINCT\n" +
+                "    s.C02_SLOT_ID as slot,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    ss.C17_ATTENDANCE_STATUS as attendanceStatus,\n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID \n" +
+                "    JOIN t16_user_center uc ON ss.C17_STUDENT_ID = uc.C16_USER_ID \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "WHERE \n" +
+                "    uc.C16_USER_ID = :studentId\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
 
         System.out.println("Query: " + query);
         System.out.println("StudentId: " + studentId);
@@ -277,18 +249,21 @@ StudentServiceImpl implements StudentService {
 
         for (Object[] result : resultList) {
             Map<String, Object> slotMap = new HashMap<>();
-            slotMap.put("slotDate", result[0]);
-            slotMap.put("slotStartTime", result[1]);
-            slotMap.put("slotEndTime", result[2]);
-            slotMap.put("courseName", result[3]);
-            slotMap.put("roomName", result[4]);
-            slotMap.put("attendanceStatus", result[5]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("slotId", result[0]);
+            slotMap.put("slotDate", result[1]);
+            slotMap.put("slotStartTime", result[2]);
+            slotMap.put("slotEndTime", result[3]);
+            slotMap.put("courseName", result[4]);
+            slotMap.put("roomName", result[5]);
+            slotMap.put("attendanceStatus", result[6]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("teacherName", result[7]);
 
             slots.add(slotMap);
         }
 
         return slots;
     }
+
 
     @Transactional
     @Override
@@ -321,52 +296,8 @@ StudentServiceImpl implements StudentService {
         return materialRepository.findAll
                 (Sort.by(Sort.Direction.DESC, "id"));
     }
-    
-    @Transactional
-    @Override
-    public List<Map<String, Object>> getStudentCourse(int studentId) {
-        String query = """
-        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
-        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
-        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
-        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
-        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
-        e.C15_STUDENT_ID as studentId
-        FROM t15_enrollment e
-        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
-        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
-        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
-        WHERE e.C15_STUDENT_ID = :studentId
-        """;
-        System.out.println("Query: " + query);
-        System.out.println("Student ID: " + studentId);
 
-        Query nativeQuery = entityManager.createNativeQuery(query);
-        nativeQuery.setParameter("studentId", studentId);
-
-        List<Object[]> resultList = nativeQuery.getResultList();
-        List<Map<String, Object>> schedule = new ArrayList<>();
-
-        for (Object[] result : resultList) {
-            Map<String, Object> scheduleMap = new HashMap<>();
-            scheduleMap.put("courseId", result[0]);
-            scheduleMap.put("courseCode", result[1]);
-            scheduleMap.put("courseDesc", result[2]);
-            scheduleMap.put("courseName", result[3]);
-            scheduleMap.put("startTime", result[4]);
-            scheduleMap.put("endTime", result[5]);
-            scheduleMap.put("amountOfStudents", result[6]);
-            scheduleMap.put("centerName", result[7]);
-            scheduleMap.put("teacherName", result[8]);
-            scheduleMap.put("teacherId", result[9]);
-            scheduleMap.put("studentId", result[10]);
-            schedule.add(scheduleMap);
-        }
-
-        return schedule;
-    }
-  
-  // --------------------- NOTIFICATION --------------------------
+    // --------------------- NOTIFICATION --------------------------
     @Override
     public NotificationResponse getAllNotifications(int studentId) {
         List<IndividualNotification> individualNotifications
@@ -441,20 +372,7 @@ StudentServiceImpl implements StudentService {
         return true;
     }
 
-    // ----------------------- FEEDBACK -----------------------------
-
-    @Override
-    public List<Feedback> fetchTeacherFeedback(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    @Override
-    public List<Feedback> viewFeedbackToTeacher(int studentId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
     @Override
     public Feedback createFeedbackToTeacher(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -485,6 +403,157 @@ StudentServiceImpl implements StudentService {
 
         return feedbackRepository.save(feedback);
     }
+    // -------------------------------------------------------------------
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getStudentCourse(int studentId) {
+        String query = """
+        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
+        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
+        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
+        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
+        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+        e.C15_STUDENT_ID as studentId
+        FROM t15_enrollment e
+        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
+        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
+        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
+        WHERE e.C15_STUDENT_ID = :studentId
+        """;
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> schedule = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> scheduleMap = new HashMap<>();
+            scheduleMap.put("courseId", result[0]);
+            scheduleMap.put("courseCode", result[1]);
+            scheduleMap.put("courseDesc", result[2]);
+            scheduleMap.put("courseName", result[3]);
+            scheduleMap.put("startTime", result[4]);
+            scheduleMap.put("endTime", result[5]);
+            scheduleMap.put("amountOfStudents", result[6]);
+            scheduleMap.put("centerName", result[7]);
+            scheduleMap.put("teacherName", result[8]);
+            scheduleMap.put("teacherId", result[9]);
+            scheduleMap.put("studentId", result[10]);
+            schedule.add(scheduleMap);
+        }
+
+        return schedule;
+    }
+
+    // ----------------------- FEEDBACK TO TEACHER -----------------------------
+    @Override
+    public Feedback createFeedbackToCourse(User actor, FeedbackDto feedbackDto) {
+        Optional<Course> courseCheck = courseRepository.findById(feedbackDto.getSendToUser_Id());
+        if (courseCheck.isEmpty()) {
+            throw new IllegalArgumentException("Course not found when finding by id !");
+        }
+        Course course = courseCheck.get();
+
+        Feedback feedback = Feedback.builder()
+                .description(feedbackDto.getDescription())
+                .createdAt(new Date())
+                .actor(actor)
+                .sendToCourse(course)
+                .rating(feedbackDto.getRating())
+                .build();
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Feedback updateFeedbackToCourse(int id, FeedbackDto feedbackDto) {
+
+        Feedback feedback = feedbackRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("The feedback hasn't been existed !"));
+
+        feedback.setDescription(feedbackDto.getDescription());
+        feedback.setUpdatedAt(new Date());
+        feedback.setRating(feedbackDto.getRating());
+
+        return feedbackRepository.save(feedback);
+    }
+    // -------------------------------------------------------------------
+
+    // ----------------------- VIEW FEEDBACK -----------------------------
+    @Override
+    public List<Feedback> fetchTeacherFeedback(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToTeacher(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToTeacher(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToCourse(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.viewFeedbacksToCourse(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> getAllFeedbacks(int studentId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(studentId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -------------------------------------------------------------------
+
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    @Override
+    public List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId) {
+        return slotRepository.findSlotsByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId) {
+        String query = "SELECT " +
+                "COUNT(*) AS total_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 0 THEN 1 ELSE 0 END) AS absent_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 1 THEN 1 ELSE 0 END) AS present_slots " +
+                "FROM t02_slot s " +
+                "JOIN t01_course c ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "JOIN t17_student_slot ss ON ss.C17_SLOT_ID = s.C02_SLOT_ID " +
+                "WHERE ss.C17_STUDENT_ID = :studentId AND c.C01_COURSE_ID = :courseId AND s.c02_slot_date <= NOW()";
+
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+        nativeQuery.setParameter("courseId", courseId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> attendanceResults = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> attendanceMap = new HashMap<>();
+            attendanceMap.put("totalSlots", result[0]);
+            attendanceMap.put("absentSlots", result[1]);
+            attendanceMap.put("presentSlots", result[2]);
+
+            attendanceResults.add(attendanceMap);
+        }
+
+        return attendanceResults;
+    }
+
+
+
+
+    // -----------------------------------------------------------------------
+
+
 
 }
 

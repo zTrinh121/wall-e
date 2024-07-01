@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.model;
 
 import com.example.SWP391_Project.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -44,6 +45,7 @@ public class Center {
     String regulation;
 
     @Column(name = "C03_CREATED_AT", columnDefinition = "DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date createdAt;
 
     @Column(name = "C03_CENTER_STATUS")

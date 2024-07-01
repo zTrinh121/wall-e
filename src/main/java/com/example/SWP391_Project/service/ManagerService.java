@@ -6,6 +6,7 @@ import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -17,35 +18,14 @@ import java.util.List;
 
 @Service
 public interface ManagerService {
-
-//    // ------------- private Notifications --------------
-//    List<PrivateNotification> getAllPrivateNotification();
-//
-//    PrivateNotification createPrivateNotification(PrivateNotificationDto privateNotificationDtoDto);
-//
-//    PrivateNotification updatePrivateNotification(int id, PrivateNotificationDto privateNotificationDto);
-//
-//    boolean deletePrivateNotification(int id);
-//    // --------------------------------------------------
-//
-//
-//    // ------------- public Notifications --------------
-//    List<PublicNotification> getAllPublicNotification();
-//
-//    PublicNotification createPublicNotification(PublicNotificationDto publicNotificationDto);
-//
-//    PublicNotification updatePublicNotification(int id, PublicNotificationDto publicNotificationDto);
-//
-//    boolean deletePublicNotification(int id);
-//    // --------------------------------------------------
-
-
     // ----------------- center Posts ------------------
     List<CenterPost> getAllCenterPost();
 
-    CenterPost createCenterPost(CenterPostDto centerPostDto);
+    List<CenterPost> findCenterPostsByCenterId(int centerId);
 
-    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto);
+    CenterPost createCenterPost(CenterPostDto postDto, MultipartFile imageFile);
+
+    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto, MultipartFile imageFile);
 
     boolean deleteCenterPost(int id);
     // --------------------------------------------------
@@ -100,6 +80,9 @@ public interface ManagerService {
     // ----------------- Manage the teacher ------------------
     // View all teacher in center
     List<User> getTeachersInCenter(int centerId);
+
+    // View all apply center form
+    List<ApplyCenter> viewApplyCenterForm(int managerId);
 
     // Approve teacher's apply form
     void approveTeacherApply(int id);
@@ -211,9 +194,6 @@ public interface ManagerService {
 
     // -------------------------------------------------------
 
-    // View feedback --> maybe bỏ qua Media Controller
-    List<Feedback> getAllFeedbacks();
-
     // ---------------------- BỔ SUNG ----------------------
     int countTeachersByCenter(int centerId);
 
@@ -222,7 +202,6 @@ public interface ManagerService {
     int countCourseByCenter(int centerId);
 
     List<TeacherCoursesResponse> getTeacherInfoAndCourses(int teacherId, int centerId);
-
 
     List<StudentCoursesResponse> getStudentInfoAndCourses(int studentId, int centerId);
 
@@ -241,6 +220,8 @@ public interface ManagerService {
     // ------------- Center Notifications --------------
     List<CenterNotification> getAllCenterNotifications(int managerId);
 
+    List<CenterNotification> findByCenterId(int centerId);
+
     CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto);
 
     CenterNotification updateCenterNotification(int id, CenterNotificationDto centerNotificationDto);
@@ -248,7 +229,16 @@ public interface ManagerService {
     boolean deleteCenterNotification(int id);
 
     List<ViewCenterNotification> getListViewersCenterNotification(int notificationId);
-
     // --------------------------------------------------
+
+    // --------------- VIEW FEEDBACK -------------------
+    // view fb đến 1 teacher, 1 course cụ thể
+    List<Feedback> viewFeedbacksToCertainTeacherInCenter(int teacherId);
+    List<Feedback> viewFeedbacksToCertainCourseInCenter(int courseId);
+
+    // view fb đến toàn bộ teacher, course trong trung tâm
+    List<Feedback> viewAllFeedbacksToTeachers(int managerId);
+    List<Feedback> viewAllFeedbacksToCourses(int managerId);
+    // ------------------------------------------------
 
 }

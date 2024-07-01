@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     switch (userRole){
         case "PARENT":
-            apiNotificationUrlGet = `/parent/notifications/all`;
+            apiNotificationUrlGet = `api/parent/notifications/all`;
             break;
         case "STUDENT":
             apiNotificationUrlGet = `api/student/notifications/all`;
@@ -33,11 +33,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const notification = allNotifications.find(n => n.id === notificationId);
                 if (notification) {
                     displayNotificationDetails(notification);
-
-                    // Update the hasSeen status if not already seen
-                    if (!notification.hasSeen) {
-                        updateNotificationStatus(notificationId);
-                    }
                 } else {
                     console.error('Notification not found');
                 }
@@ -53,27 +48,7 @@ document.addEventListener("DOMContentLoaded", function () {
         notificationContent.innerText = notification.content;
     }
 
-    function updateNotificationStatus(notificationId) {
-        fetch(`/api/notifications/${notificationId}`, {
-            method: 'PATCH',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ hasSeen: true }),
-        })
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error('Failed to update notification status');
-                }
-                return response.json();
-            })
-            .then(data => {
-                console.log('Notification status updated successfully', data);
-            })
-            .catch(error => {
-                console.error('Error updating notification status:', error);
-            });
-    }
+
 
     fetchNotifications(apiNotificationUrlGet);
 });

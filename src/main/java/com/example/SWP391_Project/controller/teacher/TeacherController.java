@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.controller.teacher;
 
+import com.example.SWP391_Project.dto.ApplyCenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
@@ -92,57 +93,6 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return ResponseEntity.ok(schedule);
     }
 
-//    // Lấy ra 3 loại thông báo
-//    @GetMapping("/notifications/private")
-//    public ResponseEntity<List<PrivateNotification>> getAllPrivateNotifications() {
-//        List<PrivateNotification> notifications = teacherService.getAllPrivateNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/notifications/public")
-//    public ResponseEntity<List<PublicNotification>> getAllPublicNotifications() {
-//        List<PublicNotification> notifications = teacherService.getAllPublicNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    @GetMapping("/notifications/system")
-//    public ResponseEntity<List<SystemNotification>> getAllSystemNotifications() {
-//        List<SystemNotification> notifications = teacherService.getAllSystemNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-    // in ra cả 3
-//    @GetMapping("/notifications/all")
-//    public ResponseEntity<NotificationResponse> getAllNotifications() {
-//        NotificationResponse notifications = teacherService.getAllNotifications();
-//        return ResponseEntity.ok(notifications);
-//    }
-//
-//    // tạo thông báo private
-//    @PostMapping(value = "/notifications/private", consumes = "application/json", produces = "application/json")
-//    public ResponseEntity<Void> addPrivateNotification(@RequestBody PrivateNotification notification) {
-//        teacherService.addPrivateNotification(notification);
-//        return ResponseEntity.ok().build();
-//    }
-
-//    @PostMapping("PDF/File/upload")
-//    public String uploadMaterialPdf(
-//            @RequestPart("file") MultipartFile file,
-//            @RequestParam("materialsName") String materialsName ,
-//            @RequestParam("subjectName") String subjectName ,
-//            HttpSession httpSession) {
-//
-//        try {
-//            User teacher = (User) httpSession.getAttribute("authid");
-//
-//            teacherService.uploadPdfFile(file, subjectName, materialsName, teacher);
-//
-//            return "redirect:/material-create?status=sucess";
-//        } catch (Exception e) {
-//            return "redirect:/material-create?status=fail";
-//        }
-//    }
-
     @GetMapping("/allMaterials")
     public ResponseEntity<List<Material>> getAllMaterials() {
         List<Material> materials = teacherService.getAllMaterials();
@@ -175,14 +125,16 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     @PatchMapping("/individualNotification/update/{notificationId}")
+    @ResponseBody
     public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
         return teacherService.updateIndividualNotification(notificationId);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")
+    @ResponseBody
     public ViewCenterNotification updateViewCenterNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User teacher = (User) session.getAttribute("authid");
+        User teacher = (User) session.getAttribute("user");
         if (teacher == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
         }
@@ -190,9 +142,10 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     @PostMapping("/viewSystemNotification/update/{notificationId}")
+    @ResponseBody
     public ViewSystemNotification updateViewSystemNotification(@PathVariable int notificationId,
                                                                HttpSession session) {
-        User teacher = (User) session.getAttribute("authid");
+        User teacher = (User) session.getAttribute("user");
         if (teacher == null) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
         }
@@ -225,29 +178,6 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     // -------------------------- FEEDBACK ---------------------------
-
-    // Lấy ra những feedback mà student gửi đến
-    @GetMapping("/fetch-student-feedback")
-    public ResponseEntity<List<Feedback>> fetchStudentFeedback(HttpSession session) {
-        Integer teacherId = (Integer) session.getAttribute("authid");
-        if (teacherId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = teacherService.fetchStudentFeedback(teacherId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
-    // Lấy ra những feedback mà teacher này đã tạo ra
-    @GetMapping("/view-feedback-to-student")
-    public ResponseEntity<List<Feedback>> viewFeedbackToStudent(HttpSession session) {
-        Integer teacherId = (Integer) session.getAttribute("authid");
-        if (teacherId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
-        }
-        List<Feedback> feedbacks = teacherService.viewFeedbackToStudent(teacherId);
-        return ResponseEntity.ok(feedbacks);
-    }
-
     @PostMapping("/create-feedback-to-student")
     public ResponseEntity<Feedback> createFeedbackToTeacher(HttpSession session, @RequestBody FeedbackDto feedbackDto) {
         User actor = (User) session.getAttribute("user");
@@ -275,6 +205,77 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Failed to create result: " + e.getMessage());
         }
+    }
+
+
+    // -------------------------- VIEW FEEDBACK ------------------------------
+    // Lấy ra những feedback mà student gửi đến teacher này
+    @GetMapping("/fetch-student-feedback")
+    public ResponseEntity<List<Feedback>> fetchStudentFeedback(HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = teacherService.fetchStudentFeedback(teacherId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // Lấy ra những feedback mà teacher này đã tạo ra
+    @GetMapping("/view-feedback-to-student")
+    public ResponseEntity<List<Feedback>> viewFeedbackToStudent(HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = teacherService.viewFeedbackToStudent(teacherId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // API để view những feedbacks của các khóa học của một giáo viên
+    @GetMapping("/{teacherId}/course-feedbacks")
+    public ResponseEntity<List<Feedback>> getFeedbackToCourses(HttpSession session) {
+        Integer teacherId = (Integer) session.getAttribute("authid");
+        if (teacherId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher ID is not found in the session!");
+        }
+
+        List<Feedback> feedbacks = teacherService.fetchFeedbackToCourses(teacherId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+
+    // API để view những feedbacks của một khóa học cụ thể mà giáo viên này đang dạy
+    @GetMapping("/{courseId}/feedbacks")
+    public ResponseEntity<List<Feedback>> getFeedbackToCertainCourse(@PathVariable int courseId) {
+        List<Feedback> feedbacks = teacherService.fetchFeedbackToCertainCourse(courseId);
+        if (feedbacks.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(feedbacks, HttpStatus.OK);
+    }
+    // -----------------------------------------------------------------------
+
+    // -------------------- APPLY CENTER -----------------------------
+    // tạo form để apply center
+    @PostMapping("/create-applyCenter-form-to-manager")
+    public ResponseEntity<ApplyCenter> applyForCenter(@RequestBody ApplyCenterDto applyCenterDto, HttpSession session) {
+        User teacher = (User) session.getAttribute("user");
+        if (teacher == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
+        }
+
+        ApplyCenter applyCenter = teacherService.createApplyCenterForm(teacher, applyCenterDto);
+        return ResponseEntity.ok(applyCenter);
     }
 
 }

@@ -1,7 +1,8 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.ApplyCenterDto;
+import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
-import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
@@ -15,7 +16,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+
 import java.util.*;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 
 @Service
 public class TeacherServiceImpl implements TeacherService {
@@ -58,6 +66,12 @@ public class TeacherServiceImpl implements TeacherService {
     @Autowired
     private CourseRepository courseRepository;
 
+    @Autowired
+    private CenterRepository centerRepository;
+
+    @Autowired
+    private ApplyCenterRepository applyCenterRepository;
+
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
         List<Object[]> results = teacherRepository.findCourseNamesByTeacherId(teacherId);
@@ -77,12 +91,6 @@ public class TeacherServiceImpl implements TeacherService {
         }
         return courseInfos;
     }
-
-
-
-
-
-
 
     // List ra các thông tin học sinh trng lớp học đó
     @Override
@@ -121,11 +129,6 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
-
-
-
-
-
     // CRUD điểm
     @Override
     public List<Map<String, Object>> getResultsByCourseIdAndStudentId(Long courseId, Long studentId) {
@@ -144,26 +147,26 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
 
-//nnnn
-@Override
-public Result updateResult(Long resultId, Map<String, Object> updates) {
-    // Tìm Result từ cơ sở dữ liệu
-    Result result = resultRepository.findResultById(resultId);
-    if (result == null) {
-        throw new ResourceNotFoundException("Result not found for this id :: " + resultId);
-    }
+    //nnnn
+    @Override
+    public Result updateResult(Long resultId, Map<String, Object> updates) {
+        // Tìm Result từ cơ sở dữ liệu
+        Result result = resultRepository.findResultById(resultId);
+        if (result == null) {
+            throw new ResourceNotFoundException("Result not found for this id :: " + resultId);
+        }
 
-    // Cập nhật các trường cần thiết
-    if (updates.containsKey("type")) {
-        result.setType((int) updates.get("type"));
-    }
-    if (updates.containsKey("value")) {
-        result.setValue((int) updates.get("value"));
-    }
+        // Cập nhật các trường cần thiết
+        if (updates.containsKey("type")) {
+            result.setType((int) updates.get("type"));
+        }
+        if (updates.containsKey("value")) {
+            result.setValue((int) updates.get("value"));
+        }
 
-    // Lưu kết quả đã cập nhật vào cơ sở dữ liệu
-    return resultRepository.save(result);
-}
+        // Lưu kết quả đã cập nhật vào cơ sở dữ liệu
+        return resultRepository.save(result);
+    }
 
     @Override
     public Result updateResult(Result result) {
@@ -306,19 +309,6 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
     }
 
     // ---------------------- FEEDBACK --------------------------
-
-    @Override
-    public List<Feedback> fetchStudentFeedback(int teacherId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
-    @Override
-    public List<Feedback> viewFeedbackToStudent(int teacherId) {
-        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
-        return feedbacks.orElse(Collections.emptyList());
-    }
-
     @Override
     public Feedback createFeedbackToStudent(User actor, FeedbackDto feedbackDto) {
         Optional<User> viewer = userRepository.findById(feedbackDto.getSendToUser_Id());
@@ -365,4 +355,51 @@ public Result updateResult(Long resultId, Map<String, Object> updates) {
 
         return resultRepository.save(result);
     }
+
+    // ------------------- VIEW FEEDBACKS -----------------------
+    @Override
+    public List<Feedback> fetchStudentFeedback(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToUser_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> viewFeedbackToStudent(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findByActor_Id(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> fetchFeedbackToCourses(int teacherId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.teacherViewCourseFeedback(teacherId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<Feedback> fetchFeedbackToCertainCourse(int courseId) {
+        Optional<List<Feedback>> feedbacks = feedbackRepository.findBySendToCourse_Id(courseId);
+        return feedbacks.orElse(Collections.emptyList());
+    }
+    // -----------------------------------------------------------
+
+    // -------------------- APPLY CENTER -----------------------------
+    // tạo form để apply center
+    @Override
+    public ApplyCenter createApplyCenterForm(User teacher, ApplyCenterDto applyCenterDto) {
+        Optional<Center> center = centerRepository.findById(applyCenterDto.getCenterId());
+        if (!center.isPresent()) {
+            throw new IllegalArgumentException("Center not found");
+        }
+        Center centerToApply = center.get();
+
+        ApplyCenter applyCenter = ApplyCenter.builder()
+                .teacher(teacher)
+                .center(centerToApply)
+                .title(applyCenterDto.getTitle())
+                .content(applyCenterDto.getContent())
+                .createdAt(new Date())
+                .build();
+        return applyCenterRepository.save(applyCenter);
+    }
+
 }
