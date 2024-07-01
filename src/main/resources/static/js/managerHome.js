@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
     $(".nva").click(function () {
         $(".wrapper").toggleClass("collapse");
     });
-    //close modal ifraem
+    //close modal iframe
     var closeButton = document.querySelectorAll(".close");
     closeButton.forEach((button) => {
         button.addEventListener("click", function (event) {

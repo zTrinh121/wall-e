@@ -186,7 +186,7 @@ function displayCourseLists(centers, centerIdz) {
             <td><p>${center.startDate}</p></td>
             <td><p>${center.courseFee}</p></td>
             <td><p>${center.teacher.name}</p></td>
-            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
+            <!-- <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td> -->
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
@@ -268,13 +268,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlhv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfos' not found.");
@@ -287,13 +284,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfot) {
         boxInfot.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlgv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfot' not found.");
@@ -306,13 +300,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfoc) {
         boxInfoc.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlkh?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfoc' not found.");

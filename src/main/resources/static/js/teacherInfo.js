@@ -1,5 +1,5 @@
 document.addEventListener("DOMContentLoaded", function () {
-//Get information from URL
+    //Get information from URL
     // Get the current URL
     var urlParams = window.location.href;
     console.log("Current URL:", urlParams);

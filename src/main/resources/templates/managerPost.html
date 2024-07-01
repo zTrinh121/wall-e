@@ -120,7 +120,7 @@
             <main>
                 <div class="head-title">
                     <div class="left">
-                        <h1>Danh sách trung tâm</h1>
+                        <h1>Danh sách bài đăng</h1>
                         <div class="runline">
                             <p>Hôm nay là:
                                 <span id="currentDate"></span>
@@ -132,7 +132,7 @@
                 <div class="table-data">
                     <div class="order">
                         <div class="head">
-                            <h3>Danh sách trung tâm</h3>
+                            <h3>Danh sách bài đăng</h3>
                             <form action="" class="search">
                                 <i class="bx bxs-calendar-check">
                                     <i class="fa fa-search"></i>
@@ -155,7 +155,7 @@
                                     <p>Ngày đăng</p>
                                 </th>
                                 <th>
-                                    <p>Phân loại</p>
+                                    <p>Trạng thái</p>
                                 </th>
                                 <th>
                                     <p>Hành động</p>
@@ -179,13 +179,7 @@
                 <div class="table-data">
                     <div class="order">
                         <table>
-                            <thead>
-                            <tbody>
                             <tr>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
                                 <td>
                                     <p><button id="addCentreBtn" class="add-btn">Tạo bài đăng </button></p>
                                 </td>
@@ -193,8 +187,6 @@
                                     <p><button id="addCentreBtnE" class="add-btn">Tạo bài chiêu sinh </button></p>
                                 </td>
                             </tr>
-                            </tbody>
-                            </thead>
                         </table>
                     </div>
                 </div>
@@ -267,13 +259,13 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
+        <p>Bạn có chắc chắn muốn xóa bài đăng <span id="postName"></span>?</p>
         <button id="confirmDelete">Xác nhận</button>
         <button id="cancelDeleteButton">Huỷ</button>
     </div>
 </div>
 
-<script src="/js/managerHome.js" type="module"></script>
+<script src="/js/managerPost.js" type="module"></script>
 <script src="/js/dropdown.js"></script>
 
 </body>

@@ -3,52 +3,37 @@ document.addEventListener("DOMContentLoaded", () => {
     $(".nva").click(function () {
         $(".wrapper").toggleClass("collapse");
     });
-    //close modal iframe
+    //close modal ifraem
     var closeButton = document.querySelectorAll(".close");
     closeButton.forEach((button) => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
-            addModal.style.display = "none";
             deleteModal.style.display = "none";
-            fetchCenters();
+            fetchCenterPosts();
         });
     });
 
     // Modals
-    var addModal = document.getElementById("myModal");
     var addCentreModal = document.getElementById("addCentreModal");
-    var addCentreModalE = document.getElementById("addCentreModalE");
     var deleteModal = document.getElementById("deleteModal");
 
     // Open Add Centre Modal
     var addCentreBtn = document.getElementById("addCentreBtn");
-    var addCentreBtnE = document.getElementById("addCentreBtnE");
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
             console.log("Opening Add Centre Modal");
             addCentreModal.style.display = "block";
         });
     }
-    if (addCentreBtnE) {
-        addCentreBtnE.addEventListener("click", () => {
-            console.log("Opening Add Centre Modal");
-            addCentreModalE.style.display = "block";
-        });
-    }
 
     // Close Add Centre Modal
     var cancelAddButton = document.getElementById("cancelAdd");
-    var cancelAddButtonE = document.getElementById("cancelAddE");
     if (cancelAddButton) {
         cancelAddButton.addEventListener("click", () => {
             addCentreModal.style.display = "none";
         });
     }
-    if (cancelAddButtonE) {
-        cancelAddButtonE.addEventListener("click", () => {
-            addCentreModalE.style.display = "none";
-        });
-    }
+
     window.addEventListener("click", function (e) {
         if (e.target == addCentreModal) {
             addCentreModal.style.display = "none";
@@ -69,10 +54,10 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Fetch centers and display
-    const URL = "/manager/centers";
+    // Fetch posts and display
+    const URL = "/manager/centerPosts";
 
-    function fetchCenters() {
+    function fetchCenterPosts() {
         fetch(URL)
             .then((response) => response.json())
             .then((data) => {
@@ -80,32 +65,32 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (!Array.isArray(data)) {
                     data = [data];
                 }
-                displayCenterLists(data);
+                displayCenterPostsList(data);
             })
-            .catch((error) => console.error("Error fetching centers:", error));
+            .catch((error) => console.error("Error fetching posts:", error));
     }
 
-    fetchCenters();
+    fetchCenterPosts();
 
-    function displayCenterLists(centers) {
+    function displayCenterPostsList(posts) {
         var tableBody = document.getElementById("tableBody");
         if (!tableBody) {
             console.error("Element with ID 'tableBody' not found.");
             return;
         }
         tableBody.innerHTML = "";
-        if (centers.length === 0) {
+        if (posts.length === 0) {
             noResultDiv.style.display = "block";
         } else {
             noResultDiv.style.display = "none";
-            centers.forEach((center) => {
+            posts.forEach((post) => {
                 var row = `
-                    <tr class="view-details" data-id="${center.id}">
-                        <td><p>${center.name}</p></td>
-                        <td><p>${center.createdAt}</p></td>
-                        <td><p>${center.code}</p></td>
+                    <tr class="view-details" data-id="${post.id}">
+                        <td><p>${post.title}</p></td>
+                        <td><p>${post.createdAt}</p></td>
+                        <td><p>${post.status}</p></td>
                         <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
-                        <td><button class="open-modal-btn" data-id="${center.id}">Xem</button></td>
+                        <td><button class="open-modal-btn" data-id="${post.id}">Xem</button></td>
                     </tr>
                 `;
                 tableBody.insertAdjacentHTML("beforeend", row);
@@ -117,22 +102,22 @@ document.addEventListener("DOMContentLoaded", () => {
                 button.addEventListener("click", function (event) {
                     event.preventDefault();
                     var row = event.target.closest("tr");
-                    var centerName = row.querySelector("td:nth-child(1) p").textContent;
-                    var centerId = row.getAttribute("data-id");
-                    centerNameElement.textContent = centerName;
+                    var postName = row.querySelector("td:nth-child(1) p").textContent;
+                    var postId = row.getAttribute("data-id");
+                    postNameElement.textContent = postName;
                     deleteModal.style.display = "block";
                     deleteTarget = {
                         row: row,
-                        id: centerId
+                        id: postId
                     };
-                    console.log("Delete button clicked for center:", centerName, "with ID:", centerId);
+                    console.log("Delete button clicked for post:", postName, "with ID:", postId);
                 });
             });
             // Reattach event listeners for view details buttons
             document.querySelectorAll(".open-modal-btn").forEach((button) => {
                 button.addEventListener("click", function () {
-                    var centerId = this.getAttribute("data-id");
-                    openModalWithCenterDetails(centerId);
+                    var postId = this.getAttribute("data-id");
+                    openModalWithPostDetails(postId);
                 });
             });
         }
@@ -140,28 +125,27 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Confirm delete action
     var confirmDeleteButton = document.getElementById("confirmDelete");
-    var centerNameElement = document.getElementById("centerName");
+    var postNameElement = document.getElementById("postName");
     var deleteTarget = null;
 
     confirmDeleteButton.addEventListener("click", () => {
         if (deleteTarget) {
-            console.log("Confirm delete for center ID:", deleteTarget.id);
+            console.log("Confirm delete for post ID:", deleteTarget.id);
             console.log(deleteTarget);
-            fetch(`/manager/center/delete/${deleteTarget.id}`, {
+            fetch(`/manager/post/delete/${deleteTarget.id}`, {
                 method: "DELETE"
             })
             .then(response => {
                 if (response.ok) {
                     deleteTarget.row.remove();
                     deleteModal.style.display = "none";
-                    addModal.style.display = "none";
                     showToast("Xóa thành công trung tâm");
-                    console.log("Center deleted successfully");
+                    console.log("post deleted successfully");
                 } else {
-                    console.error("Error deleting center:", response.statusText);
+                    console.error("Error deleting post:", response.statusText);
                 }
             })
-            .catch(error => console.error("Error deleting center:", error));
+            .catch(error => console.error("Error deleting post:", error));
         }
     });
 
@@ -174,9 +158,9 @@ document.addEventListener("DOMContentLoaded", () => {
             toast.classList.remove("show");
         }, 2000);
     }
-    // Function to fetch center details and open modal
-    function openModalWithCenterDetails(centerId) {
-        var url = `/manager/center/${centerId}`;
+    // Function to fetch post details and open modal
+    function openModalWithPostDetails(postId) {
+        var url = `/manager/centerPosts`;
         fetch(url)
             .then((response) => response.json())
             .then((data) => {
@@ -185,10 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 queryUrl += "centerIdn=" + encodeURIComponent(data.id);
                 console.log(queryUrl);
 
-                var iframe = document.querySelector("#myModal iframe");
-                iframe.src = queryUrl;
-
-                addModal.style.display = "block";
+                window.location.href = queryUrl;
             })
             .catch((error) => console.error("Error fetching center details:", error));
     }
@@ -218,7 +199,7 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 console.log("Center added:", data);
                 addCentreModal.style.display = "none";
-                fetchCenters();
+                fetchCenterPosts();
                 showToast("Thêm trung tâm thành công");
             })
             .catch(error => console.error("Error adding center:", error));

@@ -18,92 +18,43 @@
         <main>
             <div class="head-title">
                 <div class="left">
-                    <h1><span id="centerDetailName"></span></h1>
+                    <h1 id="courseDetailName">Thông tin khoá học</h1>
+                    <div class="runline">
+                        <p>Hôm nay là:
+                            <span id="currentDate"></span>
+                        </p>
+                    </div>
                 </div>
             </div>
-            <ul class="box-info">
-                <li>
-                    <i class="bx bxs-calendar-check">
-                        <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
-                    </i>
-                    <span class="text">
-                <a href=`/manager/qlhv?centerId=${center.id}` data-id="${center.id}" id="boxInfos">
-                    <h3 id="nums">0</h3>
-                    <p>Học viên</p>
-                </a>
-            </span>
-                </li>
-                <li>
-                    <i class='bx bxs-group'>
-                        <i class="fa-solid fa-person-chalkboard"></i>
-                    </i>
-                    <span class="text">
-                      <a href=`/manager/qlgv?centerId=${center.id}` data-id="${center.id}" id="boxInfot">
-                    <h3 id="numt">0</h3>
-                        <p>Giáo viên</p>
-                      </a>
-            </span>
-                </li>
-                <li>
-                    <i class='bx bxs-dollar-circle'>
-                        <i class="fa-solid fa-layer-group"></i>
-                    </i>
-                    <span class="text">
-                <a href="#" data-id="${center.id}" id="boxInfoc">
-                <h3 id="numc">0</h3>
-              <p>Khoá học</p>
-                </a>
-            </span>
-                </li>
-            </ul>
+
             <div class="table-data">
                 <div class="order">
                     <div class="head">
-                        <h3>Danh sách học sinh</h3>
-                        <form action="#" class="search">
-                            <i class="bx bxs-calendar-check">
-                                <i class="fa fa-search"></i>
-                            </i>
-                            <input type="text" placeholder="Tìm kiếm học sinh">
-                            <button onclick="" type="submit">Tìm</button>
-                        </form>
-                        <div class="filter" style="display: none">
-                            <select name="subjects" id="subject">
-                                <option value="all">Tất cả</option>
-                                <option value="Maths">Toán</option>
-                                <option value="English">Anh</option>
-                                <option value="Literature">Văn</option>
-                                <option value="Physics">Vật lý</option>
-                            </select>
-                        </div>
+                        <h3>Về khoá học</h3>
                     </div>
-                    <table id="teacher-centre-manage">
-                        <thead>
+                    <div>
+                        <span>
+                            Đây là khoá <span id="courseDetailName2">...</span> của môn <span id="courseSubject">...</span>
+                            ở trung tâm <span id="centerCourseName">...</span>,
+                            về <span id="courseDecs">...</span> được giảng dạy bởi giáo viên <span id="teaCourseName">...</span>
+                            , chi phí cho 1 học viên là <span id="coursePrice">...</span>đ.
+                        </span>
+                    </div>
+                    <table>
                         <tr>
-                            <th>
-                                <p>MSSV</p>
-                            </th>
-                            <th>
-                                <p>Họ và tên</p>
-                            </th>
-                            <th>
-                                <p>Địa chỉ</p>
-                            </th>
-                            <th>
-                                <p>Chi tiết</p>
-                            </th>
+                            <td>
+                                <button id="turnBack">
+                                    <i class="bx bxs-calendar-check">
+                                        <i class="fa-solid fa-person-chalkboard" aria-hidden="false"></i>
+                                    </i> Quay lại
+                                </button>
+                            </td>
+                            <td>
+                                <button id="scheduleButton" type="button">Lịch học</button>
+                            </td>
                         </tr>
-                        </thead>
-                        <tbody id="tableBody">
-                        </tbody>
                     </table>
-                    <div id="no-result">No result</div>
-                    <!-- Toast Notification -->
-                    <div id="toast" class="toast">
-                        <div id="toastMessage"></div>
-                    </div>
                 </div>
-                <!--  -->
             </div>
         </main>
         <!-- MAIN -->
@@ -111,14 +62,6 @@
 </div>
 
 <!-- Modal -->
-<!-- Modal for Viewing student Details -->
-<div id="studentDetailModal" class="modal">
-    <div class="modal-content">
-        <span class="close">&times;</span>
-        <iframe id="fns" data-id="${center.id}" width="1250" height="500" frameborder="0"
-                scrolling="auto"></iframe>
-    </div>
-</div>
 
 </body>
 
