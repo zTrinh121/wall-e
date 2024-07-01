@@ -1,17 +1,15 @@
 package com.example.SWP391_Project.service.impl;
 
-import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
-import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 
-import java.sql.ResultSet;
 import java.util.*;
 
 @Service
@@ -509,6 +506,50 @@ public class StudentServiceImpl implements StudentService {
     }
     // -------------------------------------------------------------------
 
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    @Override
+    public List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId) {
+        return slotRepository.findSlotsByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId) {
+        String query = "SELECT " +
+                "COUNT(*) AS total_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 0 THEN 1 ELSE 0 END) AS absent_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 1 THEN 1 ELSE 0 END) AS present_slots " +
+                "FROM t02_slot s " +
+                "JOIN t01_course c ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "JOIN t17_student_slot ss ON ss.C17_SLOT_ID = s.C02_SLOT_ID " +
+                "WHERE ss.C17_STUDENT_ID = :studentId AND c.C01_COURSE_ID = :courseId AND s.c02_slot_date <= NOW()";
+
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+        nativeQuery.setParameter("courseId", courseId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> attendanceResults = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> attendanceMap = new HashMap<>();
+            attendanceMap.put("totalSlots", result[0]);
+            attendanceMap.put("absentSlots", result[1]);
+            attendanceMap.put("presentSlots", result[2]);
+
+            attendanceResults.add(attendanceMap);
+        }
+
+        return attendanceResults;
+    }
+
+
+
+
+    // -----------------------------------------------------------------------
 
 
 

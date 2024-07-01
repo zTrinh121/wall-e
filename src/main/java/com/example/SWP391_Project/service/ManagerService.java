@@ -6,6 +6,7 @@ import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import jakarta.servlet.http.HttpSession;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -20,9 +21,11 @@ public interface ManagerService {
     // ----------------- center Posts ------------------
     List<CenterPost> getAllCenterPost();
 
-    CenterPost createCenterPost(CenterPostDto centerPostDto);
+    List<CenterPost> findCenterPostsByCenterId(int centerId);
 
-    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto);
+    CenterPost createCenterPost(CenterPostDto postDto, MultipartFile imageFile);
+
+    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto, MultipartFile imageFile);
 
     boolean deleteCenterPost(int id);
     // --------------------------------------------------
@@ -77,6 +80,9 @@ public interface ManagerService {
     // ----------------- Manage the teacher ------------------
     // View all teacher in center
     List<User> getTeachersInCenter(int centerId);
+
+    // View all apply center form
+    List<ApplyCenter> viewApplyCenterForm(int managerId);
 
     // Approve teacher's apply form
     void approveTeacherApply(int id);
