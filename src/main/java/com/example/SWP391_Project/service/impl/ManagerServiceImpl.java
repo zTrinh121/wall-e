@@ -691,6 +691,12 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
+    public List<CenterNotification> findByCenterId(int centerId) {
+        Optional<List<CenterNotification>> optionalNotifications = centerNotificationRepository.findByCenter_Id(centerId);
+        return optionalNotifications.orElse(Collections.emptyList());
+    }
+
+    @Override
     public CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto) {
         Optional<Center> center = centerRepository.findById(centerNotificationDto.getCenterId());
         if (!center.isPresent()) {

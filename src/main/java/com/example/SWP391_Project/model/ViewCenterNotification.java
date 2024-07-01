@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,5 +33,6 @@ public class ViewCenterNotification {
     User hasSeenBy;
 
     @Column(name = "C23_SEEN_TIME", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date seenTime;
 }

@@ -220,6 +220,8 @@ public interface ManagerService {
     // ------------- Center Notifications --------------
     List<CenterNotification> getAllCenterNotifications(int managerId);
 
+    List<CenterNotification> findByCenterId(int centerId);
+
     CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto);
 
     CenterNotification updateCenterNotification(int id, CenterNotificationDto centerNotificationDto);

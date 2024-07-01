@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -26,9 +27,11 @@ public class Feedback {
     String description;
 
     @Column(name = "C06_CREATED_AT", columnDefinition = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date createdAt;
 
     @Column(name = "C06_UPDATED_AT", columnDefinition = "DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date updatedAt;
 
     @ManyToOne

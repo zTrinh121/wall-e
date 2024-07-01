@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.model;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,6 +35,7 @@ public class Enrollment {
     Course course;
 
     @Column(name = "C15_ENROLL_DATE", columnDefinition = "DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date enrollDate;
 
     // chỗ này sai
