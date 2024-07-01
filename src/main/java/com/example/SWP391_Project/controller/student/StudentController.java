@@ -3,16 +3,15 @@ package com.example.SWP391_Project.controller.student;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
 import com.example.SWP391_Project.service.UserService;
-import com.example.SWP391_Project.service.impl.EmailService;
 import com.example.SWP391_Project.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -336,6 +335,29 @@ public class StudentController {
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
     // ---------------------------------------------------------------------
+
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    @GetMapping("/checkOverviewAttendance/{courseId}")
+    public ResponseEntity<List<SlotResponse>> getSlotsByStudentIdAndCourseId(HttpSession session, @PathVariable int courseId) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<SlotResponse> slots = studentService.getSlotsByStudentIdAndCourseId(studentId, courseId);
+        if (slots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(slots, HttpStatus.OK);
+    }
+
+    @GetMapping("/toViewTheAttendance/{studentId}/{courseId}")
+    @ResponseBody
+    public List<Map<String, Object>> getAttendanceGraph(@PathVariable int studentId, @PathVariable int courseId) {
+        return studentService.viewAttendanceGraph(studentId, courseId);
+    }
+
+    // -----------------------------------------------------------------------
 }
 
 

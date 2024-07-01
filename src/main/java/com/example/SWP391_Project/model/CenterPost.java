@@ -1,6 +1,7 @@
 package com.example.SWP391_Project.model;
 
 import com.example.SWP391_Project.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,13 +33,18 @@ public class CenterPost {
     @Enumerated(EnumType.ORDINAL)
     Status status;
 
-    @Column(name = "C21_FILE_URL")
-    String file_url; // sẽ xử lí file sau
+    @Column(name = "C21_IMAGE_URL")
+    String imagePath;
 
-    @Column(name = "C21_CREATED_AT", nullable = false)
+    @Column(name = "C21_CLOUDINARY_IMAGE_ID")
+    String cloudinaryImageId;
+
+    @Column(name = "C21_CREATED_AT", columnDefinition = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date createdAt;
 
-    @Column(name = "C21_UPDATED_AT")
+    @Column(name = "C21_UPDATED_AT", columnDefinition = "DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     Date updatedAt;
 
     @ManyToOne

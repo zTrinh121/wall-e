@@ -79,43 +79,70 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public List<CenterPost> getAllCenterPost() {
         return centerPostRepository
-                .findAll(Sort.by(Sort.Direction.DESC, "id"));
+                .findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
 
     @Override
-    public CenterPost createCenterPost(CenterPostDto centerPostDto) {
-        Optional<Center> centerOtp = centerRepository.findByCode(centerPostDto.getCenterSendTo());
+    public List<CenterPost> findCenterPostsByCenterId(int centerId) {
+        return centerPostRepository.findCenterPostsByCenterId(centerId);
+    }
+
+    @Transactional
+    public CenterPost createCenterPost(CenterPostDto postDto, MultipartFile imageFile) {
+        FileUploadUtil.assertAllowedImage(imageFile);
+        Optional<Center> centerOtp = centerRepository.findByCode(postDto.getCenterSendTo());
         if (!centerOtp.isPresent()) {
             throw new IllegalArgumentException("Center not found when finding by code !");
         }
         Center center = centerOtp.get();
 
-        CenterPost centerPost = CenterPost.builder()
-                .title(centerPostDto.getTitle())
-                .content(centerPostDto.getContent())
-                .createdAt(new Date())
-                .file_url(centerPostDto.getFile_url())
-                .center(center)
-                .build();
-        return centerPostRepository.save(centerPost);
+        try {
+            String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
+            CloudinaryResponse imageResponse = cloudinaryService.uploadImageFile(imageFile, fileName);
+
+            CenterPost centerPost = CenterPost.builder()
+                    .title(postDto.getTitle())
+                    .content(postDto.getContent())
+                    .status(Status.Wait_to_process)
+                    .imagePath(imageResponse.getUrl())
+                    .cloudinaryImageId(imageResponse.getPublicId())
+                    .createdAt(new Date())
+                    .center(center)
+                    .build();
+
+            centerPost = centerPostRepository.save(centerPost);
+            return centerPost;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to create center post and upload image: " + e.getMessage());
+        }
     }
+
 
     public CenterPost findCenterPostById(int id) {
         return centerPostRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("The center post hasn't been existed ! "));
+                .orElseThrow(() -> new RuntimeException("The center post hasn't been existed!"));
     }
 
     @Override
-    public CenterPost updateCenterPost(int id, CenterPostDto centerPostDto) {
+    public CenterPost updateCenterPost(int id, CenterPostDto centerPostDto, MultipartFile imageFile) {
         CenterPost centerPost = findCenterPostById(id);
 
         centerPost.setTitle(centerPostDto.getTitle());
         centerPost.setContent(centerPostDto.getContent());
-        centerPost.setFile_url(centerPostDto.getFile_url());
         centerPost.setUpdatedAt(new Date());
+
+        if (imageFile != null && !imageFile.isEmpty()) {
+            FileUploadUtil.assertAllowedImage(imageFile);
+            String fileName = FileUploadUtil.getFileName(imageFile.getOriginalFilename());
+            CloudinaryResponse imageResponse = cloudinaryService.uploadImageFile(imageFile, fileName);
+
+            centerPost.setImagePath(imageResponse.getUrl());
+            centerPost.setCloudinaryImageId(imageResponse.getPublicId());
+        }
 
         return centerPostRepository.save(centerPost);
     }
+
 
     @Override
     public boolean deleteCenterPost(int id) {
@@ -134,7 +161,6 @@ public class ManagerServiceImpl implements ManagerService {
         Optional<List<Center>> centers = centerRepository.findByManager_Id(managerId);
         return centers.orElse(Collections.emptyList());
     }
-
 
     @Override
     public Center findCenterById(int centerId) {
@@ -302,9 +328,15 @@ public class ManagerServiceImpl implements ManagerService {
 
 
     // -------------------------- Manager teacher -----------------------------
+    @Override
     public List<User> getTeachersInCenter(int centerId) {
         Optional<List<User>> teachers = userCenterRepository.getTeachersInCenter(centerId);
         return teachers.orElse(Collections.emptyList());
+    }
+
+    @Override
+    public List<ApplyCenter> viewApplyCenterForm(int managerId) {
+        return applyCenterRepository.findApplyCentersByManagerId(managerId);
     }
 
     @Override
@@ -314,6 +346,15 @@ public class ManagerServiceImpl implements ManagerService {
                     .orElseThrow(() -> new ServiceException("The teacher apply form not found with ID: " + id));
             applyCenter.setStatus(Status.Approved);
             applyCenterRepository.save(applyCenter);
+
+            // add teacher to center when approve apply form
+            User teacher = applyCenter.getTeacher();
+            Center center = applyCenter.getCenter();
+            UserCenter userCenter = UserCenter.builder()
+                    .user(teacher)
+                    .center(center)
+                    .build();
+            userCenterRepository.save(userCenter);
         } catch (DataAccessException e) {
             throw new ServiceException("Failed to approve teacher form with ID: " + id, e);
         }

@@ -16,7 +16,7 @@ public class CenterPostResponse {
     private String title;
     private String content;
     private Status status;
-    private String fileUrl;
+    private String imagePath;
     private Date createdAt;
     private Date updatedAt;
 

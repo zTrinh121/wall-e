@@ -6,6 +6,8 @@ import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.util.Date;
+
 @Entity
 @Table(name = "t12_apply_center",
         uniqueConstraints = {@UniqueConstraint(
@@ -29,6 +31,9 @@ public class ApplyCenter {
 
     @Column(name = "C12_CONTENT", columnDefinition = "TEXT")
     String content;
+
+    @Column(name = "C12_CREATED_AT", columnDefinition = "DATE")
+    Date createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "C12_APPLY_STATUS")
