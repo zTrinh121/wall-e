@@ -25,10 +25,10 @@ public class Feedback {
     @Column(name = "C06_FEEDBACK_DESC", columnDefinition = "TEXT", nullable = false)
     String description;
 
-    @Column(name = "C06_CREATED_AT", nullable = false)
+    @Column(name = "C06_CREATED_AT", columnDefinition = "DATE", nullable = false)
     Date createdAt;
 
-    @Column(name = "C06_UPDATED_AT")
+    @Column(name = "C06_UPDATED_AT", columnDefinition = "DATE")
     Date updatedAt;
 
     @ManyToOne

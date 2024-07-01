@@ -1,9 +1,9 @@
 package com.example.SWP391_Project.service;
 
-import com.example.SWP391_Project.dto.CenterPostDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 
 import java.util.List;
 import java.util.Map;
@@ -68,8 +68,15 @@ public interface StudentService {
 
     // xem những feedback mà teacher gửi đến
     List<Feedback> fetchTeacherFeedback(int studentId);
-
     // ------------------------------------------------------------------
+
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId);
+
+    List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
+
+
+    // -----------------------------------------------------------------------
 
 
 }

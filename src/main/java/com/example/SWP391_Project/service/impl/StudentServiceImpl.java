@@ -1,17 +1,15 @@
 package com.example.SWP391_Project.service.impl;
 
-import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
 import jakarta.persistence.Query;
-import jakarta.persistence.Tuple;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -19,7 +17,6 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 
-import java.sql.ResultSet;
 import java.util.*;
 
 @Service
@@ -218,14 +215,26 @@ public class StudentServiceImpl implements StudentService {
     @Transactional
     @Override
     public List<Map<String, Object>> getSlotsByStudentId(int studentId) {
-        String query = "SELECT s.C02_SLOT_DATE as slotDate, s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, " +
-                "c.C01_COURSE_NAME as courseName, r.C18_ROOM_NAME as roomName, ss.C17_ATTENDANCE_STATUS as attendanceStatus " +
-                "FROM t02_slot s " +
-                "JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID " +
-                "JOIN t14_user u ON ss.C17_STUDENT_ID = u.C14_USER_ID " +
-                "JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID " +
-                "JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID " +
-                "WHERE u.C14_USER_ID = :studentId";
+        String query = "SELECT DISTINCT\n" +
+                "    s.C02_SLOT_ID as slot,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    ss.C17_ATTENDANCE_STATUS as attendanceStatus,\n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t17_student_slot ss ON s.C02_SLOT_ID = ss.C17_SLOT_ID \n" +
+                "    JOIN t16_user_center uc ON ss.C17_STUDENT_ID = uc.C16_USER_ID \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "WHERE \n" +
+                "    uc.C16_USER_ID = :studentId\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
 
         System.out.println("Query: " + query);
         System.out.println("StudentId: " + studentId);
@@ -238,12 +247,14 @@ public class StudentServiceImpl implements StudentService {
 
         for (Object[] result : resultList) {
             Map<String, Object> slotMap = new HashMap<>();
-            slotMap.put("slotDate", result[0]);
-            slotMap.put("slotStartTime", result[1]);
-            slotMap.put("slotEndTime", result[2]);
-            slotMap.put("courseName", result[3]);
-            slotMap.put("roomName", result[4]);
-            slotMap.put("attendanceStatus", result[5]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("slotId", result[0]);
+            slotMap.put("slotDate", result[1]);
+            slotMap.put("slotStartTime", result[2]);
+            slotMap.put("slotEndTime", result[3]);
+            slotMap.put("courseName", result[4]);
+            slotMap.put("roomName", result[5]);
+            slotMap.put("attendanceStatus", result[6]);  // Giá trị boolean, thay đổi tùy thuộc vào kiểu dữ liệu của C09_ATTENDANCE_STATUS
+            slotMap.put("teacherName", result[7]);
 
             slots.add(slotMap);
         }
@@ -495,6 +506,50 @@ public class StudentServiceImpl implements StudentService {
     }
     // -------------------------------------------------------------------
 
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    @Override
+    public List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId) {
+        return slotRepository.findSlotsByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId) {
+        String query = "SELECT " +
+                "COUNT(*) AS total_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 0 THEN 1 ELSE 0 END) AS absent_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 1 THEN 1 ELSE 0 END) AS present_slots " +
+                "FROM t02_slot s " +
+                "JOIN t01_course c ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "JOIN t17_student_slot ss ON ss.C17_SLOT_ID = s.C02_SLOT_ID " +
+                "WHERE ss.C17_STUDENT_ID = :studentId AND c.C01_COURSE_ID = :courseId AND s.c02_slot_date <= NOW()";
+
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+        nativeQuery.setParameter("courseId", courseId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> attendanceResults = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> attendanceMap = new HashMap<>();
+            attendanceMap.put("totalSlots", result[0]);
+            attendanceMap.put("absentSlots", result[1]);
+            attendanceMap.put("presentSlots", result[2]);
+
+            attendanceResults.add(attendanceMap);
+        }
+
+        return attendanceResults;
+    }
+
+
+
+
+    // -----------------------------------------------------------------------
 
 
 

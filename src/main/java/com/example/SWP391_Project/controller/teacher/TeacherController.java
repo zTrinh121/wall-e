@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.controller.teacher;
 
+import com.example.SWP391_Project.dto.ApplyCenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
@@ -263,5 +264,18 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
     // -----------------------------------------------------------------------
+
+    // -------------------- APPLY CENTER -----------------------------
+    // tạo form để apply center
+    @PostMapping("/create-applyCenter-form-to-manager")
+    public ResponseEntity<ApplyCenter> applyForCenter(@RequestBody ApplyCenterDto applyCenterDto, HttpSession session) {
+        User teacher = (User) session.getAttribute("user");
+        if (teacher == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
+        }
+
+        ApplyCenter applyCenter = teacherService.createApplyCenterForm(teacher, applyCenterDto);
+        return ResponseEntity.ok(applyCenter);
+    }
 
 }

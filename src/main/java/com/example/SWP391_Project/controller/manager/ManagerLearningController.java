@@ -17,6 +17,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.time.Month;
 import java.time.Year;
@@ -65,7 +66,7 @@ public class ManagerLearningController {
         }
     }
 
-    @PostMapping("/create")
+    @PostMapping("center/create")
     public ResponseEntity<Center> createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession httpSession) {
         User managerInfo = (User) httpSession.getAttribute("user");
         Center createdCenter = managerService.createCenter(centerDto, managerInfo);
@@ -159,6 +160,20 @@ public class ManagerLearningController {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(teachers, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-applyCenter-form")
+    public ResponseEntity<List<ApplyCenter>> getTeachersInCenter(HttpSession session) {
+        Integer managerId = (Integer) session.getAttribute("authid");
+        if (managerId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+        }
+
+        List<ApplyCenter> forms = managerService.viewApplyCenterForm(managerId);
+        if (forms.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(forms, HttpStatus.OK);
     }
 
     @PatchMapping("/approveTeacher/{id}")
