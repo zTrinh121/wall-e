@@ -103,6 +103,7 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER COURSE ------------------------------
+    //  Get courses list in a center
     @GetMapping("/courses/center/{centerId}")
     public ResponseEntity<List<Course>> getCoursesByCenterId(@PathVariable int centerId) {
         List<Course> courses = managerService.getCoursesByCenterId(centerId);
@@ -111,18 +112,18 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
-
+    //  Get detail course information
     @GetMapping("/course/{courseId}")
     public ResponseEntity<CourseDetailResponse> findCourseById(@PathVariable int courseId) {
         CourseDetailResponse courses = managerService.findCourseById(courseId);
         return ResponseEntity.ok(courses);
     }
-
+    //  Create a new course in a center
     @PostMapping("/course/create")
     public Course createCourse(@RequestBody @Valid CourseDto courseDto) {
         return managerService.createCourse(courseDto);
     }
-
+    //  Update course information in a center -- checkout in the inner code of impl
     @PutMapping("/course/update/{courseId}")
     public ResponseEntity<Course> updateCourse(@PathVariable int id,
                                                @RequestBody @Valid CourseDto courseDto) {
@@ -133,7 +134,7 @@ public class ManagerLearningController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    //  Delete center
     @DeleteMapping("/course/delete/{id}")
     public ResponseEntity<String> deleteCourse(@PathVariable int id) {
         try {
@@ -212,6 +213,7 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER STUDENT ------------------------------
+    //  Get students list in center
     @GetMapping("/students/{centerId}")
     public ResponseEntity<List<User>> getStudentsInCenter(@PathVariable int centerId) {
         List<User> students = managerService.getStudentsInCenter(centerId);
@@ -220,7 +222,7 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
-
+    //  View in view -> in course can view students list in that course
     @GetMapping("/students/course/{courseId}")
     public ResponseEntity<List<User>> getStudentsInCertainCourse(@PathVariable int courseId) {
         List<User> students = managerService.getStudentsInCertainCourse(courseId);
@@ -389,7 +391,7 @@ public class ManagerLearningController {
         }
         return ResponseEntity.ok(count);
     }
-
+    //  Number of courses
     @GetMapping("/course-count/{centerId}")
     public ResponseEntity<Integer> countCoursesByCenter(@PathVariable int centerId) {
         int count = managerService.countCourseByCenter(centerId);

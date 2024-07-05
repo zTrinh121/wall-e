@@ -1,6 +1,11 @@
 
 var centerIdz;
-
+document.addEventListener("DOMContentLoaded", () => {
+    // Toggle sidebar collapse
+    $(".nva").click(function () {
+        $(".wrapper").toggleClass("collapse");
+    });
+});
 // Định nghĩa hàm showToast ở phạm vi toàn cục
 function showToast(message) {
     var toast = $('#toast'); // Chuyển toast vào trong hàm
@@ -75,13 +80,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                // varruct the correct URL based on centerId
                 var url = `/manager/qlhv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the varructed URL
-
-                // Perform any further actions with the varructed URL
-                window.location.href = url; // Example: Redirect to the varructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfos' not found.");
@@ -94,16 +96,30 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfot) {
         boxInfot.addEventListener("click", function(event) {
             event.preventDefault();
-                // varruct the correct URL based on centerId
                 var url = `/manager/qlgv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the varructed URL
-
-                // Perform any further actions with the varructed URL
-                window.location.href = url; // Example: Redirect to the varructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfot' not found.");
+    }
+});
+//courses
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfoc = document.getElementById("boxInfoc");
+
+    if (boxInfoc) {
+        boxInfoc.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/qlkh?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'boxInfoc' not found.");
     }
 });
 //edit + delete
@@ -175,96 +191,28 @@ document.addEventListener("DOMContentLoaded", () => {
     centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
     console.log("Center ID:", centerIdz);
 
-    var openDeleteModal = document.getElementById('openDeleteModal');
-    var deleteModaling = document.getElementById('deleteModaling');
-    var confirmDele = document.getElementById('confirmDele');
-    var cancelDeleBtn = document.getElementById('cancelDeleBtn');
-    //open modal
-    openDeleteModal.addEventListener("click", () => {
-        deleteModaling.style.display = 'block';
-    });
-    //cloe modal
-    cancelDeleBtn.addEventListener("click", () => {
-        deleteModaling.style.display = 'none';
-    });
-    var closeButton = document.querySelectorAll(".close");
-    closeButton.forEach((button) => {
-        button.addEventListener("click", function (event) {
-            event.preventDefault();
-            deleteModaling.style.display = "none";
-        });
-    });
     //CONFIRM - DELETE
-    confirmDele.addEventListener("click", () => {
-        if (centerIdz) {
-            console.log("Confirm delete for center ID:", centerIdz);
-            fetch(`/manager/center/delete/${centerIdz}`, {
-                method: "DELETE"
-            })
-            .then(response => {
-                if (response.ok) {
-                    deleteModaling.style.display = "none";
-                    showToast("Xóa thành công trung tâm");
-                    console.log("Center deleted successfully");
-                } else {
-                    console.error("Error deleting center:", response.statusText);
-                }
-            })
-            .catch(error => console.error("Error deleting center:", error));
-        }
-    });
+//    confirmDele.addEventListener("click", () => {
+//        if (centerIdz) {
+//            console.log("Confirm delete for center ID:", centerIdz);
+//            fetch(`/manager/center/delete/${centerIdz}`, {
+//                method: "DELETE"
+//            })
+//            .then(response => {
+//                if (response.ok) {
+//                    deleteModaling.style.display = "none";
+//                    showToast("Xóa thành công trung tâm");
+//                    console.log("Center deleted successfully");
+//                } else {
+//                    console.error("Error deleting center:", response.statusText);
+//                }
+//            })
+//            .catch(error => console.error("Error deleting center:", error));
+//        }
+//    });
 });
 
-////lay so luong
-//document.addEventListener("DOMContentLoaded", () => {
-//    var urlParams = window.location.href;
-//    console.log("Current URL:", urlParams);
-//    // Extract centerId from the URL
-//    var urlParts = urlParams.split("centerIdn=");
-//    centerIdzzz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
-//
-//function fetchCount(centerIdzzz) {
-//    var URLs = `/manager/student-count/${centerIdzzz}`;
-//    var URLt = `/manager/teacher-count/${centerIdzzz}`;
-////    var URLc = `/manager/course-count/${centerIdzzz}`;
-//
-//    fetch(URLs)
-//            .then((response) => {
-//                if (!response.ok) {
-//                    throw new Error("Network response was not ok");
-//                }
-//                return response.json();
-//            })
-//            .then((data) => {
-//                document.getElementById("nums").innerText = data;
-//            })
-//            .catch((error) => console.error("Error fetching centers:", error));
-//    fetch(URLt)
-//            .then((response) => {
-//                if (!response.ok) {
-//                    throw new Error("Network response was not ok");
-//                }
-//                return response.json();
-//            })
-//            .then((data) => {
-//                document.getElementById("numt").innerText = data;
-//            })
-//            .catch((error) => console.error("Error fetching centers:", error));
-////    fetch(URLc)
-////            .then((response) => {
-////                if (!response.ok) {
-////                    throw new Error("Network response was not ok");
-////                }
-////                return response.json();
-////            })
-////            .then((data) => {
-////                  document.getElementById("numc").innerText = data;
-//
-////            })
-////            .catch((error) => console.error("Error fetching centers:", error));
-//}
-//fetchCount(centerIdzzz);
-//});
+
 
 
 

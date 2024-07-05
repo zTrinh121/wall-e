@@ -34,6 +34,7 @@ public class User {
     @Column(name = "C14_USER_ID")
     int id;
 
+
     @Column(name = "C14_USERNAME", nullable = false)
     String username;
 

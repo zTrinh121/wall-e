@@ -3,19 +3,17 @@ document.addEventListener("DOMContentLoaded", () => {
     $(".nva").click(function () {
         $(".wrapper").toggleClass("collapse");
     });
-    //close modal ifraem
+    //close modal iframe
     var closeButton = document.querySelectorAll(".close");
     closeButton.forEach((button) => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
-            addModal.style.display = "none";
             deleteModal.style.display = "none";
             fetchCenters();
         });
     });
 
     // Modals
-    var addModal = document.getElementById("myModal");
     var addCentreModal = document.getElementById("addCentreModal");
     var deleteModal = document.getElementById("deleteModal");
 
@@ -141,7 +139,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     deleteTarget.row.remove();
                     deleteModal.style.display = "none";
-                    addModal.style.display = "none";
                     showToast("Xóa thành công trung tâm");
                     console.log("Center deleted successfully");
                 } else {
@@ -172,10 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 queryUrl += "centerIdn=" + encodeURIComponent(data.id);
                 console.log(queryUrl);
 
-                var iframe = document.querySelector("#myModal iframe");
-                iframe.src = queryUrl;
-
-                addModal.style.display = "block";
+                window.location.href = queryUrl;
             })
             .catch((error) => console.error("Error fetching center details:", error));
     }

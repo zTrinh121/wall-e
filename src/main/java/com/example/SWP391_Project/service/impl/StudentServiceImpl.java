@@ -27,7 +27,9 @@ import java.time.temporal.WeekFields;
 import java.util.*;
 
 @Service
-public class StudentServiceImpl implements StudentService {
+public class
+
+StudentServiceImpl implements StudentService {
 
     @Autowired
     private StudentRepository studentRepository;
