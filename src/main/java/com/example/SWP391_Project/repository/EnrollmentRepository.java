@@ -3,8 +3,10 @@ package com.example.SWP391_Project.repository;
 import com.example.SWP391_Project.model.Enrollment;
 import com.example.SWP391_Project.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
@@ -41,6 +43,11 @@ public interface EnrollmentRepository extends JpaRepository<Enrollment, Long> {
             "GROUP BY s.id, p.name, p.phone")
     List<Object[]> findStudentInfoAndCoursesByStudentId(@Param("studentId") int studentId,
                                                         @Param("centerId") int centerId);
+
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM Enrollment e WHERE e.student.id = :studentId AND e.course.id = :courseId")
+    void deleteByStudentIdAndCourseId(int studentId, int courseId);
 
 
 }

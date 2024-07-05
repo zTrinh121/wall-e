@@ -412,7 +412,7 @@ public class ManagerServiceImpl implements ManagerService {
     // ----------------------------- Manage slot ------------------------------
     @Override
     public List<Slot> findSlotsInCourse(int courseId) {
-        Optional<List<Slot>> slots = slotRepository.findSlotByCourse_Id(courseId);
+        Optional<List<Slot>> slots = slotRepository.findByCourse_Id(courseId);
         return slots.orElse(Collections.emptyList());
     }
 

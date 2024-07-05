@@ -22,7 +22,10 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
 
 
 
-    @Query("SELECT e.student FROM Enrollment e WHERE e.course.id = :courseId")
+//    @Query("SELECT e.student FROM Enrollment e WHERE e.course.id = :courseId")
+//    List<User> findStudentsByCourseId(@Param("courseId") Long courseId);
+
+    @Query("SELECT e.student FROM Enrollment e JOIN e.student u WHERE e.course.id = :courseId ORDER BY u.lastName")
     List<User> findStudentsByCourseId(@Param("courseId") Long courseId);
 
 
