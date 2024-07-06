@@ -5,16 +5,14 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.View;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ManagerService {
@@ -105,33 +103,6 @@ public interface ManagerService {
     // Delete student --> xóa khỏi bảng T16
     boolean deleteStudentInCenter(int studentId, int centerId);
     // -------------------------------------------------------
-
-
-    // ----------------- Manage the slot ---------------------
-    // view course's slot
-    List<Slot> findSlotsInCourse(int courseId);
-
-    // view slots in certain day
-    List<Slot> findSlotInCertainDay(Date date);
-
-    // createNewSlot
-    Slot createNewSlot(SlotDto slotDto);
-
-    /*
-       + Lúc này đang đứng ở giao diện chi tiết của 1 Slot
-       --> Muốn update Slot đó thì Manager dùng hàm này để tìm xem room đang trống ở thời điểm diễn ra slot trên
-       + Trong trường hợp Manager ngầu lòi ko check phòng trống thì
-         ở hàm updateSlot cũng có các hàm để xử lí validate vấn đề về room <3
-     */
-    List<Room> getListEmptyRooms(Slot slot);
-
-    // update slot's information
-    Slot updateSlot(int slotId, SlotDto slotDto);
-
-    // delete slot
-    boolean deleteSlot(int id);
-    // -------------------------------------------------------
-
 
     // ----------------- Manage the revenue ------------------
     // --> Vẫn chưa xử lí task quản lí lương cho giáo viên
@@ -240,5 +211,19 @@ public interface ManagerService {
     List<Feedback> viewAllFeedbacksToTeachers(int managerId);
     List<Feedback> viewAllFeedbacksToCourses(int managerId);
     // ------------------------------------------------
+
+    // --------------------- SLOTS -------------------------
+    List<Map<String, Object>> getSlotsByCenterId(int centerId);
+
+    Map<String, Object> getSlotsBySlotId(int slotId);
+
+    Slot createSlot(SlotDto slotDto);
+
+    Slot updateSlot(int slotId, SlotDto slotDto);
+
+    void deleteSlot(int slotId);
+
+
+    // -----------------------------------------------------
 
 }

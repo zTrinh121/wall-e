@@ -12,7 +12,7 @@ import java.util.Optional;
 
 public interface SlotRepository extends JpaRepository<Slot, Integer> {
 
-    Optional<List<Slot>> findSlotByCourse_Id(int id);
+    Optional<List<Slot>> findByCourse_Id(int id);
 
 //    List<Slot> findByStudentId(int studentId);
 
@@ -31,5 +31,8 @@ public interface SlotRepository extends JpaRepository<Slot, Integer> {
             "WHERE ss.student.id = :studentId AND c.id = :courseId")
     List<SlotResponse> findSlotsByStudentIdAndCourseId(@Param("studentId") int studentId,
                                                        @Param("courseId") int courseId);
+
+    @Query("SELECT s FROM Slot s JOIN s.studentSlots ss WHERE ss.student.id = :studentId")
+    Optional<List<Slot>> findSlotByStudent_Id(int studentId);
 
 }
