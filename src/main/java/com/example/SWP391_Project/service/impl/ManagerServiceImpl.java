@@ -6,12 +6,12 @@ import com.example.SWP391_Project.enums.PaymentStatus;
 import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
-import com.example.SWP391_Project.response.CloudinaryResponse;
-import com.example.SWP391_Project.response.CourseDetailResponse;
-import com.example.SWP391_Project.response.StudentCoursesResponse;
-import com.example.SWP391_Project.response.TeacherCoursesResponse;
+import com.example.SWP391_Project.response.*;
 import com.example.SWP391_Project.service.ManagerService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
+import jakarta.persistence.Query;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -21,8 +21,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.time.Month;
-import java.time.Year;
+import java.sql.Time;
+import java.time.*;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -74,6 +74,11 @@ public class ManagerServiceImpl implements ManagerService {
     @Autowired
     private ViewCenterNotificationRepository viewCenterNotificationRepository;
 
+    @PersistenceContext
+    private EntityManager entityManager;
+
+    @Autowired
+    private StudentSlotRepository studentSlotRepository;
 
     // -------------------------- Center Post -------------------------------
     @Override
@@ -408,106 +413,6 @@ public class ManagerServiceImpl implements ManagerService {
     }
     // ------------------------------------------------------------------------
 
-
-    // ----------------------------- Manage slot ------------------------------
-    @Override
-    public List<Slot> findSlotsInCourse(int courseId) {
-        Optional<List<Slot>> slots = slotRepository.findByCourse_Id(courseId);
-        return slots.orElse(Collections.emptyList());
-    }
-
-    @Override
-    public List<Slot> findSlotInCertainDay(Date date) {
-        Optional<List<Slot>> slots = slotRepository.findBySlotDate(date);
-        if(!slots.isPresent()) {
-            throw new IllegalArgumentException("Do not exist the slot in" + date);
-        }
-        return slots.get();
-    }
-
-    @Override
-    public Slot createNewSlot(SlotDto slotDto) {
-        // Find room by name
-        Optional<Room> roomName = roomRepository.findByName(slotDto.getRoomName());
-        if (!roomName.isPresent()) {
-            throw new IllegalArgumentException("Room not found");
-        }
-        Room room = roomName.get();
-
-        // Find course by code
-        Optional<Course> courseOtp = courseRepository.findByCode(slotDto.getCourseCode());
-        if (!courseOtp.isPresent()) {
-            throw new IllegalArgumentException("Course not found");
-        }
-        Course course = courseOtp.get();
-
-        Slot slot = Slot.builder()
-                .slotStartTime(slotDto.getSlotStartTime())
-                .slotEndTime(slotDto.getSlotEndTime())
-                .course(course)
-                .room(room)
-                .build();
-        return slotRepository.save(slot);
-    }
-
-    @Override
-    public List<Room> getListEmptyRooms(Slot slot) {
-        int centerId = slot.getCourse().getCenter().getId();
-        Date slotStartTime = slot.getSlotStartTime();
-        Date slotEndTime = slot.getSlotEndTime();
-
-        return roomRepository.findEmptyRooms(slotStartTime, slotEndTime, centerId);
-    }
-
-    // cái này còn thiếu view ra thời khóa biểu của giáo viên và học sinh
-    // trong trường hợp giáo viên muốn đổi slot đó qua ngày khác
-    @Override
-    public Slot updateSlot(int slotId, SlotDto slotDto) {
-        Optional<Slot> slotOpt = slotRepository.findById(slotId);
-        if (!slotOpt.isPresent()) {
-            throw new IllegalArgumentException("Slot not found");
-        }
-        Slot slot = slotOpt.get();
-
-        // Kiểm tra course có trong trung tâm hay ko
-        Optional<Course> courseOtp = courseRepository.findByCode(slotDto.getCourseCode());
-        if (!courseOtp.isPresent()) {
-            throw new IllegalArgumentException("Course not found");
-        }
-        Course course = courseOtp.get();
-
-        // Kiểm tra phòng có tồn tại trong trung tâm hay không
-        Optional<Room> roomOpt = roomRepository.findByNameAndCenterId(slotDto.getRoomName(), course.getCenter().getId());
-        if (!roomOpt.isPresent()) {
-            throw new IllegalArgumentException("Room not found");
-        }
-        Room room = roomOpt.get();
-
-        // Kiểm tra xem phòng có slot diễn ra vào thời gian mới cập nhật hay không
-        boolean isSlotOccurring = roomRepository.existsSlotOccurring(room, slotDto.getSlotStartTime(), slotDto.getSlotEndTime());
-        if (isSlotOccurring) {
-            throw new IllegalArgumentException("Room has slot occurring now");
-        }
-
-        slot.setSlotStartTime(slotDto.getSlotStartTime());
-        slot.setSlotEndTime(slotDto.getSlotEndTime());
-        slot.setRoom(room);
-
-        return slotRepository.save(slot);
-    }
-
-    @Override
-    public boolean deleteSlot(int id) {
-        try {
-            slotRepository.deleteById(id);
-            return true;
-        } catch (Exception e) {
-            return false;
-        }
-    }
-    // ------------------------------------------------------------------------
-
-
     // ---------------------------- Manage the revenue ------------------------
     @Override
     public List<Bill> getAllBills() {
@@ -766,6 +671,225 @@ public class ManagerServiceImpl implements ManagerService {
         return feedbacks.orElse(Collections.emptyList());
     }
     // ------------------------------------------------------------------
+
+    // -------------------------- SLOTS -------------------------------
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getSlotsByCenterId(int centerId) {
+        String query = "SELECT DISTINCT\n" +
+                "    s.C02_SLOT_ID as slotId,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "    JOIN t03_center ct ON c.C01_CENTER_ID = ct.C03_CENTER_ID \n" +
+                "WHERE \n" +
+                "    ct.C03_CENTER_ID = :centerId\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("centerId", centerId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> slots = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> slotMap = new HashMap<>();
+            slotMap.put("slotId", result[0]);
+            slotMap.put("slotDate", ((java.sql.Date) result[1]).toLocalDate());
+            slotMap.put("slotStartTime", ((java.sql.Time) result[2]).toLocalTime());
+            slotMap.put("slotEndTime", ((java.sql.Time) result[3]).toLocalTime());
+            slotMap.put("courseName", result[4]);
+            slotMap.put("roomName", result[5]);
+            slotMap.put("teacherName", result[6]);
+
+            slots.add(slotMap);
+        }
+
+        return slots;
+    }
+
+    @Transactional
+    @Override
+    public Map<String, Object> getSlotsBySlotId(int slotId) {
+        String query = "SELECT DISTINCT\n" +
+                "    s.C02_SLOT_ID as slotId,\n" +
+                "    s.C02_SLOT_DATE as slotDate, \n" +
+                "    s.C02_SLOT_START_TIME as slotStartTime, \n" +
+                "    s.C02_SLOT_END_TIME as slotEndTime, \n" +
+                "    c.C01_COURSE_NAME as courseName, \n" +
+                "    r.C18_ROOM_NAME as roomName, \n" +
+                "    u_teacher.C14_NAME as teacherName\n" +
+                "FROM \n" +
+                "    t02_slot s \n" +
+                "    JOIN t01_course c ON s.C02_COURSE_ID = c.C01_COURSE_ID \n" +
+                "    JOIN t18_room r ON s.C02_ROOM_ID = r.C18_ROOM_ID \n" +
+                "    JOIN t14_user u_teacher ON c.C01_TEACHER_ID = u_teacher.C14_USER_ID \n" +
+                "WHERE \n" +
+                "    s.C02_SLOT_ID = :slotId\n" +
+                "ORDER BY \n" +
+                "    CASE WHEN courseName IS NULL THEN 1 ELSE 0 END, courseName, slotDate;";
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("slotId", slotId);
+
+        Object[] result = (Object[]) nativeQuery.getSingleResult();
+
+        Map<String, Object> slotMap = new HashMap<>();
+        slotMap.put("slotId", result[0]);
+        slotMap.put("slotDate", ((java.sql.Date) result[1]).toLocalDate());
+        slotMap.put("slotStartTime", ((java.sql.Time) result[2]).toLocalTime());
+        slotMap.put("slotEndTime", ((java.sql.Time) result[3]).toLocalTime());
+        slotMap.put("courseName", result[4]);
+        slotMap.put("roomName", result[5]);
+        slotMap.put("teacherName", result[6]);
+
+        return slotMap;
+    }
+
+    @Override
+    public Slot createSlot(SlotDto slotDto) {
+        // Tìm roomId từ roomName
+        Room room = roomRepository.findByName(slotDto.getRoomName())
+                .orElseThrow(() -> new IllegalArgumentException("Room not found with name: " + slotDto.getRoomName()));
+
+        // Tìm courseId từ courseCode hoặc courseName
+        Course course = courseRepository.findByCode(slotDto.getCourseCode())
+                .orElseThrow(() -> new IllegalArgumentException("Course not found with code or name: " + slotDto.getCourseCode()));
+
+        // Kiểm tra xem phòng có sẵn cho khoảng thời gian này không (mình giả sử đã có hàm isRoomAvailable)
+        if (!isRoomAvailable(room.getId(), slotDto.getSlotDate(), slotDto.getSlotStartTime(), slotDto.getSlotEndTime())) {
+            throw new IllegalArgumentException("Room is not available for the given time slot.");
+        }
+
+        Slot slot = Slot.builder()
+                .slotDate(slotDto.getSlotDate())
+                .slotStartTime(slotDto.getSlotStartTime())
+                .slotEndTime(slotDto.getSlotEndTime())
+                .room(room)
+                .course(course)
+                .build();
+
+        // Lưu slot vào database
+        slot = slotRepository.save(slot);
+
+        // Lấy danh sách học sinh trong khóa học
+        List<User> studentsInCourse = getStudentsInCertainCourse(course.getId());
+
+        // Cập nhật bảng StudentSlot cho từng học sinh
+        for (User student : studentsInCourse) {
+            StudentSlot studentSlot = StudentSlot.builder()
+                    .student(student)
+                    .slot(slot)
+                    .attendanceStatus(false) // Mặc định là chưa điểm danh
+                    .build();
+            studentSlotRepository.save(studentSlot);
+        }
+
+        return slot;
+    }
+
+    private boolean isRoomAvailable(int roomId, Date slotDate, Date slotStartTime, Date slotEndTime) {
+        String query = "SELECT COUNT(*) " +
+                "FROM t02_slot " +
+                "WHERE C02_ROOM_ID = :roomId " +
+                "AND C02_SLOT_DATE = :slotDate " +
+                "AND ((C02_SLOT_START_TIME < :slotEndTime AND C02_SLOT_END_TIME > :slotStartTime) " +
+                "    OR (C02_SLOT_START_TIME >= :slotStartTime AND C02_SLOT_START_TIME < :slotEndTime) " +
+                "    OR (C02_SLOT_END_TIME > :slotStartTime AND C02_SLOT_END_TIME <= :slotEndTime))";
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("roomId", roomId);
+        // Convert slotDate to java.sql.Date
+        java.sql.Date sqlSlotDate = new java.sql.Date(slotDate.getTime());
+        nativeQuery.setParameter("slotDate", sqlSlotDate);
+        // Convert slotStartTime to java.sql.Time
+        java.sql.Time sqlSlotStartTime = new java.sql.Time(slotStartTime.getTime());
+        nativeQuery.setParameter("slotStartTime", sqlSlotStartTime);
+        // Convert slotEndTime to java.sql.Time
+        java.sql.Time sqlSlotEndTime = new java.sql.Time(slotEndTime.getTime());
+        nativeQuery.setParameter("slotEndTime", sqlSlotEndTime);
+
+        int count = ((Number) nativeQuery.getSingleResult()).intValue();
+        return count == 0;
+    }
+
+    @Override
+    public Slot updateSlot(int slotId, SlotDto slotDto) {
+        // Find the existing slot entity
+        Slot existingSlot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new IllegalArgumentException("Slot not found with ID: " + slotId));
+
+        // Tìm roomId từ roomName
+        Room room = roomRepository.findByName(slotDto.getRoomName())
+                .orElseThrow(() -> new IllegalArgumentException("Room not found with name: " + slotDto.getRoomName()));
+
+        // Tìm courseId từ courseCode hoặc courseName
+        Course course = courseRepository.findByCode(slotDto.getCourseCode())
+                .orElseThrow(() -> new IllegalArgumentException("Course not found with code or name: " + slotDto.getCourseCode()));
+
+        // Kiểm tra xem phòng có sẵn cho khoảng thời gian mới không (mình giả sử đã có hàm isRoomAvailable)
+        if (!isRoomAvailableForUpdate(existingSlot.getId(), room.getId(), slotDto.getSlotDate(), slotDto.getSlotStartTime(), slotDto.getSlotEndTime())) {
+            throw new IllegalArgumentException("Room is not available for the given time slot.");
+        }
+
+        // Update the existing slot entity
+        existingSlot.setSlotDate(slotDto.getSlotDate());
+        existingSlot.setSlotStartTime(slotDto.getSlotStartTime());
+        existingSlot.setSlotEndTime(slotDto.getSlotEndTime());
+        existingSlot.setRoom(room);
+        existingSlot.setCourse(course);
+
+        // Save and return the updated slot entity
+        return slotRepository.save(existingSlot);
+    }
+
+    private boolean isRoomAvailableForUpdate(int slotId, int roomId, Date slotDate, Date slotStartTime, Date slotEndTime) {
+        String query = "SELECT COUNT(*) " +
+                "FROM t02_slot " +
+                "WHERE C02_ROOM_ID = :roomId " +
+                "AND C02_SLOT_DATE = :slotDate " +
+                "AND C01_SLOT_ID != :slotId " + // Exclude the current slot being updated
+                "AND ((C02_SLOT_START_TIME < :slotEndTime AND C02_SLOT_END_TIME > :slotStartTime) " +
+                "    OR (C02_SLOT_START_TIME >= :slotStartTime AND C02_SLOT_START_TIME < :slotEndTime) " +
+                "    OR (C02_SLOT_END_TIME > :slotStartTime AND C02_SLOT_END_TIME <= :slotEndTime))";
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("roomId", roomId);
+        nativeQuery.setParameter("slotId", slotId); // Pass the slotId to exclude from count
+        // Convert slotDate to java.sql.Date
+        java.sql.Date sqlSlotDate = new java.sql.Date(slotDate.getTime());
+        nativeQuery.setParameter("slotDate", sqlSlotDate);
+        // Convert slotStartTime to java.sql.Time
+        java.sql.Time sqlSlotStartTime = new java.sql.Time(slotStartTime.getTime());
+        nativeQuery.setParameter("slotStartTime", sqlSlotStartTime);
+        // Convert slotEndTime to java.sql.Time
+        java.sql.Time sqlSlotEndTime = new java.sql.Time(slotEndTime.getTime());
+        nativeQuery.setParameter("slotEndTime", sqlSlotEndTime);
+
+        int count = ((Number) nativeQuery.getSingleResult()).intValue();
+        return count == 0;
+    }
+
+    @Override
+    @Transactional
+    public void deleteSlot(int slotId) {
+        // Find the slot entity by ID
+        Slot slot = slotRepository.findById(slotId)
+                .orElseThrow(() -> new IllegalArgumentException("Slot not found with ID: " + slotId));
+
+        // Delete the slot entity
+        slotRepository.delete(slot);
+    }
+    // ---------------------------------------------------------------
 }
 
 
