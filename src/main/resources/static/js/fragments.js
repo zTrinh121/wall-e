@@ -248,6 +248,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 const time = document.createElement('span');
                 time.classList.add('notification-time');
+                console.log("Created: " + notification.createdAt);
                 time.textContent = timeAgo(notification.createdAt);
 
                 textContainer.appendChild(text);
@@ -326,9 +327,27 @@ document.addEventListener("DOMContentLoaded", async function () {
         }
     }
 
+    function parseDateString(dateString) {
+        const parts = dateString.split(' ');
+        const dateParts = parts[0].split('-');
+        const timeParts = parts[1].split(':');
+
+        const day = dateParts[0];
+        const month = dateParts[1];
+        const year = dateParts[2];
+        const hours = timeParts[0];
+        const minutes = timeParts[1];
+        const seconds = timeParts[2];
+
+        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+    }
+
+
     function timeAgo(date) {
+        const parsedDate = parseDateString(date);
         const now = new Date();
-        const diff = now - new Date(date);
+        const diff = now - new Date(parsedDate);
+        console.log("Diff: " + diff);
         const seconds = Math.floor(diff / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
@@ -457,7 +476,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         return text.length > 0;
     }
-    // End chat box
 
 });
 $(document).ready(function() {

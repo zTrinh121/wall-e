@@ -348,6 +348,7 @@ public class StudentController {
 
     // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
     @GetMapping("/checkOverviewAttendance/{courseId}")
+    @ResponseBody
     public ResponseEntity<List<SlotResponse>> getSlotsByStudentIdAndCourseId(HttpSession session, @PathVariable int courseId) {
         Integer studentId = (Integer) session.getAttribute("authid");
         if (studentId == null) {
