@@ -457,7 +457,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
         return text.length > 0;
     }
-    // End chat box
 
 });
 $(document).ready(function() {
@@ -465,7 +464,7 @@ $(document).ready(function() {
         var keyword = $(this).val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/students/search',
+                url: '/api/student/search',
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function(response) {

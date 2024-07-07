@@ -641,6 +641,21 @@ tr:hover {
   background: #2e4ead;
 }
 
+
+
+.report-header{
+  font-weight: 600 !important;
+}
+
+#myChart{
+  height: 300px !important;
+  width: 300px !important;
+}
+
+#attendanceDetails li span{
+  font-weight: 600;
+}
+
 /* Start: TOAST */
 .toast-container, .toast {
   position: fixed;
