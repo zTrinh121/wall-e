@@ -386,6 +386,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     // Start attendance modal
+    if (roleUser !== 'STUDENT') {
+        btnAttendanceDetails.style.display = 'none';
+    }
+
     btnAttendanceDetails.addEventListener("click", () => {
         fetchAttendanceDetails(courseId);
     });
@@ -434,7 +438,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         <p><span>Có mặt: </span> ${numberPresent}</p>
         <p><span>Vắng: </span> ${numberAbsent}</p>
         <p><span>Tương lai: </span> ${futureSlot}</p>
-        <p><span>Tổng tham gia: </span> ${numberPresent+numberAbsent}/${attendanceData.length -futureSlot}</p>
+        <p style="margin-bottom: 1rem;"><span>Tổng tham gia: </span> ${numberPresent+numberAbsent}/${attendanceData.length -futureSlot}</p>
     `;
         attendanceDetails.appendChild(summary);
 
@@ -446,8 +450,16 @@ document.addEventListener("DOMContentLoaded", async () => {
             const isOlderThanToday = session.slotDate < today;
             const attendanceStatus = isOlderThanToday ? (session.attendanceStatus ? 'Có mặt' : 'Vắng') : 'none';
             listItem.innerHTML = `
+            <div class="date-attendance">
+                <div>
+                    <span>Ngày:</span> ${dateFormat} - 
+                </div>
+                <div>
+                    <span>Buổi học:</span> ${session.slotId}
+                </div>
+                <div></div>
+            </div>
             
-            <span>Ngày:</span> ${dateFormat} - <span>Buổi:</span> ${session.slotId} <br>
             <span>Trạng thái: </span> ${attendanceStatus}
         `;
             list.appendChild(listItem);
@@ -538,9 +550,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
-
-
-
 
 
     });
