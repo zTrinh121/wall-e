@@ -561,8 +561,12 @@ box-shadow: var(--shadow); */
 }
 
 #content main .box-info li:nth-child(3) .bx {
-	background: #FD7238;
-	color: #FD7238;
+  background: #FFE0D3;
+  color: #FD7238;
+}
+#content main .box-info li:nth-child(4) .bx {
+  background: #c5ffca;
+  color: #16a71f;
 }
 
 #content main .box-info li .text h3 {

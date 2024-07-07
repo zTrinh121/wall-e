@@ -18,7 +18,8 @@ public interface UserCenterRepository extends JpaRepository<UserCenter, Integer>
             "JOIN uc.user u " +
             "JOIN u.role r " +
             "WHERE uc.center.id = :centerId " +
-            "AND r.description = 'TEACHER'")
+            "AND r.description = 'TEACHER'" +
+            "ORDER BY u.lastName")
     Optional<List<User>> getTeachersInCenter(@Param("centerId") int centerId);
 
     @Query("SELECT uc.user " +
@@ -26,7 +27,8 @@ public interface UserCenterRepository extends JpaRepository<UserCenter, Integer>
             "JOIN uc.user u " +
             "JOIN u.role r " +
             "WHERE uc.center.id = :centerId " +
-            "AND r.description = 'STUDENT'")
+            "AND r.description = 'STUDENT'" +
+            "ORDER BY u.lastName")
     Optional<List<User>> getStudentsInCenter(@Param("centerId") int centerId);
 
     @Transactional

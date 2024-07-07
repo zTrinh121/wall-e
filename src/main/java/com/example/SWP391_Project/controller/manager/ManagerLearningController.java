@@ -23,6 +23,7 @@ import java.time.Month;
 import java.time.Year;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -103,6 +104,7 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER COURSE ------------------------------
+    //  Get courses list in a center
     @GetMapping("/courses/center/{centerId}")
     public ResponseEntity<List<Course>> getCoursesByCenterId(@PathVariable int centerId) {
         List<Course> courses = managerService.getCoursesByCenterId(centerId);
@@ -111,18 +113,18 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(courses, HttpStatus.OK);
     }
-
+    //  Get detail course information
     @GetMapping("/course/{courseId}")
     public ResponseEntity<CourseDetailResponse> findCourseById(@PathVariable int courseId) {
         CourseDetailResponse courses = managerService.findCourseById(courseId);
         return ResponseEntity.ok(courses);
     }
-
+    //  Create a new course in a center
     @PostMapping("/course/create")
     public Course createCourse(@RequestBody @Valid CourseDto courseDto) {
         return managerService.createCourse(courseDto);
     }
-
+    //  Update course information in a center -- checkout in the inner code of impl
     @PutMapping("/course/update/{courseId}")
     public ResponseEntity<Course> updateCourse(@PathVariable int id,
                                                @RequestBody @Valid CourseDto courseDto) {
@@ -133,7 +135,7 @@ public class ManagerLearningController {
             return ResponseEntity.notFound().build();
         }
     }
-
+    //  Delete center
     @DeleteMapping("/course/delete/{id}")
     public ResponseEntity<String> deleteCourse(@PathVariable int id) {
         try {
@@ -212,6 +214,7 @@ public class ManagerLearningController {
 
 
     // --------------------------- MANAGER STUDENT ------------------------------
+    //  Get students list in center
     @GetMapping("/students/{centerId}")
     public ResponseEntity<List<User>> getStudentsInCenter(@PathVariable int centerId) {
         List<User> students = managerService.getStudentsInCenter(centerId);
@@ -220,7 +223,7 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(students, HttpStatus.OK);
     }
-
+    //  View in view -> in course can view students list in that course
     @GetMapping("/students/course/{courseId}")
     public ResponseEntity<List<User>> getStudentsInCertainCourse(@PathVariable int courseId) {
         List<User> students = managerService.getStudentsInCertainCourse(courseId);
@@ -241,61 +244,6 @@ public class ManagerLearningController {
         }
     }
     // --------------------------------------------------------------------------
-
-
-    // ---------------------------- MANAGER SLOT --------------------------------
-    @GetMapping("slots/course/{courseId}")
-    public ResponseEntity<List<Slot>> findSlotsInCourse(@PathVariable int courseId) {
-        List<Slot> slots = managerService.findSlotsInCourse(courseId);
-        if (slots.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(slots, HttpStatus.OK);
-    }
-
-    @GetMapping("slots/course/{date}")
-    public ResponseEntity<List<Slot>> findSlotsInCertainDay(@PathVariable Date date) {
-        List<Slot> slots = managerService.findSlotInCertainDay(date);
-        if (slots.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(slots, HttpStatus.OK);
-    }
-
-    @PostMapping("/slot/create")
-    public Slot createSlot(@RequestBody @Valid SlotDto slotDto) {
-        return managerService.createNewSlot(slotDto);
-    }
-
-    @GetMapping("/emptyRooms") //truyền vào centers
-    public List<Room> getEmptyRooms(
-            @RequestParam("centerId") int centerId,
-            @RequestParam("slotStartTime") Date slotStartTime,
-            @RequestParam("slotEndTime") Date slotEndTime) {
-        Slot slot = new Slot();
-        Course course = new Course();
-        Center center = new Center();
-
-        center.setId(centerId);
-        course.setCenter(center);
-
-        slot.setCourse(course);
-        slot.setSlotStartTime(slotStartTime);
-        slot.setSlotEndTime(slotEndTime);
-        return managerService.getListEmptyRooms(slot);
-    }
-
-    @DeleteMapping("/slot/delete/{id}")
-    public ResponseEntity<String> deleteSlot(@PathVariable int id) {
-        boolean deleted = managerService.deleteSlot(id);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the slot where ID = " + id);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    // --------------------------------------------------------------------------
-
 
     // --------------------------- MANAGER REVENUE ------------------------------
     @GetMapping("/bills")
@@ -389,7 +337,7 @@ public class ManagerLearningController {
         }
         return ResponseEntity.ok(count);
     }
-
+    //  Number of courses
     @GetMapping("/course-count/{centerId}")
     public ResponseEntity<Integer> countCoursesByCenter(@PathVariable int centerId) {
         int count = managerService.countCourseByCenter(centerId);
@@ -418,4 +366,55 @@ public class ManagerLearningController {
         }
         return ResponseEntity.ok(studentCourses);
     }
+
+    // ---------------------------- SLOTS ---------------------------------
+    @GetMapping("slots/byCenter/{centerId}")
+    public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
+        return managerService.getSlotsByCenterId(centerId);
+    }
+
+    @GetMapping("slots/bySlot/{slotId}")
+    public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
+        return managerService.getSlotsBySlotId(slotId);
+    }
+
+    @PostMapping("slots/create")
+    public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
+        try {
+            Slot createdSlot = managerService.createSlot(slotDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("slots/update/{slotId}")
+    public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
+        try {
+            Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
+            return ResponseEntity.ok(updatedSlot);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+        }
+    }
+
+    @DeleteMapping("slots/delete/{slotId}")
+    public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
+        try {
+            managerService.deleteSlot(slotId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build(); // Or handle error as needed
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
 }

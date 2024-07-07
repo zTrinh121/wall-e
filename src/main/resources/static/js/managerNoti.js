@@ -45,7 +45,7 @@ document.addEventListener("DOMContentLoaded", () => {
     }
 
     function fetchAndDisplayPrivateNotifications() {
-        fetch(`/api/students/private-notifications/${userCode.innerHTML}`)
+        fetch(`/api/student/private-notifications/${userCode.innerHTML}`)
             .then(response => response.json())
             .then(data => {
                 allPrivateNotifications = data;

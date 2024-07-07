@@ -51,7 +51,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Helper function to show toast message
+    // Helper function to show toast message - not-working
     function showToast(message) {
         var toast = document.getElementById("toast");
         toast.querySelector("p").textContent = message;
@@ -61,7 +61,7 @@ document.addEventListener("DOMContentLoaded", () => {
         }, 2000);
     }
 
-    // Add Centre-NOTYET
+    // Add Centre-NOTYET-test w admin - not fix
     var addCentreForm = document.getElementById("addCentreForm");
     if (addCentreForm) {
         addCentreForm.addEventListener("submit", function (event) {
@@ -86,8 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 console.log("Center added:", data);
                 addCentreModal.style.display = "none";
-                fetchTeachers();
-                showToast("Thêm giao vien thành công");
+                fetchCourses();
+                showToast("Thêm khoá học thành công");
             })
             .catch(error => console.error("Error adding center:", error));
         });
@@ -119,10 +119,6 @@ document.addEventListener("DOMContentLoaded", () => {
 //FETCH
 document.addEventListener("DOMContentLoaded", () => {
     //get-tea-list
-//    const urlParams = window.location.href;
-//    console.log(urlParams);
-//    const centerIdz = urlParams.get('centerIdn');
-//    console.log(centerIdz);
     // Get the current URL
         const urlParams = window.location.href;
         console.log("Current URL:", urlParams);
@@ -131,10 +127,9 @@ document.addEventListener("DOMContentLoaded", () => {
         centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
         console.log("Center ID:", centerIdz);
     //fetch-api-for-stu
-    function fetchTeachers(centerIdz) {
-      var URL = `/manager/getTeachers/${centerIdz}`;
+    function fetchCourses(centerIdz) {
+      var URL = `/manager/courses/center/${centerIdz}`;
       var nameURL = `/manager/center/${centerIdz}`;
-      console.log(URL);
       fetch(URL)
           .then((response) => {
               if (!response.ok) {
@@ -147,7 +142,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (!Array.isArray(data)) {
                 data = [data];
               }
-              displayTeacherLists(data, centerIdz);
+              displayCourseLists(data, centerIdz);
           })
           .catch((error) => console.error("Error fetching centers:", error));
 
@@ -160,14 +155,14 @@ document.addEventListener("DOMContentLoaded", () => {
             return getCTN.json();
             })
             .then((ctn) => {
-            document.getElementById("centerDetailName").innerText = "Quản lý học sinh của trung tâm " + ctn.name;
+            document.getElementById("centerDetailName").innerText = "Quản lý khoá học của trung tâm " + ctn.name;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
-    fetchTeachers(centerIdz);
+    fetchCourses(centerIdz);
 
     //display-stu-into-list
-function displayTeacherLists(centers, centerIdz) {
+function displayCourseLists(centers, centerIdz) {
     var tableBody = document.getElementById("tableBody");
     if (!tableBody) {
       console.error("Element with ID 'tableBody' not found.");
@@ -188,9 +183,9 @@ function displayTeacherLists(centers, centerIdz) {
         var row = `
           <tr class="view-details" data-id="${center.id}">
             <td><p>${center.name}</p></td>
-            <td><p>${center.phone}</p></td>
-            <td><p>${center.email}</p></td>
-            <td><p>${center.code}</p></td>
+            <td><p>${center.startDate}</p></td>
+            <td><p>${center.courseFee}</p></td>
+            <td><p>${center.teacher.name}</p></td>
             <!-- <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td> -->
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
@@ -218,9 +213,9 @@ function displayTeacherLists(centers, centerIdz) {
       // Reattach event listeners for new buttons
       document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
-          var teaId = this.getAttribute("data-id");
-          console.log("teacher id from button is: " + teaId);
-          openModalWithTeacherDetails(teaId, centerIdz);
+          var cid = this.getAttribute("data-id");
+          console.log("teacher id from button is: " + cid);
+          openModalWithCourseDetails(cid, centerIdz);
         });
       });
     }
@@ -253,13 +248,14 @@ function displayTeacherLists(centers, centerIdz) {
       });
 
   //open-by-student-id
-function openModalWithTeacherDetails(teaId, centerIdz) {
-    console.log(teaId);//id cua gv
-        var queryUrl = "/manager/ttgv?";
-        queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?teaIdn=" + encodeURIComponent(teaId);
+function openModalWithCourseDetails(cid, centerIdz) {
+    console.log(cid);//id cua gv
+        var queryUrl = "/manager/ttkh?";
+        queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
         console.log(queryUrl);
         //chuyen-huong-mode
         window.location.href = queryUrl;
+        //tại trang mới được chuyển qua này ngay từ lúc bắt đầu nó sẽ hiện ra thêm 1 table body ở dưới là in ra danh sách học sinh
 }
 
 var noResultDiv = document.getElementById("no-result");
