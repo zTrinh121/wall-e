@@ -8,6 +8,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarDisplay = document.getElementById("calendar");
     var eventDetailModal = document.getElementById('eventDetailModal');
     var eventDetailContent = document.getElementById('eventDetailContent');
+    var requestModal = document.getElementById('requestModal');
+    var closeRequestModal = document.getElementById('closeRequestModal');
 
     function renderEventContent(eventInfo) {
         const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
@@ -41,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         customButtons: {
             RequestChangingTimetable: {
-                text: "Đổi lịch",
+                text: "Gửi yêu cầu",
                 click: function() {
-                    alert('Hehe chưa làm!!!');
+                    document.getElementById('requestModal').style.display = 'block';
                 }
             }
         },
@@ -184,4 +186,21 @@ document.addEventListener('DOMContentLoaded', function() {
             eventDetailModal.style.display = "none";
         }
     };
+
+    closeRequestModal.onclick = function() {
+        requestModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == requestModal) {
+            requestModal.style.display = "none";
+        }
+    }
+
+    document.getElementById('requestForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Here you can add code to handle the form submission
+        console.log('Form submitted');
+        requestModal.style.display = "none";
+    }
 });
