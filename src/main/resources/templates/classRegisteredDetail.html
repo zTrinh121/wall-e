@@ -47,11 +47,19 @@
                                 <button id="btn-evaluation-details">Xem chi tiết</button>
                             </div>
                         </div>
-                        <div class="attendance">
+                        <div class="attendance" th:if="${user.role.getDescription().name() != 'TEACHER'}">
                             <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
                             <div id="attendance-detail" >
                                 <button id="btn-attendance-details">Xem chi tiết</button>
                             </div>
+                        </div>
+
+                        <div class="attendance" th:if="${user.role.getDescription().name() == 'TEACHER'}">
+                            <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
+                            <div id="attendance-all">
+                                <a th:href="@{/attendance(courseId=${param.courseId}, date='all')}">Xem chi tiết</a>
+                            </div>
+
                         </div>
                     </div>
                     <div>
@@ -89,6 +97,25 @@
                         </table>
                         <p id="teacherFeedback"></p>
                         <button id="saveScoresButton">Lưu</button>
+                        <button id="addScoresButton">Thêm điểm</button>
+
+                    </div>
+                </div>
+
+<!--                Modal enter score-->
+                <div id="evaluationModalEnter" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeEvaluationModalEnter">&times;</span>
+                        <table id="scoresTableEnter">
+                            <thead>
+                            <tr>
+                                <th>Hệ số bài kiểm tra</th>
+                                <th>Cột điểm</th>
+                            </tr>
+                            </thead>
+                            <tbody id="scoresTableBodyEnter">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 

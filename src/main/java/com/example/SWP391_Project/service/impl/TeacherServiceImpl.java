@@ -189,7 +189,9 @@ public class TeacherServiceImpl implements TeacherService {
             schedule.put("slotStartTime", result[1]);
             schedule.put("slotEndTime", result[2]);
             schedule.put("courseName", result[3]);
-            schedule.put("roomName", result[4]);
+            schedule.put("courseId", result[4]);
+            schedule.put("roomName", result[5]);
+
             schedules.add(schedule);
         }
         return schedules;

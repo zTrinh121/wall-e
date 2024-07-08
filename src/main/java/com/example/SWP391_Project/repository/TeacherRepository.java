@@ -47,7 +47,7 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
     @Query("SELECT s.slotDate, " +
             "DATE_FORMAT(s.slotStartTime, '%H:%i') AS slotStartTime, " +
             "DATE_FORMAT(s.slotEndTime, '%H:%i') AS slotEndTime, " +
-            "c.name, r.name " +
+            "c.name,c.id, r.name " +
             "FROM Slot s " +
             "JOIN s.course c " +
             "JOIN s.room r " +

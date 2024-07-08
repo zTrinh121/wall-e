@@ -241,21 +241,22 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         function attachScoreLinksEvent() {
+
             const scoreLinks = document.querySelectorAll(".score-link");
             scoreLinks.forEach(link => {
                 link.addEventListener('click', function(event) {
                     event.preventDefault();
+
                     const studentId = this.getAttribute("data-student-id");
                     apiGradeUrl = `api/teacher/courses/${courseId}/students/${studentId}/results`
-
                         fetch(apiGradeUrl)
                             .then(response => response.json())
+
                             .then(data => {
-                                if(data.length > 0){
-                                    console.log(data)
-                                    openEvaluationStudentForTeacher(data)
+                                if(data.length === 0){
+                                    showEnterScoreForm(studentId);
                                 }else{
-                                    //Create new bang diem
+                                    openEvaluationStudentForTeacher(data, studentId)
                                 }
                         })
                             .catch(error => console.error("Error fetching course grades:", error));
@@ -263,8 +264,9 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         }
 
-    function openEvaluationStudentForTeacher(grades) {
+    function openEvaluationStudentForTeacher(grades , studentId) {
         const tableBody = document.getElementById("scoresTableBody");
+
         const shortTestScores = grades.filter(grade => grade.type === 1);
         const longTestScores = grades.filter(grade => grade.type === 2);
         const examScores = grades.filter(grade => grade.type === 3);
@@ -283,7 +285,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 scoreCell.textContent = score.value;
                 scoreCell.dataset.id = score.Id;
                 scoreCell.dataset.type = score.type;
-                scoreCell.contentEditable = true; // Cho phép chỉnh sửa nội dung trực tiếp
+                scoreCell.contentEditable = true;
                 scoreCell.classList.add("editable-score");
                 row.appendChild(scoreCell);
             });
@@ -306,44 +308,165 @@ document.addEventListener("DOMContentLoaded", async () => {
             feedbackMessages.push(`Bạn đã đạt ${examScores.map(score => score.value).join(', ')} điểm trong kiểm tra cuối kỳ`);
         }
 
+        document.getElementById("addScoresButton").addEventListener("click", function() {
+            evaluationModal.style.display = "none";
+            showEnterScoreForm(studentId);
+        });
+        document.getElementById("closeEvaluationModal").addEventListener("click", function() {
+            evaluationModal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target == evaluationModal) {
+                evaluationModal.style.display = "none";
+            }
+        });
+
         const teacherFeedback = document.getElementById("teacherFeedback");
         teacherFeedback.innerHTML = feedbackMessages.join('<br>');
 
-        const evaluationModal = document.getElementById("evaluationModal");
         evaluationModal.style.display = "block";
 
-        // Lưu trữ giá trị hiện tại của từng ô điểm số vào mảng currentValues
-        const currentValues = [];
-        document.querySelectorAll('.editable-score').forEach(cell => {
-            const scoreId = cell.dataset.id;
-            const scoreType = cell.dataset.type;
-            const currentValue = cell.textContent.trim();
-            currentValues.push({ id: scoreId, value: currentValue, type: scoreType });
-        });
-
-        document.getElementById("saveScoresButton").addEventListener("click", function() {
-            const updatedScores = [];
-
+            const currentValues = [];
             document.querySelectorAll('.editable-score').forEach(cell => {
                 const scoreId = cell.dataset.id;
                 const scoreType = cell.dataset.type;
-                const newValue = cell.textContent.trim();
-
-                // Tìm giá trị hiện tại trong mảng currentValues dựa vào scoreId
-                const currentValueObj = currentValues.find(item => item.id === scoreId);
-                console.log(currentValueObj)
-                const currentValue = currentValueObj ? currentValueObj.value : '';
-
-                // So sánh giá trị hiện tại và giá trị mới để xác định cần cập nhật hay không
-                if (currentValue !== newValue) {
-                    updatedScores.push({ id: scoreId, value: newValue, type: scoreType });
-                }
-                console.log(updatedScores)
+                const currentValue = cell.textContent.trim();
+                currentValues.push({ id: scoreId, value: currentValue, type: scoreType });
             });
 
-            // Gửi yêu cầu cập nhật điểm lên server
-            saveScores(updatedScores);
+            document.getElementById("saveScoresButton").addEventListener("click", function() {
+                const updatedScores = [];
+                const deletedScores = [];
+
+                document.querySelectorAll('.editable-score').forEach(cell => {
+                    const scoreId = cell.dataset.id;
+                    const scoreType = cell.dataset.type;
+                    const newValue = cell.textContent.trim();
+
+                    const currentValueObj = currentValues.find(item => item.id === scoreId);
+                    const currentValue = currentValueObj ? currentValueObj.value : '';
+
+                    if (currentValue !== newValue) {
+                        if (newValue === '') {
+                            deletedScores.push(scoreId);
+                        }else{
+                            updatedScores.push({ id: scoreId, value: newValue, type: scoreType });
+                        }
+                    }
+                });
+
+
+                saveScores(updatedScores);
+                deleteScores(deletedScores);
+            });
+
+    }
+
+    function deleteScores(deletedScores) {
+        console.log("Deleting scores:", deletedScores);
+        deletedScores.forEach(scoreId => {
+            fetch(`api/teacher/results/${scoreId}`, {
+                method: 'DELETE'
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Error deleting score');
+                    }
+                    console.log(`Score ${scoreId} deleted successfully`);
+
+                })
+                .catch(error => console.error('Error deleting score:', error));
         });
+        Promise.all(promises)
+            .then(() => {
+                showToast(`<div class="success-toast"><i class="fas fa-check"></i> Xóa điểm thành công</div>`);
+            })
+            .catch(() => {
+
+                showToast(`<div class="error-toast">
+                                <i class="fas fa-xmark"></i> Xóa điểm thất bại
+                            </div>`);
+            });
+    }
+
+    function showEnterScoreForm(studentId) {
+        const tableBodyEnter = document.getElementById("scoresTableBodyEnter");
+
+        tableBodyEnter.innerHTML = `
+        <tr>
+            <td>Loại điểm</td>
+            <td>
+                <select id="newScoreType">
+                    <option value="1">Kiểm tra 15 phút</option>
+                    <option value="2">Kiểm tra 1 tiết</option>
+                    <option value="3">Kiểm tra cuối kỳ</option>
+                </select>
+            </td>
+        </tr>
+        <tr>
+            <td>Điểm</td>
+            <td><input type="number" id="newScoreValue" min="0" max="10"></td>
+        </tr>
+        <tr>
+            <td colspan="2"><button id="addNewScoreButton">Thêm điểm</button></td>
+        </tr>
+    `;
+
+        document.getElementById("addNewScoreButton").addEventListener("click", function() {
+            const type = document.getElementById("newScoreType").value;
+            const value = document.getElementById("newScoreValue").value;
+
+            if (value) {
+                const newScore = { type: parseInt(type), value: parseInt(value) };
+                saveNewScore(newScore, studentId);
+                const evaluationModalEnter = document.getElementById("evaluationModalEnter");
+                evaluationModalEnter.style.display = "none";
+            } else {
+                alert("Vui lòng nhập điểm hợp lệ.");
+            }
+        });
+
+        const evaluationModalEnter = document.getElementById("evaluationModalEnter");
+        evaluationModalEnter.style.display = "block";
+
+        document.getElementById("closeEvaluationModalEnter").addEventListener("click", function() {
+            evaluationModalEnter.style.display = "none";
+        });
+
+
+    }
+
+    function saveNewScore(score, studentId) {
+        const apiUrl = `api/teacher/courses/${courseId}/students/${studentId}/results`;
+
+        fetch(apiUrl, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(score)
+        })
+            .then(response => response.json())
+            .then(data => {
+                console.log("New score saved:", data);
+                showToast(`<div class="success-toast"><i class="fas fa-check"></i> Thêm điểm thành công</div>`);
+                // Optionally, refresh the modal content or close it
+                apiGradeUrl = `api/teacher/courses/${courseId}/students/${studentId}/results`;
+                fetch(apiGradeUrl)
+                    .then(response => response.json())
+                    .then(updatedGrades => {
+                        openEvaluationStudentForTeacher(updatedGrades, studentId);
+                    })
+                    .catch(error => console.error("Error fetching updated course grades:", error));
+
+            })
+            .catch(error => {
+                console.error("Error saving new score:", error);
+                showToast(`<div class="error-toast">
+                                <i class="fas fa-xmark"></i> Thêm điểm thất bại
+                            </div>`);
+            });
     }
 
     function saveScores(scores) {
@@ -365,27 +488,20 @@ document.addEventListener("DOMContentLoaded", async () => {
                 return response.json();
             }).then(data => {
                 console.log('Update successful:', data);
+                showToast(`<div class="success-toast"><i class="fas fa-check"></i> Cập nhật điểm thành công</div>`);
             }).catch(error => {
                 console.error('Update failed:', error);
-                alert('Cập nhật điểm thất bại');
+                showToast(`<div class="error-toast">
+                                <i class="fas fa-xmark"></i> Cập nhật điểm thất bại
+                            </div>`);
+                // alert('Cập nhật điểm thất bại');
             });
 
             promises.push(promise);
         });
 
-        Promise.all(promises)
-            .then(() => {
-                showToast(`<div class="success-toast"><i class="fas fa-check"></i> Cập nhật điểm thành công</div>`);
-            })
-            .catch(() => {
-
-                showToast(`<div class="error-toast">
-                                <i class="fas fa-xmark"></i> Cập nhật điểm thất bại
-                            </div>`);
-            });
     }
 
-    // Start attendance modal
     if (roleUser !== 'STUDENT') {
         btnAttendanceDetails.style.display = 'none';
     }
@@ -488,7 +604,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         const saveButton = document.getElementById("saveScoresButton");
         saveButton.style.display = "none";
         const tableBody = document.getElementById("scoresTableBody");
-        const scoresTable = document.getElementById('scoresTable');
 
         tableBody.innerHTML = '';
 
@@ -534,21 +649,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         const teacherFeedback = document.getElementById("teacherFeedback");
         teacherFeedback.innerHTML = feedbackMessages.join('<br>');
 
-        const evaluationModal = document.getElementById("evaluationModal");
         evaluationModal.style.display = "block";
+        // closeEvaluationModal()
     }
 
 
 
 
-    function closeEvaluationModal() {
-            evaluationModal.style.display = "none";
-        }
-
         document.getElementById("btn-evaluation-details").addEventListener("click", () => {
             fetchCourseGrades(courseId);
         });
 
+        console.log(closeEvaluationModalBtn)
         closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
 
 
