@@ -730,3 +730,25 @@ error-toast{
 }
 
 /*Academic Transcript*/
+
+/*Modal enter score*/
+#newScoreType, #newScoreValue{
+  width: 100%;
+}
+
+#addNewScoreButton, #addScoresButton{
+  border: none;
+  background: none;
+  color: #fff;
+  background: #2548a0;
+  border-radius: 1rem;
+  width: 7rem;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+#addNewScoreButton:hover, #addScoresButton:hover{
+  background: #fff;
+  color: #2548a0;
+  border: #2548a0 1px solid;
+}

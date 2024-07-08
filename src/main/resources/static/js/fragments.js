@@ -155,7 +155,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
             notificationCount = allNotificationsUnseen.length;
-            console.log(notificationCount);
 
             if (notificationCount > 0) {
                 notificationCountElement.textContent = notificationCount;
@@ -248,7 +247,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
                 const time = document.createElement('span');
                 time.classList.add('notification-time');
-                console.log("Created: " + notification.createdAt);
                 time.textContent = timeAgo(notification.createdAt);
 
                 textContainer.appendChild(text);
@@ -347,7 +345,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const parsedDate = parseDateString(date);
         const now = new Date();
         const diff = now - new Date(parsedDate);
-        console.log("Diff: " + diff);
         const seconds = Math.floor(diff / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);

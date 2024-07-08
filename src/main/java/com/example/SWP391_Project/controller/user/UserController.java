@@ -311,6 +311,7 @@ public class UserController {
 
         if (user != null && storedCode != null && storedCode.equals(code)) {
             user.setStatus(true);  // Xác nhận thành công, cập nhật trạng thái người dùng
+            user.setPassword(BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
             userService.saveUser(user);
             session.removeAttribute("verificationCode");
             session.removeAttribute("userToRegister");
@@ -957,6 +958,25 @@ public class UserController {
         return "material-detail";
     }
 
+    @GetMapping("/my-material")
+    public String myMaterial(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "myMaterial";
+    }
+
+    @GetMapping("/attendance")
+    public String attendance(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "attendance";
+    }
 
 
 
