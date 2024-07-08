@@ -160,7 +160,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return getCTN.json();
             })
             .then((ctn) => {
-            document.getElementById("centerDetailName").innerText = "Quản lý học sinh của trung tâm " + ctn.name;
+            document.getElementById("centerDetailName").innerText = "Quản lý giáo viên của trung tâm " + ctn.name;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
