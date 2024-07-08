@@ -11,6 +11,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     const closeEvaluationModalBtn = document.getElementById("closeEvaluationModal");
     const attendanceModal = document.getElementById("attendanceModal");
     const closeAttendanceModalBtn = document.getElementById("closeAttendanceModal");
+    const btnAttendanceDetails = document.getElementById("btn-attendance-details");
     const roleUser = document.getElementById("role-user").innerHTML;
     const report = document.getElementsByClassName("report")[0];
     let apiGradeUrl;
@@ -372,7 +373,6 @@ document.addEventListener("DOMContentLoaded", async () => {
             promises.push(promise);
         });
 
-        // Đợi cho tất cả các promise hoàn thành
         Promise.all(promises)
             .then(() => {
                 showToast(`<div class="success-toast"><i class="fas fa-check"></i> Cập nhật điểm thành công</div>`);
@@ -385,6 +385,100 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
     }
 
+    // Start attendance modal
+    if (roleUser !== 'STUDENT') {
+        btnAttendanceDetails.style.display = 'none';
+    }
+
+    btnAttendanceDetails.addEventListener("click", () => {
+        fetchAttendanceDetails(courseId);
+    });
+
+    closeAttendanceModalBtn.addEventListener("click", closeAttendanceModal);
+
+    function closeAttendanceModal() {
+        attendanceModal.style.display = "none";
+    }
+
+    function fetchAttendanceDetails(courseId) {
+        fetch(`/api/student/checkOverviewAttendance/${courseId}`)
+            .then(response => response.json())
+            .then(data => {
+                openAttendanceModal(data);
+            })
+            .catch(error => console.error("Error fetching attendance details:", error));
+    }
+
+    function formatDateToDDMMYYYY(isoDate) {
+        const date = new Date(isoDate);
+        const day = date.getUTCDate().toString().padStart(2, '0');
+        const month = (date.getUTCMonth() + 1).toString().padStart(2, '0'); // Months are zero-based
+        const year = date.getUTCFullYear();
+        return `${day}/${month}/${year}`;
+    }
+
+
+    function openAttendanceModal(attendanceData) {
+        const attendanceDetails = document.getElementById("attendanceDetails");
+        attendanceDetails.innerHTML = '';
+        let numberPresent = 0;
+        let numberAbsent = 0;
+        const today = new Date();
+        attendanceData.forEach(slot => {
+            if(slot.attendanceStatus && attendanceData.slotDate < today ){
+                ++numberPresent;
+            }else if(!slot.attendanceStatus && attendanceData.slotDate < today ){
+                ++numberAbsent;
+            }
+        })
+        let futureSlot = attendanceData.length - numberAbsent - numberPresent;
+        const summary = document.createElement("div");
+
+        summary.innerHTML = `
+        <p><span>Có mặt: </span> ${numberPresent}</p>
+        <p><span>Vắng: </span> ${numberAbsent}</p>
+        <p><span>Tương lai: </span> ${futureSlot}</p>
+        <p style="margin-bottom: 1rem;"><span>Tổng tham gia: </span> ${numberPresent+numberAbsent}/${attendanceData.length -futureSlot}</p>
+    `;
+        attendanceDetails.appendChild(summary);
+
+        const list = document.createElement("ul");
+        console.log(attendanceData)
+        attendanceData.forEach(session => {
+            const listItem = document.createElement("li");
+            const dateFormat = formatDateToDDMMYYYY(session.slotDate)
+            const isOlderThanToday = session.slotDate < today;
+            const attendanceStatus = isOlderThanToday ? (session.attendanceStatus ? 'Có mặt' : 'Vắng') : 'none';
+            listItem.innerHTML = `
+            <div class="date-attendance">
+                <div>
+                    <span>Ngày:</span> ${dateFormat} - 
+                </div>
+                <div>
+                    <span>Buổi học:</span> ${session.slotId}
+                </div>
+                <div></div>
+            </div>
+            
+            <span>Trạng thái: </span> ${attendanceStatus}
+        `;
+            list.appendChild(listItem);
+        });
+        attendanceDetails.appendChild(list);
+        const ctx = document.getElementById('myChart').getContext('2d');
+        const myPieChart = new Chart(ctx, {
+            type: 'doughnut',
+            data: {
+                labels: ['Present', 'Absent', 'Future'],
+                datasets: [{
+                    data: [numberPresent, numberAbsent, futureSlot],
+                    backgroundColor: ['#44DE28', '#f42500', '#0358B6'],
+                }],
+            },
+        });
+        attendanceModal.style.display = "block";
+    }
+    // End attendance modal
 
     function openEvaluationModal(grades) {
         const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
@@ -456,9 +550,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
-
-
-
 
 
     });

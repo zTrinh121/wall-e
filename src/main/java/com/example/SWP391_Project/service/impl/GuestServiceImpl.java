@@ -74,7 +74,7 @@ public class GuestServiceImpl implements GuestService {
 
     @Override
     public List<Slot> getSlotsInCertainCourse(int courseId) {
-        Optional<List<Slot>> slots = slotRepository.findSlotByCourse_Id(courseId);
+        Optional<List<Slot>> slots = slotRepository.findByCourse_Id(courseId);
         return slots.orElse(Collections.emptyList());
     }
 

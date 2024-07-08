@@ -3,6 +3,7 @@ package com.example.SWP391_Project.service.impl;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
+import com.example.SWP391_Project.response.DuplicateSlotInfo;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
@@ -17,6 +18,12 @@ import jakarta.persistence.EntityManager;
 import jakarta.persistence.PersistenceContext;
 
 
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.ZoneId;
+import java.time.format.TextStyle;
+import java.time.temporal.WeekFields;
 import java.util.*;
 
 @Service
@@ -62,6 +69,9 @@ StudentServiceImpl implements StudentService {
     @Autowired
     private UserRepository userRepository;
 
+    @Autowired
+    private EnrollmentRepository enrollmentRepository;
+
     @Override
     public User getStudentById(int studentId) {
         return studentRepository.findById(studentId).orElse(null);
@@ -92,20 +102,20 @@ StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentSchedule(int studentId) {
         String query = """
-        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
-        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
-        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
-        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
-        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
-        e.C15_STUDENT_ID as studentId, s.C02_SLOT_ID as slotId, s.C02_SLOT_DATE as slotDate,
-        s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId
-        FROM t15_enrollment e
-        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
-        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
-        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
-        JOIN t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID
-        WHERE e.C15_STUDENT_ID = :studentId
-        """;
+                SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
+                c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
+                c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
+                c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
+                teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+                e.C15_STUDENT_ID as studentId, s.C02_SLOT_ID as slotId, s.C02_SLOT_DATE as slotDate,
+                s.C02_SLOT_START_TIME as slotStartTime, s.C02_SLOT_END_TIME as slotEndTime, s.C02_ROOM_ID as roomId
+                FROM t15_enrollment e
+                JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
+                JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
+                JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
+                JOIN t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID
+                WHERE e.C15_STUDENT_ID = :studentId
+                """;
         System.out.println("Query: " + query);
         System.out.println("Student ID: " + studentId);
 
@@ -190,7 +200,8 @@ StudentServiceImpl implements StudentService {
                 "FROM t14_user s " +
                 "JOIN t15_enrollment e ON s.C14_USER_ID = e.C15_STUDENT_ID " +
                 "JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
-                "WHERE e.C15_COURSE_ID = :courseId";;
+                "WHERE e.C15_COURSE_ID = :courseId";
+        ;
 
         System.out.println("Query: " + query);
         System.out.println("CourseId: " + courseId);
@@ -409,18 +420,18 @@ StudentServiceImpl implements StudentService {
     @Override
     public List<Map<String, Object>> getStudentCourse(int studentId) {
         String query = """
-        SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
-        c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
-        c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
-        c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
-        teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
-        e.C15_STUDENT_ID as studentId
-        FROM t15_enrollment e
-        JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
-        JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
-        JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
-        WHERE e.C15_STUDENT_ID = :studentId
-        """;
+                SELECT c.C01_COURSE_ID as courseId, c.C01_COURSE_CODE as courseCode, 
+                c.c01_course_desc as courseDesc, c.c01_course_name as courseName,
+                c.C01_COURSE_START_DATE as startTime, c.C01_COURSE_END_DATE as endTime,
+                c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, center.C03_CENTER_NAME as centerName,
+                teacher.C14_NAME as teacherName, teacher.C14_USER_ID as teacherId,
+                e.C15_STUDENT_ID as studentId
+                FROM t15_enrollment e
+                JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID
+                JOIN t03_center center ON c.C01_CENTER_ID = center.C03_CENTER_ID
+                JOIN t14_user teacher ON c.C01_TEACHER_ID = teacher.C14_USER_ID
+                WHERE e.C15_STUDENT_ID = :studentId
+                """;
         System.out.println("Query: " + query);
         System.out.println("Student ID: " + studentId);
 
@@ -547,11 +558,181 @@ StudentServiceImpl implements StudentService {
 
         return attendanceResults;
     }
-
-
-
-
     // -----------------------------------------------------------------------
+
+    // ------------------------ ENROLLMENT NEW COURSE ---------------------
+    // thoát khóa học
+    @Override
+    public void exitCurrentCourse(int studentId, int courseId) {
+        enrollmentRepository.deleteByStudentIdAndCourseId(studentId, courseId);
+    }
+
+    // KIỂM TRA SLOTS TRÙNG LỊCH
+    // Phương thức để tìm các ngày trong tuần mà các ngày đó trùng nhau giữa List A và List B
+//    @Override
+//    public List<String> findDuplicateWeekdays(int studentId, int courseId) {
+//        // Lấy danh sách các Slot của khoá học mới và của sinh viên hiện tại
+//        List<Slot> slotsEnrollment = findSlotsByCourseId(courseId);
+//        List<Slot> slotsInCurrent = findSlotsByStudentId(studentId);
+//
+//        Month monthToCheck = Month.DECEMBER;
+//
+//        // Lọc ra các ngày trong tháng đó từ List A và List B để kiểm tra
+//        List<LocalDate> daysInMonthA = filterDaysInMonth(slotsEnrollment, monthToCheck);
+//        List<LocalDate> daysInMonthB = filterDaysInMonth(slotsInCurrent, monthToCheck);
+//
+//        // Set để lưu các ngày trong tuần mà không bị trùng lặp
+//        Set<DayOfWeek> uniqueWeekDays = new HashSet<>();
+//
+//        // Kiểm tra và lưu các ngày trùng nhau trong cùng một tuần của tháng đó
+//        for (LocalDate dateA : daysInMonthA) {
+//            for (LocalDate dateB : daysInMonthB) {
+//                if (isSameWeek(dateA, dateB)) {
+//                    // Kiểm tra các tiêu chí không được đè lên nhau
+//                    if (!isOverlapSlots(dateA, slotsEnrollment, slotsInCurrent)) {
+//                        uniqueWeekDays.add(dateA.getDayOfWeek());
+//                    }
+//                    break; // Chỉ cần thêm một lần duy nhất, không cần lặp lại
+//                }
+//            }
+//        }
+//
+//        // Định dạng ngày trong tuần và thêm vào danh sách kết quả
+//        List<String> result = new ArrayList<>();
+//        for (DayOfWeek dayOfWeek : uniqueWeekDays) {
+//            String dayName = dayOfWeek.getDisplayName(TextStyle.FULL, Locale.getDefault());
+//            result.add(dayName);
+//        }
+//
+//        return result;
+//    }
+//
+//    // Hàm lấy danh sách các Slot của một khoá học dựa vào courseId
+//    private List<Slot> findSlotsByCourseId(int courseId) {
+//        Optional<List<Slot>> optionalSlots = slotRepository.findSlotByCourse_Id(courseId);
+//        return optionalSlots.orElse(new ArrayList<>());
+//    }
+//
+//    // Hàm lấy danh sách các Slot của một sinh viên dựa vào studentId
+//    private List<Slot> findSlotsByStudentId(int studentId) {
+//        Optional<List<Slot>> optionalSlots = slotRepository.findSlotByStudent_Id(studentId);
+//        return optionalSlots.orElse(new ArrayList<>());
+//    }
+//
+//    // Hàm lọc ra các ngày trong một tháng từ danh sách Slot cho trước
+//    private List<LocalDate> filterDaysInMonth(List<Slot> slots, Month month) {
+//        List<LocalDate> filteredDates = new ArrayList<>();
+//        for (Slot slot : slots) {
+//            LocalDate localDate = slot.getSlotDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+//            if (localDate.getMonth() == month) {
+//                filteredDates.add(localDate);
+//            }
+//        }
+//        return filteredDates;
+//    }
+//
+//    // Hàm kiểm tra xem hai ngày có cùng tuần hay không
+//    private boolean isSameWeek(LocalDate date1, LocalDate date2) {
+//        // Sử dụng WeekFields để lấy số tuần trong năm và so sánh
+//        return date1.get(WeekFields.ISO.weekOfWeekBasedYear()) == date2.get(WeekFields.ISO.weekOfWeekBasedYear());
+//    }
+//
+//    // Hàm kiểm tra xem hai danh sách Slot có các tiêu chí đè lên nhau hay không
+//    private boolean isOverlapSlots(LocalDate date, List<Slot> slots1, List<Slot> slots2) {
+//        for (Slot slot1 : slots1) {
+//            for (Slot slot2 : slots2) {
+//                if (slot1.getSlotDate().equals(slot2.getSlotDate())) {
+//                    if (isOverlappingTime(slot1.getSlotStartTime(), slot1.getSlotEndTime(),
+//                            slot2.getSlotStartTime(), slot2.getSlotEndTime())) {
+//                        return true;
+//                    }
+//                }
+//            }
+//        }
+//        return false;
+//    }
+//
+//    // Hàm kiểm tra xem hai khoảng thời gian (slotStartTime1, slotEndTime1) và (slotStartTime2, slotEndTime2) có đè lên nhau hay không
+//    private boolean isOverlappingTime(Date startTime1, Date endTime1, Date startTime2, Date endTime2) {
+//        return !(endTime1.before(startTime2) || endTime2.before(startTime1));
+//    }
+
+    // KIỂM TRA SLOTS TRÙNG LỊCH
+    // Phương thức để tìm các ngày trong tuần mà các ngày đó trùng nhau giữa List A và List B
+    @Override
+    public Map<String, List<DuplicateSlotInfo>> findDuplicateWeekdays(int studentId, int courseId) {
+        List<Slot> slotsEnrollment = findSlotsByCourseId(courseId);
+        List<Slot> slotsInCurrent = findSlotsByStudentId(studentId);
+
+        Month monthToCheck = Month.DECEMBER;
+
+        List<LocalDate> daysInMonthA = filterDaysInMonth(slotsEnrollment, monthToCheck);
+        List<LocalDate> daysInMonthB = filterDaysInMonth(slotsInCurrent, monthToCheck);
+
+        Map<String, List<DuplicateSlotInfo>> duplicateWeekdaysMap = new HashMap<>();
+
+        for (LocalDate dateA : daysInMonthA) {
+            for (LocalDate dateB : daysInMonthB) {
+                if (isSameWeek(dateA, dateB)) {
+                    List<DuplicateSlotInfo> duplicateSlots = findDuplicateSlots(dateA, slotsEnrollment, slotsInCurrent);
+                    if (!duplicateSlots.isEmpty()) {
+                        String dayOfWeek = dateA.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.getDefault());
+                        duplicateWeekdaysMap.put(dayOfWeek, duplicateSlots);
+                    }
+                    break; // Only add once per week, no need to iterate further
+                }
+            }
+        }
+
+        return duplicateWeekdaysMap;
+    }
+
+    private List<Slot> findSlotsByCourseId(int courseId) {
+        Optional<List<Slot>> optionalSlots = slotRepository.findByCourse_Id(courseId);
+        return optionalSlots.orElse(new ArrayList<>());
+    }
+
+    private List<Slot> findSlotsByStudentId(int studentId) {
+        Optional<List<Slot>> optionalSlots = slotRepository.findSlotByStudent_Id(studentId);
+        return optionalSlots.orElse(new ArrayList<>());
+    }
+
+    private List<LocalDate> filterDaysInMonth(List<Slot> slots, Month month) {
+        List<LocalDate> filteredDates = new ArrayList<>();
+        for (Slot slot : slots) {
+            LocalDate localDate = slot.getSlotDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            if (localDate.getMonth() == month) {
+                filteredDates.add(localDate);
+            }
+        }
+        return filteredDates;
+    }
+
+    private boolean isSameWeek(LocalDate date1, LocalDate date2) {
+        return date1.get(WeekFields.ISO.weekOfWeekBasedYear()) == date2.get(WeekFields.ISO.weekOfWeekBasedYear());
+    }
+
+    private List<DuplicateSlotInfo> findDuplicateSlots(LocalDate date, List<Slot> slots1, List<Slot> slots2) {
+        List<DuplicateSlotInfo> duplicateSlots = new ArrayList<>();
+        for (Slot slot1 : slots1) {
+            for (Slot slot2 : slots2) {
+                if (slot1.getSlotDate().equals(slot2.getSlotDate()) && !isOverlappingTime(slot1, slot2)) {
+                    DuplicateSlotInfo info = new DuplicateSlotInfo();
+                    info.setSlotDate(slot1.getSlotDate());
+                    info.setSlotStartTime(slot1.getSlotStartTime());
+                    info.setSlotEndTime(slot1.getSlotEndTime());
+                    info.setCourseName(slot2.getCourse().getName());
+                    duplicateSlots.add(info);
+                }
+            }
+        }
+        return duplicateSlots;
+    }
+
+    private boolean isOverlappingTime(Slot slot1, Slot slot2) {
+        // Check if there is overlapping time
+        return !(slot1.getSlotEndTime().before(slot2.getSlotStartTime()) || slot1.getSlotStartTime().after(slot2.getSlotEndTime()));
+    }
 
 
 

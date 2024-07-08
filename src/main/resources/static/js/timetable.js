@@ -10,22 +10,21 @@ document.addEventListener('DOMContentLoaded', function() {
     var eventDetailContent = document.getElementById('eventDetailContent');
 
     function renderEventContent(eventInfo) {
-        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === false ? 'red' : 'green';
 
         if (userRole === 'TEACHER') {
             return {
                 html: `
                     ${eventInfo.event.title}<br>
                     <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
-                    <b style="color: ${attendanceColor};">${attendanceText}</b>
                 `
             };
         } else {
             return {
                 html: `
-                    <b>${eventInfo.event.title}</b><br>
-                    <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
+                    <b>${eventInfo.event.title} ở ${eventInfo.event.extendedProps.location}</b><br>
+                    <b>${eventInfo.event.extendedProps.teacherName}</b><br>
                     <b style="color: ${attendanceColor};">${attendanceText}</b>
                 `
             };
@@ -60,12 +59,16 @@ document.addEventListener('DOMContentLoaded', function() {
         eventContent: renderEventContent,
         eventClick: function(info) {
             const event = info.event;
-            const attendanceText = event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-            const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+            const attendanceText = event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+            const attendanceColor = event.extendedProps.attendanceStatus === false ? 'red' : 'green';
+            const startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const endTime = new Date(info.event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
             eventDetailContent.innerHTML = `
                 <p>${event.title}</p>
                 <p>Phòng: ${event.extendedProps.location}</p>
+                <p>Giáo viên: ${event.extendedProps.teacherName}</p>
+                <p>Thời gian: ${startTime} - ${endTime}</p>
                 <p style="color: ${attendanceColor};">${attendanceText}</p>
             `;
 
@@ -113,9 +116,11 @@ document.addEventListener('DOMContentLoaded', function() {
                             end: item.slotDate + 'T' + item.slotEndTime,
                             location: item.roomName,
                             classNames: ['event-item'],
+
                             backgroundColor: attendanceColor,
                             extendedProps: {
-                                attendanceStatus: item.attendanceStatus
+                                attendanceStatus: item.attendanceStatus,
+                                teacherName: item.teacherName,
                             }
                         };
                     });

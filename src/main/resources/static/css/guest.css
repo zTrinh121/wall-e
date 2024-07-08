@@ -44,9 +44,14 @@
     margin: 0 auto;
 }
 
+.wrapper .top_navbar{
+    width: 102vw !important;
+}
 
-
-
+.wrapper .main_container{
+    width: 100% !important;
+    margin-left: 0 !important;
+}
 
 body {
     background: #e1ecf2;
@@ -557,13 +562,17 @@ footer .footer .copyright a {
     font-size: 1.8em;
 }
 
+.search{
+    border: none !important;
+}
+
 .swiper-slide .tranding-slide-content{
     width: 54rem;
     border: 1px solid;
     height: 20rem;
     position: absolute;
     top: 0;
-    left: 12%;
+    left: 22%;
     border-radius: 2rem;
     box-shadow: 0 1px 1px rgba(0, 0, 0, 0.1);
     background: #fff;

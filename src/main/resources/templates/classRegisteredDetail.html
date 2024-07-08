@@ -7,6 +7,7 @@
     <script src="/js/classRegisteredDetail.js" defer></script>
     <script th:src="@{/js/fragments.js}" type="module"></script>
     <th:block th:replace="~{fragments :: head}"></th:block>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 <div class="wrapper">
@@ -41,9 +42,15 @@
                             </div>
                         </div>
                         <div class="report">
-                            <h3 class="report-header">Kết quả/đánh giá</h3>
+                            <h3 style="font-weight: 600" class="report-header">Kết quả/đánh giá</h3>
                             <div class="report-detail">
                                 <button id="btn-evaluation-details">Xem chi tiết</button>
+                            </div>
+                        </div>
+                        <div class="attendance">
+                            <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
+                            <div id="attendance-detail" >
+                                <button id="btn-attendance-details">Xem chi tiết</button>
                             </div>
                         </div>
                     </div>
@@ -73,6 +80,8 @@
                             <tr>
                                 <th>Hệ số bài kiểm tra</th>
                                 <th>Cột điểm</th>
+                                <th></th>
+                                <th></th>
                             </tr>
                             </thead>
                             <tbody id="scoresTableBody">
@@ -84,13 +93,14 @@
                 </div>
 
                 <!-- Modal điểm danh -->
-                    <div id="attendanceModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" id="closeAttendanceModal">&times;</span>
-                            <h2>Chi tiết điểm danh</h2>
-                            <div id="attendanceList"></div>
-                        </div>
+                <div id="attendanceModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeAttendanceModal">&times;</span>
+                        <h2>Chi tiết điểm danh</h2>
+                        <canvas id="myChart"></canvas>
+                        <div id="attendanceDetails"></div>
                     </div>
+                </div>
 
                     <!--Modal create feedback-->
                     <div id="feedbackModal" class="modal">
@@ -124,6 +134,7 @@
                     </div>
                     <!--Toast-->
                     <div id="toastContainer" class="toast-container"></div>
+
             </main>
             <!-- MAIN -->
         </section>

@@ -23,6 +23,7 @@ import java.time.Month;
 import java.time.Year;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/manager")
@@ -244,61 +245,6 @@ public class ManagerLearningController {
     }
     // --------------------------------------------------------------------------
 
-
-    // ---------------------------- MANAGER SLOT --------------------------------
-    @GetMapping("slots/course/{courseId}")
-    public ResponseEntity<List<Slot>> findSlotsInCourse(@PathVariable int courseId) {
-        List<Slot> slots = managerService.findSlotsInCourse(courseId);
-        if (slots.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(slots, HttpStatus.OK);
-    }
-
-    @GetMapping("slots/course/{date}")
-    public ResponseEntity<List<Slot>> findSlotsInCertainDay(@PathVariable Date date) {
-        List<Slot> slots = managerService.findSlotInCertainDay(date);
-        if (slots.isEmpty()) {
-            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
-        }
-        return new ResponseEntity<>(slots, HttpStatus.OK);
-    }
-
-    @PostMapping("/slot/create")
-    public Slot createSlot(@RequestBody @Valid SlotDto slotDto) {
-        return managerService.createNewSlot(slotDto);
-    }
-
-    @GetMapping("/emptyRooms") //truyền vào centers
-    public List<Room> getEmptyRooms(
-            @RequestParam("centerId") int centerId,
-            @RequestParam("slotStartTime") Date slotStartTime,
-            @RequestParam("slotEndTime") Date slotEndTime) {
-        Slot slot = new Slot();
-        Course course = new Course();
-        Center center = new Center();
-
-        center.setId(centerId);
-        course.setCenter(center);
-
-        slot.setCourse(course);
-        slot.setSlotStartTime(slotStartTime);
-        slot.setSlotEndTime(slotEndTime);
-        return managerService.getListEmptyRooms(slot);
-    }
-
-    @DeleteMapping("/slot/delete/{id}")
-    public ResponseEntity<String> deleteSlot(@PathVariable int id) {
-        boolean deleted = managerService.deleteSlot(id);
-        if (deleted) {
-            return ResponseEntity.ok("Delete the slot where ID = " + id);
-        } else {
-            return ResponseEntity.notFound().build();
-        }
-    }
-    // --------------------------------------------------------------------------
-
-
     // --------------------------- MANAGER REVENUE ------------------------------
     @GetMapping("/bills")
     public ResponseEntity<List<Bill>> getAllBills() {
@@ -420,4 +366,55 @@ public class ManagerLearningController {
         }
         return ResponseEntity.ok(studentCourses);
     }
+
+    // ---------------------------- SLOTS ---------------------------------
+    @GetMapping("slots/byCenter/{centerId}")
+    public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
+        return managerService.getSlotsByCenterId(centerId);
+    }
+
+    @GetMapping("slots/bySlot/{slotId}")
+    public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
+        return managerService.getSlotsBySlotId(slotId);
+    }
+
+    @PostMapping("slots/create")
+    public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
+        try {
+            Slot createdSlot = managerService.createSlot(slotDto);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    @PutMapping("slots/update/{slotId}")
+    public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
+        try {
+            Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
+            return ResponseEntity.ok(updatedSlot);
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+        }
+    }
+
+    @DeleteMapping("slots/delete/{slotId}")
+    public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
+        try {
+            managerService.deleteSlot(slotId);
+            return ResponseEntity.noContent().build();
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.notFound().build(); // Or handle error as needed
+        }
+    }
+
+    // -------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
 }
