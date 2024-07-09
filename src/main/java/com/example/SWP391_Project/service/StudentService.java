@@ -36,7 +36,7 @@ public interface StudentService {
 
     ViewSystemNotification updateViewSystemNotification(int notificationId, User student);
 
-    IndividualNotification updateIndividualNotification(int notificationId);
+    IndividualNotification updateIndividualNotification(int notificationId, User user);
 
     ViewCenterNotification updateViewCenterNotification(int notificationId, User student);
 

@@ -384,11 +384,12 @@ StudentServiceImpl implements StudentService {
     }
 
     @Override
-    public IndividualNotification updateIndividualNotification(int notificationId) {
+    public IndividualNotification updateIndividualNotification(int notificationId, User user) {
         IndividualNotification notification = individualNotificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
         notification.setHasSeen(true);
         notification.setSeenTime(new Date());
+        notification.setSendToUser(user);
         return individualNotificationRepository.save(notification);
     }
 

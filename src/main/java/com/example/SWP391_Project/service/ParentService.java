@@ -58,7 +58,8 @@ public interface ParentService {
     // xem tất cả các feedback mà parent này tạo ra <2 loại feedback gộp chung>
     List<Feedback> getAllFeedbacks(int parentId);
 
-
     // ---------------------------------------------------------------
+    // đăng kí khóa học
+    void enrollTheNewCourse(int studentId, int courseId);
 
 }
