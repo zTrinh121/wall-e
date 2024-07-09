@@ -31,7 +31,7 @@ public interface ParentService {
 
     ViewSystemNotification updateViewSystemNotification(int notificationId, User parent);
 
-    IndividualNotification updateIndividualNotification(int notificationId);
+    IndividualNotification updateIndividualNotification(int notificationId, User user);
 
     Boolean checkHasSeenSystemNotification(int systemNotificationId,
                                            int parentId);

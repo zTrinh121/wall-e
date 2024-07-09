@@ -210,6 +210,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Transactional
+    @Override
     public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
@@ -226,6 +227,61 @@ public class TeacherServiceImpl implements TeacherService {
             materialRepository.save(material);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload PDF file and save material: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updatePdfFile(int materialId, MultipartFile file, String subjectName, String materialsName, User teacher) {
+        FileUploadUtil.assertAllowedPDF(file);
+
+        try {
+            // Find the existing material
+            Optional<Material> optionalMaterial = materialRepository.findById(materialId);
+            if (optionalMaterial.isEmpty()) {
+                throw new IllegalArgumentException("Material not found with id: " + materialId);
+            }
+            Material material = optionalMaterial.get();
+
+            // Delete the existing PDF file from Cloudinary (optional step based on your requirements)
+            cloudinaryService.deletePdfFile(material.getCloudinaryPdfId());
+
+            // Upload the new PDF file to Cloudinary
+            String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+            CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
+
+            // Update material properties
+            material.setMaterialsName(materialsName); // Update file name
+            material.setSubjectName(subjectName); // Update subject name
+            material.setTeacher(teacher); // Update teacher
+            material.setPdfPath(response.getUrl()); // Update PDF URL
+            material.setCloudinaryPdfId(response.getPublicId()); // Update Cloudinary ID
+
+            // Save the updated material
+            materialRepository.save(material);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update PDF file and material: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deletePdfFile(int materialId) {
+        try {
+            // Find the existing material
+            Optional<Material> optionalMaterial = materialRepository.findById(materialId);
+            if (optionalMaterial.isEmpty()) {
+                throw new IllegalArgumentException("Material not found with id: " + materialId);
+            }
+            Material material = optionalMaterial.get();
+
+            // Delete the PDF file from Cloudinary
+            cloudinaryService.deletePdfFile(material.getCloudinaryPdfId());
+
+            // Delete the material from the database
+            materialRepository.delete(material);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete PDF file and material: " + e.getMessage());
         }
     }
 
@@ -255,11 +311,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public IndividualNotification updateIndividualNotification(int notificationId) {
+    public IndividualNotification updateIndividualNotification(int notificationId, User user) {
         IndividualNotification notification = individualNotificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
         notification.setHasSeen(true);
         notification.setSeenTime(new Date());
+        notification.setSendToUser(user);
         return individualNotificationRepository.save(notification);
     }
 

@@ -113,6 +113,24 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return new ResponseEntity<>(materials, HttpStatus.OK);
     }
 
+    // API to update PDF file
+    @PutMapping("/{materialId}/pdf")
+    public void updatePdfFile(
+            @PathVariable int materialId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("subjectName") String subjectName,
+            @RequestParam("materialsName") String materialsName,
+            HttpSession httpSession) {
+        User teacher = (User) httpSession.getAttribute("user");
+        teacherService.updatePdfFile(materialId, file, subjectName, materialsName, teacher);
+    }
+
+    // API to delete PDF file
+    @DeleteMapping("/{materialId}/pdf/delete")
+    public void deletePdfFile(@PathVariable int materialId) {
+        teacherService.deletePdfFile(materialId);
+    }
+
     // --------------------------- NOTIFICATION -------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
@@ -126,8 +144,12 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
 
     @PatchMapping("/individualNotification/update/{notificationId}")
     @ResponseBody
-    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
-        return teacherService.updateIndividualNotification(notificationId);
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId, HttpSession session) {
+        User student = (User) session.getAttribute("user");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
+        }
+        return teacherService.updateIndividualNotification(notificationId, student);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")
