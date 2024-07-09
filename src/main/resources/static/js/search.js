@@ -1,34 +1,49 @@
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const keyword = urlParams.get('keyword');
+    document.getElementById('search-input').value = keyword;
     if (keyword) {
         fetch(`/api/student/searchh?keyword=${keyword}`)
             .then(response => response.json())
             .then(data => {
+                console.log(data)
                 const resultsContainer = document.querySelector('.img-gallery-container');
-                resultsContainer.innerHTML = ''; // Clear previous results
+                resultsContainer.innerHTML = '';
 
                 data.forEach(item => {
+                    const options = { day: "2-digit", month: "2-digit", year: "numeric" };
+
+                    const isoStartDate = item.startDate;
+                    const dateStartObject = new Date(isoStartDate);
+                    const formattedStartDate = dateStartObject.toLocaleDateString("en-GB", options);
+
+                    const isoEndDate = item.endDate;
+                    const dateEndObject = new Date(isoEndDate);
+                    const formattedEndDate = dateEndObject.toLocaleDateString("en-GB", options);
+
+
+                    console.log(formattedStartDate)
+                    console.log(formattedEndDate)
                     const listItem = document.createElement('li');
                     listItem.setAttribute('data-id', item.id);
                     listItem.setAttribute('data-type', item.type);
                     listItem.setAttribute('data-name', item.name);
                     listItem.setAttribute('data-description', item.description);
-                    listItem.setAttribute('data-startDate', item.startDate);
-                    listItem.setAttribute('data-endDate', item.endDate);
+                    listItem.setAttribute('data-startDate', formattedStartDate);
+                    listItem.setAttribute('data-endDate', formattedEndDate);
                     listItem.setAttribute('data-amountOfStudents', item.amountOfStudents);
                     listItem.setAttribute('data-fee', item.fee);
-
-                    listItem.innerHTML = `
+                    if(item.type === "Course"){
+                        listItem.innerHTML = `
                         <span></span>
                         <div class="img-gal">
                             <img src="https://www.shutterstock.com/image-vector/3d-web-vector-illustrations-online-600nw-2152289507.jpg" />
                             <div class="main-content">
-                                <h3>Title: ${item.name}</h3>
+                                <h3>Khóa học: ${item.name}</h3>
                                 ${item.startDate ? `
-                                <p><span>Start Date:</span> ${item.startDate}</p>
-                                <p><span>End Date:</span> ${item.endDate}</p>
-                                <p><span>Fee:</span> ${item.fee}</p>
+                                <p><span>Thời gian:</span> ${formattedStartDate} - ${formattedEndDate}</p>
+                                <p><span>Học phí:</span> ${item.fee}</p>
+                                
 <!--                                <p><span>Amount of Students:</span> ${item.amountOfStudents}</p>-->` : `
                                 <p><span>Description:</span> ${item.description}</p>
                                 `}
@@ -36,16 +51,41 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="float-gallery-content">
                             <div class="content uk-text-left">
-                                <span class="highlight uk-block">More information</span>
-                                <a href="#">Click to get detail</a>
+                                <span class="highlight uk-block">Thêm thông tin</span>
+                                <a href="searchDetail?courseId=${item.id}centerId=${item.centerId}">Nhấn để xem chi tiết</a>
                             </div>
                             <div class="content-btn">
-                                <button type="button" class="show-details-btn">
+                                <button type="button" class="show-details-btn" href="searchDetail?courseId=${item.id}centerId=${item.centerId}">
                                     &#8594;
                                 </button>
                             </div>
                         </div>
                     `;
+                    }
+                    else{
+                        listItem.innerHTML = `
+                        <span></span>
+                        <div class="img-gal">
+                            <img src="https://www.shutterstock.com/image-vector/3d-web-vector-illustrations-online-600nw-2152289507.jpg" />
+                            <div class="main-content" style="">
+                                <h3>Trung tâm: ${item.name}</h3>
+                            </div>
+                        </div>
+                        <div class="float-gallery-content">
+                            <div class="content uk-text-left">
+                                <span class="highlight uk-block">Thêm thông tin</span>
+                                <a href="searchDetail?centerId=${item.id}">Nhấn để xem chi tiết</a>
+                            </div>
+                            <div class="content-btn">
+                                <button type="button" href="searchDetail?centerId=${item.id}" class="show-details-btn">
+                                    &#8594;
+                                </button>
+                            </div>
+                        </div>
+                    `;
+
+                    }
+
                     resultsContainer.appendChild(listItem);
                 });
 
@@ -133,4 +173,44 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(error => console.error('Error fetching search results:', error));
     }
+});
+
+$(document).ready(function() {
+    $('#search-input').on('input', function() {
+        var keyword = $(this).val();
+        if (keyword.length >= 2) {
+            $.ajax({
+                url: '/api/student/search',
+                type: 'GET',
+                data: { keyword: keyword },
+                success: function(response) {
+                    var dropdown = '';
+                    response.slice(0, 5).forEach(function(item) {
+                        console.log(item)
+                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
+                        dropdown += `<a href="" class="search-item" data-url="">${item.type}: ${item.name}</a>`;
+                    });
+                    $('#search-results').html(dropdown).show();
+
+                    // Thêm sự kiện click cho mỗi kết quả tìm kiếm
+                    $('.search-item').click(function() {
+                        var url = $(this).data('url');
+                        sessionStorage.setItem('searchDetails', $(this).text());
+                        window.location.href = url;
+                    });
+                },
+                error: function(error) {
+                    console.error('Error fetching search results:', error);
+                }
+            });
+        } else {
+            $('#search-results').hide();
+        }
+    });
+
+    $(document).click(function(event) {
+        if (!$(event.target).closest('.search').length) {
+            $('#search-results').hide();
+        }
+    });
 });

@@ -9,4 +9,6 @@ import java.util.Optional;
 public interface MaterialRepository extends JpaRepository<Material, Integer> {
 
     Optional<List<Material>> findByTeacher_Id(int teacherId);
+
+    Optional<Material> findById(int materialId);
 }

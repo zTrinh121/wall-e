@@ -25,7 +25,7 @@ public interface GuestService {
     List<Feedback> getFeedbacksToTeacher();
 
     // View slots in a certain course
-    List<Slot> getSlotsInCertainCourse(int courseId);
+    List<Map<String, Object>> getSlotsInCourse(int courseId);
 
     // lấy ra các khóa học trong center
     List<Map<String, Object>> getCoursesInCenter(int centerId);

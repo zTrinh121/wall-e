@@ -944,22 +944,22 @@ button.active {
   border: #333 1px solid;
 }
 
-input[type="file"] {
-  display: none;
-}
+/*input[type="file"] {*/
+/*  display: none;*/
+/*}*/
 
 #materialsNameInput{
   
 }
 
-.custom-file-upload {
-  border: 1px solid #ccc;
-  display: inline-block;
-  padding: 6px 12px;
-  cursor: pointer;
-  margin-top: 0.5rem;
-  border-radius: 0.5rem;
-}
+/*.custom-file-upload {*/
+/*  border: 1px solid #ccc;*/
+/*  display: inline-block;*/
+/*  padding: 6px 12px;*/
+/*  cursor: pointer;*/
+/*  margin-top: 0.5rem;*/
+/*  border-radius: 0.5rem;*/
+/*}*/
 
 /*Toggle button */
 

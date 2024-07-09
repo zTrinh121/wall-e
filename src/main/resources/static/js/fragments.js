@@ -153,7 +153,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             allNotificationSeen.push(...allNotificationPrivateSeen);
             allNotificationsUnseen.push(...allNotificationPrivateUnseen);
 
-
             notificationCount = allNotificationsUnseen.length;
 
             if (notificationCount > 0) {
@@ -165,13 +164,25 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             allNotifications.push(...data.individualNotifications);
             allNotifications.push(...data.systemNotifications);
-            allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
 
-            displayNotifications(allNotifications);
+            const allNotificaitonSort = allNotifications.sort((a, b) => parseStringToDate(b.createdAt) - parseStringToDate(a.createdAt));
+            displayNotifications(allNotificaitonSort);
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
     }
+
+    function parseStringToDate(dateString) {
+        const [datePart, timePart] = dateString.split(' ');
+        const [day, month, year] = datePart.split('-');
+        const [hours, minutes, seconds] = timePart.split(':');
+
+        // JavaScript uses month index 0-11, so we subtract 1 from the month
+        return new Date(year, month - 1, day, hours, minutes, seconds);
+    }
+
+    allNotifications.sort((a, b) => parseStringToDate(b.createdAt) - parseStringToDate(a.createdAt));
+
 
 
     async function checkHasSeenCenterNotification(centerNotificationId) {
@@ -474,19 +485,29 @@ document.addEventListener("DOMContentLoaded", async function () {
         return text.length > 0;
     }
 
+    function showToast(message) {
+        const toastContainer = document.getElementById("toastContainer");
+        toastContainer.innerHTML = `${message}`;
+        toastContainer.classList.add("show");
+        setTimeout(() => {
+            toastContainer.classList.remove("show");
+        }, 3000);
+    }
+
 });
 $(document).ready(function() {
     $('#search-input').on('input', function() {
         var keyword = $(this).val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/student/search',
+                url: '/api/student/searchh',
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
+                        console.log(item);
+                        var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
                         dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
                     });
                     $('#search-results').html(dropdown).show();
@@ -497,6 +518,9 @@ $(document).ready(function() {
                         sessionStorage.setItem('searchDetails', $(this).text());
                         window.location.href = url;
                     });
+
+                    // Change border-radius of search class
+                    $('.search').addClass('open');
                 },
                 error: function(error) {
                     console.error('Error fetching search results:', error);
@@ -504,14 +528,14 @@ $(document).ready(function() {
             });
         } else {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 });
-
-
