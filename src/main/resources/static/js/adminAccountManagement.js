@@ -48,7 +48,7 @@ document.addEventListener('DOMContentLoaded', async function() {
             let lock = e.accStatus ? "Khóa" : "Mở khóa";
             let roleDescription = roleDescriptions[e.roleId] || 'Không xác định'; // Sử dụng ánh xạ để lấy mô tả vai trò
             let row = `<tr>
-            <td><p>${e.userCode}</p></td>
+            <td><p>${e.name}</p></td>   
             <td><p>${roleDescription}</p></td>
             <td><p>${e.accStatus ? 'Hoạt động' : 'Không hoạt động'}</p></td>
             <td><button class="action-button" data-user-id="${e.userId}" data-status="${!e.accStatus}">${lock}</button></td>
