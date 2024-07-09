@@ -15,11 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     var deleteModal = document.getElementById("deleteModal");
 
     // Open Add Centre Modal
+    const urlParamss = window.location.href;
+    console.log("Current URL:", urlParamss);
+    // Extract centerId from the URL
+    const urlPartss = urlParamss.split("centerId=");
+    centerIdzs = urlPartss.length > 1 ? urlPartss[1].split("&")[0] : null;
+    console.log("Center ID:", centerIdzs);
     var addCentreBtn = document.getElementById("addCentreBtn");
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
-            console.log("Opening Add Centre Modal");
-            addCentreModal.style.display = "block";
+            var url = `/manager/mapTea?centerId=`;
+            url += encodeURIComponent(centerIdzs);
+            console.log(url);
+            window.location.href = url;
         });
     }
 

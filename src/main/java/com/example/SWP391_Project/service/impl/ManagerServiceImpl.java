@@ -340,8 +340,13 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<ApplyCenter> viewApplyCenterForm(int managerId) {
-        return applyCenterRepository.findApplyCentersByManagerId(managerId);
+    public List<ApplyCenter> viewApplyCenterForm(int centerId) {
+        return applyCenterRepository.findByStatusAndCenter_Id(Status.Wait_to_process ,centerId);
+    }
+
+    @Override
+    public ApplyCenter viewApplyFormDetail(int applyId) {
+        return applyCenterRepository.findById(applyId).orElse(null);
     }
 
     @Override

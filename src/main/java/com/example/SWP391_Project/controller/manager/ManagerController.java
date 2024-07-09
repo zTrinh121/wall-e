@@ -77,6 +77,29 @@ public class ManagerController
     public String revenueMn() {
         return "managerRevenue";
     }
-
+    @GetMapping("/centerForm")
+    public String getMappingT(){
+        return "applyCenter";
+    }
+    @GetMapping("/centerTime")
+    public String centerTimes(){
+        return "CenterTimetable";
+    }
+    @GetMapping("/mapTea")
+    public String mapTeachers(){
+        return "mappingTeacher";
+    }
+    @GetMapping("/mapTeaDetail")
+    public String detailMapTeachers(){
+        return "detailMap";
+    }
+    @GetMapping("/ctbd")
+    public String detailPost(){
+        return "centerPostDetail";
+    }
+    @GetMapping("/cpost")
+    public String crPost(){
+        return "centerCPost";
+    }
 
 }
