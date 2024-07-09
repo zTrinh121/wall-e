@@ -72,7 +72,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     var noResultDiv = document.getElementById("no-result");
 });
-//box-info-redirect
+//box-info-redirect + sidebar
 //students
 document.addEventListener("DOMContentLoaded", function () {
     var boxInfos = document.getElementById("boxInfos");
@@ -115,11 +115,45 @@ document.addEventListener("DOMContentLoaded", function () {
                 var url = `/manager/qlkh?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
-
                 window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfoc' not found.");
+    }
+});
+//money
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfom = document.getElementById("boxInfom");
+
+    if (boxInfom) {
+        boxInfom.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/dthu?centerIdn=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'boxInfom' not found.");
+    }
+});
+// sidebarPost
+
+// sidebarNoti
+
+//  sidebarTime
+document.addEventListener("DOMContentLoaded", function () {
+    var sidebarTime = document.getElementById("sidebarTime");
+    if (sidebarTime) {
+        sidebarTime.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/centerTime?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'sidebarTime' not found.");
     }
 });
 //edit + delete

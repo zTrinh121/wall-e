@@ -240,4 +240,5 @@ public interface ManagerService {
 
     Map<String, Object> getMonthlyProfit(int month, int year, Long centerId);
 
+    List<Map<String, Object>> getTotalTeacherSalaryForYear(int year, Long centerId);
 }

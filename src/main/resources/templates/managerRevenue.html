@@ -10,7 +10,6 @@
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
-    <script src="/js/centerDetail.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
@@ -115,11 +114,6 @@
                 <div class="head-title">
                     <div class="left">
                         <h1><span id="centerDetailName"></span></h1>
-                        <div class="runline">
-                            <p>Hôm nay là:
-                                <span id="currentDate"></span>
-                            </p>
-                        </div>
                     </div>
                 </div>
 
@@ -194,14 +188,7 @@
         </section>
     </div>
 </div>
-<!-- Delete Modal-->
-<div id="deleteModaling" class="modal">
-    <div class="modal-content">
-        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
-        <button id="confirmDele">Xác nhận</button>
-        <button id="cancelDeleBtn">Huỷ</button>
-    </div>
-</div>
+
 <!--TOAST-->
 <div id="toast">
     <p></p>
@@ -209,33 +196,34 @@
 <script>
     const ctx = document.getElementById('myChart');
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['March', 'April', 'May', 'June', 'July', 'August'],
-        datasets: [
-          {
-            label: 'Teacher Payment',
-            data: [120, 190, 300, 250, 220, 430],
-            borderWidth: 1
-          },
-          {
-            label: 'Course Earning',
-            data: [140, 220, 150, 340, 320, 850],
-            borderWidth: 1
-          }
-        ]
+new Chart(ctx, {
+  type: 'line',
+  data: {
+    labels: ['March', 'April', 'May', 'June', 'July', 'August'],
+    datasets: [
+      {
+        label: 'Teacher Payment',
+        data: [120, 190, 300, 250, 220, 430],
+        borderWidth: 1
       },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
+      {
+        label: 'Course Earning',
+        data: [140, 220, 150, 340, 320, 850],
+        borderWidth: 1
       }
-    });
+    ]
+  },
+  options: {
+    scales: {
+      y: {
+        beginAtZero: true
+      }
+    }
+  }
+});
 </script>
-<script src="/js/getCount.js"></script>
+<script scrc="/js/managerRevenue.js" type="module"></script>
+<script src="/js/getCountIn.js"></script>
 <script src="/js/dropdown.js"></script>
 
 </body>
