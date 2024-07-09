@@ -5,9 +5,11 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
+import com.example.SWP391_Project.response.TeacherSalaryResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
@@ -223,7 +225,17 @@ public interface ManagerService {
 
     void deleteSlot(int slotId);
 
+    // tạo slots cho toàn bộ khóa học
+    void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, String courseCode, String roomName);
 
     // -----------------------------------------------------
+
+    List<TeacherSalaryResponse> getTeacherSalaries(int month, int year, Long centerId);
+
+    Double getTotalTeacherSalary(int month, int year, Long centerId);
+
+    Double getMonthlyRevenue(int month, int year, Long centerId);
+
+    Double getMonthlyProfit(int month, int year, Long centerId);
 
 }

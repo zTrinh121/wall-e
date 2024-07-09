@@ -3,10 +3,12 @@ package com.example.SWP391_Project.controller.manager;
 import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.SlotDto;
+import com.example.SWP391_Project.dto.SlotsDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
+import com.example.SWP391_Project.response.TeacherSalaryResponse;
 import com.example.SWP391_Project.service.ManagerService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
@@ -19,6 +21,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
@@ -164,14 +167,9 @@ public class ManagerLearningController {
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 
-    @GetMapping("/view-applyCenter-form")
-    public ResponseEntity<List<ApplyCenter>> getTeachersInCenter(HttpSession session) {
-        Integer managerId = (Integer) session.getAttribute("authid");
-        if (managerId == null) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
-        }
-
-        List<ApplyCenter> forms = managerService.viewApplyCenterForm(managerId);
+    @GetMapping("/view-applyCenter-form/{centerId}")
+    public ResponseEntity<List<ApplyCenter>> viewTeachersApplyForm(@PathVariable int centerId) {
+        List<ApplyCenter> forms = managerService.viewApplyCenterForm(centerId);
         if (forms.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -244,80 +242,6 @@ public class ManagerLearningController {
         }
     }
     // --------------------------------------------------------------------------
-
-    // --------------------------- MANAGER REVENUE ------------------------------
-    @GetMapping("/bills")
-    public ResponseEntity<List<Bill>> getAllBills() {
-        return ResponseEntity.ok(managerService.getAllBills());
-    }
-
-    @GetMapping("/bills/succeeded")
-    public ResponseEntity<List<Bill>> findSucceededBills(
-            @RequestParam int year,
-            @RequestParam int month
-    ) {
-        return ResponseEntity.ok(managerService.findSucceededBills(Year.of(year), Month.of(month)));
-    }
-
-    @GetMapping("/bills/failed")
-    public ResponseEntity<List<Bill>> findFailedBills(
-            @RequestParam int year,
-            @RequestParam int month
-    ) {
-        return ResponseEntity.ok(managerService.findFailedBills(Year.of(year), Month.of(month)));
-    }
-
-    @GetMapping("/bills/paidByCash")
-    public ResponseEntity<List<Bill>> findBillsPaidByCash(
-            @RequestParam int year,
-            @RequestParam int month
-    ) {
-        return ResponseEntity.ok(managerService.findBillsPaidByCash(Year.of(year), Month.of(month)));
-    }
-
-    @GetMapping("/bills/paidByEBanking")
-    public ResponseEntity<List<Bill>> findBillsPaidByEBanking(
-            @RequestParam int year,
-            @RequestParam int month
-    ) {
-        return ResponseEntity.ok(managerService.findBillsPaidByEBanking(Year.of(year), Month.of(month)));
-    }
-
-    @GetMapping("/students/withPaidFeesInCourse")
-    public ResponseEntity<List<User>> findStudentsWithPaidFeesInCourse(
-            @RequestParam int year,
-            @RequestParam int month,
-            @PathVariable int courseId
-    ) {
-        return ResponseEntity.ok(managerService.findStudentsWithPaidFeesInCourse(Year.of(year), Month.of(month), courseId));
-    }
-
-    @GetMapping("/students/withUnpaidFeesInCourse")
-    public ResponseEntity<List<User>> findStudentsWithUnpaidFeesInCourse(
-            @RequestParam int year,
-            @RequestParam int month,
-            @PathVariable int courseId
-    ) {
-        return ResponseEntity.ok(managerService.findStudentsWithUnpaidFeesInCourse(Year.of(year), Month.of(month), courseId));
-    }
-
-    @GetMapping("/students/withPaidFeesInCenter")
-    public ResponseEntity<List<User>> findStudentsWithPaidFeesInCenter(
-            @RequestParam int year,
-            @RequestParam int month,
-            @PathVariable int centerId
-    ) {
-        return ResponseEntity.ok(managerService.findStudentsWithPaidFeesInCenter(Year.of(year), Month.of(month), centerId));
-    }
-
-    @GetMapping("/students/withUnpaidFeesInCenter")
-    public ResponseEntity<List<User>> findStudentsWithUnpaidFeesInCenter(
-            @RequestParam int year,
-            @RequestParam int month,
-            @PathVariable int centerId
-    ) {
-        return ResponseEntity.ok(managerService.findStudentsWithUnpaidFeesInCenter(Year.of(year), Month.of(month), centerId));
-    }
 
     // ---------------------------- ADD MORE ----------------------------------
     @GetMapping("/teacher-count/{centerId}")
@@ -408,7 +332,45 @@ public class ManagerLearningController {
         }
     }
 
+    @PostMapping("overallSlots/certainCourse/insert")
+    public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
+                            @RequestParam String courseCode,
+                            @RequestParam String roomName) {
+        managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
+    }
     // -------------------------------------------------------------------------------------
+
+    @GetMapping("/teacher-salaries")
+    public List<TeacherSalaryResponse> getTeacherSalaries(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+        return managerService.getTeacherSalaries(month, year, centerId);
+    }
+
+    @GetMapping("/total-teacher-salary")
+    public Double getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+        return managerService.getTotalTeacherSalary(month, year, centerId);
+    }
+
+    @GetMapping("/monthly-revenue")
+    public Double getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+        return managerService.getMonthlyRevenue(month, year, centerId);
+    }
+
+    @GetMapping("/monthly-profit")
+    public Double getMonthlyProfit(
+            @RequestParam int month,
+            @RequestParam int year,
+            @RequestParam Long centerId) {
+        return managerService.getMonthlyProfit(month, year, centerId);
+    }
+
+
+
+
+
+
+
+
+
 
 
 

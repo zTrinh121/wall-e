@@ -16,9 +16,8 @@ spring:
   mail:
     host: smtp.gmail.com
     port: 465
-    username: thanhdhde170795@fpt.edu.vn  
-#    password: pwpi acpp wcqr hion
-    password: wzac akak eyme fewd
+    username: thanhdhde170795@fpt.edu.vn
+    password: pwpi acpp wcqr hion
     properties:
       mail:
         smtp:
