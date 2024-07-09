@@ -370,37 +370,21 @@ public class ManagerLearningController {
     }
 
     @GetMapping("/total-teacher-salary")
-    public Double getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+    public List<Map<String, Object>> getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
         return managerService.getTotalTeacherSalary(month, year, centerId);
     }
 
     @GetMapping("/monthly-revenue")
-    public Double getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+    public Map<String, Object> getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
         return managerService.getMonthlyRevenue(month, year, centerId);
     }
 
     @GetMapping("/monthly-profit")
-    public Double getMonthlyProfit(
+    public Map<String, Object> getMonthlyProfit(
             @RequestParam int month,
             @RequestParam int year,
             @RequestParam Long centerId) {
         return managerService.getMonthlyProfit(month, year, centerId);
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 }

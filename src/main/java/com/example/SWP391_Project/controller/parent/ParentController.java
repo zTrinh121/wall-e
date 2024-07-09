@@ -103,8 +103,12 @@ public class ParentController {
 
     @PatchMapping("/individualNotification/update/{notificationId}")
     @ResponseBody
-    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
-        return parentService.updateIndividualNotification(notificationId);
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId, HttpSession session) {
+        User student = (User) session.getAttribute("user");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
+        }
+        return parentService.updateIndividualNotification(notificationId, student);
     }
 
     @PostMapping("/viewSystemNotification/update/{notificationId}")

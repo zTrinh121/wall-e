@@ -60,4 +60,13 @@ public class CloudinaryService {
             throw new FuncErrorException("Failed to upload PDF file");
         }
     }
+
+    @Transactional
+    public void deletePdfFile(String publicId) {
+        try {
+            cloudinary.uploader().destroy(publicId, null); // Delete the file from Cloudinary
+        } catch (IOException e) {
+            throw new FuncErrorException("Failed to delete PDF file from Cloudinary");
+        }
+    }
 }
