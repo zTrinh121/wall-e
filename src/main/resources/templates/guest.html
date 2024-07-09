@@ -52,19 +52,17 @@
     <div class="top_navbar">
         <div class="top_menu">
             <div class="logo">Wall-E</div>
-            <form class="search">
-                <select id="searchType">
-                    <option value="all">Tất cả</option>
-                    <option value="center">Trung tâm</option>
-                    <option value="teacher">Giáo viên</option>
-                    <option value="course">Khóa học</option>
-                    <option value="center-post">Bài đăng trung tâm</option>
-                </select>
-                <div class="search-content">
-                    <input type="text" autocomplete="off" id="searchInput" placeholder="Tìm kiếm lớp học, trung tâm, ...">
-                    <button type="submit">Tìm</button>
-                </div>
-                <div class="result-box" id="search-results"></div>
+            <form action="search" method="get" class="search">
+                <i class="fa fa-search"></i>
+                <input
+                        type="text"
+                        name="keyword"
+                        required
+                        placeholder="Tìm kiếm trung tâm/khóa học"
+                        id="search-input"
+                />
+                <div class="search-results" id="search-results"></div>
+                <button type="submit" class="search-btn">Tìm</button>
             </form>
             <ul>
                 <li>

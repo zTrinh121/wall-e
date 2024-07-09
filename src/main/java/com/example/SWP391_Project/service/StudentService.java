@@ -23,6 +23,8 @@ public interface StudentService {
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
+    List<Map<String, Object>> searchh(String keyword);
+
     List<Map<String, String>> search(String keyword);
 
     List<Material> getAllMaterials();
@@ -70,6 +72,16 @@ public interface StudentService {
     List<Feedback> fetchTeacherFeedback(int studentId);
 
     // ------------------------------------------------------------------
+     List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
+
+
+     Feedback createFeedback(Feedback feedback);
+
+    Course findCourseById(int courseId);
+
+
+
+    List<Map<String, Object>> getCoursesByCenterId(int centerId);
 
 
 }
