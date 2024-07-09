@@ -72,83 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetchCenterPosts();
 
-    function displayCenterPostsList(posts) {
-        var tableBody = document.getElementById("tableBody");
-        if (!tableBody) {
-            console.error("Element with ID 'tableBody' not found.");
-            return;
-        }
-        tableBody.innerHTML = "";
-        if (posts.length === 0) {
-            noResultDiv.style.display = "block";
-        } else {
-            noResultDiv.style.display = "none";
-            posts.forEach((post) => {
-                var row = `
-                    <tr class="view-details" data-id="${post.id}">
-                        <td><p>${post.title}</p></td>
-                        <td><p>${post.createdAt}</p></td>
-                        <td><p>${post.status}</p></td>
-                        <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
-                        <td><button class="open-modal-btn" data-id="${post.id}">Xem</button></td>
-                    </tr>
-                `;
-                tableBody.insertAdjacentHTML("beforeend", row);
-            });
-
-            // Attach event listeners for delete buttons
-            var deleteButtons = document.querySelectorAll(".delete-user");
-            deleteButtons.forEach((button) => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    var row = event.target.closest("tr");
-                    var postName = row.querySelector("td:nth-child(1) p").textContent;
-                    var postId = row.getAttribute("data-id");
-                    postNameElement.textContent = postName;
-                    deleteModal.style.display = "block";
-                    deleteTarget = {
-                        row: row,
-                        id: postId
-                    };
-                    console.log("Delete button clicked for post:", postName, "with ID:", postId);
-                });
-            });
-            // Reattach event listeners for view details buttons
-            document.querySelectorAll(".open-modal-btn").forEach((button) => {
-                button.addEventListener("click", function () {
-                    var postId = this.getAttribute("data-id");
-                    openModalWithPostDetails(postId);
-                });
-            });
-        }
-    }
-
-    // Confirm delete action
-    var confirmDeleteButton = document.getElementById("confirmDelete");
-    var postNameElement = document.getElementById("postName");
-    var deleteTarget = null;
-
-    confirmDeleteButton.addEventListener("click", () => {
-        if (deleteTarget) {
-            console.log("Confirm delete for post ID:", deleteTarget.id);
-            console.log(deleteTarget);
-            fetch(`/manager/post/delete/${deleteTarget.id}`, {
-                method: "DELETE"
-            })
-            .then(response => {
-                if (response.ok) {
-                    deleteTarget.row.remove();
-                    deleteModal.style.display = "none";
-                    showToast("Xóa thành công trung tâm");
-                    console.log("post deleted successfully");
-                } else {
-                    console.error("Error deleting post:", response.statusText);
-                }
-            })
-            .catch(error => console.error("Error deleting post:", error));
-        }
-    });
-
     // Helper function to show toast message
     function showToast(message) {
         var toast = document.getElementById("toast");
@@ -291,20 +214,5 @@ function deleteCenterPost(postId) {
     });
 }
 
-// Example event listener for create button
-createPostBtn.addEventListener("click", function () {
-    var formData = {
-        title: "Sample Post Title",
-        content: "Sample Post Content",
-    };
-    createCenterPost(formData);
-});
-
-postTableBody.addEventListener("click", function (event) {
-    if (event.target.classList.contains("fa-trash")) {
-        var postId = event.target.getAttribute("data-id");
-        deleteCenterPost(postId);
-    }
-});
 
 

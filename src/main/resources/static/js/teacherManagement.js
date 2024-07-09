@@ -15,11 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     var deleteModal = document.getElementById("deleteModal");
 
     // Open Add Centre Modal
+    const urlParamss = window.location.href;
+    console.log("Current URL:", urlParamss);
+    // Extract centerId from the URL
+    const urlPartss = urlParamss.split("centerId=");
+    centerIdzs = urlPartss.length > 1 ? urlPartss[1].split("&")[0] : null;
+    console.log("Center ID:", centerIdzs);
     var addCentreBtn = document.getElementById("addCentreBtn");
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
-            console.log("Opening Add Centre Modal");
-            addCentreModal.style.display = "block";
+            var url = `/manager/mapTea?centerId=`;
+            url += encodeURIComponent(centerIdzs);
+            console.log(url);
+            window.location.href = url;
         });
     }
 
@@ -160,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return getCTN.json();
             })
             .then((ctn) => {
-            document.getElementById("centerDetailName").innerText = "Quản lý học sinh của trung tâm " + ctn.name;
+            document.getElementById("centerDetailName").innerText = "Quản lý giáo viên của trung tâm " + ctn.name;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }

@@ -84,6 +84,8 @@ public interface ManagerService {
     // View all apply center form
     List<ApplyCenter> viewApplyCenterForm(int managerId);
 
+    ApplyCenter viewApplyFormDetail(int applyId);
+
     // Approve teacher's apply form
     void approveTeacherApply(int id);
 
