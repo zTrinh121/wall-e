@@ -3,6 +3,7 @@ package com.example.SWP391_Project.controller.guest;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -52,11 +53,17 @@ public class GuestController {
         List<Feedback> feedbacks = guestService.getFeedbacksToTeacher();
         return feedbacks.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(feedbacks);
     }
+/// new
+//    @GetMapping("/slots-in-course/{courseId}")
+//    public ResponseEntity<List<Map<String, Object>>> getSlotsInCourse(@PathVariable int courseId) {
+//        List<Map<String, Object>> courseInfo = guestService.getSlotsInCourse(courseId);
+//        return ResponseEntity.ok().body(courseInfo);
+//    }
 
     @GetMapping("/slots-in-course/{courseId}")
-    public ResponseEntity<List<Slot>> getSlotsInCertainCourse(@PathVariable int courseId) {
-        List<Slot> slots = guestService.getSlotsInCertainCourse(courseId);
-        return slots.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(slots);
+    public ResponseEntity<List<Map<String, Object>>> getSlotsInCourse(@PathVariable int courseId) {
+        List<Map<String, Object>> slotsInCourse = guestService.getSlotsInCourse(courseId);
+        return new ResponseEntity<>(slotsInCourse, HttpStatus.OK);
     }
 
     @GetMapping("/courses-in-center/{centerId}")

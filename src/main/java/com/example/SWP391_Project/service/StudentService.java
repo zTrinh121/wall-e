@@ -86,7 +86,7 @@ public interface StudentService {
     // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
     List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId);
 
-    List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
+
     // -----------------------------------------------------------------------
 
     // ------------------------ ENROLLMENT NEW COURSE ---------------------

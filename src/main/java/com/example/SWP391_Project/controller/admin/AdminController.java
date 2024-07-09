@@ -6,6 +6,7 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CenterDetailResponse;
 import com.example.SWP391_Project.response.CenterPostResponse;
 import com.example.SWP391_Project.service.AdminService;
+import com.example.SWP391_Project.service.WebhookService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.hibernate.service.spi.ServiceException;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Arrays;
 import java.util.List;
 
 @Controller
@@ -24,6 +26,9 @@ public class AdminController {
 
     @Autowired
     AdminService adminService;
+
+    @Autowired
+    private WebhookService webhookService;
 
     @GetMapping("/admin")
     public String adminDashboard(Model model) {
@@ -56,11 +61,20 @@ public class AdminController {
         return ResponseEntity.ok().body(system);
     }
 
+
+
     @PostMapping("/admin-systemNotification/create")
     @ResponseBody
     public SystemNotification createSystemNotification(
             @RequestBody @Valid SystemNotificationDto systemNotificationDto) {
-        return adminService.createSystemNotification(systemNotificationDto);
+        SystemNotification systemNotification = adminService.createSystemNotification(systemNotificationDto);
+        webhookService.sendNotificationToAllUsers("New system notification created: " + systemNotification.getTitle());
+        return systemNotification;
+    }
+
+    private List<String> getAllUserWebhookUrls() {
+        // Lấy danh sách URL webhook của tất cả người dùng từ cơ sở dữ liệu hoặc một nguồn khác
+        return Arrays.asList("https://example.com/webhook1", "https://example.com/webhook2");
     }
 
     @PutMapping("/admin-systemNotification/update/{id}")
