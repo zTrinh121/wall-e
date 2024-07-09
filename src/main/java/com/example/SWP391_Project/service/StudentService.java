@@ -91,6 +91,13 @@ public interface StudentService {
     // kiểm tra trùng slot học của các khóa đang học
     Map<String, List<DuplicateSlotInfo>> findDuplicateWeekdays(int studentId, int courseId);
 
+    // đăng kí khóa học
+    void enrollTheNewCourse(int studentId, int courseId);
+
+
+
+
+
     // -----------------------------------------------------------------------
 
 

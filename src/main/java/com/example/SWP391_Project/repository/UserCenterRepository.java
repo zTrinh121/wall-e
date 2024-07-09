@@ -58,4 +58,7 @@ public interface UserCenterRepository extends JpaRepository<UserCenter, Integer>
             nativeQuery = true)
     int countStudentsByCenter(@Param("centerId") int centerId);
 
+    @Query("SELECT uc FROM UserCenter uc WHERE uc.user.id = :userId AND uc.center.id = :centerId")
+    UserCenter findByUserIdAndCenterId(@Param("userId") int userId, @Param("centerId") int centerId);
+
 }

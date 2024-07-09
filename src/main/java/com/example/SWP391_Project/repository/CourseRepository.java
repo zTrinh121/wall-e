@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.repository;
 
+import com.example.SWP391_Project.model.Center;
 import com.example.SWP391_Project.model.Course;
 import com.example.SWP391_Project.model.User;
 import com.example.SWP391_Project.response.CourseDetailResponse;
@@ -53,6 +54,9 @@ public interface CourseRepository extends JpaRepository<Course, Integer> {
             "GROUP BY c.teacher.id")
     List<Object[]> findTeacherInfoAndCoursesByTeacherId(@Param("teacherId") int teacherId,
                                                         @Param("centerId") int centerId);
+
+    @Query("SELECT c.center FROM Course c WHERE c.id = :courseId")
+    Center findCenterByCourseId(@Param("courseId") int courseId);
 
 }
 
