@@ -72,14 +72,9 @@ public interface StudentService {
     // xem những feedback mà teacher gửi đến
     List<Feedback> fetchTeacherFeedback(int studentId);
     // ------------------------------------------------------------------
-     List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
-
-
      Feedback createFeedback(Feedback feedback);
 
     Course findCourseById(int courseId);
-
-
 
     List<Map<String, Object>> getCoursesByCenterId(int centerId);
 
