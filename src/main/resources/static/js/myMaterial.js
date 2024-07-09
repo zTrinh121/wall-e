@@ -143,11 +143,7 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function fetchMaterials() {
-        if (userRole === "PARENT" || userRole === "STUDENT") {
-            getAllMaterials(`/api/student/allMaterials`);
-        } else if (userRole === "TEACHER") {
-            getAllMaterials(`/api/teacher/allMaterials`);
-        }
+            getAllMaterials(`/api/student/materials`);
     }
 
     if (gradeValue) {

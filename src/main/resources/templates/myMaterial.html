@@ -18,10 +18,8 @@
                 <div class="header">
 
                     <div>
-                        Tài liệu chung
-                        <a class="my-material" href="/my-material" th:if="${user.role.getDescription().name() == 'TEACHER'}">
-                            | Tài liệu của tôi
-                        </a>
+                        Tài liệu của tôi
+                        <a class="my-material" href="material">|  Tài liệu chung</a>
                     </div>
                     <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
 

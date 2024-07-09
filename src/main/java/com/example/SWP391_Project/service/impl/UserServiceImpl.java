@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<Map<String, Object>> getAllUsersWithSpecificAttributes() {
-        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_USER_CODE as userCode,  u.c14_acc_status as accStatus " +
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_NAME as name,  u.c14_acc_status as accStatus " +
                 "FROM t14_user u";
         return jdbcTemplate.queryForList(query);
     }
@@ -294,4 +294,10 @@ public class UserServiceImpl implements UserService {
 //    public User findById(int id) {
 //        return userRepository.findById(id).orElse(null);
 //    }
+
+    @Override
+    public User findById(int id) {
+        return userRepository.findById(id).orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
 }

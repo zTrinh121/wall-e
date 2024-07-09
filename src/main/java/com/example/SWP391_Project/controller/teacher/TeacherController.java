@@ -195,6 +195,7 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     }
 
     @PostMapping("/courses/{courseId}/students/{studentId}/results")
+    @ResponseBody
     public ResponseEntity<?> createResult(@PathVariable int courseId, @PathVariable int studentId,
                                           @RequestBody Map<String, Object> resultData) {
         try {

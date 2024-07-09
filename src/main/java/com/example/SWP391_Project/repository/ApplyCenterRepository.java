@@ -12,5 +12,7 @@ public interface ApplyCenterRepository extends JpaRepository<ApplyCenter, Intege
 
 //    @Query("SELECT ac FROM ApplyCenter ac JOIN ac.center ct WHERE ct.manager.id = :managerId")
 //    List<ApplyCenter> findApplyCentersByManagerId(@Param("managerId") int managerId);
+
     List<ApplyCenter> findByStatusAndCenter_Id(Status status, int centerId);
+
 }

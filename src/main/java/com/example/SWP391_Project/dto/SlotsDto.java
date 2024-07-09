@@ -3,22 +3,17 @@ package com.example.SWP391_Project.dto;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+
 @Data
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Builder(toBuilder = true)
-@FieldDefaults(level = AccessLevel.PRIVATE)
-public class FeedbackDto {
-
-    String description;
-
-    int rating;
-
-    int sendToUser_Id;
-
-    int sendToCourse_Id;
-
-
+public class SlotsDto {
+    private DayOfWeek dayOfWeek;
+    private LocalTime startTime;
+    private LocalTime endTime;
 }

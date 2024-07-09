@@ -47,11 +47,19 @@
                                 <button id="btn-evaluation-details">Xem chi tiết</button>
                             </div>
                         </div>
-                        <div class="attendance">
+                        <div class="attendance" th:if="${user.role.getDescription().name() != 'TEACHER'}">
                             <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
                             <div id="attendance-detail" >
                                 <button id="btn-attendance-details">Xem chi tiết</button>
                             </div>
+                        </div>
+
+                        <div class="attendance" th:if="${user.role.getDescription().name() == 'TEACHER'}">
+                            <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
+                            <div id="attendance-all">
+                                <a th:href="@{/attendance(courseId=${param.courseId}, date='all')}">Xem chi tiết</a>
+                            </div>
+
                         </div>
                     </div>
                     <div>
@@ -89,6 +97,25 @@
                         </table>
                         <p id="teacherFeedback"></p>
                         <button id="saveScoresButton">Lưu</button>
+                        <button id="addScoresButton">Thêm điểm</button>
+
+                    </div>
+                </div>
+
+<!--                Modal enter score-->
+                <div id="evaluationModalEnter" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeEvaluationModalEnter">&times;</span>
+                        <table id="scoresTableEnter">
+                            <thead>
+                            <tr>
+                                <th>Hệ số bài kiểm tra</th>
+                                <th>Cột điểm</th>
+                            </tr>
+                            </thead>
+                            <tbody id="scoresTableBodyEnter">
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
@@ -116,18 +143,22 @@
                                     <label for="feedbackContent">Feedback:</label>
                                     <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
                                 </div>
-                                <div class="rate-box">
-                                    <input type="radio" name="star" id="star0"/>
-                                    <label class="star" for="star0"></label>
-                                    <input type="radio" name="star" id="star1"/>
-                                    <label class="star" for="star1"></label>
-                                    <input type="radio" name="star" id="star2" checked="checked"/>
-                                    <label class="star" for="star2"></label>
-                                    <input type="radio" name="star" id="star3"/>
-                                    <label class="star" for="star3"></label>
-                                    <input type="radio" name="star" id="star4"/>
-                                    <label class="star" for="star4"></label>
+                                <div class="rating-container">
+                                    <span class="rating-label">Rating:</span>
+                                    <div class="rate-box">
+                                        <input type="radio" name="star" id="star1" />
+                                        <label class="star" for="star1">&#9733;</label>
+                                        <input type="radio" name="star" id="star2" />
+                                        <label class="star" for="star2">&#9733;</label>
+                                        <input type="radio" name="star" id="star3" />
+                                        <label class="star" for="star3">&#9733;</label>
+                                        <input type="radio" name="star" id="star4" />
+                                        <label class="star" for="star4">&#9733;</label>
+                                        <input type="radio" name="star" id="star5" />
+                                        <label class="star" for="star5">&#9733;</label>
+                                    </div>
                                 </div>
+
                                 <button type="submit">Submit</button>
                             </form>
                         </div>
@@ -140,5 +171,7 @@
         </section>
     </div>
 </div>
+
+
 </body>
 </html>

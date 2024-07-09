@@ -13,8 +13,6 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
 
     Optional<Room> findByName(String name);
 
-    Optional<Room> findByNameAndCenterId(String name, int id);
-
     @Query("SELECT COUNT(s) > 0 " +
             "FROM Slot s JOIN s.room r " +
             "WHERE r = :room " +
@@ -40,6 +38,10 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             @Param("centerId") int centerId);
 
     Optional<List<Room>> findByCenter_Id(int id);
+
+    @Query("SELECT r FROM Room r WHERE UPPER(r.name) = UPPER(:roomName) AND r.center.id = :centerId")
+    Optional<Room> findByRoomNameAndCenterId(@Param("roomName") String roomName,
+                                             @Param("centerId") int centerId);
 
 
 }

@@ -17,10 +17,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.sql.Time;
 import java.time.*;
 import java.util.*;
@@ -894,7 +898,277 @@ public class ManagerServiceImpl implements ManagerService {
         // Delete the slot entity
         slotRepository.delete(slot);
     }
-    // ---------------------------------------------------------------
+
+    // -------------------------- CREATE OVERALL SLOTS FOR A CERTAIN COURSE ------------------------------
+    // create overall slots for a certain course
+    @Autowired
+    private JdbcTemplate jdbcTemplate;
+
+    @Transactional
+    @Override
+    public void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, String courseCode, String roomName) {
+        // Log các tham số
+        System.out.println("Course Code: " + courseCode);
+        System.out.println("Room Name: " + roomName);
+
+        // Log các tham số
+        System.out.println("Course Code: [" + courseCode + "]");
+        System.out.println("Room Name: [" + roomName + "]");
+
+        // Lấy thông tin course và room
+        Optional<Course> course = courseRepository.findByCode(courseCode.trim());
+        if (course.isEmpty()) {
+            throw new IllegalArgumentException("Course not found: " + courseCode);
+        }
+
+        int centerId = course.get().getCenter().getId();
+        Optional<Room> room = roomRepository.findByRoomNameAndCenterId(roomName.trim(), centerId);
+        if (room.isEmpty()) {
+            throw new IllegalArgumentException("Room not found: " + roomName);
+        }
+
+        // Log kết quả tìm kiếm
+        System.out.println("Course: " + course);
+        System.out.println("Room: " + room);
+
+        int courseId = course.get().getId();
+        int roomId = room.get().getId();
+
+        // Chèn slots vào cơ sở dữ liệu
+        batchInsertSlots(slotsDtos, course.get().getStartDate(), course.get().getEndDate(), courseId, roomId);
+
+        // Lấy danh sách slots và students
+        List<Slot> slots = slotRepository.findByCourse_Id(courseId).orElse(Collections.emptyList());
+        List<User> students = enrollmentRepository.findStudentsByCourseId(courseId);
+
+        // Chèn dữ liệu vào bảng t17_student_slot
+        batchInsertStudentSlot(students, slots);
+    }
+
+    @Transactional
+    public void batchInsertSlots(List<SlotsDto> slotsDtos, Date courseStartDate, Date courseEndDate, int courseId, int roomId) {
+        String sql = "INSERT INTO t02_slot (c02_slot_start_time, c02_slot_end_time, C02_COURSE_ID, C02_ROOM_ID, c02_slot_date) VALUES (?, ?, ?, ?, ?)";
+
+        LocalDate localCourseStartDate = convertToLocalDate(courseStartDate);
+        LocalDate localCourseEndDate = convertToLocalDate(courseEndDate);
+        List<Object[]> batchArgs = createBatchArgs(slotsDtos, localCourseStartDate, localCourseEndDate, courseId, roomId);
+
+        int batchSize = 10;
+        for (int i = 0; i < batchArgs.size(); i += batchSize) {
+            List<Object[]> batchArgsSubset = batchArgs.subList(i, Math.min(i + batchSize, batchArgs.size()));
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int k) throws SQLException {
+                    Object[] args = batchArgsSubset.get(k);
+                    LocalTime startTime = (LocalTime) args[1];
+                    LocalTime endTime = (LocalTime) args[2];
+                    LocalDate specificDate = (LocalDate) args[3];
+
+                    ps.setTime(1, Time.valueOf(startTime)); // Start time as SQL time
+                    ps.setTime(2, Time.valueOf(endTime)); // End time as SQL time
+                    ps.setLong(3, (Integer) args[4]); // Course ID
+                    ps.setLong(4, (Integer) args[5]); // Room ID
+                    ps.setDate(5, java.sql.Date.valueOf(specificDate)); // Specific date for the slot
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return batchArgsSubset.size();
+                }
+            });
+        }
+    }
+
+    private List<Object[]> createBatchArgs(List<SlotsDto> slotDtos, LocalDate courseStartDate, LocalDate courseEndDate, int courseId, int roomId) {
+        List<Object[]> batchArgs = new ArrayList<>();
+
+        LocalDate currentDate = courseStartDate;
+        while (!currentDate.isAfter(courseEndDate)) {
+            for (SlotsDto slotDto : slotDtos) {
+                // Tính toán ngày cụ thể trong tuần
+                LocalDate specificDate = getSpecificDate(slotDto.getDayOfWeek(), currentDate);
+                if (!specificDate.isAfter(courseEndDate)) {
+                    Object[] args = { slotDto.getDayOfWeek(), slotDto.getStartTime(), slotDto.getEndTime(), specificDate, courseId, roomId };
+                    batchArgs.add(args);
+                }
+            }
+            currentDate = currentDate.plusWeeks(1); // Tăng ngày lên 1 tuần
+        }
+
+        return batchArgs;
+    }
+
+    private LocalDate convertToLocalDate(Date dateToConvert) {
+        return dateToConvert.toInstant()
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate();
+    }
+
+
+    private LocalDate getSpecificDate(DayOfWeek dayOfWeek, LocalDate startDate) {
+        // Tìm ngày đầu tiên trong tuần có ngày trùng với dayOfWeek
+        LocalDate date = startDate;
+        while (date.getDayOfWeek() != dayOfWeek) {
+            date = date.plusDays(1); // Tăng ngày lên 1
+        }
+        return date;
+    }
+
+    //  ------------------- INSERT TABLE T17_STUDENT_SLOT KHI TẠO SLOTS -----------------
+    @Transactional // Mark this method as transactional
+    public void batchInsertStudentSlot(List<User> students, List<Slot> slots) {
+        String sql = "INSERT INTO t17_student_slot (C17_STUDENT_ID, C17_SLOT_ID, c17_attendance_status) VALUES (?, ?, ?)";
+
+        List<Object[]> batchArgs = createBatchStudentSlotArgs(students, slots);
+
+        // Split batchArgs into smaller batches and perform batch update
+        int batchSize = 100;
+        for (int i = 0; i < batchArgs.size(); i += batchSize) {
+            List<Object[]> batchArgsSubset = batchArgs.subList(i, Math.min(i + batchSize, batchArgs.size()));
+            jdbcTemplate.batchUpdate(sql, new BatchPreparedStatementSetter() {
+                @Override
+                public void setValues(PreparedStatement ps, int k) throws SQLException {
+                    Object[] args = batchArgsSubset.get(k);
+                    ps.setInt(1, (Integer) args[0]); // Cast args[0] to Integer assuming it's C17_STUDENT_ID
+                    ps.setInt(2, (Integer) args[1]); // Cast args[1] to Integer assuming it's C17_SLOT_ID
+                    ps.setBoolean(3, (Boolean) args[2]); // Cast args[2] to Boolean assuming it's c17_attendance_status
+                }
+
+                @Override
+                public int getBatchSize() {
+                    return batchArgsSubset.size();
+                }
+            });
+        }
+    }
+
+    private List<Object[]> createBatchStudentSlotArgs(List<User> students, List<Slot> slots) {
+        List<Object[]> batchArgs = new ArrayList<>();
+
+        for (User student : students) {
+            for (Slot slot : slots) {
+                Object[] args = { student.getId(), slot.getId(), false }; // Assuming getId() methods are present in User and Slot classes
+                batchArgs.add(args);
+            }
+        }
+        return batchArgs;
+    }
+    // ---------------------------------------------------------------------------
+
+    public List<TeacherSalaryResponse> getTeacherSalaries(int month, int year, Long centerId) {
+        String sql = "SELECT " +
+                "    u.C14_USER_ID AS TeacherId, " +
+                "    u.c14_name AS TeacherName, " +
+                "    SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
+                "FROM " +
+                "    t14_user u " +
+                "JOIN " +
+                "    (SELECT " +
+                "         c.C01_TEACHER_ID AS TeacherId, " +
+                "         s.C02_COURSE_ID AS CourseId, " +
+                "         COUNT(*) AS C02_SLOTS_COUNT " +
+                "     FROM " +
+                "         t01_course c " +
+                "     JOIN " +
+                "         t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "     WHERE " +
+                "         MONTH(s.c02_slot_date) = :month " +
+                "         AND YEAR(s.c02_slot_date) = :year " +
+                "     GROUP BY " +
+                "         c.C01_TEACHER_ID, s.C02_COURSE_ID " +
+                "    ) s ON u.C14_USER_ID = s.TeacherId " +
+                "JOIN " +
+                "    t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "WHERE " +
+                "    c.C01_CENTER_ID = :centerId " +
+                "GROUP BY " +
+                "    u.C14_USER_ID, u.c14_name";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        List<Object[]> results = query.getResultList();
+
+        return results.stream()
+                .map(result -> new TeacherSalaryResponse(
+                        ((Number) result[0]).longValue(),
+                        (String) result[1],
+                        ((Number) result[2]).doubleValue()))
+                .toList();
+    }
+
+    public Double getTotalTeacherSalary(int month, int year, Long centerId) {
+        String sql = "SELECT SUM(TotalSalary) AS TotalTeacherSalary " +
+                "FROM ( " +
+                "    SELECT " +
+                "        u.C14_USER_ID AS TeacherId, " +
+                "        SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
+                "    FROM " +
+                "        t14_user u " +
+                "    JOIN " +
+                "        (SELECT " +
+                "             c.C01_TEACHER_ID AS TeacherId, " +
+                "             s.C02_COURSE_ID AS CourseId, " +
+                "             COUNT(*) AS C02_SLOTS_COUNT " +
+                "         FROM " +
+                "             t01_course c " +
+                "         JOIN " +
+                "             t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "         WHERE " +
+                "             MONTH(s.c02_slot_date) = :month " +
+                "             AND YEAR(s.c02_slot_date) = :year " +
+                "         GROUP BY " +
+                "             c.C01_TEACHER_ID, s.C02_COURSE_ID " +
+                "        ) s ON u.C14_USER_ID = s.TeacherId " +
+                "    JOIN " +
+                "        t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "    WHERE " +
+                "        c.C01_CENTER_ID = :centerId " +
+                "    GROUP BY " +
+                "        u.C14_USER_ID " +
+                ") AS TotalSalaries";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        Object result = query.getSingleResult();
+
+        return result != null ? ((Number) result).doubleValue() : 0.0;
+    }
+
+    public Double getMonthlyRevenue(int month, int year, Long centerId) {
+        String sql = "SELECT SUM(c.C01_COURSE_FEE) AS TotalRevenue " +
+                "FROM t08_bill b " +
+                "JOIN t15_enrollment e ON b.c08_enrollment_id = e.C15_ENROLLMENT_ID " +
+                "JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
+                "WHERE c.C01_CENTER_ID = :centerId " +
+                "AND b.c08_status = 1 " + // Assuming status 1 indicates a paid bill
+                "AND MONTH(b.C08_CREATED_AT) = :month " +
+                "AND YEAR(b.C08_CREATED_AT) = :year";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        Object result = query.getSingleResult();
+
+        return result != null ? ((Number) result).doubleValue() : 0.0;
+    }
+
+    public Double getMonthlyProfit(int month, int year, Long centerId) {
+        Double revenue = getMonthlyRevenue(month, year, centerId);
+        Double totalTeacherSalary = getTotalTeacherSalary(month, year, centerId);
+        return revenue - totalTeacherSalary;
+    }
+
+
+
+
 }
 
 

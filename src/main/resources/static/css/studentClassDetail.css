@@ -729,4 +729,60 @@ error-toast{
   margin-right: 0.5rem;
 }
 
+
+.rate-box {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 15px;
+  gap: 5px; /* Khoảng cách giữa các ngôi sao */
+}
+
+.rate-box input[type="radio"] {
+  display: none;
+}
+
+.rate-box label.star {
+  font-size: 30px;
+  color: gold; /* Màu ngôi sao chưa chọn */
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.rate-box input[type="radio"]:checked ~ label.star,
+.rate-box label.star:hover,
+.rate-box label.star:hover ~ label.star {
+  color: gold;
+}
+
+.rate-box input[type="radio"]:checked ~ label.star ~ label.star {
+  color: gray;
+}
+
+
 /*Academic Transcript*/
+
+/*Academic Transcript*/
+
+/*Modal enter score*/
+#newScoreType, #newScoreValue{
+  width: 100%;
+}
+
+#addNewScoreButton, #addScoresButton{
+  border: none;
+  background: none;
+  color: #fff;
+  background: #2548a0;
+  border-radius: 1rem;
+  width: 7rem;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+#addNewScoreButton:hover, #addScoresButton:hover{
+  background: #fff;
+  color: #2548a0;
+  border: #2548a0 1px solid;
+}
+

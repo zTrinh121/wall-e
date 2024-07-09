@@ -24,6 +24,8 @@ public interface StudentService {
 
     List<Map<String, Object>> getSlotsByStudentId(int studentId);
 
+    List<Map<String, Object>> searchh(String keyword);
+
     List<Map<String, String>> search(String keyword);
 
     List<Material> getAllMaterials();
@@ -70,6 +72,11 @@ public interface StudentService {
     // xem những feedback mà teacher gửi đến
     List<Feedback> fetchTeacherFeedback(int studentId);
     // ------------------------------------------------------------------
+     Feedback createFeedback(Feedback feedback);
+
+    Course findCourseById(int courseId);
+
+    List<Map<String, Object>> getCoursesByCenterId(int centerId);
 
     // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
     List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId);
@@ -83,6 +90,13 @@ public interface StudentService {
 
     // kiểm tra trùng slot học của các khóa đang học
     Map<String, List<DuplicateSlotInfo>> findDuplicateWeekdays(int studentId, int courseId);
+
+    // đăng kí khóa học
+    void enrollTheNewCourse(int studentId, int courseId);
+
+
+
+
 
     // -----------------------------------------------------------------------
 
