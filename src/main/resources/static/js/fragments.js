@@ -164,7 +164,6 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             allNotifications.push(...data.individualNotifications);
             allNotifications.push(...data.systemNotifications);
-            console.log(allNotifications)
 
             const allNotificaitonSort = allNotifications.sort((a, b) => parseStringToDate(b.createdAt) - parseStringToDate(a.createdAt));
             displayNotifications(allNotificaitonSort);
@@ -207,7 +206,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
-        console.log(notifications)
+
         const maxDisplay = 5;
         let displayedCount = 0;
         let moreButton;
@@ -484,6 +483,15 @@ document.addEventListener("DOMContentLoaded", async function () {
         text = text.replace(/\s/g, '');
 
         return text.length > 0;
+    }
+
+    function showToast(message) {
+        const toastContainer = document.getElementById("toastContainer");
+        toastContainer.innerHTML = `${message}`;
+        toastContainer.classList.add("show");
+        setTimeout(() => {
+            toastContainer.classList.remove("show");
+        }, 3000);
     }
 
 });

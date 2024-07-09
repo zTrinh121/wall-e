@@ -68,10 +68,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                         return response.json();
                     })
                     .then(data => {
+
                         const courseDetail = data.filter(course => course.courseId == courseId);
+
                         if (courseDetail[0]) {
-                            teacherName = courseDetail.teacherName;
-                            courseName = courseDetail.courseName;
+                            console.log(courseDetail.teacherName)
+                            teacherName = courseDetail[0].teacherName;
+                            courseName = courseDetail[0].courseName;
                             viewCourseDetails(courseDetail[0]);
                         } else {
                             console.log(`Course with courseId ${courseId} not found.`);

@@ -26,6 +26,7 @@ public class GuestController {
     }
 
     @GetMapping("/center-posts")
+    @ResponseBody
     public ResponseEntity<List<CenterPost>> getAllCenterPosts() {
         List<CenterPost> centerPosts = guestService.getAllCenterPosts();
         return centerPosts.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(centerPosts);
@@ -38,25 +39,29 @@ public class GuestController {
         return centers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(centers);
     }
 
-//    @GetMapping("/courses-in-center/{centerId}")
-//    public ResponseEntity<List<Course>> getCoursesInCertainCenter(@PathVariable int centerId) {
-//        List<Course> courses = guestService.getCoursesInCertainCenter(centerId);
-//        return courses.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(courses);
-//    }
+    @GetMapping("/courses-in-center/{centerId}")
+    @ResponseBody
+    public ResponseEntity<List<Course>> getCoursesInCertainCenter(@PathVariable int centerId) {
+        List<Course> courses = guestService.getCoursesInCertainCenter(centerId);
+        return courses.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(courses);
+    }
 
     @GetMapping("/teachers-in-center/{centerId}")
+    @ResponseBody
     public ResponseEntity<List<User>> getTeachersInCertainCenter(@PathVariable int centerId) {
         List<User> teachers = guestService.getTeachersInCertainCenter(centerId);
         return teachers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(teachers);
     }
 
     @GetMapping("/feedbacks-to-teacher")
+    @ResponseBody
     public ResponseEntity<List<Feedback>> getFeedbacksToTeacher() {
         List<Feedback> feedbacks = guestService.getFeedbacksToTeacher();
         return feedbacks.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(feedbacks);
     }
 
     @GetMapping("/slots-in-course/{courseId}")
+    @ResponseBody
     public ResponseEntity<List<Map<String, Object>>> getSlotsInCourse(@PathVariable int courseId) {
         List<Map<String, Object>> slotsInCourse = guestService.getSlotsInCourse(courseId);
         return new ResponseEntity<>(slotsInCourse, HttpStatus.OK);

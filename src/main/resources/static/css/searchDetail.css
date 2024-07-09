@@ -91,3 +91,34 @@ form input{
 a:hover{
   text-decoration: underline;
 }
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.return{
+  margin-top: 1rem;
+  margin-left: 2rem;
+}
+
+table,
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 0.5rem;
+}
+thead tr th{
+
+  background: #2548a0;
+  color: #fff;
+}
+
+#registerBtn{
+  width: 5rem;
+  color: #fff;
+  border: none;
+  border-radius: 1rem;
+  background: #2548a0;
+  cursor: pointer;
+}

@@ -5,12 +5,13 @@
     <title>Chi tiết tìm kiếm</title>
       <link rel="stylesheet" href="/css/searchDetail.css">
     <script src="/js/searchDetail.js"></script>
-
+    <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
 
     <!-- Font Awesome Cdn Link -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css"/>
 </head>
 <body>
+<i class="return fas fa-arrow-left" onclick="history.back()"></i>
     <div class="wrapper">
         <p th:text="${param.courseId}" id="courseId" style="display: none"></p>
         <p th:text="${param.centerId}" id="centerId" style="display: none"></p>
@@ -22,19 +23,41 @@
                 <p><strong>Địa chỉ:</strong> <span id="center-address"></span></p>
                 <p><strong>Email:</strong> <span id="center-email"></span></p>
             </div>
-
+            <p><strong>Điều lệ:</strong> <span id="center-regulation"></span></p>
             <h2>Thông tin quản lý</h2>
             <p><strong>Họ và tên:</strong> <span id="manager-name"></span></p>
             <div>
                 <p><strong>SĐT:</strong> <span id="manager-phone"></span></p>
                 <p><strong>Email:</strong> <span id="manager-email"></span></p>
             </div>
+
+            <table id="teachers-table" class="table">
+                <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Phone</th>
+                    <th>Profile Image</th>
+                </tr>
+                </thead>
+                <tbody id="teachers-table-body">
+                </tbody>
+            </table>
         </div>
         <div id="course-info" style="display: none;">
             <h1>Thông tin khóa học</h1>
             <p><strong>Mô tả:</strong> <span id="course-description"></span></p>
-            <p><strong>Lịch học:</strong> <span id="course-schedule"></span></p>
-            <p><strong>Giảng viên:</strong> <span id="course-instructor"></span></p>
+            <p><strong>Thời gian</strong> <span id="course-time"></span></p>
+            <div>
+                <p><strong>Giảng viên:</strong> <span id="course-instructor"></span></p>
+                <p><strong>Số lượng học sinh:</strong> <span id="course-amountStudent"></span></p>
+            </div>
+            <p><strong>Học phí</strong> <span id="course-fee"></span></p>
+            <div>
+                <p><strong>Lịch học (dự kiến)</strong> <span id="course-schedule"></span></p>
+                <button id="registerBtn" class="uk-button uk-button-primary">Đăng ký</button>
+            </div>
+            <div id='calendar'></div>
         </div>
     </div>
 

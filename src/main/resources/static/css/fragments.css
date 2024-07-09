@@ -697,7 +697,7 @@ select#searchType:focus {
     width: 50%;
     height: 45px;
     background: #fff;
-    border-radius: 3rem;
+    border-radius: 1rem;
     align-items: center;
     padding: .3rem;
     position: relative;
@@ -720,7 +720,7 @@ select#searchType:focus {
 .search button {
     height: 100%;
     padding: 0 1rem;
-    border-radius: inherit;
+    border-radius: 1rem;
     background: #2e4ead;
     border: none;
     outline: none;
@@ -758,16 +758,14 @@ select#searchType:focus {
     background: #f1f1f1;
 }
 #search-results {
-    display: none; /* Ẩn khi không có kết quả hoặc chưa tìm kiếm */
+    display: none;
     position: absolute;
     background: white;
-    top: 42px;
-    left: 13px;
-    width: 93%;
+    top: 44px;
+    width: 100%;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 1000;
-    border-top-left-radius: 0px;
-    border-top-right-radius: 0px;
+    border-radius: 0 0 1rem 1rem;
 }
 
 .search-item {
@@ -788,4 +786,8 @@ select#searchType:focus {
 
 .page-button{
     background: none;
+}
+
+.search.open {
+    border-radius: 1rem 1rem 0 0;
 }

@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     const urlParams = new URLSearchParams(window.location.search);
     const keyword = urlParams.get('keyword');
+    document.getElementById('search-input').value = keyword;
     if (keyword) {
         fetch(`/api/student/searchh?keyword=${keyword}`)
             .then(response => response.json())
@@ -50,11 +51,11 @@ document.addEventListener('DOMContentLoaded', function () {
                         </div>
                         <div class="float-gallery-content">
                             <div class="content uk-text-left">
-                                <span class="highlight uk-block">More information</span>
-                                <a href="#">Click to get detail</a>
+                                <span class="highlight uk-block">Thêm thông tin</span>
+                                <a href="searchDetail?courseId=${item.id}centerId=${item.centerId}">Nhấn để xem chi tiết</a>
                             </div>
                             <div class="content-btn">
-                                <button type="button" class="show-details-btn">
+                                <button type="button" class="show-details-btn" href="searchDetail?courseId=${item.id}centerId=${item.centerId}">
                                     &#8594;
                                 </button>
                             </div>
@@ -62,10 +63,28 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                     }
                     else{
-
+                        listItem.innerHTML = `
+                        <span></span>
+                        <div class="img-gal">
+                            <img src="https://www.shutterstock.com/image-vector/3d-web-vector-illustrations-online-600nw-2152289507.jpg" />
+                            <div class="main-content" style="">
+                                <h3>Trung tâm: ${item.name}</h3>
+                            </div>
+                        </div>
+                        <div class="float-gallery-content">
+                            <div class="content uk-text-left">
+                                <span class="highlight uk-block">Thêm thông tin</span>
+                                <a href="searchDetail?centerId=${item.id}">Nhấn để xem chi tiết</a>
+                            </div>
+                            <div class="content-btn">
+                                <button type="button" href="searchDetail?centerId=${item.id}" class="show-details-btn">
+                                    &#8594;
+                                </button>
+                            </div>
+                        </div>
+                    `;
 
                     }
-
 
                     resultsContainer.appendChild(listItem);
                 });
