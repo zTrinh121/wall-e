@@ -95,7 +95,7 @@ public interface StudentService {
     void enrollTheNewCourse(int studentId, int courseId);
 
 
-
+    List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId);
 
 
     // -----------------------------------------------------------------------

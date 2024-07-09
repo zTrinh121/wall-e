@@ -153,7 +153,6 @@ document.addEventListener("DOMContentLoaded", async function () {
             allNotificationSeen.push(...allNotificationPrivateSeen);
             allNotificationsUnseen.push(...allNotificationPrivateUnseen);
 
-
             notificationCount = allNotificationsUnseen.length;
 
             if (notificationCount > 0) {
@@ -165,13 +164,26 @@ document.addEventListener("DOMContentLoaded", async function () {
 
             allNotifications.push(...data.individualNotifications);
             allNotifications.push(...data.systemNotifications);
-            allNotifications.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+            console.log(allNotifications)
 
-            displayNotifications(allNotifications);
+            const allNotificaitonSort = allNotifications.sort((a, b) => parseStringToDate(b.createdAt) - parseStringToDate(a.createdAt));
+            displayNotifications(allNotificaitonSort);
         } catch (error) {
             console.error('Error fetching notifications:', error);
         }
     }
+
+    function parseStringToDate(dateString) {
+        const [datePart, timePart] = dateString.split(' ');
+        const [day, month, year] = datePart.split('-');
+        const [hours, minutes, seconds] = timePart.split(':');
+
+        // JavaScript uses month index 0-11, so we subtract 1 from the month
+        return new Date(year, month - 1, day, hours, minutes, seconds);
+    }
+
+    allNotifications.sort((a, b) => parseStringToDate(b.createdAt) - parseStringToDate(a.createdAt));
+
 
 
     async function checkHasSeenCenterNotification(centerNotificationId) {
@@ -195,7 +207,7 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function displayNotifications(notifications) {
         contentNotification.innerHTML = ''; // Clear existing notifications
-
+        console.log(notifications)
         const maxDisplay = 5;
         let displayedCount = 0;
         let moreButton;
@@ -486,7 +498,7 @@ $(document).ready(function() {
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        console.log(item)
+                        console.log(item);
                         var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
                         dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
                     });
@@ -498,6 +510,9 @@ $(document).ready(function() {
                         sessionStorage.setItem('searchDetails', $(this).text());
                         window.location.href = url;
                     });
+
+                    // Change border-radius of search class
+                    $('.search').addClass('open');
                 },
                 error: function(error) {
                     console.error('Error fetching search results:', error);
@@ -505,14 +520,14 @@ $(document).ready(function() {
             });
         } else {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 });
-
-

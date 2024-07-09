@@ -62,26 +62,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     `;
                     }
                     else{
-                        listItem.innerHTML = `
-                        <span></span>
-                        <div class="img-gal">
-                            <img src="https://www.shutterstock.com/image-vector/3d-web-vector-illustrations-online-600nw-2152289507.jpg" />
-                            <div class="main-content">
-                                <h3>Trung tâm: ${item.name}</h3>
-                            </div>
-                        </div>
-                        <div class="float-gallery-content">
-                            <div class="content uk-text-left">
-                                <span class="highlight uk-block">Thông tin chi tiết</span>
-                                <a href="#">Nhấn vào để xem chi tiết</a>
-                            </div>
-                            <div class="content-btn">
-                                <button type="button" class="show-details-btn">
-                                    &#8594;
-                                </button>
-                            </div>
-                        </div>
-                    `;
+
 
                     }
 

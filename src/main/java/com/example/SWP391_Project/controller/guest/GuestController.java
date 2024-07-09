@@ -3,6 +3,7 @@ package com.example.SWP391_Project.controller.guest;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.service.GuestService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -56,14 +57,8 @@ public class GuestController {
     }
 
     @GetMapping("/slots-in-course/{courseId}")
-    public ResponseEntity<List<Slot>> getSlotsInCertainCourse(@PathVariable int courseId) {
-        List<Slot> slots = guestService.getSlotsInCertainCourse(courseId);
-        return slots.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(slots);
-    }
-
-    @GetMapping("/courses-in-center/{centerId}")
-    public ResponseEntity<List<Map<String, Object>>> getCoursesInCenter(@PathVariable int centerId) {
-        List<Map<String, Object>> courses = guestService.getCoursesInCenter(centerId);
-        return ResponseEntity.ok().body(courses);
+    public ResponseEntity<List<Map<String, Object>>> getSlotsInCourse(@PathVariable int courseId) {
+        List<Map<String, Object>> slotsInCourse = guestService.getSlotsInCourse(courseId);
+        return new ResponseEntity<>(slotsInCourse, HttpStatus.OK);
     }
 }
