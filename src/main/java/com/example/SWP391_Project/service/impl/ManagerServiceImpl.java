@@ -344,8 +344,8 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
     @Override
-    public List<ApplyCenter> viewApplyCenterForm(int managerId) {
-        return applyCenterRepository.findApplyCentersByManagerId(managerId);
+    public List<ApplyCenter> viewApplyCenterForm(int centerId) {
+        return applyCenterRepository.findByStatusAndCenter_Id(Status.Wait_to_process, centerId);
     }
 
     @Override
@@ -1049,6 +1049,121 @@ public class ManagerServiceImpl implements ManagerService {
         return batchArgs;
     }
     // ---------------------------------------------------------------------------
+
+    public List<TeacherSalaryResponse> getTeacherSalaries(int month, int year, Long centerId) {
+        String sql = "SELECT " +
+                "    u.C14_USER_ID AS TeacherId, " +
+                "    u.c14_name AS TeacherName, " +
+                "    SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
+                "FROM " +
+                "    t14_user u " +
+                "JOIN " +
+                "    (SELECT " +
+                "         c.C01_TEACHER_ID AS TeacherId, " +
+                "         s.C02_COURSE_ID AS CourseId, " +
+                "         COUNT(*) AS C02_SLOTS_COUNT " +
+                "     FROM " +
+                "         t01_course c " +
+                "     JOIN " +
+                "         t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "     WHERE " +
+                "         MONTH(s.c02_slot_date) = :month " +
+                "         AND YEAR(s.c02_slot_date) = :year " +
+                "     GROUP BY " +
+                "         c.C01_TEACHER_ID, s.C02_COURSE_ID " +
+                "    ) s ON u.C14_USER_ID = s.TeacherId " +
+                "JOIN " +
+                "    t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "WHERE " +
+                "    c.C01_CENTER_ID = :centerId " +
+                "GROUP BY " +
+                "    u.C14_USER_ID, u.c14_name";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        List<Object[]> results = query.getResultList();
+
+        return results.stream()
+                .map(result -> new TeacherSalaryResponse(
+                        ((Number) result[0]).longValue(),
+                        (String) result[1],
+                        ((Number) result[2]).doubleValue()))
+                .toList();
+    }
+
+    public Double getTotalTeacherSalary(int month, int year, Long centerId) {
+        String sql = "SELECT SUM(TotalSalary) AS TotalTeacherSalary " +
+                "FROM ( " +
+                "    SELECT " +
+                "        u.C14_USER_ID AS TeacherId, " +
+                "        SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
+                "    FROM " +
+                "        t14_user u " +
+                "    JOIN " +
+                "        (SELECT " +
+                "             c.C01_TEACHER_ID AS TeacherId, " +
+                "             s.C02_COURSE_ID AS CourseId, " +
+                "             COUNT(*) AS C02_SLOTS_COUNT " +
+                "         FROM " +
+                "             t01_course c " +
+                "         JOIN " +
+                "             t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "         WHERE " +
+                "             MONTH(s.c02_slot_date) = :month " +
+                "             AND YEAR(s.c02_slot_date) = :year " +
+                "         GROUP BY " +
+                "             c.C01_TEACHER_ID, s.C02_COURSE_ID " +
+                "        ) s ON u.C14_USER_ID = s.TeacherId " +
+                "    JOIN " +
+                "        t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "    WHERE " +
+                "        c.C01_CENTER_ID = :centerId " +
+                "    GROUP BY " +
+                "        u.C14_USER_ID " +
+                ") AS TotalSalaries";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        Object result = query.getSingleResult();
+
+        return result != null ? ((Number) result).doubleValue() : 0.0;
+    }
+
+    public Double getMonthlyRevenue(int month, int year, Long centerId) {
+        String sql = "SELECT SUM(c.C01_COURSE_FEE) AS TotalRevenue " +
+                "FROM t08_bill b " +
+                "JOIN t15_enrollment e ON b.c08_enrollment_id = e.C15_ENROLLMENT_ID " +
+                "JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
+                "WHERE c.C01_CENTER_ID = :centerId " +
+                "AND b.c08_status = 1 " + // Assuming status 1 indicates a paid bill
+                "AND MONTH(b.C08_CREATED_AT) = :month " +
+                "AND YEAR(b.C08_CREATED_AT) = :year";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        Object result = query.getSingleResult();
+
+        return result != null ? ((Number) result).doubleValue() : 0.0;
+    }
+
+    public Double getMonthlyProfit(int month, int year, Long centerId) {
+        Double revenue = getMonthlyRevenue(month, year, centerId);
+        Double totalTeacherSalary = getTotalTeacherSalary(month, year, centerId);
+        return revenue - totalTeacherSalary;
+    }
+
+
+
+
 }
 
 
