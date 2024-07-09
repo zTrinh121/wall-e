@@ -1,17 +1,14 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
 
 <head>
-    <meta charset="UTF-8"/>
-    <title>Chi tiết trung tâm</title>
-    <link rel="stylesheet" href="/css/centerDetail.css"/>
-    <link rel="stylesheet" href="/css/managerHome.css"/>
-    <link rel="stylesheet" href="/css/RevenueLine.css"/>
+    <meta charset="UTF-8" />
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/managerHome.css" />
+    <link rel="stylesheet" href="/css/managerPost.css">
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
-    <script src="/js/centerDetail.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -44,6 +41,8 @@
                             <i class="fas fa-angle-down"></i>
                         </span>
                 </div>
+
+
 
                 <ul class="profile-dropdown-list">
                     <li class="profile-dropdown-list-item">
@@ -88,6 +87,7 @@
             </div>
         </div>
     </div>
+
     <div class="sidebar">
         <ul>
             <li>
@@ -101,7 +101,13 @@
                     <span class="title">Thông báo</span></a>
             </li>
             <li>
-                <a href="/manager/mpost">
+                <a href="#">
+                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
+                    <span class="title">Doanh thu</span>
+                </a>
+            </li>
+            <li>
+                <a href="/manager/mpost" class="active">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
                 </a>
@@ -110,11 +116,12 @@
     </div>
     <div class="main_container">
         <section id="content">
+
             <!-- MAIN -->
             <main>
                 <div class="head-title">
                     <div class="left">
-                        <h1><span id="centerDetailName"></span></h1>
+                        <h1 id="centerPostTitleHead">Ten tieu de bai dang - kem status</h1>
                         <div class="runline">
                             <p>Hôm nay là:
                                 <span id="currentDate"></span>
@@ -123,119 +130,56 @@
                     </div>
                 </div>
 
-                <ul class="box-info">
-                    <li>
-                        <i class="bx bxs-calendar-check">
-                            <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
-                        </i>
-                        <span class="text">
-                  <a href="/manager/qlhv" id="boxInfos">
-                    <h3 id="nums">0</h3>
-                    <p>Học viên</p>
-                  </a>
-                </span>
-                    </li>
-                    <li>
-                        <i class='bx bxs-group'>
-                            <i class="fa-solid fa-person-chalkboard"></i>
-                        </i>
-                        <span class="text">
-                  <a href="/manager/qlgv" id="boxInfot">
-                    <h3 id="numt">0</h3>
-                    <p>Giáo viên</p>
-                  </a>
-                </span>
-                    </li>
-                    <li>
-                        <i class='bx bxs-dollar-circle'>
-                            <i class="fa-solid fa-layer-group"></i>
-                        </i>
-                        <span class="text">
-                    <a href=`/manager/qlkh?centerId=${center.id}` data-id="${center.id}" id="boxInfoc">
-                        <h3 id="numc">0</h3>
-                        <p>Khoá học</p>
-                    </a>
-                </span>
-                    </li>
-                    <li>
-                        <i class='bx bxs-dollar-circle'>
-                            <i class="fa-solid fa-money-bill-trend-up"></i>
-                        </i>
-                        <span class="text">
-                    <a href=`/manager/dthu` data-id="${center.id}" id="boxInfom">
-                        <h3 id="moneyC">0</h3>
-                        <p>Doanh thu</p>
-                    </a>
-                </span>
-                    </li>
-                </ul>
-
-                <!-- Edit Description Modal -->
-                <div id="editDescriptionModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="closeEditModal()">&times;</span>
-                        <h2>Chỉnh sửa mô tả trung tâm</h2>
-                        <textarea id="descriptionInput" rows="6" cols="50"></textarea>
-                        <button id="saveDescription">Lưu</button>
-                    </div>
-                </div>
-
                 <div class="table-data">
                     <div class="order">
-                        <div class="customizeChart">
-                            <div style="height: 85%; width: 100%;">
-                                <canvas id="myChart"></canvas>
+                        <div class="head">
+                            <h3 id="timeCreated">Thoi gian dang bai 22/06/2024</h3>
+                            <div class="filter" style="display: none;">
+                                <select name="codeids" id="codeid">
+                                </select>
                             </div>
+                        </div>
+                        <div>
+                        <span>
+                            <span id="imagePath">hinh anh..</span><br>
+                            <span id="postContent"> Noi dung ...</span><br>
+                            <span id="posterName">Ten tac gia ...</span>
+                        </span>
+                        </div>
+
+                        <div id="no-result">No result</div>
+                        <!--                        <div id="paginationControls" class="pagination-controls"></div>-->
+                        <!-- Toast Notification -->
+                        <div id="toast" class="toast">
+                            <div id="toastMessage"></div>
                         </div>
                     </div>
                 </div>
-                <!-- End: DELETE TOAST -->
             </main>
+            <!-- MAIN -->
         </section>
     </div>
+
 </div>
-<!-- Delete Modal-->
-<div id="deleteModaling" class="modal">
-    <div class="modal-content">
-        <p>Bạn có chắc chắn muốn xóa trung tâm <span id="centerName"></span>?</p>
-        <button id="confirmDele">Xác nhận</button>
-        <button id="cancelDeleBtn">Huỷ</button>
+<!-- Modal -->
+<div id="myModal" class="modal">
+    <div class="modal-content" id="modal-detail">
+        <span class="close">&times;</span>
+        <iframe data-id="${center.id}" width="1250" height="500" frameborder="0"
+                scrolling="auto"></iframe>
     </div>
 </div>
-<!--TOAST-->
-<div id="toast">
-    <p></p>
-</div>
-<script>
-    const ctx = document.getElementById('myChart');
 
-    new Chart(ctx, {
-      type: 'line',
-      data: {
-        labels: ['March', 'April', 'May', 'June', 'July', 'August'],
-        datasets: [
-          {
-            label: 'Teacher Payment',
-            data: [120, 190, 300, 250, 220, 430],
-            borderWidth: 1
-          },
-          {
-            label: 'Course Earning',
-            data: [140, 220, 150, 340, 320, 850],
-            borderWidth: 1
-          }
-        ]
-      },
-      options: {
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    });
-</script>
-<script src="/js/getCount.js"></script>
+<!-- Delete Modal -->
+<div id="deleteModal" class="modal">
+    <div class="modal-content">
+        <p>Bạn có chắc chắn muốn xóa bài đăng <span id="postName"></span>?</p>
+        <button id="confirmDelete">Xác nhận</button>
+        <button id="cancelDeleteButton">Huỷ</button>
+    </div>
+</div>
+
+<script src="/js/centerPostDetail.js" type="module"></script>
 <script src="/js/dropdown.js"></script>
 
 </body>

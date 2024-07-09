@@ -167,13 +167,37 @@ public class ManagerLearningController {
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 
+//    @GetMapping("/view-applyCenter-form")
+//    public ResponseEntity<List<ApplyCenter>> getTeachersInCenter(HttpSession session) {
+//        Integer managerId = (Integer) session.getAttribute("authid");
+//        if (managerId == null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+//        }
+//
+//        List<ApplyCenter> forms = managerService.viewApplyCenterForm(managerId);
+//        if (forms.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(forms, HttpStatus.OK);
+//    }
     @GetMapping("/view-applyCenter-form/{centerId}")
-    public ResponseEntity<List<ApplyCenter>> viewTeachersApplyForm(@PathVariable int centerId) {
+    public ResponseEntity<List<ApplyCenter>> ViewTeachersApplyForm(@PathVariable int centerId) {
         List<ApplyCenter> forms = managerService.viewApplyCenterForm(centerId);
         if (forms.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(forms, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-detail-apply-form/{applyId}")
+    public ResponseEntity<ApplyCenter> getApplyCenter(@PathVariable int applyId) {
+        ApplyCenter applyCenter = managerService.viewApplyFormDetail(applyId);
+
+        if (applyCenter != null) {
+            return ResponseEntity.ok(applyCenter); // Return 200 OK with ApplyCenter object
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return 404 Not Found
+        }
     }
 
     @PatchMapping("/approveTeacher/{id}")
