@@ -297,14 +297,12 @@ StudentServiceImpl implements StudentService {
     public List<Map<String, Object>> searchh(String keyword) {
         String query = "SELECT c.C01_COURSE_ID as id, c.C01_COURSE_NAME as name, c.C01_COURSE_CODE as code, c.C01_COURSE_DESC as description, " +
                 "c.C01_COURSE_START_DATE as startDate, c.C01_COURSE_END_DATE as endDate, c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, " +
-                "c.C01_COURSE_FEE as fee, c.C01_CENTER_ID as centerId, c.C01_TEACHER_ID as teacherId, c.C01_SUBJECT_NAME as subject " +
+                "c.C01_COURSE_FEE as fee, c.C01_CENTER_ID as centerId, c.C01_TEACHER_ID as teacherId, c.C01_SUBJECT_NAME as subject, 'Course' as type " +
                 "FROM t01_course c WHERE c.C01_COURSE_NAME LIKE :keyword " +
                 "UNION " +
-                "SELECT cn.C03_CENTER_ID as id, cn.C03_CENTER_NAME as name, '' as code, '' as description, " +
-                "'' as startDate, '' as endDate, '' as amountOfStudents, '' as fee, '' as centerId, '' as teacherId, '' as subject " +
+                "SELECT cn.C03_CENTER_ID as id, cn.C03_CENTER_NAME as name, NULL as code, NULL as description, " +
+                "NULL as startDate, NULL as endDate, NULL as amountOfStudents, NULL as fee, NULL as centerId, NULL as teacherId, NULL as subject, 'Center' as type " +
                 "FROM t03_center cn WHERE cn.C03_CENTER_NAME LIKE :keyword";
-
-
 
         System.out.println("Query: " + query);
 
@@ -327,15 +325,12 @@ StudentServiceImpl implements StudentService {
             resultMap.put("centerId", result[8]);
             resultMap.put("teacherId", result[9]);
             resultMap.put("subject", result[10]);
+            resultMap.put("type", result[11]);
             results.add(resultMap);
         }
 
         return results;
     }
-
-
-
-
     @Transactional
     @Override
     public List<Map<String, String>> search(String keyword) {

@@ -53,7 +53,7 @@ public ResponseEntity<List<Map<String, Object>>> getScheduleByCourseId(@PathVari
 }
 
 // CRUD điểm
-    @GetMapping("/courses/{courseId}/students/{studentId}/results")
+    @GetMapping("/courses/{courseId}/students/{studentId}/resu.show-details-btnlts")
 public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
     List<Map<String, Object>> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
     return ResponseEntity.ok(results);
