@@ -19,6 +19,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -33,6 +34,8 @@ public class StudentController {
     private JavaMailSenderImpl mailSender;
     @Autowired
     private UserServiceImpl userServiceImpl;
+    @Autowired
+    private HttpSession httpSession;
 
     @GetMapping("/student-dashboard")
     public String studentDashboard(Model model, HttpSession session) {
@@ -94,12 +97,23 @@ public class StudentController {
     }
 
 
+//    @GetMapping("/search")
+//    @ResponseBody  // Đảm bảo rằng dữ liệu trả về là JSON/XML
+//    public List<Map<String, String>> search(@RequestParam String keyword) {
+//        return studentService.search(keyword);
+//    }
+
+    @GetMapping("/searchh")
+    @ResponseBody
+    public List<Map<String, Object>> searchh(@RequestParam String keyword) {
+        return studentService.searchh(keyword);
+    }
+
     @GetMapping("/search")
-    @ResponseBody  // Đảm bảo rằng dữ liệu trả về là JSON/XML
+    @ResponseBody
     public List<Map<String, String>> search(@RequestParam String keyword) {
         return studentService.search(keyword);
     }
-
 
     @Autowired
     private UserService userService;
@@ -346,6 +360,49 @@ public class StudentController {
     }
     // ---------------------------------------------------------------------
 
+    @GetMapping("/{studentId}/courses/{courseId}/attendance")
+    @ResponseBody
+    public List<Map<String, Object>> getAttendanceGraph(@PathVariable int studentId, @PathVariable int courseId) {
+        return studentService.viewAttendanceGraph(studentId, courseId);
+    }
+
+
+    @PostMapping("/feedback")
+    public ResponseEntity<Feedback> createFeedback(
+            @RequestParam(value = "sendToUserId", required = false) Integer sendToUserId,
+            @RequestParam(value = "sendToCourseId", required = false) Integer sendToCourseId,
+            @RequestParam("description") String description,
+            @RequestParam("rating") int rating,
+            HttpSession session) {
+
+        User actor = (User) session.getAttribute("user");
+        if (actor == null) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        }
+
+        User sendToUser = sendToUserId != null ? userService.findById(sendToUserId) : null;
+        Course sendToCourse = sendToCourseId != null ? studentService.findCourseById(sendToCourseId) : null;
+
+        Feedback feedback = Feedback.builder()
+                .description(description)
+                .actor(actor)
+                .sendToUser(sendToUser)
+                .sendToCourse(sendToCourse)
+                .rating(rating)
+                .createdAt(new Date())
+                .build();
+
+        Feedback createdFeedback = studentService.createFeedback(feedback);
+        return ResponseEntity.ok(createdFeedback);
+    }
+    @GetMapping("/center/{centerId}/courses")
+    @ResponseBody
+    public ResponseEntity<List<Map<String, Object>>> getCoursesByCenterId(@PathVariable int centerId) {
+        List<Map<String, Object>> courses = studentService.getCoursesByCenterId(centerId);
+        return ResponseEntity.ok(courses);
+    }
+
+
     // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
     @GetMapping("/checkOverviewAttendance/{courseId}")
     @ResponseBody
@@ -398,6 +455,7 @@ public class StudentController {
 
         return ResponseEntity.ok(duplicateWeekdaysMap);
     }
+
 
 
 

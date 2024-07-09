@@ -38,24 +38,38 @@
                 Wall-E
             </div>
 
-            <form action="" class="search">
+            <form action="search" method="get" class="search">
                 <i class="fa fa-search"></i>
                 <input
                         type="text"
+                        name="keyword"
                         required
                         placeholder="Tìm kiếm trung tâm/khóa học"
                         id="search-input"
                 />
                 <div class="search-results" id="search-results"></div>
+                <button type="submit" class="search-btn">Tìm</button>
             </form>
 
+
+<!--            <form action="/search" method="get" class="search">-->
+<!--                <i class="fa fa-search"></i>-->
+<!--                <input-->
+<!--                        type="text"-->
+<!--                        name="keyword"-->
+<!--                        required-->
+<!--                        placeholder="Tìm kiếm trung tâm/khóa học"-->
+<!--                        id="search-input"-->
+<!--                />-->
+<!--                <button type="submit" class="search-btn">Tìm</button>-->
+<!--            </form>-->
 
 
             <div class="item-drop-down">
                 <div class="notification">
                     <div id="bell">
                         <i class="fas fa-bell"></i>
-<!--                        <span id="notificationCount" class="notification-count" th:text="${notificationCount}">0</span>-->
+                        <!--                        <span id="notificationCount" class="notification-count" th:text="${notificationCount}">0</span>-->
                         <span id="notificationCount" class="notification-count" >0</span>
                     </div>
                     <div class="content-notification">
@@ -79,7 +93,7 @@
                             <span th:if="${session.user?.profileImage == null}">
                                 <img class="profile-img" src="/images/3d-ava.jpg">
                             </span>
-                            <span  th:if="${session.user?.profileImage != null}">
+                        <span  th:if="${session.user?.profileImage != null}">
                                 <img class="profile-img" th:attr="src=@{${session.user?.profileImage}}"/>
                             </span>
 

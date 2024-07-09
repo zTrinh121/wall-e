@@ -780,10 +780,16 @@ public class UserController {
         return "teacher-studentDetail";
     }
 
+//        @GetMapping("/search")
+//        public String searchAll(HttpSession session, Model model) {
+//            User user = (User) session.getAttribute("user");
+//            model.addAttribute("user", user);
+//            return "search";
+//        }
+
     @GetMapping("/search")
-    public String searchAll(HttpSession session, Model model) {
-        User user = (User) session.getAttribute("user");
-        model.addAttribute("user", user);
+    public String search(@RequestParam String keyword, Model model) {
+        model.addAttribute("keyword", keyword);
         return "search";
     }
 

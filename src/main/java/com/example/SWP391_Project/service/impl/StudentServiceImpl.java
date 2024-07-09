@@ -7,15 +7,16 @@ import com.example.SWP391_Project.response.DuplicateSlotInfo;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
+
+import jakarta.persistence.*;
+
 import jakarta.persistence.Query;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
 
 
 import java.time.DayOfWeek;
@@ -275,6 +276,52 @@ StudentServiceImpl implements StudentService {
         return slots;
     }
 
+//       System.out.println("Query: " + query);
+//        System.out.println("CourseId: " + keyword);
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> searchh(String keyword) {
+        String query = "SELECT c.C01_COURSE_ID as id, c.C01_COURSE_NAME as name, c.C01_COURSE_CODE as code, c.C01_COURSE_DESC as description, " +
+                "c.C01_COURSE_START_DATE as startDate, c.C01_COURSE_END_DATE as endDate, c.C01_AMOUNT_OF_STUDENTS as amountOfStudents, " +
+                "c.C01_COURSE_FEE as fee, c.C01_CENTER_ID as centerId, c.C01_TEACHER_ID as teacherId, c.C01_SUBJECT_NAME as subject " +
+                "FROM t01_course c WHERE c.C01_COURSE_NAME LIKE :keyword " +
+                "UNION " +
+                "SELECT cn.C03_CENTER_ID as id, cn.C03_CENTER_NAME as name, '' as code, '' as description, " +
+                "'' as startDate, '' as endDate, '' as amountOfStudents, '' as fee, '' as centerId, '' as teacherId, '' as subject " +
+                "FROM t03_center cn WHERE cn.C03_CENTER_NAME LIKE :keyword";
+
+
+
+        System.out.println("Query: " + query);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("keyword", "%" + keyword + "%");
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("id", result[0]);
+            resultMap.put("name", result[1]);
+            resultMap.put("code", result[2]);
+            resultMap.put("description", result[3]);
+            resultMap.put("startDate", result[4]);
+            resultMap.put("endDate", result[5]);
+            resultMap.put("amountOfStudents", result[6]);
+            resultMap.put("fee", result[7]);
+            resultMap.put("centerId", result[8]);
+            resultMap.put("teacherId", result[9]);
+            resultMap.put("subject", result[10]);
+            results.add(resultMap);
+        }
+
+        return results;
+    }
+
+
+
 
     @Transactional
     @Override
@@ -301,6 +348,7 @@ StudentServiceImpl implements StudentService {
 
         return results;
     }
+
 
     @Override
     public List<Material> getAllMaterials() {
@@ -733,6 +781,81 @@ StudentServiceImpl implements StudentService {
         // Check if there is overlapping time
         return !(slot1.getSlotEndTime().before(slot2.getSlotStartTime()) || slot1.getSlotStartTime().after(slot2.getSlotEndTime()));
     }
+
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> viewAttendanceGraph(int studentId, int courseId) {
+        String query = "SELECT " +
+                "COUNT(*) AS total_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 0 THEN 1 ELSE 0 END) AS absent_slots, " +
+                "SUM(CASE WHEN ss.c17_attendance_status = 1 THEN 1 ELSE 0 END) AS present_slots " +
+                "FROM t02_slot s " +
+                "JOIN t01_course c ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "JOIN t17_student_slot ss ON ss.C17_SLOT_ID = s.C02_SLOT_ID " +
+                "WHERE ss.C17_STUDENT_ID = :studentId AND c.C01_COURSE_ID = :courseId AND s.c02_slot_date <= NOW()";
+
+        System.out.println("Query: " + query);
+        System.out.println("Student ID: " + studentId);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("studentId", studentId);
+        nativeQuery.setParameter("courseId", courseId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> attendanceResults = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> attendanceMap = new HashMap<>();
+            attendanceMap.put("totalSlots", result[0]);
+            attendanceMap.put("absentSlots", result[1]);
+            attendanceMap.put("presentSlots", result[2]);
+
+            attendanceResults.add(attendanceMap);
+        }
+
+        return attendanceResults;
+    }
+
+
+    @Override
+    public Feedback createFeedback(Feedback feedback) {
+        return feedbackRepository.save(feedback);
+    }
+
+    @Override
+    public Course findCourseById(int courseId) {
+        return courseRepository.findById(courseId)
+                .orElseThrow(() -> new EntityNotFoundException("Course not found with ID: " + courseId));
+    }
+
+    @Transactional
+    @Override
+    public List<Map<String, Object>> getCoursesByCenterId(int centerId) {
+        String query = "SELECT c.C01_COURSE_ID as id, c.C01_COURSE_NAME as name, c.C01_COURSE_START_DATE as startDate, c.C01_COURSE_END_DATE as endDate " +
+                "FROM t01_course c WHERE c.C01_CENTER_ID = :centerId";
+
+        System.out.println("Query: " + query);
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("centerId", centerId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("id", result[0]);
+            resultMap.put("name", result[1]);
+            resultMap.put("startDate", result[2]);
+            resultMap.put("endDate", result[3]);
+            results.add(resultMap);
+        }
+
+        return results;
+    }
+
+
 
 
 
