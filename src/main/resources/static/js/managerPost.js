@@ -165,8 +165,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Center details:", data);
-                var queryUrl = "/manager/centerHome?";
-                queryUrl += "centerIdn=" + encodeURIComponent(data.id);
+                var queryUrl = "/manager/ctbd?";
+                queryUrl += "postIdn=" + encodeURIComponent(data.id);
                 console.log(queryUrl);
 
                 window.location.href = queryUrl;

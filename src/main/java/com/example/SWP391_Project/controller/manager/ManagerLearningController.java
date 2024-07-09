@@ -316,17 +316,17 @@ public class ManagerLearningController {
     }
 
     // ---------------------------- SLOTS ---------------------------------
-    @GetMapping("slots/byCenter/{centerId}")
+    @GetMapping("/slots/byCenter/{centerId}")
     public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
         return managerService.getSlotsByCenterId(centerId);
     }
 
-    @GetMapping("slots/bySlot/{slotId}")
+    @GetMapping("/slots/bySlot/{slotId}")
     public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
         return managerService.getSlotsBySlotId(slotId);
     }
 
-    @PostMapping("slots/create")
+    @PostMapping("/slots/create")
     public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
         try {
             Slot createdSlot = managerService.createSlot(slotDto);
@@ -336,7 +336,7 @@ public class ManagerLearningController {
         }
     }
 
-    @PutMapping("slots/update/{slotId}")
+    @PutMapping("/slots/update/{slotId}")
     public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
         try {
             Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
@@ -346,7 +346,7 @@ public class ManagerLearningController {
         }
     }
 
-    @DeleteMapping("slots/delete/{slotId}")
+    @DeleteMapping("/slots/delete/{slotId}")
     public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
         try {
             managerService.deleteSlot(slotId);
@@ -356,7 +356,7 @@ public class ManagerLearningController {
         }
     }
 
-    @PostMapping("overallSlots/certainCourse/insert")
+    @PostMapping("/overallSlots/certainCourse/insert")
     public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
                             @RequestParam String courseCode,
                             @RequestParam String roomName) {
@@ -369,38 +369,27 @@ public class ManagerLearningController {
         return managerService.getTeacherSalaries(month, year, centerId);
     }
 
-    @GetMapping("/total-teacher-salary")
-    public Double getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
-        return managerService.getTotalTeacherSalary(month, year, centerId);
-    }
+//    @GetMapping("/total-teacher-salary")
+//    public List<Map<String, Object>> getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+//        return managerService.getTotalTeacherSalary(month, year, centerId);
+//    }
 
     @GetMapping("/monthly-revenue")
-    public Double getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+    public Map<String, Object> getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
         return managerService.getMonthlyRevenue(month, year, centerId);
     }
 
     @GetMapping("/monthly-profit")
-    public Double getMonthlyProfit(
+    public Map<String, Object> getMonthlyProfit(
             @RequestParam int month,
             @RequestParam int year,
             @RequestParam Long centerId) {
         return managerService.getMonthlyProfit(month, year, centerId);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @GetMapping("/total-teacher-salary")
+    public List<Map<String, Object>> getTotalTeacherSalary(@RequestParam int year, @RequestParam Long centerId) {
+        return managerService.getTotalTeacherSalaryForYear(year, centerId);
+    }
 
 }

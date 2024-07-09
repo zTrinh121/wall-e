@@ -234,10 +234,11 @@ public interface ManagerService {
 
     List<TeacherSalaryResponse> getTeacherSalaries(int month, int year, Long centerId);
 
-    Double getTotalTeacherSalary(int month, int year, Long centerId);
+    List<Map<String, Object>> getTotalTeacherSalary(int month, int year, Long centerId);
 
-    Double getMonthlyRevenue(int month, int year, Long centerId);
+    Map<String, Object> getMonthlyRevenue(int month, int year, Long centerId);
 
-    Double getMonthlyProfit(int month, int year, Long centerId);
+    Map<String, Object> getMonthlyProfit(int month, int year, Long centerId);
 
+    List<Map<String, Object>> getTotalTeacherSalaryForYear(int year, Long centerId);
 }

@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.math.BigDecimal;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Time;
@@ -1099,36 +1100,68 @@ public class ManagerServiceImpl implements ManagerService {
                 .toList();
     }
 
-    public Double getTotalTeacherSalary(int month, int year, Long centerId) {
-        String sql = "SELECT SUM(TotalSalary) AS TotalTeacherSalary " +
-                "FROM ( " +
-                "    SELECT " +
-                "        u.C14_USER_ID AS TeacherId, " +
-                "        SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
-                "    FROM " +
-                "        t14_user u " +
-                "    JOIN " +
-                "        (SELECT " +
-                "             c.C01_TEACHER_ID AS TeacherId, " +
-                "             s.C02_COURSE_ID AS CourseId, " +
-                "             COUNT(*) AS C02_SLOTS_COUNT " +
-                "         FROM " +
-                "             t01_course c " +
-                "         JOIN " +
-                "             t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
-                "         WHERE " +
-                "             MONTH(s.c02_slot_date) = :month " +
-                "             AND YEAR(s.c02_slot_date) = :year " +
-                "         GROUP BY " +
-                "             c.C01_TEACHER_ID, s.C02_COURSE_ID " +
-                "        ) s ON u.C14_USER_ID = s.TeacherId " +
-                "    JOIN " +
-                "        t01_course c ON s.CourseId = c.C01_COURSE_ID " +
-                "    WHERE " +
-                "        c.C01_CENTER_ID = :centerId " +
-                "    GROUP BY " +
-                "        u.C14_USER_ID " +
-                ") AS TotalSalaries";
+    @Override
+    public List<Map<String, Object>> getTotalTeacherSalary(int month, int year, Long centerId) {
+        String sql = "SELECT " +
+                "    :month AS Month, " +
+                "    :year AS Year, " +
+                "    SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " +
+                "FROM " +
+                "    t14_user u " +
+                "JOIN " +
+                "    (SELECT " +
+                "         c.C01_TEACHER_ID AS TeacherId, " +
+                "         s.C02_COURSE_ID AS CourseId, " +
+                "         COUNT(*) AS C02_SLOTS_COUNT " +
+                "     FROM " +
+                "         t01_course c " +
+                "     JOIN " +
+                "         t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "     WHERE " +
+                "         MONTH(s.c02_slot_date) = :month " +
+                "         AND YEAR(s.c02_slot_date) = :year " +
+                "     GROUP BY " +
+                "         c.C01_TEACHER_ID, s.C02_COURSE_ID " +
+                "    ) s ON u.C14_USER_ID = s.TeacherId " +
+                "JOIN " +
+                "    t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "WHERE " +
+                "    c.C01_CENTER_ID = :centerId ";
+
+        Query query = entityManager.createNativeQuery(sql)
+                .setParameter("month", month)
+                .setParameter("year", year)
+                .setParameter("centerId", centerId);
+
+        List<Object[]> resultList = query.getResultList();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("Month", month);
+            resultMap.put("Year", year);// Index 2 corresponds to TeacherId
+            resultMap.put("TotalSalary", result[2]); // Index 3 corresponds to TotalSalary
+            results.add(resultMap);
+        }
+
+        return results;
+    }
+
+    @Override
+    public Map<String, Object> getMonthlyRevenue(int month, int year, Long centerId) {
+        String sql = "SELECT " +
+                "    SUM(c.C01_COURSE_FEE) AS TotalRevenue " +
+                "FROM " +
+                "    t08_bill b " +
+                "JOIN " +
+                "    t15_enrollment e ON b.c08_enrollment_id = e.C15_ENROLLMENT_ID " +
+                "JOIN " +
+                "    t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
+                "WHERE " +
+                "    c.C01_CENTER_ID = :centerId " +
+                "    AND b.c08_status = 1 " + // Assuming status 1 indicates a paid bill
+                "    AND MONTH(b.C08_CREATED_AT) = :month " +
+                "    AND YEAR(b.C08_CREATED_AT) = :year ";
 
         Query query = entityManager.createNativeQuery(sql)
                 .setParameter("month", month)
@@ -1137,37 +1170,109 @@ public class ManagerServiceImpl implements ManagerService {
 
         Object result = query.getSingleResult();
 
-        return result != null ? ((Number) result).doubleValue() : 0.0;
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("Month", month);
+        resultMap.put("Year", year);
+        resultMap.put("TotalRevenue", result != null ? result : BigDecimal.ZERO); // Handle null result
+
+        return resultMap;
     }
 
-    public Double getMonthlyRevenue(int month, int year, Long centerId) {
-        String sql = "SELECT SUM(c.C01_COURSE_FEE) AS TotalRevenue " +
-                "FROM t08_bill b " +
-                "JOIN t15_enrollment e ON b.c08_enrollment_id = e.C15_ENROLLMENT_ID " +
-                "JOIN t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
-                "WHERE c.C01_CENTER_ID = :centerId " +
-                "AND b.c08_status = 1 " + // Assuming status 1 indicates a paid bill
-                "AND MONTH(b.C08_CREATED_AT) = :month " +
-                "AND YEAR(b.C08_CREATED_AT) = :year";
+//    public Double getMonthlyProfit(int month, int year, Long centerId) {
+//        Double revenue = getMonthlyRevenue(month, year, centerId);
+//        List<Map<String, Object>> totalTeacherSalary = getTotalTeacherSalary(month, year, centerId);
+//        return revenue - totalTeacherSalary;
+//    }
+
+    @Override
+    public Map<String, Object> getMonthlyProfit(int month, int year, Long centerId) {
+        // Get total monthly revenue
+        Map<String, Object> revenueMap = getMonthlyRevenue(month, year, centerId);
+        BigDecimal revenue = (BigDecimal) revenueMap.getOrDefault("TotalRevenue", BigDecimal.ZERO);
+
+        // Get total monthly salary for teachers
+        List<Map<String, Object>> teacherSalaryList = getTotalTeacherSalary(month, year, centerId);
+        BigDecimal totalTeacherSalary = teacherSalaryList.stream()
+                .map(entry -> (BigDecimal) entry.getOrDefault("TotalSalary", BigDecimal.ZERO))
+                .reduce(BigDecimal.ZERO, BigDecimal::add);
+
+        // Calculate monthly profit
+        BigDecimal profit = revenue.subtract(totalTeacherSalary);
+
+        // Prepare the result map
+        Map<String, Object> resultMap = new HashMap<>();
+        resultMap.put("Month", month);
+        resultMap.put("Year", year);
+        resultMap.put("MonthlyProfit", profit);
+
+        return resultMap;
+    }
+
+    @Override
+    public List<Map<String, Object>> getTotalTeacherSalaryForYear(int year, Long centerId) {
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        String sql = "SELECT " +
+                "    MONTH(s.c02_slot_date) AS Month, " +
+                "    :year AS Year, " +
+                "    SUM(s.C02_SLOTS_COUNT * c.C01_SALARY_PER_SLOT) AS TotalSalary " + // Sử dụng cột C01_COURSE_FEE thay vì C01_SALARY_PER_SLOT
+                "FROM " +
+                "    t14_user u " +
+                "JOIN " +
+                "    (SELECT " +
+                "         c.C01_TEACHER_ID AS TeacherId, " +
+                "         s.C02_COURSE_ID AS CourseId, " +
+                "         COUNT(*) AS C02_SLOTS_COUNT, " +
+                "         s.c02_slot_date " +
+                "     FROM " +
+                "         t01_course c " +
+                "     JOIN " +
+                "         t02_slot s ON c.C01_COURSE_ID = s.C02_COURSE_ID " +
+                "     WHERE " +
+                "         YEAR(s.c02_slot_date) = :year " +
+                "     GROUP BY " +
+                "         c.C01_TEACHER_ID, s.C02_COURSE_ID, s.c02_slot_date " +
+                "    ) s ON u.C14_USER_ID = s.TeacherId " +
+                "JOIN " +
+                "    t01_course c ON s.CourseId = c.C01_COURSE_ID " +
+                "WHERE " +
+                "    c.C01_CENTER_ID = :centerId " +
+                "GROUP BY " +
+                "    MONTH(s.c02_slot_date), YEAR(s.c02_slot_date)";
 
         Query query = entityManager.createNativeQuery(sql)
-                .setParameter("month", month)
                 .setParameter("year", year)
                 .setParameter("centerId", centerId);
 
-        Object result = query.getSingleResult();
+        List<Object[]> resultList = query.getResultList();
 
-        return result != null ? ((Number) result).doubleValue() : 0.0;
+        Map<Integer, Double> monthlySalaries = new HashMap<>();
+
+        for (Object[] result : resultList) {
+            int month = ((Number) result[0]).intValue();
+            double totalSalary = ((Number) result[2]).doubleValue();
+
+            monthlySalaries.put(month, monthlySalaries.getOrDefault(month, 0.0) + totalSalary);
+        }
+
+        for (Map.Entry<Integer, Double> entry : monthlySalaries.entrySet()) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("Month", entry.getKey());
+            resultMap.put("Year", year);
+            resultMap.put("TotalSalary", String.format("%.2f", entry.getValue())); // Format TotalSalary as a string with 2 decimal places
+            results.add(resultMap);
+        }
+
+        for (int month = 1; month <= 12; month++) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("Month", month);
+            resultMap.put("Year", year);
+            resultMap.put("TotalSalary", monthlySalaries.getOrDefault(month, 0.0));
+            results.add(resultMap);
+        }
+
+        return results;
     }
-
-    public Double getMonthlyProfit(int month, int year, Long centerId) {
-        Double revenue = getMonthlyRevenue(month, year, centerId);
-        Double totalTeacherSalary = getTotalTeacherSalary(month, year, centerId);
-        return revenue - totalTeacherSalary;
-    }
-
-
-
 
 }
 
