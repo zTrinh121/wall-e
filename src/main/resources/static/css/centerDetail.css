@@ -252,9 +252,13 @@ body {
   color: #FFCE26;
 }
 
-#content main .box-info li:nth-child(3) .bx {
+#content main .box-info-s li:nth-child(1) .bx {
   background: #FFE0D3;
   color: #FD7238;
+}
+#content main .box-info-s li:nth-child(2) .bx {
+  background: #FFF2C6;
+  color: #FFCE26;
 }
 
 #content main .box-info li .text h3 {

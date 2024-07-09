@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
@@ -33,9 +34,11 @@ public class IndividualNotification {
     User actor; // admin or manager
 
     @Column(name = "C20_CREATE_AT", columnDefinition = "DATETIME DEFAULT CURRENT_TIMESTAMP")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date createdAt;
 
     @Column(name = "C20_UPDATE_AT")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date updatedAt;
 
     @ManyToOne

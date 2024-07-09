@@ -125,7 +125,7 @@ public class UserController {
                 case "TEACHER":
                     return "redirect:/teacher-dashboard";
                 case "MANAGER":
-                    return "managerHome";
+                    return "redirect:/manager/managerHome";
                 default:
                     return "redirect:/login";
             }
@@ -964,6 +964,25 @@ public class UserController {
         return "material-detail";
     }
 
+    @GetMapping("/my-material")
+    public String myMaterial(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "myMaterial";
+    }
+
+    @GetMapping("/attendance")
+    public String attendance(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+        model.addAttribute("user", user);
+        return "attendance";
+    }
 
 
 

@@ -477,9 +477,9 @@ box-shadow: var(--shadow); */
   margin-bottom: 1rem;
 }
 
-.class-detail .detail>div {
-  margin-bottom: 1rem;
-}
+/*.class-detail .detail>div {*/
+/*  margin-bottom: 1rem;*/
+/*}*/
 
 .class-detail .time,
 .report {
@@ -488,14 +488,14 @@ box-shadow: var(--shadow); */
 }
 
 .class-detail .time button,
-.report button {
+.report button, #btn-attendance-details {
   background-color: #fff;
   border: none;
   cursor: pointer;
   font-size: 0.9rem;
 }
 
-.class-detail .time button:hover, .report button:hover {
+.class-detail .time button:hover, .report button:hover, #btn-attendance-details:hover {
   text-decoration: underline;
   color: #393e46;
 }
@@ -641,6 +641,40 @@ tr:hover {
   background: #2e4ead;
 }
 
+#attendanceDetails ul li{
+  margin-bottom: 1rem;
+}
+
+.attendance{
+  display: flex;
+  justify-content: space-between;
+}
+
+/*#btn-attendance-details{*/
+/*  border: none;*/
+/*  background: none;*/
+/*  font-size: 0.9rem*;/
+/*  cursor: pointer;*/
+/*}*/
+
+#attendanceDetails ul li .date-attendance{
+  display: flex;
+  justify-content: space-between;
+}
+
+.report-header{
+  font-weight: 600 !important;
+}
+
+#myChart{
+  height: 300px !important;
+  width: 300px !important;
+}
+
+#attendanceDetails li span{
+  font-weight: 600;
+}
+
 /* Start: TOAST */
 .toast-container, .toast {
   position: fixed;
@@ -695,6 +729,7 @@ error-toast{
   margin-right: 0.5rem;
 }
 
+
 .rate-box {
   display: flex;
   justify-content: center;
@@ -726,3 +761,28 @@ error-toast{
 
 
 /*Academic Transcript*/
+
+/*Academic Transcript*/
+
+/*Modal enter score*/
+#newScoreType, #newScoreValue{
+  width: 100%;
+}
+
+#addNewScoreButton, #addScoresButton{
+  border: none;
+  background: none;
+  color: #fff;
+  background: #2548a0;
+  border-radius: 1rem;
+  width: 7rem;
+  height: 1.6rem;
+  cursor: pointer;
+}
+
+#addNewScoreButton:hover, #addScoresButton:hover{
+  background: #fff;
+  color: #2548a0;
+  border: #2548a0 1px solid;
+}
+

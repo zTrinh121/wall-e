@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
@@ -29,17 +30,32 @@ public class ManagerMediaController {
         return ResponseEntity.ok().body(posts);
     }
 
-    @PostMapping("/centerPosts/create")
-    public CenterPost createCenterPost(@RequestBody @Valid CenterPostDto centerPostDto) {
-        return managerService.createCenterPost(centerPostDto);
+    @GetMapping("/centerPosts/byCenterId/{centerId}")
+    public ResponseEntity<List<CenterPost>> getCenterPostsByCenterId(@PathVariable int centerId) {
+        List<CenterPost> centerPosts = managerService.findCenterPostsByCenterId(centerId);
+        if (centerPosts.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(centerPosts, HttpStatus.OK);
     }
 
-    //pathvariable => id bị ảnh hưởng ngay trên fe
-    //requestbody ... => do ảnh hưởng của dữ liệu người dùng nhập vào
+    @PostMapping("/centerPosts/create")
+    public ResponseEntity<CenterPost> createCenterPost(
+            @Valid @RequestBody CenterPostDto postDto,
+            @RequestParam("imageFile") MultipartFile imageFile) {
+        try {
+            CenterPost createdPost = managerService.createCenterPost(postDto, imageFile);
+            return ResponseEntity.status(HttpStatus.CREATED).body(createdPost);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
     @PutMapping("/centerPosts/update/{id}")
-    public ResponseEntity<CenterPost> updatePublicNotification(@PathVariable int id,
-                                                               @RequestBody @Valid CenterPostDto centerPostDto) {
-        CenterPost centerPost = managerService.updateCenterPost(id, centerPostDto);
+    public ResponseEntity<CenterPost> updateCenterPost(@PathVariable int id,
+                                                       @RequestPart("centerPostDto") @Valid CenterPostDto centerPostDto,
+                                                       @RequestPart(value = "imageFile", required = false) MultipartFile imageFile) {
+        CenterPost centerPost = managerService.updateCenterPost(id, centerPostDto, imageFile);
         if (centerPost != null) {
             return ResponseEntity.ok(centerPost);
         } else {
@@ -113,6 +129,16 @@ public class ManagerMediaController {
         int managerId = (int) httpSession.getAttribute("authid");
         List<CenterNotification> notifications = managerService.getAllCenterNotifications(managerId);
 
+        if (notifications.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        } else {
+            return new ResponseEntity<>(notifications, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping("/centerNotifications/center/{centerId}")
+    public ResponseEntity<List<CenterNotification>> getAllCenterNotifications(@PathVariable int centerId) {
+        List<CenterNotification> notifications = managerService.findByCenterId(centerId);
         if (notifications.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         } else {

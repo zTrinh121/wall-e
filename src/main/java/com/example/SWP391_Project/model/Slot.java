@@ -1,10 +1,12 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 import java.util.Date;
+import java.util.Set;
 
 // Import lớp Student
 import com.example.SWP391_Project.model.StudentSlot;
@@ -28,12 +30,15 @@ public class Slot {
     int id;
 
     @Column(name = "C02_SLOT_DATE", columnDefinition = "DATE", nullable = false)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date slotDate;
 
     @Column(name = "C02_SLOT_START_TIME", columnDefinition = "TIME", nullable = false)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Date slotStartTime;
 
     @Column(name = "C02_SLOT_END_TIME", columnDefinition = "TIME", nullable = false)
+//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Date slotEndTime;
 
     @ManyToOne
@@ -44,5 +49,9 @@ public class Slot {
     @ManyToOne
     @JoinColumn(name = "C02_ROOM_ID", nullable = false)
     Room room;
+
+    @OneToMany(mappedBy = "slot")
+    Set<StudentSlot> studentSlots;
+
 
 }

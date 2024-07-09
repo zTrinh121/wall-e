@@ -5,24 +5,25 @@ import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
 import com.example.SWP391_Project.response.TeacherCoursesResponse;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import javax.swing.text.View;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 @Service
 public interface ManagerService {
     // ----------------- center Posts ------------------
     List<CenterPost> getAllCenterPost();
 
-    CenterPost createCenterPost(CenterPostDto centerPostDto);
+    List<CenterPost> findCenterPostsByCenterId(int centerId);
 
-    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto);
+    CenterPost createCenterPost(CenterPostDto postDto, MultipartFile imageFile);
+
+    CenterPost updateCenterPost(int id, CenterPostDto centerPostDto, MultipartFile imageFile);
 
     boolean deleteCenterPost(int id);
     // --------------------------------------------------
@@ -78,6 +79,9 @@ public interface ManagerService {
     // View all teacher in center
     List<User> getTeachersInCenter(int centerId);
 
+    // View all apply center form
+    List<ApplyCenter> viewApplyCenterForm(int managerId);
+
     // Approve teacher's apply form
     void approveTeacherApply(int id);
 
@@ -99,33 +103,6 @@ public interface ManagerService {
     // Delete student --> xóa khỏi bảng T16
     boolean deleteStudentInCenter(int studentId, int centerId);
     // -------------------------------------------------------
-
-
-    // ----------------- Manage the slot ---------------------
-    // view course's slot
-    List<Slot> findSlotsInCourse(int courseId);
-
-    // view slots in certain day
-    List<Slot> findSlotInCertainDay(Date date);
-
-    // createNewSlot
-    Slot createNewSlot(SlotDto slotDto);
-
-    /*
-       + Lúc này đang đứng ở giao diện chi tiết của 1 Slot
-       --> Muốn update Slot đó thì Manager dùng hàm này để tìm xem room đang trống ở thời điểm diễn ra slot trên
-       + Trong trường hợp Manager ngầu lòi ko check phòng trống thì
-         ở hàm updateSlot cũng có các hàm để xử lí validate vấn đề về room <3
-     */
-    List<Room> getListEmptyRooms(Slot slot);
-
-    // update slot's information
-    Slot updateSlot(int slotId, SlotDto slotDto);
-
-    // delete slot
-    boolean deleteSlot(int id);
-    // -------------------------------------------------------
-
 
     // ----------------- Manage the revenue ------------------
     // --> Vẫn chưa xử lí task quản lí lương cho giáo viên
@@ -214,6 +191,8 @@ public interface ManagerService {
     // ------------- Center Notifications --------------
     List<CenterNotification> getAllCenterNotifications(int managerId);
 
+    List<CenterNotification> findByCenterId(int centerId);
+
     CenterNotification createCenterNotification(CenterNotificationDto centerNotificationDto);
 
     CenterNotification updateCenterNotification(int id, CenterNotificationDto centerNotificationDto);
@@ -232,5 +211,19 @@ public interface ManagerService {
     List<Feedback> viewAllFeedbacksToTeachers(int managerId);
     List<Feedback> viewAllFeedbacksToCourses(int managerId);
     // ------------------------------------------------
+
+    // --------------------- SLOTS -------------------------
+    List<Map<String, Object>> getSlotsByCenterId(int centerId);
+
+    Map<String, Object> getSlotsBySlotId(int slotId);
+
+    Slot createSlot(SlotDto slotDto);
+
+    Slot updateSlot(int slotId, SlotDto slotDto);
+
+    void deleteSlot(int slotId);
+
+
+    // -----------------------------------------------------
 
 }

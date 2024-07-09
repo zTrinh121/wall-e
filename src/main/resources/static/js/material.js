@@ -5,14 +5,11 @@ document.addEventListener("DOMContentLoaded", function() {
     const subject = url.searchParams.get('subject');
     const toast = document.getElementById("toast");
     const toastInfo = document.getElementById("toast-info");
-
     const userRole = document.getElementById("roleUser").innerHTML;
     const uploadBtn = document.getElementById("upload-btn");
 
     const subjects = [
-        "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD",
-        "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
-        "Mỹ thuật", "GDQP-AN", "Tin học", "Khác"
+        "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD", "Tiếng Anh", "Tin học"
     ];
 
     const gradeButtonsContainer = document.getElementById('grade-buttons');

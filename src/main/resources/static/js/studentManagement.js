@@ -76,17 +76,12 @@ document.addEventListener("DOMContentLoaded", function () {
     //FETCH
 document.addEventListener("DOMContentLoaded", () => {
     //get-stu-list
-//    const urlParams = window.location.href;
-//    console.log(urlParams);
-//    const centerIdz = urlParams.get('centerIdn');
-//    console.log(centerIdz);
-    // Get the current URL
-        const urlParams = window.location.href;
-        console.log("Current URL:", urlParams);
-        // Extract centerId from the URL
-        const urlParts = urlParams.split("centerId=");
-        centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
-        console.log("Center ID:", centerIdz);
+    const urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    // Extract centerId from the URL
+    const urlParts = urlParams.split("centerId=");
+    centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
+    console.log("Center ID:", centerIdz);
     //fetch-api-for-stu
     function fetchStudents(centerIdz) {
       var URL = `/manager/students/${centerIdz}`;
@@ -141,58 +136,47 @@ function displayStudentLists(centers, centerIdz) {
       noResultDiv.style.display = "block";
     } else {
       noResultDiv.style.display = "none";
-      centers.forEach((center) => {
+      centers.forEach((center, index) => {
+        index = sttIncreasing(index);
         var row = `
           <tr class="view-details" data-id="${center.id}">
-            <td><p>${center.code}</p></td>
+            <td><p>${index}</p></td>
             <td><p>${center.name}</p></td>
+            <td><p>${center.email}</p></td>
             <td><p>${center.address}</p></td>
-            <td><p><button class="openModalBtn">Xem</button></p</td>
+            <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
         tableBody.insertAdjacentHTML("beforeend", row);
       });
-      //get-st-id
-//          var stuInfo = document.getElementById("stuInfo");
-//          console.log("stuinfofofofof" + stuInfo);
-//          if (stuInfo) {
-//              stuInfo.addEventListener("click", function(event) {
-//                  event.preventDefault();
-//                      // Construct the correct URL based on centerId
-//                      var url = `/manager/qlgv?centerId=`;
-//                      url += encodeURIComponent(centerIdz);
-//                      console.log(url); // Verify the constructed URL
-//
-//                      // Perform any further actions with the constructed URL
-//                      window.location.href = url; // Example: Redirect to the constructed URL
-//              });
-//          } else {
-//              console.error("Element with id 'stuInfo' not found.");
-//          }
-
       // Reattach event listeners for new buttons
       document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
           var stuId = this.getAttribute("data-id");
+          console.log("student id from button is: " + stuId);
           openModalWithStudentDetails(stuId, centerIdz);
         });
       });
     }
   }
+  //STT incremental
+  function sttIncreasing(index){
+    if(index === 0){
+      index = 1;
+      return index;
+    } else{
+      return ++index;
+    }
+  };
 
   //open-by-student-id
 function openModalWithStudentDetails(stuId, centerIdz) {
-    console.log(stuId);//id cua hs
-    // Construct the URL for fetching center details
-//    var url = `/manager/student-detail/{stuId}/{centerIdz}`;
+    console.log(stuId);//id cua hv
     var queryUrl = "/manager/tthv?";
     queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?stuIdn=" + encodeURIComponent(stuId);
     console.log(queryUrl);
     //chuyen-huong-mode
     window.location.href = queryUrl;
-            // Display the modal
-//            var modal = document.getElementById("studentDetailModal");
-//            modal.style.display = "block";
 }
 
 var noResultDiv = document.getElementById("no-result");
@@ -206,13 +190,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlhv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfos' not found.");
@@ -237,25 +218,25 @@ document.addEventListener("DOMContentLoaded", function () {
         console.error("Element with id 'boxInfot' not found.");
     }
 });
-//student-info-redirect
-//document.addEventListener("DOMContentLoaded", function () {
-//    var stuInfo = document.getElementById("stuInfo");
-//    console.log("stuinfofofofof" + stuInfo);
-//    if (stuInfo) {
-//        stuInfo.addEventListener("click", function(event) {
-//            event.preventDefault();
-//                // Construct the correct URL based on centerId
-//                var url = `/manager/qlgv?centerId=`;
-//                url += encodeURIComponent(centerIdz);
-//                console.log(url); // Verify the constructed URL
-//
-//                // Perform any further actions with the constructed URL
-//                window.location.href = url; // Example: Redirect to the constructed URL
-//        });
-//    } else {
-//        console.error("Element with id 'stuInfo' not found.");
-//    }
-//});
+//courses
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfoc = document.getElementById("boxInfoc");
+
+    if (boxInfoc) {
+        boxInfoc.addEventListener("click", function(event) {
+            event.preventDefault();
+                // Construct the correct URL based on centerId
+                var url = `/manager/qlkh?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url); // Verify the constructed URL
+
+                // Perform any further actions with the constructed URL
+                window.location.href = url; // Example: Redirect to the constructed URL
+        });
+    } else {
+        console.error("Element with id 'boxInfoc' not found.");
+    }
+});
 
 
 

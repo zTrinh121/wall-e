@@ -86,8 +86,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then(data => {
                 console.log("Center added:", data);
                 addCentreModal.style.display = "none";
-                fetchCenters();
-                showToast("Thêm trung tâm thành công");
+                fetchTeachers();
+                showToast("Thêm giao vien thành công");
             })
             .catch(error => console.error("Error adding center:", error));
         });
@@ -147,7 +147,7 @@ document.addEventListener("DOMContentLoaded", () => {
               if (!Array.isArray(data)) {
                 data = [data];
               }
-              displayTeacherLists(data);
+              displayTeacherLists(data, centerIdz);
           })
           .catch((error) => console.error("Error fetching centers:", error));
 
@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", () => {
     fetchTeachers(centerIdz);
 
     //display-stu-into-list
-function displayTeacherLists(centers) {
+function displayTeacherLists(centers, centerIdz) {
     var tableBody = document.getElementById("tableBody");
     if (!tableBody) {
       console.error("Element with ID 'tableBody' not found.");
@@ -191,8 +191,8 @@ function displayTeacherLists(centers) {
             <td><p>${center.phone}</p></td>
             <td><p>${center.email}</p></td>
             <td><p>${center.code}</p></td>
-            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
-            <td><button class="open-modal-btn" data-id="${center.id}">Xem</button></td>
+            <!-- <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td> -->
+            <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
         tableBody.insertAdjacentHTML("beforeend", row);
@@ -216,10 +216,11 @@ function displayTeacherLists(centers) {
         });
 
       // Reattach event listeners for new buttons
-      document.querySelectorAll(".open-modal-btn").forEach((button) => {
+      document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
-          var centerId = this.getAttribute("data-id");
-          openModalWithTeacherDetails(centerId);
+          var teaId = this.getAttribute("data-id");
+          console.log("teacher id from button is: " + teaId);
+          openModalWithTeacherDetails(teaId, centerIdz);
         });
       });
     }
@@ -252,31 +253,13 @@ function displayTeacherLists(centers) {
       });
 
   //open-by-student-id
-function openModalWithTeacherDetails(centerId) {
-    console.log(centerId);
-    // Construct the URL for fetching center details
-    var url = `/manager/students/${centerId}`;
-
-    // Fetch center details by ID and display in modal
-    fetch(url)
-        .then((response) => response.json())
-        .then((data) => {
-            console.log("Center details:", data);
-            console.log(encodeURIComponent(data.id));
-
-            var queryUrl = "/manager/qlgv?";
-            queryUrl += "centerIdn=" + encodeURIComponent(data.id);
-            console.log(queryUrl);
-
-            // Update the iframe source with the constructed URL
-            var iframe = document.querySelector("#studentDetailModal iframe");
-            iframe.src = queryUrl;
-
-            // Display the modal
-            var modal = document.getElementById("studentDetailModal");
-            modal.style.display = "block";
-        })
-        .catch((error) => console.error("Error fetching center details:", error));
+function openModalWithTeacherDetails(teaId, centerIdz) {
+    console.log(teaId);//id cua gv
+        var queryUrl = "/manager/ttgv?";
+        queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?teaIdn=" + encodeURIComponent(teaId);
+        console.log(queryUrl);
+        //chuyen-huong-mode
+        window.location.href = queryUrl;
 }
 
 var noResultDiv = document.getElementById("no-result");
@@ -289,13 +272,10 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlhv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfos' not found.");
@@ -308,15 +288,28 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfot) {
         boxInfot.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlgv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfot' not found.");
+    }
+});
+//courses
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfoc = document.getElementById("boxInfoc");
+
+    if (boxInfoc) {
+        boxInfoc.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/qlkh?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'boxInfoc' not found.");
     }
 });

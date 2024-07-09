@@ -17,12 +17,34 @@
 
                 <div class="header">
 
-                    <div>Tài liệu chung</div>
+                    <div>
+                        Tài liệu chung
+                        <a class="my-material" href="/my-material" th:if="${user.role.getDescription().name() == 'TEACHER'}">
+                            | Tài liệu của tôi
+                        </a>
+                    </div>
                     <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
+
+                    <!--Toogle button-->
+<!--                    <div class="switches-container">-->
+<!--                        <input type="radio" id="switchMonthly" name="switchPlan" value="Monthly" checked="checked" />-->
+<!--                        <input type="radio" id="switchYearly" name="switchPlan" value="Yearly" />-->
+<!--                        <label for="switchMonthly">Tài liệu chung</label>-->
+<!--                        <label for="switchYearly">Tài liệu của tôi</label>-->
+<!--                        <div class="switch-wrapper">-->
+<!--                            <div class="switch">-->
+<!--                                <div>Tài liệu chung</div>-->
+<!--                                <div>Tài liệu của tôi</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <!--Toogle button-->
+
                     <button id="upload-btn" onclick="window.location.href='/material-create-select'">
                         <i class="fas fa-plus"></i>
                         <span>Upload tài liệu</span>
                     </button>
+
                 </div>
 
                 <div class="container">
@@ -60,7 +82,6 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                     <!-- Repeat as needed for more items -->
             </main>

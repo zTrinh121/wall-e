@@ -18,6 +18,8 @@ public interface CenterNotificationRepository extends JpaRepository<CenterNotifi
 
     Optional<CenterNotification> findById(int id);
 
+    Optional<List<CenterNotification>> findByCenter_Id(int id);
+
 //    @Query("SELECT DISTINCT n FROM CenterNotification n " +
 //            "JOIN UserCenter uc ON n.center.id = uc.center.id " +
 //            "JOIN User u ON uc.user.id = u.id " +

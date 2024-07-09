@@ -34,6 +34,7 @@ public class User {
     @Column(name = "C14_USER_ID")
     int id;
 
+
     @Column(name = "C14_USERNAME", nullable = false)
     String username;
 
@@ -48,6 +49,9 @@ public class User {
 
     @Column(name = "C14_NAME", nullable = true)
     String name;
+
+    @Column(name = "C14_LAST_NAME", nullable = true)
+    String lastName;
 
     @Column(name = "C14_USER_PHONE", nullable = false)
     String phone;

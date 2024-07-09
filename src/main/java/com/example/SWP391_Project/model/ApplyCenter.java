@@ -1,10 +1,13 @@
 package com.example.SWP391_Project.model;
 
 import com.example.SWP391_Project.enums.Status;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "t12_apply_center",
@@ -29,6 +32,10 @@ public class ApplyCenter {
 
     @Column(name = "C12_CONTENT", columnDefinition = "TEXT")
     String content;
+
+    @Column(name = "C12_CREATED_AT", columnDefinition = "DATE")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    Date createdAt;
 
     @Enumerated(EnumType.STRING)
     @Column(name = "C12_APPLY_STATUS")

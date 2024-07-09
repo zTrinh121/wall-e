@@ -8,24 +8,25 @@ document.addEventListener('DOMContentLoaded', function() {
     var calendarDisplay = document.getElementById("calendar");
     var eventDetailModal = document.getElementById('eventDetailModal');
     var eventDetailContent = document.getElementById('eventDetailContent');
+    var requestModal = document.getElementById('requestModal');
+    var closeRequestModal = document.getElementById('closeRequestModal');
 
     function renderEventContent(eventInfo) {
-        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === false ? 'red' : 'green';
 
         if (userRole === 'TEACHER') {
             return {
                 html: `
                     ${eventInfo.event.title}<br>
                     <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
-                    <b style="color: ${attendanceColor};">${attendanceText}</b>
                 `
             };
         } else {
             return {
                 html: `
-                    <b>${eventInfo.event.title}</b><br>
-                    <b>Phòng: ${eventInfo.event.extendedProps.location}</b><br>
+                    <b>${eventInfo.event.title} ở ${eventInfo.event.extendedProps.location}</b><br>
+                    <b>${eventInfo.event.extendedProps.teacherName}</b><br>
                     <b style="color: ${attendanceColor};">${attendanceText}</b>
                 `
             };
@@ -42,9 +43,9 @@ document.addEventListener('DOMContentLoaded', function() {
         },
         customButtons: {
             RequestChangingTimetable: {
-                text: "Đổi lịch",
+                text: "Gửi yêu cầu",
                 click: function() {
-                    alert('Hehe chưa làm!!!');
+                    document.getElementById('requestModal').style.display = 'block';
                 }
             }
         },
@@ -59,15 +60,30 @@ document.addEventListener('DOMContentLoaded', function() {
         firstDay: 1,
         eventContent: renderEventContent,
         eventClick: function(info) {
-            const event = info.event;
-            const attendanceText = event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-            const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
 
-            eventDetailContent.innerHTML = `
+            const event = info.event;
+            const attendanceText = event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+            const attendanceColor = event.extendedProps.attendanceStatus === false ? 'red' : 'green';
+            const startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            const endTime = new Date(info.event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            if(userRole !== "TEACHER"){
+                eventDetailContent.innerHTML = `
                 <p>${event.title}</p>
                 <p>Phòng: ${event.extendedProps.location}</p>
+                <p>Giáo viên: ${event.extendedProps.teacherName}</p>
+                <p>Thời gian: ${startTime} - ${endTime}</p>
                 <p style="color: ${attendanceColor};">${attendanceText}</p>
             `;
+            }else{
+                eventDetailContent.innerHTML = `
+                <p>${event.title}</p>
+                <p>Phòng: ${event.extendedProps.location}</p>
+                <p>Thời gian: ${startTime} - ${endTime}</p>
+                <a href="course-details?userId=${userId}&courseId=${event.extendedProps.courseId}">Xem khóa học</a> 
+                | <a href="attendance?courseId=${event.extendedProps.courseId}&date=${event.extendedProps.date}">Điểm danh</a>
+            `;
+            }
+
 
             eventDetailModal.style.display = 'block';
         }
@@ -113,9 +129,12 @@ document.addEventListener('DOMContentLoaded', function() {
                             end: item.slotDate + 'T' + item.slotEndTime,
                             location: item.roomName,
                             classNames: ['event-item'],
+
                             backgroundColor: attendanceColor,
                             extendedProps: {
-                                attendanceStatus: item.attendanceStatus
+                                attendanceStatus: item.attendanceStatus,
+                                teacherName: item.teacherName,
+
                             }
                         };
                     });
@@ -130,7 +149,8 @@ document.addEventListener('DOMContentLoaded', function() {
                             end: slotDateISO + 'T' + item.slotEndTime,
                             location: item.roomName,
                             extendedProps: {
-                                attendanceStatus: item.attendanceStatus
+                                courseId: item.courseId,
+                                date: slotDateISO
                             }
                         };
                     });
@@ -166,4 +186,21 @@ document.addEventListener('DOMContentLoaded', function() {
             eventDetailModal.style.display = "none";
         }
     };
+
+    closeRequestModal.onclick = function() {
+        requestModal.style.display = "none";
+    }
+
+    window.onclick = function(event) {
+        if (event.target == requestModal) {
+            requestModal.style.display = "none";
+        }
+    }
+
+    document.getElementById('requestForm').onsubmit = function(e) {
+        e.preventDefault();
+        // Here you can add code to handle the form submission
+        console.log('Form submitted');
+        requestModal.style.display = "none";
+    }
 });

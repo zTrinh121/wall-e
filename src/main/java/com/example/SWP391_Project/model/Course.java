@@ -1,5 +1,6 @@
 package com.example.SWP391_Project.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
@@ -33,9 +34,11 @@ public class Course {
     String description;
 
     @Column(name = "C01_COURSE_START_DATE", columnDefinition = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date startDate;
 
     @Column(name = "C01_COURSE_END_DATE", columnDefinition = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date endDate;
 
     @Column(name = "C01_AMOUNT_OF_STUDENTS", nullable = false)

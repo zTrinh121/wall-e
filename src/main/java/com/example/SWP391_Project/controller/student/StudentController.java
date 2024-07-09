@@ -2,17 +2,17 @@ package com.example.SWP391_Project.controller.student;
 
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.response.DuplicateSlotInfo;
 import com.example.SWP391_Project.response.NotificationResponse;
+import com.example.SWP391_Project.response.SlotResponse;
 import com.example.SWP391_Project.service.StudentService;
 import com.example.SWP391_Project.service.UserService;
-import com.example.SWP391_Project.service.impl.EmailService;
 import com.example.SWP391_Project.service.impl.UserServiceImpl;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.SimpleMailMessage;
-import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -359,6 +359,7 @@ public class StudentController {
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
     // ---------------------------------------------------------------------
+
     @GetMapping("/{studentId}/courses/{courseId}/attendance")
     @ResponseBody
     public List<Map<String, Object>> getAttendanceGraph(@PathVariable int studentId, @PathVariable int courseId) {
@@ -400,6 +401,65 @@ public class StudentController {
         List<Map<String, Object>> courses = studentService.getCoursesByCenterId(centerId);
         return ResponseEntity.ok(courses);
     }
+
+
+    // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
+    @GetMapping("/checkOverviewAttendance/{courseId}")
+    @ResponseBody
+    public ResponseEntity<List<SlotResponse>> getSlotsByStudentIdAndCourseId(HttpSession session, @PathVariable int courseId) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<SlotResponse> slots = studentService.getSlotsByStudentIdAndCourseId(studentId, courseId);
+        if (slots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(slots, HttpStatus.OK);
+    }
+
+    @GetMapping("/toViewTheAttendance/{courseId}")
+    @ResponseBody
+    public List<Map<String, Object>> getAttendanceGraph(HttpSession session, @PathVariable int courseId) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        return studentService.viewAttendanceGraph(studentId, courseId);
+    }
+    // -----------------------------------------------------------------------
+
+    // ------------------------ ENROLLMENT NEW COURSE ---------------------
+    // thoát khóa học
+    @DeleteMapping("/exitCourse/{courseId}")
+    public ResponseEntity<String> deleteEnrollment(HttpSession session, @PathVariable int courseId) {
+        Integer studentId = (Integer) session.getAttribute("authid");
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+        studentService.exitCurrentCourse(studentId, courseId);
+        return new ResponseEntity<>("Successfully exited the course", HttpStatus.OK);
+    }
+
+    @GetMapping("/api/duplicate-weekdays/{studentId}/{courseId}")
+    public ResponseEntity<Map<String, List<DuplicateSlotInfo>>> findDuplicateWeekdays(
+            @PathVariable("studentId") int studentId,
+            @PathVariable("courseId") int courseId
+    ) {
+        Map<String, List<DuplicateSlotInfo>> duplicateWeekdaysMap = studentService.findDuplicateWeekdays(studentId, courseId);
+
+        if (duplicateWeekdaysMap.isEmpty()) {
+            return ResponseEntity.notFound().build(); // or return ResponseEntity<Map<String, List<DuplicateSlotInfo>>>(HttpStatus.NOT_FOUND);
+        }
+
+        return ResponseEntity.ok(duplicateWeekdaysMap);
+    }
+
+
+
+
+
 
 
 

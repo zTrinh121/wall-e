@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Trang chủ</title>
+    <link rel="stylesheet" href="/css/material.css" />
+    <script src="/js/material.js"></script>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="fragments :: header"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <main>
+
+                <div class="header">
+
+                    <div>
+                        Tài liệu của tôi
+                        <a class="my-material" href="material">|  Tài liệu chung</a>
+                    </div>
+                    <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
+
+                    <!--Toogle button-->
+<!--                    <div class="switches-container">-->
+<!--                        <input type="radio" id="switchMonthly" name="switchPlan" value="Monthly" checked="checked" />-->
+<!--                        <input type="radio" id="switchYearly" name="switchPlan" value="Yearly" />-->
+<!--                        <label for="switchMonthly">Tài liệu chung</label>-->
+<!--                        <label for="switchYearly">Tài liệu của tôi</label>-->
+<!--                        <div class="switch-wrapper">-->
+<!--                            <div class="switch">-->
+<!--                                <div>Tài liệu chung</div>-->
+<!--                                <div>Tài liệu của tôi</div>-->
+<!--                            </div>-->
+<!--                        </div>-->
+<!--                    </div>-->
+                    <!--Toogle button-->
+
+                    <button id="upload-btn" onclick="window.location.href='/material-create-select'">
+                        <i class="fas fa-plus"></i>
+                        <span>Upload tài liệu</span>
+                    </button>
+
+                </div>
+
+                <div class="container">
+                    <div class="button-group">
+                        <div class="header-container">
+                            <h2>Chọn khối</h2>
+                        </div>
+                        <div  id="grade-buttons">
+
+                        </div>
+                    </div>
+                    <div class="button-group-subject" style="display: none;">
+                        <h2>Chọn môn học</h2>
+                        <div id="subject-buttons" ></div>
+                    </div>
+                    </div>
+
+                    <!-- List of materials -->
+                    <div class="item-material"  id="materials-container">
+                        <div class="student-exam-result-up">
+                            <div class="image-fit">
+                                <img alt="word-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/word.svg">
+                            </div>
+                            <div class="text-left">
+                                <div class="azt-student-name">
+                                    <span class="font-medium truncate name-material">Trắc nghiệm Toán 7</span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Ngày cập nhật: </span>
+                                    <span class="text-black font-medium"> 12/06/2024 00:26 </span>
+                                </div>
+                                <div class="info">
+                                    <span class="text-slate-500 font-medium"> Người soạn: </span>
+                                    <span class="text-black font-medium"> Đỗ Yến Oanh </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Repeat as needed for more items -->
+            </main>
+        </section>
+    </div>
+</div>
+<div id="toast" class="toast">
+    <p id="toast-info"><i class="fas fa-check-circle"></i> Notification created successfully</p>
+</div>
+
+
+</body>
+</html>

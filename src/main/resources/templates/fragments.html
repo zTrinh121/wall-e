@@ -22,6 +22,8 @@
 
 <div th:fragment="header">
     <p th:text="${user.role.getDescription().name()}" id="user-role" style="display: none"></p>
+
+
     <div class="top_navbar">
         <div class="hamburger">
             <div class="one"></div>
@@ -96,6 +98,7 @@
                             </span>
 
                         <p th:text="${session.user?.username}"></p>
+                        <p th:text="${user.getParent()}" id="user-parent" style="display: none"></p>
 
                         <span
                         >

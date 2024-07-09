@@ -584,7 +584,7 @@ main .header{
 
 /*Start timetable*/
 .fc .fc-timegrid-slot{
-    height: 4rem;
+    height: 4.5rem;
 }
 
 .fc .fc-button-primary{
@@ -600,13 +600,14 @@ main .header{
     background: #fff !important;
 }
 
+.fc-timegrid-event-harness-inset .fc-timegrid-event, .fc-timegrid-event.fc-event-mirror, .fc-timegrid-more-link {
+    overflow-x: auto;
+}
 .fc-timegrid-event .fc-event-main{
     background: #fff;
-    font-size: 12px;
+    font-size: 10px;
     color: #000000;
     border: #000000 ;
-    line-height: 9px;
-
 }
 
 .fc-timegrid-event-harness-inset a{
@@ -642,6 +643,129 @@ main .header{
     color: green;
 }
 
+#eventDetailContent a{
+    cursor: pointer;
+    color: black;
+}
 
 
 /**/
+
+/*modal email*/
+#requestModal .icon-box {
+    background-color: #fff;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.10);
+    padding: 0.8em;
+}
+
+#requestModal .no-space {
+    padding: 0px;
+    margin: 0px;
+}
+
+#requestModal .main-gradient {
+    background: #3b82f6;
+    background: -webkit-linear-gradient(45deg, #2548a0, #2e4ead);
+    background: linear-gradient(45deg, #2e4ead, #2548a0);
+}
+
+/*-----Reset-----*/
+#requestModal form {
+    width: 65%;
+    margin: 7rem auto;
+    padding: 1em 1em;
+    background: #fff;
+    border-radius: 0.5rem;
+}
+
+#requestModal button {
+    margin: 0px;
+}
+
+#requestModal input, #requestModal button {
+    border: none;
+    background-image: none;
+    background-color: transparent;
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
+#requestModal textarea {
+    border: none;
+}
+
+#requestModal button, #requestModal input, #requestModal textarea {
+    font-family: 'Saira Semi Condensed', sans-serif;
+}
+
+#requestModal .hidden {
+    position: absolute !important;
+    top: -9999px !important;
+    left: -9999px !important;
+}
+
+#requestModal .input {
+    width: 100%;
+    margin-bottom: 0.75em;
+}
+
+#requestModal .icon-container {
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: nowrap;
+    width: 100%;
+}
+
+#requestModal .icon {
+    background-color: #fff;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.10);
+    padding: 0.8em;
+    display: inline-block;
+    align-self: stretch;
+    color: #ddd;
+    transition: color 0.75s;
+}
+
+#requestModal .icon-content {
+    background-color: #fff;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.10);
+    padding: 0.8em;
+    width: 100%;
+    z-index: 2;
+}
+
+#requestModal .icon-content:focus {
+    outline: 2px solid #2548a0;
+}
+
+#requestModal .icon-content:focus ~ .icon {
+    color: #2548a0;
+}
+
+#requestModal .btn {
+    cursor: pointer;
+    background-color: #fff;
+    box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.10);
+    width: 100%;
+    padding: 0.8em;
+    border-radius: 2em;
+}
+
+#requestModal .btn:hover {
+    background: #2548a0;
+    background: -webkit-linear-gradient(45deg, #2548a0, #2e4ead);
+    background: linear-gradient(45deg, #2e4ead, #2548a0);
+    color: #fff;
+    box-shadow: 0px 5px 5px rgba(0, 0, 0, 0.125);
+}
+
+#requestModal @keyframes button-hover {
+    100% {
+        background: #2548a0;
+        background: -webkit-linear-gradient(45deg, #2548a0, #2e4ead);
+        background: linear-gradient(45deg, #2e4ead, #2548a0);
+        color: #fff;
+        border-radius: 0px;
+    }
+}

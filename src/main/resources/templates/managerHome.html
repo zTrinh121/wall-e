@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
@@ -90,7 +90,7 @@
     <div class="sidebar">
         <ul>
             <li>
-                <a href="#" class="active">
+                <a href="/manager/managerHome" class="active">
                     <span class="icon"><i class="fas fa-home"></i></span>
                     <span class="title">Trang chủ</span></a>
             </li>
@@ -100,15 +100,15 @@
                     <span class="title">Thông báo</span></a>
             </li>
             <li>
-                <a href="#">
-                    <span class="icon"><i class="fa-solid fa-money-bill-trend-up"></i></span>
-                    <span class="title">Doanh thu</span>
-                </a>
-            </li>
-            <li>
                 <a href="/manager/mpost">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
+                </a>
+            </li>
+            <li>
+                <a href="#">
+                    <span class="icon"><i class="fa-solid fa-calendar-day"></i></span>
+                    <span class="title">Thời khoá biểu</span>
                 </a>
             </li>
         </ul>
@@ -238,14 +238,6 @@
 
 </div>
 <!-- Modal -->
-<div id="myModal" class="modal">
-    <div class="modal-content" id="modal-detail">
-        <span class="close">&times;</span>
-        <iframe data-id="${center.id}" width="1250" height="500" frameborder="0"
-                scrolling="auto"></iframe>
-    </div>
-</div>
-
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">

@@ -1,5 +1,7 @@
 package com.example.SWP391_Project.service.impl;
 
+import com.example.SWP391_Project.dto.ApplyCenterDto;
+import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
@@ -63,6 +65,12 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     private CourseRepository courseRepository;
+
+    @Autowired
+    private CenterRepository centerRepository;
+
+    @Autowired
+    private ApplyCenterRepository applyCenterRepository;
 
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
@@ -181,7 +189,9 @@ public class TeacherServiceImpl implements TeacherService {
             schedule.put("slotStartTime", result[1]);
             schedule.put("slotEndTime", result[2]);
             schedule.put("courseName", result[3]);
-            schedule.put("roomName", result[4]);
+            schedule.put("courseId", result[4]);
+            schedule.put("roomName", result[5]);
+
             schedules.add(schedule);
         }
         return schedules;
@@ -373,4 +383,25 @@ public class TeacherServiceImpl implements TeacherService {
         return feedbacks.orElse(Collections.emptyList());
     }
     // -----------------------------------------------------------
+
+    // -------------------- APPLY CENTER -----------------------------
+    // tạo form để apply center
+    @Override
+    public ApplyCenter createApplyCenterForm(User teacher, ApplyCenterDto applyCenterDto) {
+        Optional<Center> center = centerRepository.findById(applyCenterDto.getCenterId());
+        if (!center.isPresent()) {
+            throw new IllegalArgumentException("Center not found");
+        }
+        Center centerToApply = center.get();
+
+        ApplyCenter applyCenter = ApplyCenter.builder()
+                .teacher(teacher)
+                .center(centerToApply)
+                .title(applyCenterDto.getTitle())
+                .content(applyCenterDto.getContent())
+                .createdAt(new Date())
+                .build();
+        return applyCenterRepository.save(applyCenter);
+    }
+
 }

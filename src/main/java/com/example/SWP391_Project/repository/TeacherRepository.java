@@ -22,7 +22,10 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
 
 
 
-    @Query("SELECT e.student FROM Enrollment e WHERE e.course.id = :courseId")
+//    @Query("SELECT e.student FROM Enrollment e WHERE e.course.id = :courseId")
+//    List<User> findStudentsByCourseId(@Param("courseId") Long courseId);
+
+    @Query("SELECT e.student FROM Enrollment e JOIN e.student u WHERE e.course.id = :courseId ORDER BY u.lastName")
     List<User> findStudentsByCourseId(@Param("courseId") Long courseId);
 
 
@@ -44,7 +47,7 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
     @Query("SELECT s.slotDate, " +
             "DATE_FORMAT(s.slotStartTime, '%H:%i') AS slotStartTime, " +
             "DATE_FORMAT(s.slotEndTime, '%H:%i') AS slotEndTime, " +
-            "c.name, r.name " +
+            "c.name,c.id, r.name " +
             "FROM Slot s " +
             "JOIN s.course c " +
             "JOIN s.room r " +
