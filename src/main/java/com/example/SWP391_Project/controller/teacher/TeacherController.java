@@ -279,4 +279,21 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return ResponseEntity.ok(applyCenter);
     }
 
+    //
+    @GetMapping("view/slot/{slotId}")
+    public List<Map<String, Object>> getStudentSlotBySlotId(@PathVariable int slotId) {
+        return teacherService.getStudentSlotBySlotId(slotId);
+    }
+
+    @PostMapping("/attendance/certainSlot/{studentId}/{slotId}")
+    public ResponseEntity<String> updateAttendanceStatus(@PathVariable int studentId, @PathVariable int slotId) {
+        try {
+            teacherService.updateAttendanceStatusBySlotId(studentId, slotId);
+            return ResponseEntity.ok("Attendance status updated successfully for studentId: " + studentId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating attendance status: " + e.getMessage());
+        }
+    }
+
 }

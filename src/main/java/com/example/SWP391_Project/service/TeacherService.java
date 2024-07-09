@@ -83,4 +83,11 @@ public interface TeacherService {
     // tạo form để apply center
     ApplyCenter createApplyCenterForm(User teacher, ApplyCenterDto applyCenterDto);
 
+    // --------------------- Điểm danh từng slot cho học sinh ----------------------
+    List<Map<String, Object>> getStudentSlotBySlotId(int slotId);
+
+    void updateAttendanceStatusBySlotId(int studentId, int slotId);
+
+
+
 }

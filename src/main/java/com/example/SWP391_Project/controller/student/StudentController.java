@@ -199,8 +199,12 @@ public class StudentController {
 
     @PatchMapping("/individualNotification/update/{notificationId}")
     @ResponseBody
-    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
-        return studentService.updateIndividualNotification(notificationId);
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId, HttpSession session) {
+        User student = (User) session.getAttribute("user");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student is not found in the session!");
+        }
+        return studentService.updateIndividualNotification(notificationId, student);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")

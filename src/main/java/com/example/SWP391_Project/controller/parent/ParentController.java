@@ -226,4 +226,14 @@ public class ParentController {
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
     // ---------------------------------------------------------------
+    @PostMapping("/enroll-new-course")
+    public ResponseEntity<String> enrollNewCourse(@RequestParam("studentId") int studentId,
+                                                  @RequestParam("courseId") int courseId) {
+        try {
+            parentService.enrollTheNewCourse(studentId, courseId);
+            return ResponseEntity.ok("Enrollment successful");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }
