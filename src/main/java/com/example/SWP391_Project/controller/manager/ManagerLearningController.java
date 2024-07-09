@@ -3,6 +3,7 @@ package com.example.SWP391_Project.controller.manager;
 import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.CourseDto;
 import com.example.SWP391_Project.dto.SlotDto;
+import com.example.SWP391_Project.dto.SlotsDto;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.response.CourseDetailResponse;
 import com.example.SWP391_Project.response.StudentCoursesResponse;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
@@ -408,6 +410,12 @@ public class ManagerLearningController {
         }
     }
 
+    @PostMapping("overallSlots/certainCourse/insert")
+    public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
+                            @RequestParam String courseCode,
+                            @RequestParam String roomName) {
+        managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
+    }
     // -------------------------------------------------------------------------------------
 
 

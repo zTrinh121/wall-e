@@ -8,6 +8,7 @@ import com.example.SWP391_Project.response.TeacherCoursesResponse;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.time.Month;
 import java.time.Year;
 import java.util.Date;
@@ -223,6 +224,8 @@ public interface ManagerService {
 
     void deleteSlot(int slotId);
 
+    // tạo slots cho toàn bộ khóa học
+    void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, String courseCode, String roomName);
 
     // -----------------------------------------------------
 
