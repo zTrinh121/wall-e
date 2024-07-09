@@ -480,13 +480,14 @@ $(document).ready(function() {
         var keyword = $(this).val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/student/search',
+                url: '/api/student/searchh',
                 type: 'GET',
                 data: { keyword: keyword },
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
+                        console.log(item)
+                        var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
                         dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
                     });
                     $('#search-results').html(dropdown).show();

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.List;
 import java.util.Map;
@@ -30,6 +31,7 @@ public class GuestController {
     }
 
     @GetMapping("/centers")
+    @ResponseBody
     public ResponseEntity<List<Center>> getAllCenters() {
         List<Center> centers = guestService.getALLCenters();
         return centers.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok(centers);

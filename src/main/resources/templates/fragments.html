@@ -39,7 +39,12 @@
             </div>
 
             <form action="search" method="get" class="search">
-                <i class="fa fa-search"></i>
+<!--                <i class="fa fa-search"></i>-->
+                <select id="searchType">
+                    <option value="all">Tất cả</option>
+                    <option value="center">Trung tâm</option>
+                    <option value="course">Khóa học</option>
+                </select>
                 <input
                         type="text"
                         name="keyword"
@@ -63,84 +68,87 @@
 <!--                />-->
 <!--                <button type="submit" class="search-btn">Tìm</button>-->
 <!--            </form>-->
-
-
-            <div class="item-drop-down">
-                <div class="notification">
-                    <div id="bell">
-                        <i class="fas fa-bell"></i>
-                        <!--                        <span id="notificationCount" class="notification-count" th:text="${notificationCount}">0</span>-->
-                        <span id="notificationCount" class="notification-count" >0</span>
-                    </div>
-                    <div class="content-notification">
-                        <div class="system-notification">
-                            <div class="system-notification-icon">
-                                <i class="fas fa-box-archive"></i>
-                            </div>
-                            <div>
-                                <h3>Thông báo hệ thống</h3>
-                                <p>Click vào đây để xem các thông báo hệ thống</p>
-                            </div>
-                            <div>
-                                <i class="fas fa-arrow-right"></i>
+            <div th:fragment="dropdown">
+                <div class="item-drop-down">
+                    <div class="notification">
+                        <div id="bell">
+                            <i class="fas fa-bell"></i>
+                            <!--                        <span id="notificationCount" class="notification-count" th:text="${notificationCount}">0</span>-->
+                            <span id="notificationCount" class="notification-count" >0</span>
+                        </div>
+                        <div class="content-notification">
+                            <div class="system-notification">
+                                <div class="system-notification-icon">
+                                    <i class="fas fa-box-archive"></i>
+                                </div>
+                                <div>
+                                    <h3>Thông báo hệ thống</h3>
+                                    <p>Click vào đây để xem các thông báo hệ thống</p>
+                                </div>
+                                <div>
+                                    <i class="fas fa-arrow-right"></i>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="profile-dropdown">
-                    <div class="profile-dropdown-btn">
+                    <div class="profile-dropdown">
+                        <div class="profile-dropdown-btn">
 
                             <span th:if="${session.user?.profileImage == null}">
                                 <img class="profile-img" src="/images/3d-ava.jpg">
                             </span>
-                        <span  th:if="${session.user?.profileImage != null}">
+                            <span  th:if="${session.user?.profileImage != null}">
                                 <img class="profile-img" th:attr="src=@{${session.user?.profileImage}}"/>
                             </span>
 
-                        <p th:text="${session.user?.username}"></p>
-                        <p th:text="${user.getParent()}" id="user-parent" style="display: none"></p>
+                            <p th:text="${session.user?.username}"></p>
+                            <p th:text="${user.getParent()}" id="user-parent" style="display: none"></p>
 
-                        <span
-                        >
+                            <span
+                            >
                   <i class="fas fa-angle-down"></i>
                 </span>
-                    </div>
-
-                    <ul class="profile-dropdown-list">
-                        <li class="profile-dropdown-list-item">
-                            <a href="profile">
-                                <i class="fas fa-user"></i>
-                                Thông tin cá nhân
-                            </a>
-                        </li>
-                        <li class="profile-dropdown-list-item">
-                            <a href="change-password">
-                                <i class="fas fa-lock"></i>
-                                Đổi mật khẩu
-                            </a>
-                        </li>
-
-                        <div th:unless="${user.role.getDescription().name() == 'TEACHER'}">
-                            <li class="profile-dropdown-list-item">
-                                <a href="/mapping">
-                                    <i class="fas fa-link"></i>
-                                    Kết nối với phụ huynh/con
-                                </a>
-                            </li>
                         </div>
 
+                        <ul class="profile-dropdown-list">
+                            <li class="profile-dropdown-list-item">
+                                <a href="profile">
+                                    <i class="fas fa-user"></i>
+                                    Thông tin cá nhân
+                                </a>
+                            </li>
+                            <li class="profile-dropdown-list-item">
+                                <a href="change-password">
+                                    <i class="fas fa-lock"></i>
+                                    Đổi mật khẩu
+                                </a>
+                            </li>
 
-                        <hr />
+                            <div th:unless="${user.role.getDescription().name() == 'TEACHER'}">
+                                <li class="profile-dropdown-list-item">
+                                    <a href="/mapping">
+                                        <i class="fas fa-link"></i>
+                                        Kết nối với phụ huynh/con
+                                    </a>
+                                </li>
+                            </div>
 
-                        <li class="profile-dropdown-list-item">
-                            <a href="/logout">
-                                <i class="fas fa-sign-out-alt"></i>
-                                Đăng xuất
-                            </a>
-                        </li>
-                    </ul>
+
+                            <hr />
+
+                            <li class="profile-dropdown-list-item">
+                                <a href="/logout">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                    Đăng xuất
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
                 </div>
+
             </div>
+
+
         </div>
     </div>
 

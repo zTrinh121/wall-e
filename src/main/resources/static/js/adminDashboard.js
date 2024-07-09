@@ -412,7 +412,7 @@ document.addEventListener("DOMContentLoaded", function () {
             }
 
         }else if(data.type === 'public' && isValid){
-            fetch("/admin-publicNotification/create", {
+            fetch("/admin-systemNotification/create", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json"
