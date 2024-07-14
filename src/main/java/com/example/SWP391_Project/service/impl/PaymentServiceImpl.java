@@ -12,7 +12,6 @@ import com.example.SWP391_Project.utils.VNPayUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -22,9 +21,10 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class PaymentServiceImpl implements PaymentService {
     private final VNPAYConfig vnPayConfig;
+    private final BillRepository billRepository;
+
     @Override
     public PaymentDto.VNPayResponse createVnPayPayment(HttpServletRequest request) {
-
         HttpSession session = request.getSession();
         int courseId = (int) session.getAttribute("courseId");
         long amount = Integer.parseInt(request.getParameter("amount")) * 100L;
@@ -35,16 +35,17 @@ public class PaymentServiceImpl implements PaymentService {
             vnpParamsMap.put("vnp_BankCode", bankCode);
         }
         vnpParamsMap.put("vnp_IpAddr", VNPayUtil.getIpAddress(request));
-        //build query url
+        // build query url
         String queryUrl = VNPayUtil.getPaymentURL(vnpParamsMap, true);
         String hashData = VNPayUtil.getPaymentURL(vnpParamsMap, false);
         String vnpSecureHash = VNPayUtil.hmacSHA512(vnPayConfig.getSecretKey(), hashData);
         queryUrl += "&vnp_SecureHash=" + vnpSecureHash;
         String paymentUrl = vnPayConfig.getVnp_PayUrl() + "?" + queryUrl;
+
         return PaymentDto.VNPayResponse.builder()
                 .code("ok")
                 .message("success")
-                .paymentUrl(paymentUrl).build();
+                .paymentUrl(paymentUrl)
+                .build();
     }
-
 }

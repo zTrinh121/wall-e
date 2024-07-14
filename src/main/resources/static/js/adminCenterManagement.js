@@ -27,7 +27,8 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/admin-centers")
             .then(response => response.json())
             .then(data => {
-                allPosts = data.filter(post => post.status === "Wait_to_process");
+                console.log(data)
+                allPosts = data.filter(post => post.status === "Processing");
                 if (searchResults.length > 0) {
                     // Nếu có, sử dụng kết quả tìm kiếm
                     allPosts = searchResults;

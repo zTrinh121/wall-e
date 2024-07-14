@@ -10,7 +10,6 @@ import com.example.SWP391_Project.model.PaymentMethod;
 import com.example.SWP391_Project.response.PaymentResponse;
 import com.example.SWP391_Project.service.BillService;
 import com.example.SWP391_Project.service.EnrollmentService;
-import com.example.SWP391_Project.service.ParentService;
 import com.example.SWP391_Project.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -20,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -36,6 +36,7 @@ public class PaymentController {
     public PaymentResponse<PaymentDto.VNPayResponse> pay(HttpServletRequest request) {
         return new PaymentResponse<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
     }
+
     @GetMapping("/vn-pay-callback")
     public String payCallbackHandlerParent(HttpServletRequest request, HttpSession session) {
         String status = request.getParameter("vnp_ResponseCode");
@@ -43,24 +44,35 @@ public class PaymentController {
         String date = request.getParameter("vnp_PayDate");
         String transactionNo = request.getParameter("vnp_TransactionNo");
         String orderInfo = request.getParameter("vnp_OrderInfo");
+
         if (status.equals("00")) {
             EnrollmentDto enrollmentDto = new EnrollmentDto();
             int parentId = (int) session.getAttribute("authid");
             Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, session);
+
+            // Thiết lập ngày đăng ký
+            enrollment.setEnrollDate(new Date());
+
             PaymentMethod paymentMethod = PaymentMethod.builder()
                     .id(1)
                     .paymentMethod(PaymentMethodEnum.E_Banking)
                     .build();
-            Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment,paymentMethod);
-            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo ;
+
+            Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment, paymentMethod);
+
+            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()
+                    + "&userId=" + parentId
+                    + "&amount=" + amount
+                    + "&date=" + date
+                    + "&transactionNo=" + transactionNo
+                    + "&orderInfo=" + orderInfo;
+
             return "redirect:" + billUrl;
-        } else if(status.equals("24")){
+        } else if (status.equals("24")) {
             System.out.println("Hủy thanh toán");
             return "redirect:/billFail";
-        }
-        else {
-            String billUrl = "/billFail";
-            return "redirect:" + billUrl;
+        } else {
+            return "redirect:/billFail";
         }
     }
 
@@ -95,5 +107,4 @@ public class PaymentController {
             this.courseId = courseId;
         }
     }
-
 }
