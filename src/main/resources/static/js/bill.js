@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', function() {
             } else if (userRole === "TEACHER") {
                 url = '/teacher';
             } else if (userRole === "PARENT") {
-                url = '/parent';
+                url = '/parent-dashboard';
             } else if (userRole === "STUDENT") {
                 url = '/student-dashboard';
             }

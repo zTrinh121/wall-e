@@ -182,7 +182,7 @@ public class UserServiceImpl implements UserService {
     public boolean sendEmail(String toEmail, String verificationCode) {
         boolean test = false;
         String fromEmail = "thanhdhde170795@fpt.edu.vn";
-        String password = "redm djng jorn pqcv";
+        String password = "bdmt kdvd kbpx zzfd";
 
         try {
             Properties pr = new Properties();

@@ -22,6 +22,7 @@ public class GuestController {
 
     @GetMapping("/guest")
     public String guestPage() {
+
         return "guest"; // This should match the name of your Thymeleaf template (guest.html)
     }
 

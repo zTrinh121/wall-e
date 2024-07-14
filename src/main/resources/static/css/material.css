@@ -533,6 +533,8 @@ main .header button{
   cursor: pointer;
 }
 
+
+
 .modal label {
   display: block;
   margin-top: 10px;
@@ -1058,4 +1060,14 @@ button.active {
 .my-material{
   font-size: 1.5rem;
   color: black;
+}
+
+.button-container button{
+  width: 4rem;
+  color: #fff;
+  border: none;
+  background: #2548a0;
+  cursor: pointer;
+  border-radius: 0.5rem;
+
 }

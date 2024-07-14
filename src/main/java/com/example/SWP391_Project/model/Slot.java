@@ -5,6 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.ToString;
 import java.util.Date;
 import java.util.Set;
 
@@ -30,20 +31,18 @@ public class Slot {
     int id;
 
     @Column(name = "C02_SLOT_DATE", columnDefinition = "DATE", nullable = false)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date slotDate;
 
     @Column(name = "C02_SLOT_START_TIME", columnDefinition = "TIME", nullable = false)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Date slotStartTime;
 
     @Column(name = "C02_SLOT_END_TIME", columnDefinition = "TIME", nullable = false)
-//    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "HH:mm:ss")
     Date slotEndTime;
 
     @ManyToOne
     @JoinColumn(name = "C02_COURSE_ID")
     @JsonManagedReference
+    @ToString.Exclude
     Course course;
 
     @ManyToOne
@@ -53,5 +52,14 @@ public class Slot {
     @OneToMany(mappedBy = "slot")
     Set<StudentSlot> studentSlots;
 
-
+//    @Override
+//    public String toString() {
+//        return "Slot{" +
+//                "id=" + id +
+//                ", slotDate=" + slotDate +
+//                ", slotStartTime=" + slotStartTime +
+//                ", slotEndTime=" + slotEndTime +
+//                ", room=" + room.getId() + // Chỉ in ID của room
+//                '}';
+//    }
 }

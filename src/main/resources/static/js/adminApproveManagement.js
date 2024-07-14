@@ -25,7 +25,8 @@ document.addEventListener("DOMContentLoaded", function () {
         fetch("/admin-centerPosts")
             .then(response => response.json())
             .then(data => {
-                allPosts = data.filter(post => post.status === "Wait_to_process");
+                console.log(data)
+                allPosts = data.filter(post => post.status === "Processing");
                 currentPage = 1; // Reset to first page
                 renderTable(allPosts);
             })

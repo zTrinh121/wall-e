@@ -160,27 +160,36 @@ document.addEventListener("DOMContentLoaded", function () {
 
 
 $(document).ready(function() {
-    $('#search-input').on('input', function() {
-        var keyword = $(this).val();
+    function performSearch() {
+        var keyword = $('#search-input').val();
+        var searchType = $('#searchType').val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/student/search',
+                url: '/api/student/searchh',
                 type: 'GET',
-                data: { keyword: keyword },
+                data: {
+                    keyword: keyword,
+                    searchType: searchType
+                },
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
-                        dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                        var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
+                        if(searchType == "all" ||
+                            (searchType == "course" && item.type == "Course") ||
+                            (searchType == "center" && item.type == "Center")){
+                            dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                        }
                     });
                     $('#search-results').html(dropdown).show();
 
-                    // Thêm sự kiện click cho mỗi kết quả tìm kiếm
                     $('.search-item').click(function() {
                         var url = $(this).data('url');
-                        sessionStorage.setItem('searchDetails', $(this).text()); // Lưu tên vào sessionStorage
-                        window.location.href = url; // Chuyển hướng tới trang chi tiết
+                        sessionStorage.setItem('searchDetails', $(this).text());
+                        window.location.href = url;
                     });
+
+                    $('.search').addClass('open');
                 },
                 error: function(error) {
                     console.error('Error fetching search results:', error);
@@ -188,13 +197,17 @@ $(document).ready(function() {
             });
         } else {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
-    });
+    }
 
-    // Ẩn kết quả tìm kiếm khi nhấn vào bất kỳ nơi nào bên ngoài
+    $('#search-input').on('input', performSearch);
+    $('#searchType').on('change', performSearch);
+
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 });

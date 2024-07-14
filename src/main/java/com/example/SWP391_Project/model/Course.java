@@ -6,6 +6,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.ToString;
 
 import java.util.Date;
 import java.util.List;
@@ -17,6 +18,7 @@ import java.util.List;
 @NoArgsConstructor
 @Builder(toBuilder = true)
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonFormat
 public class Course {
 
     @Id
@@ -62,7 +64,23 @@ public class Course {
 
     @OneToMany(mappedBy = "course", fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     @JsonIgnore
+    @ToString.Exclude
     List<Slot> slots;
+
+//    @Override
+//    public String toString() {
+//        return "Course{" +
+//                "id=" + id +
+//                ", name='" + name + '\'' +
+//                ", code='" + code + '\'' +
+//                ", description='" + description + '\'' +
+//                ", startDate=" + startDate +
+//                ", endDate=" + endDate +
+//                ", amountOfStudents=" + amountOfStudents +
+//                ", courseFee=" + courseFee +
+//                ", subject='" + subject + '\'' +
+//                ", center=" + center.getId() + // Chỉ in ID của center
+//                ", teacher=" + teacher.getId() + // Chỉ in ID của teacher
+//                '}';
+//    }
 }
-
-

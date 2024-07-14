@@ -12,8 +12,8 @@ document.addEventListener('DOMContentLoaded', function() {
     var closeRequestModal = document.getElementById('closeRequestModal');
 
     function renderEventContent(eventInfo) {
-        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
-        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === false ? 'red' : 'green';
+        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
+        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
 
         if (userRole === 'TEACHER') {
             return {
@@ -34,9 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
-        timeZone: 'UTC',
         initialView: 'timeGridWeek',
-        headerToolbar: {
+        haeaderToolbar: {
             start: 'prev,next',
             center: 'title',
             end: userRole === 'TEACHER' ? 'RequestChangingTimetable' : ''
@@ -62,16 +61,19 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
 
             const event = info.event;
-            const attendanceText = event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
-            const attendanceColor = event.extendedProps.attendanceStatus === false ? 'red' : 'green';
+            const attendanceText = event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
+            const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+            console.log(info.event.start)
             const startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            console.log(startTime)
             const endTime = new Date(info.event.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             if(userRole !== "TEACHER"){
                 eventDetailContent.innerHTML = `
                 <p>${event.title}</p>
                 <p>Phòng: ${event.extendedProps.location}</p>
                 <p>Giáo viên: ${event.extendedProps.teacherName}</p>
-                <p>Thời gian: ${startTime} - ${endTime}</p>
+                <p>Từ: ${startTime} đến ${endTime}</p>
+                
                 <p style="color: ${attendanceColor};">${attendanceText}</p>
             `;
             }else{
@@ -88,6 +90,8 @@ document.addEventListener('DOMContentLoaded', function() {
             eventDetailModal.style.display = 'block';
         }
     });
+
+
 
     calendar.render();
 
@@ -118,7 +122,6 @@ document.addEventListener('DOMContentLoaded', function() {
             })
             .then(data => {
                 var events;
-                console.log(data);
                 if (userRole !== "TEACHER") {
                     events = data.map(item => {
                         const attendanceColor = item.attendanceStatus === 0 ? 'red' : 'green';

@@ -59,32 +59,77 @@ document.addEventListener("DOMContentLoaded", function() {
                 const materialElement = document.createElement('div');
                 materialElement.classList.add('student-exam-result-up');
                 materialElement.innerHTML = `
-                    <a href="/material-detail?id=${material.id}">
-                        <div class="image-fit">
-                            <img alt="pdf-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/pdf.svg">
+                
+                <a href="/material-detail?id=${material.id}&modify=true">
+                <i class="fas fa-edit edit-material-btn" data-toggle="modal" data-target="#materialModal" data-material-id="${material.id}"></i>
+                    <div class="image-fit">
+                        <img alt="pdf-icon" src="https://239114911.e.cdneverest.net/cdnazota/storage_public/azota_assets/images/type_file/pdf.svg">
+                    </div>
+                    <div class="text-left">
+                        <div class="azt-student-name">
+                            <span class="font-medium truncate">${material.materialsName}</span>
                         </div>
-                        <div class="text-left">
-                            <div class="azt-student-name">
-                                <span class="font-medium truncate">${material.materialsName}</span>
-                            </div>
-                            <div class="info">
-                                <span class="text-slate-500 font-medium">Phân loại: </span>
-                                <span class="text-black font-medium">${material.subjectName}</span>
-                            </div>
-                            <div class="info">
-                                <span class="text-slate-500 font-medium">Người soạn: </span>
-                                <span class="text-black font-medium">${material.teacher.name}</span>
-                            </div>
+                        <div class="info">
+                            <span class="text-slate-500 font-medium">Phân loại: </span>
+                            <span class="text-black font-medium">${material.subjectName}</span>
                         </div>
-                    </a>
-                `;
+                        <div class="info">
+                            <span class="text-slate-500 font-medium">Người soạn: </span>
+                            <span class="text-black font-medium">${material.teacher.name}</span>
+                        </div>
+                    </div>
+                </a>
+            `;
                 materialContainer.appendChild(materialElement);
+
+                // Add event listener for edit button
+                const editButton = materialElement.querySelector('.edit-material-btn');
+
+                editButton.addEventListener('click', () => {
+
+                    window.location.replace(`/material-detail?id=${material.id}&modify=true`);
+
+                });
             });
         } else {
             showToast("Không tìm thấy tài liệu phù hợp", "red", "times-circle");
             materialContainer.innerHTML = `<div class="no-result">Không tìm thấy tài liệu phù hợp</div>`;
         }
     }
+
+    async function fetchMaterialDetails(materialId) {
+        console.log(materialId)
+        try {
+            const response = await fetch(`/api/teacher/allMaterials`);
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            const materials = await response.json();
+            const material = materials.find(mat => mat.id === materialId);
+            console.log(material)
+            if (!material) {
+                throw new Error('Material not found');
+            }
+
+            populateModal(material);
+        } catch (error) {
+            console.error('Error fetching material details:', error);
+        }
+    }
+
+    function populateModal(material) {
+        const modalTitle = document.getElementById('materialModalLabel');
+        modalTitle.textContent = `Edit Material: ${material.materialsName}`;
+        modal.style.display = "block"
+        // Example: Populate other modal fields
+        const materialNameSpan = document.querySelector('#materialModal .azt-student-name span');
+        if (materialNameSpan) {
+            materialNameSpan.textContent = material.materialsName;
+        }
+
+        // Optionally, populate other fields as needed
+    }
+
 
     function selectGrade(grade, button) {
         const urlParams = new URLSearchParams(window.location.search);
@@ -171,6 +216,7 @@ document.addEventListener("DOMContentLoaded", function() {
             break;
     }
 
+
     function showToast(message, backgroundColor, icon) {
         toastInfo.innerHTML = `<i class="fas fa-${icon}"></i> ${message}`;
         toast.style.backgroundColor = backgroundColor;
@@ -180,3 +226,4 @@ document.addEventListener("DOMContentLoaded", function() {
         }, 3000);
     }
 });
+

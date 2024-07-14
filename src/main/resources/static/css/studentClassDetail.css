@@ -610,7 +610,7 @@ tr:hover {
 /* End table in modal */
 #feedbackForm .nameTeacher{
   display: flex;
-  gap: 1rem;
+  gap: 2.5rem;
   margin-top: 0.5rem;
   justify-content: space-between;
 }
