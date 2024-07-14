@@ -22,7 +22,9 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
             console.log("Opening Add Centre Modal");
-            addCentreModal.style.display = "block";
+//            addCentreModal.style.display = "block";
+            var newUrl = "/manager/cpost?centerId=1";
+            window.location.href = newUrl;
         });
     }
 
@@ -90,30 +92,36 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td><p>${post.createdAt}</p></td>
                         <td><p>${post.status}</p></td>
                         <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
-                        <td><button class="open-modal-btn" data-id="${post.id}">Xem</button></td>
+                        <td><button class="open-modal-btn">Xem</button></td>
                     </tr>
                 `;
                 tableBody.insertAdjacentHTML("beforeend", row);
             });
 
             // Attach event listeners for delete buttons
-            var deleteButtons = document.querySelectorAll(".delete-user");
-            deleteButtons.forEach((button) => {
+            document.querySelectorAll(".delete-user").forEach((button) => {
                 button.addEventListener("click", function (event) {
                     event.preventDefault();
                     var row = event.target.closest("tr");
                     var postName = row.querySelector("td:nth-child(1) p").textContent;
                     var postId = row.getAttribute("data-id");
-                    postNameElement.textContent = postName;
                     deleteModal.style.display = "block";
-                    deleteTarget = {
-                        row: row,
-                        id: postId
+                    var deleteTarget = {
+                        row: row
                     };
                     console.log("Delete button clicked for post:", postName, "with ID:", postId);
+                    console.log(postId);
+                    deleteAPost(postId, deleteTarget);
                 });
+//                button.addEventListener("click", function () {
+//                    var postId = this.getAttribute("data-id");
+//                    console.log(postId);
+//                    deleteAPost(postId);
+//                });
             });
-            // Reattach event listeners for view details buttons
+
+
+            //view
             document.querySelectorAll(".open-modal-btn").forEach((button) => {
                 button.addEventListener("click", function () {
                     var postId = this.getAttribute("data-id");
@@ -123,31 +131,28 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
+    function deleteAPost(postId, deleteTarget){
     // Confirm delete action
     var confirmDeleteButton = document.getElementById("confirmDelete");
-    var postNameElement = document.getElementById("postName");
-    var deleteTarget = null;
-
+    var apurl = `/manager/centerPosts/delete/${postId}`;
+    console.log(apurl);
     confirmDeleteButton.addEventListener("click", () => {
-        if (deleteTarget) {
-            console.log("Confirm delete for post ID:", deleteTarget.id);
-            console.log(deleteTarget);
-            fetch(`/manager/post/delete/${deleteTarget.id}`, {
-                method: "DELETE"
-            })
-            .then(response => {
-                if (response.ok) {
-                    deleteTarget.row.remove();
-                    deleteModal.style.display = "none";
-                    showToast("Xóa thành công trung tâm");
-                    console.log("post deleted successfully");
-                } else {
-                    console.error("Error deleting post:", response.statusText);
-                }
-            })
-            .catch(error => console.error("Error deleting post:", error));
-        }
+        fetch(`/manager/centerPosts/delete/${postId}`, {
+            method: "DELETE"
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error("Network response was not ok.");
+            } else{
+                deleteTarget.row.remove();
+            }
+        })
+        .catch(error => {
+            console.error("can't run method delete", error);
+        });
+        deleteModal.style.display = "none";
     });
+}
 
     // Helper function to show toast message
     function showToast(message) {
@@ -211,23 +216,23 @@ document.addEventListener("DOMContentLoaded", () => {
     //date
     document.getElementById("currentDate").innerText = getCurrentDate();
     function getCurrentDate() {
-            var currentDate = new Date();
-            var dayOfWeek = [
-              "Chủ Nhật",
-              "Thứ Hai",
-              "Thứ Ba",
-              "Thứ Tư",
-              "Thứ Năm",
-              "Thứ Sáu",
-              "Thứ Bảy",
-            ];
-            var day = String(currentDate.getDate()).padStart(2, "0");
-            var month = String(currentDate.getMonth() + 1).padStart(2, "0");
-            var year = currentDate.getFullYear();
-            var dayIndex = currentDate.getDay();
-            var dayName = dayOfWeek[dayIndex];
-            return dayName + ", " + day + "-" + month + "-" + year;
-          }
+        var currentDate = new Date();
+        var dayOfWeek = [
+          "Chủ Nhật",
+          "Thứ Hai",
+          "Thứ Ba",
+          "Thứ Tư",
+          "Thứ Năm",
+          "Thứ Sáu",
+          "Thứ Bảy",
+        ];
+        var day = String(currentDate.getDate()).padStart(2, "0");
+        var month = String(currentDate.getMonth() + 1).padStart(2, "0");
+        var year = currentDate.getFullYear();
+        var dayIndex = currentDate.getDay();
+        var dayName = dayOfWeek[dayIndex];
+        return dayName + ", " + day + "-" + month + "-" + year;
+      }
 });
 
 //test
@@ -291,20 +296,19 @@ function deleteCenterPost(postId) {
     });
 }
 
-// Example event listener for create button
-createPostBtn.addEventListener("click", function () {
-    var formData = {
-        title: "Sample Post Title",
-        content: "Sample Post Content",
-    };
-    createCenterPost(formData);
-});
+//createPostBtn.addEventListener("click", function () {
+//    var formData = {
+//        title: "Sample Post Title",
+//        content: "Sample Post Content",
+//    };
+//    createCenterPost(formData);
+//});
 
-postTableBody.addEventListener("click", function (event) {
-    if (event.target.classList.contains("fa-trash")) {
-        var postId = event.target.getAttribute("data-id");
-        deleteCenterPost(postId);
-    }
-});
+//postTableBody.addEventListener("click", function (event) {
+//    if (event.target.classList.contains("fa-trash")) {
+//        var postId = event.target.getAttribute("data-id");
+//        deleteCenterPost(postId);
+//    }
+//});
 
 

@@ -70,7 +70,7 @@ public class ManagerLearningController {
         }
     }
 
-    @PostMapping("center/create")
+    @PostMapping("/center/create")
     public ResponseEntity<Center> createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession httpSession) {
         User managerInfo = (User) httpSession.getAttribute("user");
         Center createdCenter = managerService.createCenter(centerDto, managerInfo);
@@ -316,52 +316,52 @@ public class ManagerLearningController {
     }
 
     // ---------------------------- SLOTS ---------------------------------
-    @GetMapping("/slots/byCenter/{centerId}")
-    public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
-        return managerService.getSlotsByCenterId(centerId);
-    }
-
-    @GetMapping("/slots/bySlot/{slotId}")
-    public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
-        return managerService.getSlotsBySlotId(slotId);
-    }
-
-    @PostMapping("/slots/create")
-    public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
-        try {
-            Slot createdSlot = managerService.createSlot(slotDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        @GetMapping("/slots/byCenter/{centerId}")
+        public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
+            return managerService.getSlotsByCenterId(centerId);
         }
-    }
 
-    @PutMapping("/slots/update/{slotId}")
-    public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
-        try {
-            Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
-            return ResponseEntity.ok(updatedSlot);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+        @GetMapping("/slots/bySlot/{slotId}")
+        public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
+            return managerService.getSlotsBySlotId(slotId);
         }
-    }
 
-    @DeleteMapping("/slots/delete/{slotId}")
-    public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
-        try {
-            managerService.deleteSlot(slotId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build(); // Or handle error as needed
+        @PostMapping("/slots/create")
+        public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
+            try {
+                Slot createdSlot = managerService.createSlot(slotDto);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
         }
-    }
 
-    @PostMapping("/overallSlots/certainCourse/insert")
-    public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
-                            @RequestParam String courseCode,
-                            @RequestParam String roomName) {
-        managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
-    }
+        @PutMapping("/slots/update/{slotId}")
+        public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
+            try {
+                Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
+                return ResponseEntity.ok(updatedSlot);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+            }
+        }
+
+        @DeleteMapping("/slots/delete/{slotId}")
+        public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
+            try {
+                managerService.deleteSlot(slotId);
+                return ResponseEntity.noContent().build();
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.notFound().build(); // Or handle error as needed
+            }
+        }
+
+        @PostMapping("/overallSlots/certainCourse/insert")
+        public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
+                                @RequestParam String courseCode,
+                                @RequestParam String roomName) {
+            managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
+        }
     // -------------------------------------------------------------------------------------
 
     @GetMapping("/teacher-salaries")

@@ -1,101 +1,107 @@
 document.addEventListener('DOMContentLoaded', function() {
-    var calendarEl = document.getElementById('calendar');
+    const calendarEl = document.getElementById('calendar');
+    const addSlotModal = document.getElementById('addSlotModal');
+    const closeModal = document.querySelector('.close');
+    const addSlotForm = document.getElementById('addSlotForm');
 
-    var calendar = new FullCalendar.Calendar(calendarEl, {
-      initialView: 'dayGridMonth',
-      headerToolbar: {
-        center: 'addEventButton'
-      },
-      customButtons: {
-        addEventButton: {
-          text: 'add event...',
-          click: function() {
-            var dateStr = prompt('Enter a date in YYYY-MM-DD format');
-            var date = new Date(dateStr + 'T00:00:00'); // will be in local time
-
-            if (!isNaN(date.valueOf())) { // valid?
-              calendar.addEvent({
-                title: 'dynamic event',
-                start: date,
-                allDay: true
-              });
-              alert('Great. Now, update your database...');
-            } else {
-              alert('Invalid date.');
+    let calendar = new FullCalendar.Calendar(calendarEl, {
+        initialView: 'dayGridMonth',
+        headerToolbar: {
+            left: 'prev,next today',
+            center: 'title',
+            right: 'dayGridMonth,timeGridWeek,timeGridDay'
+        },
+        events: function(fetchInfo, successCallback, failureCallback) {
+            fetch('/manager/slots/byCenter/1') // Replace with your endpoint to fetch events
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    let events = data.map(slot => ({
+                        id: slot.id,
+                        title: slot.courseName,
+                        start: slot.slotDate + 'T' + slot.slotStartTime,
+                        end: slot.slotDate + 'T' + slot.slotEndTime,
+                        description: `Room: ${slot.roomName}`
+                    }));
+                    successCallback(events);
+                })
+                .catch(error => {
+                    console.error('Error fetching events:', error);
+                    failureCallback(error);
+                });
+        },
+        eventClick: function(info) {
+            // Handle event click (optional)
+            console.log('Event clicked:', info.event);
+            // You can implement edit or delete functionality here
+        },
+        // Add context menu for right-click on events
+        eventContextMenus: [
+            {
+                text: 'Add Slot',
+                click: function(info) {
+                    addSlotModal.style.display = 'block';
+                    const slotDate = info.event.startStr.split('T')[0];
+                    const slotStartTime = info.event.startStr.split('T')[1];
+                    const slotEndTime = info.event.endStr.split('T')[1];
+                    document.getElementById('slotDate').value = slotDate;
+                    document.getElementById('slotStartTime').value = slotStartTime;
+                    document.getElementById('slotEndTime').value = slotEndTime;
+                }
             }
-          }
-        }
-      }
+        ]
     });
 
     calendar.render();
 
-});
-document.addEventListener("DOMContentLoaded", () => {
-    const date = document.querySelector(".date");
-    const daysContainer = document.querySelector(".days");
-    const prev = document.querySelector(".prev");
-    const next = document.querySelector(".next");
-    const todayBtn = document.querySelector(".today-btn");
-    const gotoBtn = document.querySelector(".goto-btn");
-    const dateInput = document.querySelector(".date-input");
-    const eventDay = document.querySelector(".event-day");
-    const eventDate = document.querySelector(".event-date");
-    const eventsContainer = document.querySelector(".events");
+    closeModal.addEventListener('click', function() {
+        addSlotModal.style.display = 'none';
+    });
 
-    let today = new Date();
-    let activeDay;
-    let month = today.getMonth();
-    let year = today.getFullYear();
+    window.addEventListener('click', function(event) {
+        if (event.target === addSlotModal) {
+            addSlotModal.style.display = 'none';
+        }
+    });
 
-    const months = [
-        "T1",
-        "T2",
-        "T3",
-        "T4",
-        "T5",
-        "T6",
-        "T7",
-        "T8",
-        "T9",
-        "T10",
-        "T11",
-        "T12",
-    ];
+    addSlotForm.addEventListener('submit', function(event) {
+        event.preventDefault();
 
-    let eventsArr = [];
-    getEvents();
-    console.log(eventsArr);
+        let formData = new FormData(addSlotForm);
+        let slotData = {
+            slotDate: formData.get('slotDate'),
+            slotStartTime: formData.get('slotStartTime'),
+            slotEndTime: formData.get('slotEndTime'),
+            courseName: formData.get('courseName'),
+            roomName: formData.get('roomName')
+        };
 
-    function fetchEvents() {
-        fetch('/manager/slots/byCenter/1')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data)
-                eventsArr = data.map(event => ({
-                    day: new Date(event.slotDate).getDate(),
-                    month: new Date(event.slotDate).getMonth() + 1,
-                    year: new Date(event.slotDate).getFullYear(),
-                    events: [{
-                        title: event.courseName,
-                        time: convertTime(event.slotStartTime) + " - " + convertTime(event.slotEndTime),
-                        room: event.roomName
-                    }]
-                }));
-                initCalendar();
-            })
-            .catch(error => console.error('Error fetching events:', error));
-    }
-    fetchEvents();
-    console.log(eventsArr);
-
-    function convertTime(time) {
-        let timeArr = time.split(":");
-        let timeHour = timeArr[0];
-        let timeMin = timeArr[1];
-        let timeFormat = timeHour >= 12 ? "PM" : "AM";
-        timeHour = timeHour % 12 || 12;
-        time = timeHour + ":" + timeMin + " " + timeFormat;
-        return time;
-    }
+        fetch('/manager/overallSlots/certainCourse/insert', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(slotData)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return response.json();
+        })
+        .then(data => {
+            console.log('Slot created successfully:', data);
+            alert('Slot created successfully!');
+            addSlotModal.style.display = 'none';
+            calendar.refetchEvents(); // Update the calendar after adding a slot
+        })
+        .catch(error => {
+            console.error('Error creating slot:', error);
+            alert('Failed to create slot. Please try again later.');
+        });
+    });
 });
