@@ -17,6 +17,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     let apiGradeUrl;
     let apiCourseDetail;
     let studentParentId;
+    let myChartInstance;
     console.log(roleUser)
 
     let teacherName = "";
@@ -40,167 +41,27 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
     async function fetchStudents() {
-            try {
-                const response = await fetch(`/api/parent/studentsByParent`);
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-                const data = await response.json();
-                studentParentId = data[0].id;
-                console.log(studentParentId + " id student")
-                // After fetching students, proceed to fetch posts
-                await fetchPosts();
-            } catch (error) {
-                console.error("Error fetching students:", error);
-                header.style.display = "none";
-                noResultDiv.style.display = "block";
-                noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để truy cập vào khóa học`;
+        try {
+            const response = await fetch(`/api/parent/studentsByParent`);
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            const data = await response.json();
+            studentParentId = data[0].id;
+            console.log(studentParentId + " id student")
+            // After fetching students, proceed to fetch posts
+            await fetchPosts();
+        } catch (error) {
+            console.error("Error fetching students:", error);
+            header.style.display = "none";
+            noResultDiv.style.display = "block";
+            noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để truy cập vào khóa học`;
         }
+    }
 
-        async function fetchPosts() {
-            try {
-                await fetch(apiCourseDetail)
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Network response was not ok');
-                        }
-                        return response.json();
-                    })
-                    .then(data => {
-
-                        const courseDetail = data.filter(course => course.courseId == courseId);
-
-                        if (courseDetail[0]) {
-                            console.log(courseDetail.teacherName)
-                            teacherName = courseDetail[0].teacherName;
-                            courseName = courseDetail[0].courseName;
-                            viewCourseDetails(courseDetail[0]);
-                        } else {
-                            console.log(`Course with courseId ${courseId} not found.`);
-                        }
-                    })
-                    .catch(error => console.error("Error fetching course details:", error));
-            } catch (error) {
-                console.error("Error in fetchPosts:", error);
-            }
-        }
-        function viewCourseDetails(courseData) {
-            const courseNameElement = document.querySelector(".detail-header h3");
-            const courseDesc = document.querySelector(".roadmap h3")
-            const courseStartTime = document.querySelector(".start-time h3");
-            let startTime, endTime, formattedDateStart, parts, courseEndTime, ends, formattedDateEnd, courseDetailDescription;
-            if(roleUser === "TEACHER"){
-                 startTime = courseData.courseEndDate.split('T')[0];
-                 endTime = courseData.courseEndDate.split('T')[0];
-                 courseDetailDescription = courseData.courseDescription;
-            }else{
-                startTime = courseData.startTime.split('T')[0];
-                endTime = courseData.endTime.split('T')[0];
-                courseDetailDescription = courseData.courseDesc
-            }
-            parts = startTime.split('-');
-            formattedDateStart = `${parts[2]}/${parts[1]}/${parts[0]}`;
-            courseEndTime = document.querySelector(" .end-time h3");
-            ends = endTime.split('-');
-            formattedDateEnd = `${ends[2]}/${ends[1]}/${ends[0]}`;
-
-            const teacherName = courseData.teacherName;
-            const courseName = courseData.courseName;
-            courseNameElement.innerHTML = `<span style="font-weight: 600">Khóa học: </span> ${courseName}`;
-            if(roleUser !== "TEACHER"){
-                courseNameElement.innerHTML += ` - Giáo viên ${teacherName}`;
-            }
-            courseDesc.innerHTML = `<span style="font-weight: 600">Mô tả khóa học:</span> ${courseDetailDescription}`;
-            courseStartTime.innerHTML = `<span style="font-weight: 600"> Bắt đầu khóa học: </span> ${formattedDateStart}`;
-            courseEndTime.innerHTML = `<span style="font-weight: 600"> Kết thúc khóa học: </span> ${formattedDateEnd}`;
-
-        }
-
-        fetchPosts();
-
-        fetchClassList();
-        function fetchClassList() {
-            fetch(`/api/teacher/courses/${courseId}/students`)
-                .then(response => response.json())
-                .then(data => {
-                    populateClassListModal(data);
-                })
-                .catch(error => console.error("Error fetching class list:", error));
-        }
-
-        function populateClassListModal(classListData) {
-            const classListBody = document.getElementById("classListBody");
-            classListBody.innerHTML = "";
-
-            classListData.forEach((student, index) => {
-                const studentName = student.name || student.username;
-                const row = `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td>${studentName}</td>
-                        ${roleUser === 'TEACHER' ? `<td><a href="#" class="score-link" data-student-id="${student.id}">Chi tiết</a></td>` : ''}
-                    </tr>
-                `;
-                classListBody.insertAdjacentHTML("beforeend", row);
-            });
-            if (roleUser === 'TEACHER') {
-                scoreHeader.style.display = 'table-cell';
-                attachScoreLinksEvent();
-            }
-            classListModal.style.display = "block";
-            closeClassListModal.addEventListener("click", () => {
-                classListModal.style.display = "none";
-            });
-
-            window.addEventListener("click", (event) => {
-                if (event.target == classListModal) {
-                    evaluationModal.style.display = "none";
-                }
-            });
-        }
-
-        function openFeedbackModal() {
-            const teacherNameInput = document.getElementById("teacherName");
-            teacherNameInput.value = teacherName;
-            feedbackModal.style.display = "block";
-        }
-
-        function closeFeedbackModalFunc() {
-            feedbackModal.style.display = "none";
-        }
-
-
-        switch (roleUser){
-            case "STUDENT":
-                feedbackBtn.addEventListener("click", openFeedbackModal);
-                closeFeedbackModal.addEventListener("click", closeFeedbackModalFunc);
-                window.addEventListener("click", (event) => {
-                    if (event.target == feedbackModal) {
-                        closeFeedbackModalFunc();
-                    }
-                });
-                break;
-            case "TEACHER":
-                feedbackBtn.style.display = "none";
-                report.style.display = "none";
-                break;
-            case "PARENT":
-                feedbackBtn.style.display = "none";
-                break;
-        }
-
-        document.getElementById("feedbackForm").addEventListener("submit", (event) => {
-            event.preventDefault();
-            const feedbackContent = document.getElementById("feedbackContent").value;
-
-            fetch(`/api/student/${userId}/courses/${courseId}/feedback`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ feedbackContent: feedbackContent }),
-            })
+    async function fetchPosts() {
+        try {
+            await fetch(apiCourseDetail)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Network response was not ok');
@@ -208,64 +69,204 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return response.json();
                 })
                 .then(data => {
-                    console.log("Feedback submitted:", data);
-                    showToast(`<i class="fas fa-check"></i> Đánh giá giáo viên thành công`);
-                    closeFeedbackModalFunc();
-                })
-                .catch(error => console.error("Error submitting feedback:", error));
-        });
 
-        function showToast(message) {
-            const toastContainer = document.getElementById("toastContainer");
-            toastContainer.innerHTML = `${message}`;
-            toastContainer.classList.add("show");
-            setTimeout(() => {
-                toastContainer.classList.remove("show");
-            }, 3000);
-        }
+                    const courseDetail = data.filter(course => course.courseId == courseId);
 
-        function fetchCourseGrades() {
-            fetch(`/api/student/${userId}/grades`)
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data)
-
-                    if (data.length > 0) {
-
-                        const result = data.filter(course => courseId === course.courseId)
-                        console.log(result)
-                        openEvaluationModal(result)
+                    if (courseDetail[0]) {
+                        console.log(courseDetail.teacherName)
+                        teacherName = courseDetail[0].teacherName;
+                        courseName = courseDetail[0].courseName;
+                        viewCourseDetails(courseDetail[0]);
                     } else {
-                        console.log("No grades found for the student in this course.");
-                        showToast(`<i class="fas fa-xmark"></i> Giáo viên chưa nhập điểm/báo cáo`);
+                        console.log(`Course with courseId ${courseId} not found.`);
                     }
                 })
-                .catch(error => console.error("Error fetching course grades:", error));
+                .catch(error => console.error("Error fetching course details:", error));
+        } catch (error) {
+            console.error("Error in fetchPosts:", error);
         }
+    }
+    function viewCourseDetails(courseData) {
+        const courseNameElement = document.querySelector(".detail-header h3");
+        const courseDesc = document.querySelector(".roadmap h3")
+        const courseStartTime = document.querySelector(".start-time h3");
+        let startTime, endTime, formattedDateStart, parts, courseEndTime, ends, formattedDateEnd, courseDetailDescription;
+        if(roleUser === "TEACHER"){
+            startTime = courseData.courseEndDate.split('T')[0];
+            endTime = courseData.courseEndDate.split('T')[0];
+            courseDetailDescription = courseData.courseDescription;
+        }else{
+            startTime = courseData.startTime.split('T')[0];
+            endTime = courseData.endTime.split('T')[0];
+            courseDetailDescription = courseData.courseDesc
+        }
+        parts = startTime.split('-');
+        formattedDateStart = `${parts[2]}/${parts[1]}/${parts[0]}`;
+        courseEndTime = document.querySelector(" .end-time h3");
+        ends = endTime.split('-');
+        formattedDateEnd = `${ends[2]}/${ends[1]}/${ends[0]}`;
 
-        function attachScoreLinksEvent() {
+        const teacherName = courseData.teacherName;
+        const courseName = courseData.courseName;
+        courseNameElement.innerHTML = `<span style="font-weight: 600">Khóa học: </span> ${courseName}`;
+        if(roleUser !== "TEACHER"){
+            courseNameElement.innerHTML += ` - Giáo viên ${teacherName}`;
+        }
+        courseDesc.innerHTML = `<span style="font-weight: 600">Mô tả khóa học:</span> ${courseDetailDescription}`;
+        courseStartTime.innerHTML = `<span style="font-weight: 600"> Bắt đầu khóa học: </span> ${formattedDateStart}`;
+        courseEndTime.innerHTML = `<span style="font-weight: 600"> Kết thúc khóa học: </span> ${formattedDateEnd}`;
 
-            const scoreLinks = document.querySelectorAll(".score-link");
-            scoreLinks.forEach(link => {
-                link.addEventListener('click', function(event) {
-                    event.preventDefault();
+    }
 
-                    const studentId = this.getAttribute("data-student-id");
-                    apiGradeUrl = `api/teacher/courses/${courseId}/students/${studentId}/results`
-                        fetch(apiGradeUrl)
-                            .then(response => response.json())
+    fetchPosts();
 
-                            .then(data => {
-                                if(data.length === 0){
-                                    showEnterScoreForm(studentId);
-                                }else{
-                                    openEvaluationStudentForTeacher(data, studentId)
-                                }
-                        })
-                            .catch(error => console.error("Error fetching course grades:", error));
-                });
+    fetchClassList();
+    function fetchClassList() {
+        fetch(`/api/teacher/courses/${courseId}/students`)
+            .then(response => response.json())
+            .then(data => {
+                populateClassListModal(data);
+            })
+            .catch(error => console.error("Error fetching class list:", error));
+    }
+
+    function populateClassListModal(classListData) {
+        const classListBody = document.getElementById("classListBody");
+        classListBody.innerHTML = "";
+
+        classListData.forEach((student, index) => {
+            const studentName = student.name || student.username;
+            const row = `
+                    <tr>
+                        <td>${index + 1}</td>
+                        <td>${studentName}</td>
+                        ${roleUser === 'TEACHER' ? `<td><a href="#" class="score-link" data-student-id="${student.id}">Chi tiết</a></td>` : ''}
+                    </tr>
+                `;
+            classListBody.insertAdjacentHTML("beforeend", row);
+        });
+        if (roleUser === 'TEACHER') {
+            scoreHeader.style.display = 'table-cell';
+            attachScoreLinksEvent();
+        }
+        classListModal.style.display = "block";
+        closeClassListModal.addEventListener("click", () => {
+            classListModal.style.display = "none";
+        });
+
+        window.addEventListener("click", (event) => {
+            if (event.target == classListModal) {
+                evaluationModal.style.display = "none";
+            }
+        });
+    }
+
+    function openFeedbackModal() {
+        const teacherNameInput = document.getElementById("teacherName");
+        teacherNameInput.value = teacherName;
+        feedbackModal.style.display = "block";
+    }
+
+    function closeFeedbackModalFunc() {
+        feedbackModal.style.display = "none";
+    }
+
+
+    switch (roleUser){
+        case "STUDENT":
+            feedbackBtn.addEventListener("click", openFeedbackModal);
+            closeFeedbackModal.addEventListener("click", closeFeedbackModalFunc);
+            window.addEventListener("click", (event) => {
+                if (event.target == feedbackModal) {
+                    closeFeedbackModalFunc();
+                }
             });
-        }
+            break;
+        case "TEACHER":
+            feedbackBtn.style.display = "none";
+            report.style.display = "none";
+            break;
+        case "PARENT":
+            feedbackBtn.style.display = "none";
+            break;
+    }
+
+    document.getElementById("feedbackForm").addEventListener("submit", (event) => {
+        event.preventDefault();
+        const feedbackContent = document.getElementById("feedbackContent").value;
+
+        fetch(`/api/student/${userId}/courses/${courseId}/feedback`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ feedbackContent: feedbackContent }),
+        })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Feedback submitted:", data);
+                showToast(`<i class="fas fa-check"></i> Đánh giá giáo viên thành công`);
+                closeFeedbackModalFunc();
+            })
+            .catch(error => console.error("Error submitting feedback:", error));
+    });
+
+    function showToast(message) {
+        const toastContainer = document.getElementById("toastContainer");
+        toastContainer.innerHTML = `${message}`;
+        toastContainer.classList.add("show");
+        setTimeout(() => {
+            toastContainer.classList.remove("show");
+        }, 3000);
+    }
+
+    function fetchCourseGrades() {
+        fetch(`/api/student/${userId}/grades`)
+            .then(response => response.json())
+            .then(data => {
+                console.log(data)
+
+                if (data.length > 0) {
+
+                    const result = data.filter(course => courseId === course.courseId)
+                    console.log(result)
+                    openEvaluationModal(result)
+                } else {
+                    console.log("No grades found for the student in this course.");
+                    showToast(`<i class="fas fa-xmark"></i> Giáo viên chưa nhập điểm/báo cáo`);
+                }
+            })
+            .catch(error => console.error("Error fetching course grades:", error));
+    }
+
+    function attachScoreLinksEvent() {
+
+        const scoreLinks = document.querySelectorAll(".score-link");
+        scoreLinks.forEach(link => {
+            link.addEventListener('click', function(event) {
+                event.preventDefault();
+
+                const studentId = this.getAttribute("data-student-id");
+                apiGradeUrl = `api/teacher/courses/${courseId}/students/${studentId}/results`
+                fetch(apiGradeUrl)
+                    .then(response => response.json())
+
+                    .then(data => {
+                        if(data.length === 0){
+                            showEnterScoreForm(studentId);
+                        }else{
+                            openEvaluationStudentForTeacher(data, studentId)
+                        }
+                    })
+                    .catch(error => console.error("Error fetching course grades:", error));
+            });
+        });
+    }
 
     function openEvaluationStudentForTeacher(grades , studentId) {
         const tableBody = document.getElementById("scoresTableBody");
@@ -330,39 +331,39 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         evaluationModal.style.display = "block";
 
-            const currentValues = [];
+        const currentValues = [];
+        document.querySelectorAll('.editable-score').forEach(cell => {
+            const scoreId = cell.dataset.id;
+            const scoreType = cell.dataset.type;
+            const currentValue = cell.textContent.trim();
+            currentValues.push({ id: scoreId, value: currentValue, type: scoreType });
+        });
+
+        document.getElementById("saveScoresButton").addEventListener("click", function() {
+            const updatedScores = [];
+            const deletedScores = [];
+
             document.querySelectorAll('.editable-score').forEach(cell => {
                 const scoreId = cell.dataset.id;
                 const scoreType = cell.dataset.type;
-                const currentValue = cell.textContent.trim();
-                currentValues.push({ id: scoreId, value: currentValue, type: scoreType });
-            });
+                const newValue = cell.textContent.trim();
 
-            document.getElementById("saveScoresButton").addEventListener("click", function() {
-                const updatedScores = [];
-                const deletedScores = [];
+                const currentValueObj = currentValues.find(item => item.id === scoreId);
+                const currentValue = currentValueObj ? currentValueObj.value : '';
 
-                document.querySelectorAll('.editable-score').forEach(cell => {
-                    const scoreId = cell.dataset.id;
-                    const scoreType = cell.dataset.type;
-                    const newValue = cell.textContent.trim();
-
-                    const currentValueObj = currentValues.find(item => item.id === scoreId);
-                    const currentValue = currentValueObj ? currentValueObj.value : '';
-
-                    if (currentValue !== newValue) {
-                        if (newValue === '') {
-                            deletedScores.push(scoreId);
-                        }else{
-                            updatedScores.push({ id: scoreId, value: newValue, type: scoreType });
-                        }
+                if (currentValue !== newValue) {
+                    if (newValue === '') {
+                        deletedScores.push(scoreId);
+                    }else{
+                        updatedScores.push({ id: scoreId, value: newValue, type: scoreType });
                     }
-                });
-
-
-                saveScores(updatedScores);
-                deleteScores(deletedScores);
+                }
             });
+
+
+            saveScores(updatedScores);
+            deleteScores(deletedScores);
+        });
 
     }
 
@@ -565,13 +566,13 @@ document.addEventListener("DOMContentLoaded", async () => {
         attendanceDetails.appendChild(summary);
 
         const list = document.createElement("ul");
-        console.log(attendanceData)
+
         attendanceData.forEach(session => {
             const listItem = document.createElement("li");
             const dateFormatCompare = new Date(session.slotDate);
             const dateFormat = formatDateToDDMMYYYY(session.slotDate)
             const isOlderThanToday = dateFormatCompare < today;
-            console.log(isOlderThanToday)
+
             const attendanceStatus = isOlderThanToday ? (session.attendanceStatus ? 'Có mặt' : 'Vắng') : 'none';
             listItem.innerHTML = `
             <div class="date-attendance">
@@ -589,8 +590,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             list.appendChild(listItem);
         });
         attendanceDetails.appendChild(list);
+        if (myChartInstance) {
+            myChartInstance.destroy();
+        }
         const ctx = document.getElementById('myChart').getContext('2d');
-        const myPieChart = new Chart(ctx, {
+         myChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
                 labels: ['Present', 'Absent', 'Future'],
@@ -601,6 +605,11 @@ document.addEventListener("DOMContentLoaded", async () => {
             },
         });
         attendanceModal.style.display = "block";
+        window.addEventListener("click", (event) => {
+            if (event.target == attendanceModal) {
+                attendanceModal.style.display = "none";
+            }
+        });
     }
 
     function openEvaluationModal(grades) {
@@ -610,6 +619,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         const maxColumns = Math.max(shortTestScores.length, longTestScores.length, examScores.length);
         const saveButton = document.getElementById("saveScoresButton");
         saveButton.style.display = "none";
+        const addScoreBtn = document.getElementById("addScoresButton");
+        addScoreBtn.style.display = "none"
         const tableBody = document.getElementById("scoresTableBody");
 
         tableBody.innerHTML = '';
@@ -657,18 +668,26 @@ document.addEventListener("DOMContentLoaded", async () => {
         teacherFeedback.innerHTML = feedbackMessages.join('<br>');
 
         evaluationModal.style.display = "block";
-        // closeEvaluationModal()
+        //closeEvaluationModal()
+        document.getElementById("closeEvaluationModal").addEventListener("click", function() {
+            evaluationModal.style.display = "none";
+        });
+        window.addEventListener("click", (event) => {
+            if (event.target == evaluationModal) {
+                evaluationModal.style.display = "none";
+            }
+        });
     }
 
 
 
 
-        document.getElementById("btn-evaluation-details").addEventListener("click", () => {
-            fetchCourseGrades(courseId);
-        });
-
-        console.log(closeEvaluationModalBtn)
-        closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
-
-
+    document.getElementById("btn-evaluation-details").addEventListener("click", () => {
+        fetchCourseGrades(courseId);
     });
+
+    console.log(closeEvaluationModalBtn)
+    closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
+
+
+});

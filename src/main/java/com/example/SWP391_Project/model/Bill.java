@@ -31,10 +31,8 @@ public class Bill {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy HH:mm:ss")
     Date createdAt;
 
-    // chỗ này sai
-    // bill và enrollment là one-to-one
-    @ManyToOne
-    @JoinColumn(name = "C08_ENROLLMENT_ID")
+    @OneToOne
+    @JoinColumn(name = "C08_ENROLLMENT_ID", nullable = false)
     @JsonManagedReference
     Enrollment enrollment;
 

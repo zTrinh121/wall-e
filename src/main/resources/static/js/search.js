@@ -50,15 +50,11 @@ document.addEventListener('DOMContentLoaded', function () {
                             </div>
                         </div>
                         <div class="float-gallery-content">
-                            <div class="content uk-text-left">
+                           <div class="content uk-text-left">
                                 <span class="highlight uk-block">Thêm thông tin</span>
-                                <a href="searchDetail?courseId=${item.id}centerId=${item.centerId}">Nhấn để xem chi tiết</a>
+                                <a href="searchDetail?courseId=${item.id}&centerId=${item.centerId}">Nhấn để xem chi tiết</a>
                             </div>
-                            <div class="content-btn">
-                                <button type="button" class="show-details-btn" href="searchDetail?courseId=${item.id}centerId=${item.centerId}">
-                                    &#8594;
-                                </button>
-                            </div>
+                           
                         </div>
                     `;
                     }
@@ -76,11 +72,7 @@ document.addEventListener('DOMContentLoaded', function () {
                                 <span class="highlight uk-block">Thêm thông tin</span>
                                 <a href="searchDetail?centerId=${item.id}">Nhấn để xem chi tiết</a>
                             </div>
-                            <div class="content-btn">
-                                <button type="button" href="searchDetail?centerId=${item.id}" class="show-details-btn">
-                                    &#8594;
-                                </button>
-                            </div>
+                            
                         </div>
                     `;
 
@@ -176,28 +168,38 @@ document.addEventListener('DOMContentLoaded', function () {
 });
 
 $(document).ready(function() {
-    $('#search-input').on('input', function() {
-        var keyword = $(this).val();
+    function performSearch() {
+        var keyword = $('#search-input').val();
+        var searchType = $('#searchType').val();
         if (keyword.length >= 2) {
             $.ajax({
-                url: '/api/student/search',
+                url: '/api/student/searchh', // Đảm bảo đây là endpoint chính xác
                 type: 'GET',
-                data: { keyword: keyword },
+                data: {
+                    keyword: keyword,
+                    searchType: searchType
+                },
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        console.log(item)
-                        var detailUrl = (item.type === 'Course') ? `/courseDetail?courseId=${item.id}` : `/centerDetail?centerId=${item.id}`;
-                        dropdown += `<a href="" class="search-item" data-url="">${item.type}: ${item.name}</a>`;
+                        console.log(item);
+                        var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
+                        if(searchType == "all" ||
+                            (searchType == "course" && item.type == "Course") ||
+                            (searchType == "center" && item.type == "Center")){
+                            dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                        }
                     });
                     $('#search-results').html(dropdown).show();
 
-                    // Thêm sự kiện click cho mỗi kết quả tìm kiếm
                     $('.search-item').click(function() {
                         var url = $(this).data('url');
                         sessionStorage.setItem('searchDetails', $(this).text());
                         window.location.href = url;
                     });
+
+                    // Thêm class 'open' để thay đổi border-radius nếu cần
+                    $('.search').addClass('open');
                 },
                 error: function(error) {
                     console.error('Error fetching search results:', error);
@@ -205,12 +207,17 @@ $(document).ready(function() {
             });
         } else {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
-    });
+    }
+
+    $('#search-input').on('input', performSearch);
+    $('#searchType').on('change', performSearch);
 
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {
             $('#search-results').hide();
+            $('.search').removeClass('open');
         }
     });
 });

@@ -53,7 +53,7 @@ public class UserController {
         String toEmail = ""; // lấy email người dùng ra
         String code = "rendom ra";
         String fromEmail = "thanhdhde170795@fpt.edu.vn";
-        String password = "pwpi acpp wcqr hion";
+        String password = "bdmt kdvd kbpx zzfd";
 
         try {
 

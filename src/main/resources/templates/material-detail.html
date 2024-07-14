@@ -15,7 +15,7 @@
         <section id="content">
             <main>
                 <i class="return fas fa-arrow-left" onclick="history.back()"></i>
-
+                <p th:text="${param.modify}" id="modify" style="display: none"></p>
                 <div class="header">
                     <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
                 </div>

@@ -1,3 +1,5 @@
+
+
 document.addEventListener("DOMContentLoaded", function () {
     var toast = document.getElementById("toast");
     var toastInfo = document.getElementById("toast-info");
@@ -29,7 +31,7 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     function fetchAndDisplayPublicNotifications() {
-        fetch("/admin-publicNotifications")
+        fetch("/admin-systemNotifications")
             .then(response => response.json())
             .then(data => {
                 allPublicNotifications = data;
@@ -40,7 +42,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     function fetchAndDisplayPrivateNotifications() {
-        fetch("/admin-privateNotifications")
+        fetch("/individualNotifications")
             .then(response => response.json())
             .then(data => {
                 allPrivateNotifications = data;
@@ -82,10 +84,14 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         notifications.forEach(function (notification) {
+            console.log(notification.createdAt); // Log the original date string
+            const formattedDate = formatDate(notification.createdAt);
+            console.log(formattedDate); // Log the formatted date
+
             var row = `
             <tr id="${notification.id}">
                 <td>${notification.title}</td>
-                <td>${new Date(notification.createdAt).toLocaleDateString('en-GB')}</td>
+                <td>${formattedDate}</td></td>
                 ${isPrivate ? `<td>${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}</td>` : ''}
                 <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}>Xem</button></td>
                 <td>
@@ -101,7 +107,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayNotificationDetails(title, content, createdAt, sendTo) {
         viewNotificationTitle.textContent = "Tiêu đề: " +title;
         viewNotificationContent.textContent = "Nội dung: " + content;
-        viewNotificationCreatedAt.textContent = "Ngày tạo: " + new Date(createdAt).toLocaleDateString('en-GB');
+        const formattedDate = formatDate(createdAt);
+        viewNotificationCreatedAt.textContent = "Ngày tạo: " + formattedDate;
         if(sendTo !== null){
             viewNotificationSendTo.style.display = "block";
             viewNotificationSendTo.textContent = "Gửi đến " + sendTo;
@@ -243,6 +250,18 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     });
 
+    function formatDate(dateString) {
+        const dateParts = dateString.split(' '); // Split date and time
+        const date = dateParts[0]; // Extract date part
+        const [day, month, year] = date.split('-'); // Split into day, month, year
+
+        // Ensure day and month are always two digits
+        const formattedDay = day.padStart(2, '0');
+        const formattedMonth = month.padStart(2, '0');
+
+        return `${formattedDay}/${formattedMonth}/${year}`;
+    }
+
     function displayEditModal(notification) {
         var editModal = document.getElementById("editModal");
         var editConfirmBtn = editModal.querySelector("#confirmEdit");
@@ -275,7 +294,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             if(notification.sendTo){
-                fetch(`/admin-privateNotification/update/${updatedNotification.id}`, {
+                fetch(`/admin-individualNotification/update/${updatedNotification.id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -297,7 +316,7 @@ document.addEventListener("DOMContentLoaded", function () {
                         showToast("Cập nhật thông báo cá nhân thất bại!", "red", "times-circle");
                     });
             }else{
-                fetch(`/admin-publicNotification/update/${updatedNotification.id}`, {
+                fetch(`/admin-systemNotification/update/${updatedNotification.id}`, {
                     method: "PUT",
                     headers: {
                         "Content-Type": "application/json"
@@ -381,7 +400,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if(data.type === 'private' && isValid){
             for (const recipient of recipients){
                 const newData = { ...data, sendTo: recipient };
-                var url = "/admin-privateNotification/create";
+                var url = "/individualNotification/create";
                 try {
 
                     const centersValid = await fetchCentersAndUsersAndCompareSendTo(newData.sendTo);

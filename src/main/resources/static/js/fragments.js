@@ -12,6 +12,7 @@ document.addEventListener("DOMContentLoaded", async function () {
     const notificationDetails = document.getElementById("notificationDetails");
     const closeModal = document.getElementById("viewNotificationModalClose");
     const userRole = document.getElementById("user-role").innerHTML;
+
     let apiRole;
     let apiNotificationUrlGet;
     let allNotifications = [];
@@ -496,30 +497,35 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 });
 $(document).ready(function() {
-    $('#search-input').on('input', function() {
-        var keyword = $(this).val();
+    function performSearch() {
+        var keyword = $('#search-input').val();
+        var searchType = $('#searchType').val();
         if (keyword.length >= 2) {
             $.ajax({
                 url: '/api/student/searchh',
                 type: 'GET',
-                data: { keyword: keyword },
+                data: {
+                    keyword: keyword,
+                    searchType: searchType
+                },
                 success: function(response) {
                     var dropdown = '';
                     response.slice(0, 5).forEach(function(item) {
-                        console.log(item);
                         var detailUrl = (item.type === 'Course') ? `/searchDetail?courseId=${item.id}&centerId=${item.centerId}` : `/searchDetail?centerId=${item.id}`;
-                        dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                        if(searchType == "all" ||
+                            (searchType == "course" && item.type == "Course") ||
+                            (searchType == "center" && item.type == "Center")){
+                            dropdown += `<a href="javascript:void(0);" class="search-item" data-url="${detailUrl}">${item.type}: ${item.name}</a>`;
+                        }
                     });
                     $('#search-results').html(dropdown).show();
 
-                    // Thêm sự kiện click cho mỗi kết quả tìm kiếm
                     $('.search-item').click(function() {
                         var url = $(this).data('url');
                         sessionStorage.setItem('searchDetails', $(this).text());
                         window.location.href = url;
                     });
 
-                    // Change border-radius of search class
                     $('.search').addClass('open');
                 },
                 error: function(error) {
@@ -530,7 +536,10 @@ $(document).ready(function() {
             $('#search-results').hide();
             $('.search').removeClass('open');
         }
-    });
+    }
+
+    $('#search-input').on('input', performSearch);
+    $('#searchType').on('change', performSearch);
 
     $(document).click(function(event) {
         if (!$(event.target).closest('.search').length) {

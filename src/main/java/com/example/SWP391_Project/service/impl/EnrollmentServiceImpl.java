@@ -13,6 +13,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
+
 @Service
 @RequiredArgsConstructor
 public class EnrollmentServiceImpl implements EnrollmentService {
@@ -45,6 +47,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
                 Enrollment enrollment = Enrollment.builder()
                         .student(student)
                         .course(course)
+                        .enrollDate(new Date())
                         .build();
                 System.out.println("Enrolement trong serviceimpl" + enrollment);
                 return enrollmentRepository.save(enrollment);
@@ -63,6 +66,7 @@ public class EnrollmentServiceImpl implements EnrollmentService {
             Enrollment enrollment = Enrollment.builder()
                     .student(user)
                     .course(course)
+                    .enrollDate(new Date())
                     .build();
             System.out.println("Enrolement trong serviceimpl" + enrollment);
             return enrollmentRepository.save(enrollment); // Save and return the enrollment

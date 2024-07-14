@@ -36,7 +36,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN u.enrollments e " +
             "JOIN e.course c " +
-            "JOIN e.bills b " +
+            "JOIN e.bill b " +
             "WHERE b.status = :status " +
             "AND c.center.id = :centerId " +
             "AND YEAR(b.createdAt) != :year " +
@@ -44,7 +44,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "AND u.id NOT IN (" +
             "    SELECT DISTINCT u2.id FROM User u2 " +
             "    JOIN u2.enrollments e2 " +
-            "    JOIN e2.bills b2 " +
+            "    JOIN e2.bill b2 " +
             "    WHERE YEAR(b2.createdAt) <= :year AND MONTH(b2.createdAt) <= :month)")
     Optional<List<User>> findStudentsWithPaidFeesInCenter(
             @Param("status") PaymentStatus status,
@@ -55,7 +55,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
 
     @Query("SELECT DISTINCT u FROM User u " +
             "JOIN u.enrollments e " +
-            "JOIN e.bills b " +
+            "JOIN e.bill b " +
             "WHERE b.status = :status " +
             "AND e.course.id = :courseId " +
             "AND YEAR(b.createdAt) != :year " +
@@ -63,7 +63,7 @@ public interface UserRepository extends JpaRepository<User, Integer> {
             "AND u.id NOT IN (" +
             "    SELECT DISTINCT u2.id FROM User u2 " +
             "    JOIN u2.enrollments e2 " +
-            "    JOIN e2.bills b2 " +
+            "    JOIN e2.bill b2 " +
             "    WHERE YEAR(b2.createdAt) <= :year AND MONTH(b2.createdAt) <= :month)")
     Optional<List<User>> findStudentsWithPaidFeesInCourse(
             @Param("status") PaymentStatus status,

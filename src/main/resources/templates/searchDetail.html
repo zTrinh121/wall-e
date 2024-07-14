@@ -15,6 +15,11 @@
     <div class="wrapper">
         <p th:text="${param.courseId}" id="courseId" style="display: none"></p>
         <p th:text="${param.centerId}" id="centerId" style="display: none"></p>
+        <p th:if="${user != null}" th:text="${user.id}" id="userId" style="display: none"></p>
+        <p th:unless="${user != null}" th:text="'1'" id="userId" style="display: none"></p>
+<!--        <p th:text="${user?.role.getDescription().name()}" id="userRole" style="display: none"></p>-->
+        <p th:if="${user != null}" th:text="${user.role.getDescription().name()}" id="userRole" style="display: none"></p>
+        <p th:unless="${user != null}" th:text="'Guest'" id="userRole" style="display: none"></p>
 
         <div id="center-info" style="display: none;">
             <h1 id="center-name">Thông tin trung tâm</h1>
