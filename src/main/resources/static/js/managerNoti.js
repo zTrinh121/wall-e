@@ -173,3 +173,96 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
 });
+//test
+function fetchAndDisplayCenterNotifications() {
+    fetch("/manager/centerNotifications")
+        .then(response => response.json())
+        .then(data => {
+            renderTable(data);
+        })
+        .catch(error => console.error("Error fetching center notifications:", error));
+}
+
+function fetchAndDisplayCenterNotificationsByCenterId(centerId) {
+    fetch(`/manager/centerNotifications/center/${centerId}`)
+        .then(response => response.json())
+        .then(data => {
+            renderTable(data); // Render function to display center notifications
+        })
+        .catch(error => console.error(`Error fetching center notifications for centerId ${centerId}:`, error));
+}
+function renderTable(notificationsList) {
+    notificationsList.forEach(function(notification) {
+        var row = `
+            <tr id="${notification.id}">
+                <td>${notification.title}</td>
+                <td>${new Date(notification.createdAt).toLocaleDateString('en-GB')}</td>
+                <td>${notification.someField}</td> <!-- Example field specific to CenterNotification -->
+                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}">View</button></td>
+                <td>
+                    <i class="fas fa-edit" data-id="${notification.id}"></i>
+                    <i class="fas fa-trash" data-id="${notification.id}"></i>
+                </td>
+            </tr>
+        `;
+        notificationTableBody.insertAdjacentHTML("beforeend", row);
+    });
+}
+function createCenterNotification(data) {
+    fetch("/manager/centerNotification/create", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data)
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        return response.json();
+    })
+    .then(data => {
+        showToast("Center notification created successfully!", "#4caf50", "check-circle");
+        fetchAndDisplayCenterNotifications(); // Refresh the list after creation
+    })
+    .catch(error => {
+        console.error("Error creating center notification:", error);
+        showToast("Failed to create center notification.", "red", "times-circle");
+    });
+}
+function deleteCenterNotification(notificationId) {
+    fetch(`/manager/delete/${notificationId}`, {
+        method: "DELETE"
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error("Network response was not ok");
+        }
+        showToast("Center notification deleted successfully!", "#4caf50", "check-circle");
+        var row = document.getElementById(notificationId);
+        if (row) {
+            row.remove();
+        }
+    })
+    .catch(error => {
+        console.error("Error deleting center notification:", error);
+        showToast("Failed to delete center notification.", "red", "times-circle");
+    });
+}
+
+createNotificationBtn.addEventListener("click", function () {
+    var formData = {
+        title: "vbcbcv",
+        content: "zxcxz",
+    };
+    createCenterNotification(formData);
+});
+
+notificationTableBody.addEventListener("click", function (event) {
+    if (event.target.classList.contains("fa-trash")) {
+        var notificationId = event.target.getAttribute("data-id");
+        deleteCenterNotification(notificationId);
+    }
+});
+

@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Tilt+Neon&display=swap");
+
+.customizeChart {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-size: 62.5%;
+}
+
+body .customizeChart  {
+  font-family: "Tilt Neon", sans-serif;
+  padding: 2rem 4rem;
+}
+
+.customizeChart h1 {
+  font-size: 2rem;
+  color: #333;
+  text-align: left;
+  padding: 3rem;
+}
+
+#content main .table-data .order {
+	flex-grow: 1;
+	flex-basis: 500px;
+	height: 150%;
+	width: 150%
+}

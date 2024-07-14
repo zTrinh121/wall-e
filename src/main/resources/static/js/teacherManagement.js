@@ -15,11 +15,19 @@ document.addEventListener("DOMContentLoaded", () => {
     var deleteModal = document.getElementById("deleteModal");
 
     // Open Add Centre Modal
+    const urlParamss = window.location.href;
+    console.log("Current URL:", urlParamss);
+    // Extract centerId from the URL
+    const urlPartss = urlParamss.split("centerId=");
+    centerIdzs = urlPartss.length > 1 ? urlPartss[1].split("&")[0] : null;
+    console.log("Center ID:", centerIdzs);
     var addCentreBtn = document.getElementById("addCentreBtn");
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
-            console.log("Opening Add Centre Modal");
-            addCentreModal.style.display = "block";
+            var url = `/manager/mapTea?centerId=`;
+            url += encodeURIComponent(centerIdzs);
+            console.log(url);
+            window.location.href = url;
         });
     }
 
@@ -160,7 +168,7 @@ document.addEventListener("DOMContentLoaded", () => {
             return getCTN.json();
             })
             .then((ctn) => {
-            document.getElementById("centerDetailName").innerText = "Quản lý học sinh của trung tâm " + ctn.name;
+            document.getElementById("centerDetailName").innerText = "Quản lý giáo viên của trung tâm " + ctn.name;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
@@ -264,7 +272,7 @@ function openModalWithTeacherDetails(teaId, centerIdz) {
 
 var noResultDiv = document.getElementById("no-result");
 });
-//box-info-redirect
+//box-info-redirect + sidebar
 //students
 document.addEventListener("DOMContentLoaded", function () {
     var boxInfos = document.getElementById("boxInfos");
@@ -311,5 +319,40 @@ document.addEventListener("DOMContentLoaded", function () {
         });
     } else {
         console.error("Element with id 'boxInfoc' not found.");
+    }
+});
+//money
+document.addEventListener("DOMContentLoaded", function () {
+    var boxInfom = document.getElementById("boxInfom");
+
+    if (boxInfom) {
+        boxInfom.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/dthu?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'boxInfom' not found.");
+    }
+});
+// sidebarPost
+
+// sidebarNoti
+
+//  sidebarTime
+document.addEventListener("DOMContentLoaded", function () {
+    var sidebarTime = document.getElementById("sidebarTime");
+    if (sidebarTime) {
+        sidebarTime.addEventListener("click", function(event) {
+            event.preventDefault();
+                var url = `/manager/centerTime?centerId=`;
+                url += encodeURIComponent(centerIdz);
+                console.log(url);
+                window.location.href = url;
+        });
+    } else {
+        console.error("Element with id 'sidebarTime' not found.");
     }
 });

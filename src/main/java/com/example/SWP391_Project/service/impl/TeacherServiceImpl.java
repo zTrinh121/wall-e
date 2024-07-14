@@ -10,6 +10,8 @@ import com.example.SWP391_Project.response.CloudinaryResponse;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.Query;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
@@ -71,6 +73,9 @@ public class TeacherServiceImpl implements TeacherService {
 
     @Autowired
     private ApplyCenterRepository applyCenterRepository;
+
+    @Autowired
+    private StudentSlotRepository studentSlotRepository;
 
     @Override
     public List<Map<String, Object>> getCourseNamesByTeacherId(Long teacherId) {
@@ -205,6 +210,7 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Transactional
+    @Override
     public void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher) {
         FileUploadUtil.assertAllowedPDF(file);
 
@@ -221,6 +227,61 @@ public class TeacherServiceImpl implements TeacherService {
             materialRepository.save(material);
         } catch (Exception e) {
             throw new RuntimeException("Failed to upload PDF file and save material: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void updatePdfFile(int materialId, MultipartFile file, String subjectName, String materialsName, User teacher) {
+        FileUploadUtil.assertAllowedPDF(file);
+
+        try {
+            // Find the existing material
+            Optional<Material> optionalMaterial = materialRepository.findById(materialId);
+            if (optionalMaterial.isEmpty()) {
+                throw new IllegalArgumentException("Material not found with id: " + materialId);
+            }
+            Material material = optionalMaterial.get();
+
+            // Delete the existing PDF file from Cloudinary (optional step based on your requirements)
+            cloudinaryService.deletePdfFile(material.getCloudinaryPdfId());
+
+            // Upload the new PDF file to Cloudinary
+            String fileName = FileUploadUtil.getFileName(file.getOriginalFilename());
+            CloudinaryResponse response = cloudinaryService.uploadPdfFile(file, fileName);
+
+            // Update material properties
+            material.setMaterialsName(materialsName); // Update file name
+            material.setSubjectName(subjectName); // Update subject name
+            material.setTeacher(teacher); // Update teacher
+            material.setPdfPath(response.getUrl()); // Update PDF URL
+            material.setCloudinaryPdfId(response.getPublicId()); // Update Cloudinary ID
+
+            // Save the updated material
+            materialRepository.save(material);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to update PDF file and material: " + e.getMessage());
+        }
+    }
+
+    @Transactional
+    @Override
+    public void deletePdfFile(int materialId) {
+        try {
+            // Find the existing material
+            Optional<Material> optionalMaterial = materialRepository.findById(materialId);
+            if (optionalMaterial.isEmpty()) {
+                throw new IllegalArgumentException("Material not found with id: " + materialId);
+            }
+            Material material = optionalMaterial.get();
+
+            // Delete the PDF file from Cloudinary
+            cloudinaryService.deletePdfFile(material.getCloudinaryPdfId());
+
+            // Delete the material from the database
+            materialRepository.delete(material);
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete PDF file and material: " + e.getMessage());
         }
     }
 
@@ -250,11 +311,12 @@ public class TeacherServiceImpl implements TeacherService {
     }
 
     @Override
-    public IndividualNotification updateIndividualNotification(int notificationId) {
+    public IndividualNotification updateIndividualNotification(int notificationId, User user) {
         IndividualNotification notification = individualNotificationRepository.findById(notificationId)
                 .orElseThrow(() -> new RuntimeException("The individual notification not found!"));
         notification.setHasSeen(true);
         notification.setSeenTime(new Date());
+        notification.setSendToUser(user);
         return individualNotificationRepository.save(notification);
     }
 
@@ -403,5 +465,51 @@ public class TeacherServiceImpl implements TeacherService {
                 .build();
         return applyCenterRepository.save(applyCenter);
     }
+    // -----------------------------------------------------------
+    @Autowired
+    private EntityManager entityManager;
+
+    @Override
+    public List<Map<String, Object>> getStudentSlotBySlotId(int slotId) {
+        String query = "SELECT u.C14_USER_ID AS studentId, " +
+                "u.C14_NAME AS studentName, " +
+                "ss.c17_attendance_status AS attendanceStatus " +
+                "FROM t17_student_slot ss " +
+                "JOIN t14_user u ON u.C14_USER_ID = ss.C17_STUDENT_ID " +
+                "WHERE ss.C17_SLOT_ID = :slotId " +
+                "ORDER BY u.C14_LAST_NAME ASC";
+
+        Query nativeQuery = entityManager.createNativeQuery(query);
+        nativeQuery.setParameter("slotId", slotId);
+
+        List<Object[]> resultList = nativeQuery.getResultList();
+        List<Map<String, Object>> results = new ArrayList<>();
+
+        for (Object[] result : resultList) {
+            Map<String, Object> resultMap = new HashMap<>();
+            resultMap.put("studentId", result[0]);
+            resultMap.put("studentName", result[1]);
+            resultMap.put("attendanceStatus", result[2]);
+            results.add(resultMap);
+        }
+
+        return results;
+    }
+
+    @Transactional
+    @Override
+    public void updateAttendanceStatusBySlotId(int studentId, int slotId) {
+        String updateQuery = "UPDATE t17_student_slot ss " +
+                "SET ss.c17_attendance_status = true " +
+                "WHERE ss.C17_STUDENT_ID = :studentId " +
+                "AND ss.C17_SLOT_ID = :slotId";
+
+        Query nativeUpdateQuery = entityManager.createNativeQuery(updateQuery);
+        nativeUpdateQuery.setParameter("studentId", studentId);
+        nativeUpdateQuery.setParameter("slotId", slotId);
+        nativeUpdateQuery.executeUpdate();
+    }
+
+
 
 }

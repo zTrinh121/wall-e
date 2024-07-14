@@ -22,9 +22,7 @@ document.addEventListener("DOMContentLoaded", () => {
     if (addCentreBtn) {
         addCentreBtn.addEventListener("click", () => {
             console.log("Opening Add Centre Modal");
-//            addCentreModal.style.display = "block";
-            var newUrl = "/manager/cpost?centerId=1";
-            window.location.href = newUrl;
+            addCentreModal.style.display = "block";
         });
     }
 
@@ -74,86 +72,6 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetchCenterPosts();
 
-    function displayCenterPostsList(posts) {
-        var tableBody = document.getElementById("tableBody");
-        if (!tableBody) {
-            console.error("Element with ID 'tableBody' not found.");
-            return;
-        }
-        tableBody.innerHTML = "";
-        if (posts.length === 0) {
-            noResultDiv.style.display = "block";
-        } else {
-            noResultDiv.style.display = "none";
-            posts.forEach((post) => {
-                var row = `
-                    <tr class="view-details" data-id="${post.id}">
-                        <td><p>${post.title}</p></td>
-                        <td><p>${post.createdAt}</p></td>
-                        <td><p>${post.status}</p></td>
-                        <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
-                        <td><button class="open-modal-btn">Xem</button></td>
-                    </tr>
-                `;
-                tableBody.insertAdjacentHTML("beforeend", row);
-            });
-
-            // Attach event listeners for delete buttons
-            document.querySelectorAll(".delete-user").forEach((button) => {
-                button.addEventListener("click", function (event) {
-                    event.preventDefault();
-                    var row = event.target.closest("tr");
-                    var postName = row.querySelector("td:nth-child(1) p").textContent;
-                    var postId = row.getAttribute("data-id");
-                    deleteModal.style.display = "block";
-                    var deleteTarget = {
-                        row: row
-                    };
-                    console.log("Delete button clicked for post:", postName, "with ID:", postId);
-                    console.log(postId);
-                    deleteAPost(postId, deleteTarget);
-                });
-//                button.addEventListener("click", function () {
-//                    var postId = this.getAttribute("data-id");
-//                    console.log(postId);
-//                    deleteAPost(postId);
-//                });
-            });
-
-
-            //view
-            document.querySelectorAll(".open-modal-btn").forEach((button) => {
-                button.addEventListener("click", function () {
-                    var postId = this.getAttribute("data-id");
-                    openModalWithPostDetails(postId);
-                });
-            });
-        }
-    }
-
-    function deleteAPost(postId, deleteTarget){
-    // Confirm delete action
-    var confirmDeleteButton = document.getElementById("confirmDelete");
-    var apurl = `/manager/centerPosts/delete/${postId}`;
-    console.log(apurl);
-    confirmDeleteButton.addEventListener("click", () => {
-        fetch(`/manager/centerPosts/delete/${postId}`, {
-            method: "DELETE"
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error("Network response was not ok.");
-            } else{
-                deleteTarget.row.remove();
-            }
-        })
-        .catch(error => {
-            console.error("can't run method delete", error);
-        });
-        deleteModal.style.display = "none";
-    });
-}
-
     // Helper function to show toast message
     function showToast(message) {
         var toast = document.getElementById("toast");
@@ -170,8 +88,8 @@ document.addEventListener("DOMContentLoaded", () => {
             .then((response) => response.json())
             .then((data) => {
                 console.log("Center details:", data);
-                var queryUrl = "/manager/ctbd?";
-                queryUrl += "postIdn=" + encodeURIComponent(data.id);
+                var queryUrl = "/manager/centerHome?";
+                queryUrl += "centerIdn=" + encodeURIComponent(data.id);
                 console.log(queryUrl);
 
                 window.location.href = queryUrl;
@@ -216,23 +134,23 @@ document.addEventListener("DOMContentLoaded", () => {
     //date
     document.getElementById("currentDate").innerText = getCurrentDate();
     function getCurrentDate() {
-        var currentDate = new Date();
-        var dayOfWeek = [
-          "Chủ Nhật",
-          "Thứ Hai",
-          "Thứ Ba",
-          "Thứ Tư",
-          "Thứ Năm",
-          "Thứ Sáu",
-          "Thứ Bảy",
-        ];
-        var day = String(currentDate.getDate()).padStart(2, "0");
-        var month = String(currentDate.getMonth() + 1).padStart(2, "0");
-        var year = currentDate.getFullYear();
-        var dayIndex = currentDate.getDay();
-        var dayName = dayOfWeek[dayIndex];
-        return dayName + ", " + day + "-" + month + "-" + year;
-      }
+            var currentDate = new Date();
+            var dayOfWeek = [
+              "Chủ Nhật",
+              "Thứ Hai",
+              "Thứ Ba",
+              "Thứ Tư",
+              "Thứ Năm",
+              "Thứ Sáu",
+              "Thứ Bảy",
+            ];
+            var day = String(currentDate.getDate()).padStart(2, "0");
+            var month = String(currentDate.getMonth() + 1).padStart(2, "0");
+            var year = currentDate.getFullYear();
+            var dayIndex = currentDate.getDay();
+            var dayName = dayOfWeek[dayIndex];
+            return dayName + ", " + day + "-" + month + "-" + year;
+          }
 });
 
 //test
@@ -296,19 +214,5 @@ function deleteCenterPost(postId) {
     });
 }
 
-//createPostBtn.addEventListener("click", function () {
-//    var formData = {
-//        title: "Sample Post Title",
-//        content: "Sample Post Content",
-//    };
-//    createCenterPost(formData);
-//});
-
-//postTableBody.addEventListener("click", function (event) {
-//    if (event.target.classList.contains("fa-trash")) {
-//        var postId = event.target.getAttribute("data-id");
-//        deleteCenterPost(postId);
-//    }
-//});
 
 

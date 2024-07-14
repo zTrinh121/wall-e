@@ -39,6 +39,10 @@ public interface TeacherService {
 
     void uploadPdfFile(MultipartFile file, String subjectName, String materialsName, User teacher);
 
+    void updatePdfFile(int materialId, MultipartFile file, String subjectName, String materialsName, User teacher);
+
+    void deletePdfFile(int materialId);
+
     List<Material> getAllMaterials();
 
     List<Material> getMaterialsByTeacherId(int teacherId);
@@ -48,7 +52,7 @@ public interface TeacherService {
 
     ViewSystemNotification updateViewSystemNotification(int notificationId, User teacher);
 
-    IndividualNotification updateIndividualNotification(int notificationId);
+    IndividualNotification updateIndividualNotification(int notificationId, User user);
 
     ViewCenterNotification updateViewCenterNotification(int notificationId, User teacher);
 
@@ -82,5 +86,12 @@ public interface TeacherService {
     // -------------------- APPLY CENTER -----------------------------
     // tạo form để apply center
     ApplyCenter createApplyCenterForm(User teacher, ApplyCenterDto applyCenterDto);
+
+    // --------------------- Điểm danh từng slot cho học sinh ----------------------
+    List<Map<String, Object>> getStudentSlotBySlotId(int slotId);
+
+    void updateAttendanceStatusBySlotId(int studentId, int slotId);
+
+
 
 }

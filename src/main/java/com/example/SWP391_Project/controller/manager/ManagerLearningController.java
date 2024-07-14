@@ -70,7 +70,7 @@ public class ManagerLearningController {
         }
     }
 
-    @PostMapping("center/create")
+    @PostMapping("/center/create")
     public ResponseEntity<Center> createCenter(@RequestBody @Valid CenterDto centerDto, HttpSession httpSession) {
         User managerInfo = (User) httpSession.getAttribute("user");
         Center createdCenter = managerService.createCenter(centerDto, managerInfo);
@@ -167,13 +167,37 @@ public class ManagerLearningController {
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
 
+//    @GetMapping("/view-applyCenter-form")
+//    public ResponseEntity<List<ApplyCenter>> getTeachersInCenter(HttpSession session) {
+//        Integer managerId = (Integer) session.getAttribute("authid");
+//        if (managerId == null) {
+//            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Manager ID is not found in the session!");
+//        }
+//
+//        List<ApplyCenter> forms = managerService.viewApplyCenterForm(managerId);
+//        if (forms.isEmpty()) {
+//            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+//        }
+//        return new ResponseEntity<>(forms, HttpStatus.OK);
+//    }
     @GetMapping("/view-applyCenter-form/{centerId}")
-    public ResponseEntity<List<ApplyCenter>> viewTeachersApplyForm(@PathVariable int centerId) {
+    public ResponseEntity<List<ApplyCenter>> ViewTeachersApplyForm(@PathVariable int centerId) {
         List<ApplyCenter> forms = managerService.viewApplyCenterForm(centerId);
         if (forms.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
         return new ResponseEntity<>(forms, HttpStatus.OK);
+    }
+
+    @GetMapping("/view-detail-apply-form/{applyId}")
+    public ResponseEntity<ApplyCenter> getApplyCenter(@PathVariable int applyId) {
+        ApplyCenter applyCenter = managerService.viewApplyFormDetail(applyId);
+
+        if (applyCenter != null) {
+            return ResponseEntity.ok(applyCenter); // Return 200 OK with ApplyCenter object
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null); // Return 404 Not Found
+        }
     }
 
     @PatchMapping("/approveTeacher/{id}")
@@ -292,52 +316,52 @@ public class ManagerLearningController {
     }
 
     // ---------------------------- SLOTS ---------------------------------
-    @GetMapping("slots/byCenter/{centerId}")
-    public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
-        return managerService.getSlotsByCenterId(centerId);
-    }
-
-    @GetMapping("slots/bySlot/{slotId}")
-    public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
-        return managerService.getSlotsBySlotId(slotId);
-    }
-
-    @PostMapping("slots/create")
-    public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
-        try {
-            Slot createdSlot = managerService.createSlot(slotDto);
-            return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().build();
+        @GetMapping("/slots/byCenter/{centerId}")
+        public List<Map<String, Object>> getSlotsByCenterId(@PathVariable int centerId) {
+            return managerService.getSlotsByCenterId(centerId);
         }
-    }
 
-    @PutMapping("slots/update/{slotId}")
-    public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
-        try {
-            Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
-            return ResponseEntity.ok(updatedSlot);
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+        @GetMapping("/slots/bySlot/{slotId}")
+        public Map<String, Object> getSlotsBySlotId(@PathVariable int slotId) {
+            return managerService.getSlotsBySlotId(slotId);
         }
-    }
 
-    @DeleteMapping("slots/delete/{slotId}")
-    public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
-        try {
-            managerService.deleteSlot(slotId);
-            return ResponseEntity.noContent().build();
-        } catch (IllegalArgumentException e) {
-            return ResponseEntity.notFound().build(); // Or handle error as needed
+        @PostMapping("/slots/create")
+        public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
+            try {
+                Slot createdSlot = managerService.createSlot(slotDto);
+                return ResponseEntity.status(HttpStatus.CREATED).body(createdSlot);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.badRequest().build();
+            }
         }
-    }
 
-    @PostMapping("overallSlots/certainCourse/insert")
-    public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
-                            @RequestParam String courseCode,
-                            @RequestParam String roomName) {
-        managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
-    }
+        @PutMapping("/slots/update/{slotId}")
+        public ResponseEntity<Slot> updateSlot(@PathVariable int slotId, @RequestBody SlotDto slotDto) {
+            try {
+                Slot updatedSlot = managerService.updateSlot(slotId, slotDto);
+                return ResponseEntity.ok(updatedSlot);
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null); // Or handle error as needed
+            }
+        }
+
+        @DeleteMapping("/slots/delete/{slotId}")
+        public ResponseEntity<Void> deleteSlot(@PathVariable int slotId) {
+            try {
+                managerService.deleteSlot(slotId);
+                return ResponseEntity.noContent().build();
+            } catch (IllegalArgumentException e) {
+                return ResponseEntity.notFound().build(); // Or handle error as needed
+            }
+        }
+
+        @PostMapping("/overallSlots/certainCourse/insert")
+        public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
+                                @RequestParam String courseCode,
+                                @RequestParam String roomName) {
+            managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
+        }
     // -------------------------------------------------------------------------------------
 
     @GetMapping("/teacher-salaries")
@@ -345,38 +369,27 @@ public class ManagerLearningController {
         return managerService.getTeacherSalaries(month, year, centerId);
     }
 
-    @GetMapping("/total-teacher-salary")
-    public Double getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
-        return managerService.getTotalTeacherSalary(month, year, centerId);
-    }
+//    @GetMapping("/total-teacher-salary")
+//    public List<Map<String, Object>> getTotalTeacherSalary(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+//        return managerService.getTotalTeacherSalary(month, year, centerId);
+//    }
 
     @GetMapping("/monthly-revenue")
-    public Double getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
+    public Map<String, Object> getMonthlyRevenue(@RequestParam int month, @RequestParam int year, @RequestParam Long centerId) {
         return managerService.getMonthlyRevenue(month, year, centerId);
     }
 
     @GetMapping("/monthly-profit")
-    public Double getMonthlyProfit(
+    public Map<String, Object> getMonthlyProfit(
             @RequestParam int month,
             @RequestParam int year,
             @RequestParam Long centerId) {
         return managerService.getMonthlyProfit(month, year, centerId);
     }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    @GetMapping("/total-teacher-salary")
+    public List<Map<String, Object>> getTotalTeacherSalary(@RequestParam int year, @RequestParam Long centerId) {
+        return managerService.getTotalTeacherSalaryForYear(year, centerId);
+    }
 
 }
