@@ -12,7 +12,7 @@ a{
     list-style: none;
     text-decoration: none;
     box-sizing: border-box;
-    font-family: 'Montserrat', sans-serif;
+    /*font-family: 'Montserrat', sans-serif;*/
 }
 :root {
     --primary: #2e4ead;
@@ -127,6 +127,10 @@ body {
     padding-left: 1rem;
 }
 
+.main-content p{
+    margin-top: 0px !important;
+}
+
 .search-content{
     display: flex;
     border-radius: 1rem;
@@ -162,6 +166,10 @@ body {
     outline: none;
     color: #fff;
     font-weight: 400;
+    cursor: pointer;
+}
+
+.logo{
     cursor: pointer;
 }
 
@@ -265,6 +273,7 @@ body {
     transition: 0.5s all ease-in-out;
     border-radius: 6px;
     border: 1px solid #333;
+    background: #fff;
 
 }
 

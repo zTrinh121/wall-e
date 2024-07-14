@@ -788,8 +788,10 @@ public class UserController {
 //        }
 
     @GetMapping("/search")
-    public String search(@RequestParam String keyword, Model model) {
+    public String search(@RequestParam String keyword, Model model, HttpSession session) {
         model.addAttribute("keyword", keyword);
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
         return "search";
     }
 
@@ -982,6 +984,13 @@ public class UserController {
         }
         model.addAttribute("user", user);
         return "attendance";
+    }
+
+    @GetMapping("/searchDetail")
+    public String searchDetail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "searchDetail";
     }
 
 

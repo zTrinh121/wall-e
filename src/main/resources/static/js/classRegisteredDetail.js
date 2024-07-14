@@ -68,10 +68,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                         return response.json();
                     })
                     .then(data => {
+
                         const courseDetail = data.filter(course => course.courseId == courseId);
+
                         if (courseDetail[0]) {
-                            teacherName = courseDetail.teacherName;
-                            courseName = courseDetail.courseName;
+                            console.log(courseDetail.teacherName)
+                            teacherName = courseDetail[0].teacherName;
+                            courseName = courseDetail[0].courseName;
                             viewCourseDetails(courseDetail[0]);
                         } else {
                             console.log(`Course with courseId ${courseId} not found.`);
@@ -537,13 +540,16 @@ document.addEventListener("DOMContentLoaded", async () => {
     function openAttendanceModal(attendanceData) {
         const attendanceDetails = document.getElementById("attendanceDetails");
         attendanceDetails.innerHTML = '';
+        console.log(attendanceData)
         let numberPresent = 0;
         let numberAbsent = 0;
         const today = new Date();
+        console.log(today)
         attendanceData.forEach(slot => {
-            if(slot.attendanceStatus && attendanceData.slotDate < today ){
+            var slotDate = new Date(slot.slotDate);
+            if(slot.attendanceStatus && slotDate < today ){
                 ++numberPresent;
-            }else if(!slot.attendanceStatus && attendanceData.slotDate < today ){
+            }else if(!slot.attendanceStatus && slotDate < today ){
                 ++numberAbsent;
             }
         })
@@ -553,8 +559,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         summary.innerHTML = `
         <p><span>Có mặt: </span> ${numberPresent}</p>
         <p><span>Vắng: </span> ${numberAbsent}</p>
-        <p><span>Tương lai: </span> ${futureSlot}</p>
-        <p style="margin-bottom: 1rem;"><span>Tổng tham gia: </span> ${numberPresent+numberAbsent}/${attendanceData.length -futureSlot}</p>
+        <p style="margin-bottom: 1rem;"><span>Tương lai: </span> ${futureSlot}</p>
+        
     `;
         attendanceDetails.appendChild(summary);
 
@@ -562,8 +568,10 @@ document.addEventListener("DOMContentLoaded", async () => {
         console.log(attendanceData)
         attendanceData.forEach(session => {
             const listItem = document.createElement("li");
+            const dateFormatCompare = new Date(session.slotDate);
             const dateFormat = formatDateToDDMMYYYY(session.slotDate)
-            const isOlderThanToday = session.slotDate < today;
+            const isOlderThanToday = dateFormatCompare < today;
+            console.log(isOlderThanToday)
             const attendanceStatus = isOlderThanToday ? (session.attendanceStatus ? 'Có mặt' : 'Vắng') : 'none';
             listItem.innerHTML = `
             <div class="date-attendance">
@@ -594,7 +602,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
         attendanceModal.style.display = "block";
     }
-    // End attendance modal
 
     function openEvaluationModal(grades) {
         const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);

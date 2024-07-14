@@ -76,6 +76,24 @@ body {
     padding: .3rem;
 }
 
+#searchType{
+    font-size: 1rem;
+    height: fit-content;
+    padding-left: 1rem;
+    margin-right: 1rem;
+    border: none;
+}
+
+select#searchType:focus {
+    outline: none;
+    border: none;
+}
+
+
+/*body[data-page="search"] .search {*/
+/*    border: none;*/
+/*}*/
+
 .search i {
     color: rgba(0, 0, 0, .5);
     margin: 0 .6rem;
@@ -679,7 +697,7 @@ body {
     width: 50%;
     height: 45px;
     background: #fff;
-    border-radius: 3rem;
+    border-radius: 1rem;
     align-items: center;
     padding: .3rem;
     position: relative;
@@ -702,7 +720,7 @@ body {
 .search button {
     height: 100%;
     padding: 0 1rem;
-    border-radius: inherit;
+    border-radius: 1rem;
     background: #2e4ead;
     border: none;
     outline: none;
@@ -740,12 +758,14 @@ body {
     background: #f1f1f1;
 }
 #search-results {
-    display: none; /* Ẩn khi không có kết quả hoặc chưa tìm kiếm */
+    display: none;
     position: absolute;
     background: white;
+    top: 44px;
     width: 100%;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     z-index: 1000;
+    border-radius: 0 0 1rem 1rem;
 }
 
 .search-item {
@@ -766,4 +786,8 @@ body {
 
 .page-button{
     background: none;
+}
+
+.search.open {
+    border-radius: 1rem 1rem 0 0;
 }

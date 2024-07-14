@@ -103,8 +103,12 @@ public class ParentController {
 
     @PatchMapping("/individualNotification/update/{notificationId}")
     @ResponseBody
-    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
-        return parentService.updateIndividualNotification(notificationId);
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId, HttpSession session) {
+        User student = (User) session.getAttribute("user");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Parent is not found in the session!");
+        }
+        return parentService.updateIndividualNotification(notificationId, student);
     }
 
     @PostMapping("/viewSystemNotification/update/{notificationId}")
@@ -226,4 +230,14 @@ public class ParentController {
         return new ResponseEntity<>(feedbacks, HttpStatus.OK);
     }
     // ---------------------------------------------------------------
+    @PostMapping("/enroll-new-course")
+    public ResponseEntity<String> enrollNewCourse(@RequestParam("studentId") int studentId,
+                                                  @RequestParam("courseId") int courseId) {
+        try {
+            parentService.enrollTheNewCourse(studentId, courseId);
+            return ResponseEntity.ok("Enrollment successful");
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
+        }
+    }
 }

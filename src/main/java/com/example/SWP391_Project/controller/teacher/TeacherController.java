@@ -53,7 +53,7 @@ public ResponseEntity<List<Map<String, Object>>> getScheduleByCourseId(@PathVari
 }
 
 // CRUD điểm
-    @GetMapping("/courses/{courseId}/students/{studentId}/results")
+    @GetMapping("/courses/{courseId}/students/{studentId}/resu.show-details-btnlts")
 public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentId(@PathVariable Long courseId, @PathVariable Long studentId) {
     List<Map<String, Object>> results = teacherService.getResultsByCourseIdAndStudentId(courseId, studentId);
     return ResponseEntity.ok(results);
@@ -113,6 +113,24 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         return new ResponseEntity<>(materials, HttpStatus.OK);
     }
 
+    // API to update PDF file
+    @PutMapping("/{materialId}/pdf")
+    public void updatePdfFile(
+            @PathVariable int materialId,
+            @RequestParam("file") MultipartFile file,
+            @RequestParam("subjectName") String subjectName,
+            @RequestParam("materialsName") String materialsName,
+            HttpSession httpSession) {
+        User teacher = (User) httpSession.getAttribute("user");
+        teacherService.updatePdfFile(materialId, file, subjectName, materialsName, teacher);
+    }
+
+    // API to delete PDF file
+    @DeleteMapping("/{materialId}/pdf/delete")
+    public void deletePdfFile(@PathVariable int materialId) {
+        teacherService.deletePdfFile(materialId);
+    }
+
     // --------------------------- NOTIFICATION -------------------------
     @GetMapping("notifications/all")
     public ResponseEntity<NotificationResponse> getAllNotifications(HttpSession session) {
@@ -126,8 +144,12 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
 
     @PatchMapping("/individualNotification/update/{notificationId}")
     @ResponseBody
-    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId) {
-        return teacherService.updateIndividualNotification(notificationId);
+    public IndividualNotification updateIndividualNotification(@PathVariable int notificationId, HttpSession session) {
+        User student = (User) session.getAttribute("user");
+        if (student == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Teacher is not found in the session!");
+        }
+        return teacherService.updateIndividualNotification(notificationId, student);
     }
 
     @PostMapping("/viewCenterNotification/update/{notificationId}")
@@ -277,6 +299,23 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
 
         ApplyCenter applyCenter = teacherService.createApplyCenterForm(teacher, applyCenterDto);
         return ResponseEntity.ok(applyCenter);
+    }
+
+    //
+    @GetMapping("view/slot/{slotId}")
+    public List<Map<String, Object>> getStudentSlotBySlotId(@PathVariable int slotId) {
+        return teacherService.getStudentSlotBySlotId(slotId);
+    }
+
+    @PostMapping("/attendance/certainSlot/{studentId}/{slotId}")
+    public ResponseEntity<String> updateAttendanceStatus(@PathVariable int studentId, @PathVariable int slotId) {
+        try {
+            teacherService.updateAttendanceStatusBySlotId(studentId, slotId);
+            return ResponseEntity.ok("Attendance status updated successfully for studentId: " + studentId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating attendance status: " + e.getMessage());
+        }
     }
 
 }
