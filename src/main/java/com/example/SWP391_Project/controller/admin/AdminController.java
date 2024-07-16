@@ -164,6 +164,7 @@ public class AdminController {
     @ResponseBody
     public ResponseEntity<IndividualNotification> createIndividualNotification(@RequestBody @Valid IndividualNotificationDto individualNotificationDto, HttpSession httpSession) {
         User adminInfo = (User) httpSession.getAttribute("user");
+        System.out.println(adminInfo.toString() + " admin nè");
         IndividualNotification notification = adminService.createIndividualNotification(individualNotificationDto, adminInfo);
         return ResponseEntity.ok().body(notification);
     }

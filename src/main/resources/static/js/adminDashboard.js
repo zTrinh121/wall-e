@@ -63,9 +63,9 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayNotifications(notifications) {
         notificationTableBody.innerHTML = "";
         var tableHeader = document.querySelector("#notificationTable thead tr");
-
-        var isPrivate = notifications.length && (notifications[0].centerSendTo || notifications[0].userSendTo);
-
+        console.log(notifications)
+        var isPrivate = notifications.length && (notifications[0].sendToUser);
+        console.log(isPrivate)
         if (isPrivate) {
             tableHeader.innerHTML = `
             <th>Tiêu đề</th>
@@ -84,19 +84,17 @@ document.addEventListener("DOMContentLoaded", function () {
         }
 
         notifications.forEach(function (notification) {
-            console.log(notification.createdAt); // Log the original date string
             const formattedDate = formatDate(notification.createdAt);
-            console.log(formattedDate); // Log the formatted date
 
             var row = `
             <tr id="${notification.id}">
                 <td>${notification.title}</td>
                 <td>${formattedDate}</td></td>
-                ${isPrivate ? `<td>${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}</td>` : ''}
-                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}>Xem</button></td>
+                ${isPrivate ? `<td>${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}</td>` : ''}
+                <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isPrivate ? `data-sendto="${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}"` : ''}>Xem</button></td>
                 <td>
-                    <i class="fas fa-edit" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}></i>
-                    <i class="fas fa-trash" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.centerSendTo ? notification.centerSendTo.code : notification.userSendTo.code}"` : ''}></i>
+                    <i class="fas fa-edit" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}"` : ''}></i>
+                    <i class="fas fa-trash" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}"` : ''}></i>
                 </td>
             </tr>
         `;
@@ -185,7 +183,7 @@ document.addEventListener("DOMContentLoaded", function () {
             });
         }else{
             deleteConfirmBtn.addEventListener("click", function () {
-                fetch(`/admin-publicNotification/delete/${notificationId}`, {
+                fetch(`/admin-systemNotification/delete/${notificationId}`, {
                     method: "DELETE"
                 })
                     .then(function (response) {
@@ -273,6 +271,13 @@ document.addEventListener("DOMContentLoaded", function () {
 
         editTitle.value = notification.title;
         editContent.value = notification.content;
+
+        if (notification.title !== undefined && notification.title !== null) {
+            editTitle.value = notification.title;
+        }
+        if (notification.content !== undefined && notification.content !== null) {
+            editContent.value = notification.content;
+        }
 
         if (notification.sendTo) {
             editSendTo.style.display = "block";
@@ -402,7 +407,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 const newData = { ...data, sendTo: recipient };
                 var url = "/individualNotification/create";
                 try {
-
                     const centersValid = await fetchCentersAndUsersAndCompareSendTo(newData.sendTo);
                     console.log(centersValid)
                     if (!centersValid) {
@@ -501,13 +505,19 @@ document.addEventListener("DOMContentLoaded", function () {
             fetch("/api/users").then(response => response.json())
         ])
             .then(([centers, users]) => {
+
                 // Extract center codes
-                const centerCodes = centers.map(center => center.code);
+                const centerName = centers.map(center => center.name);
                 // Extract user codes
-                const userCodes = users.map(user => user.userCode);
-                console.log("Usercode: " + userCodes)
+                const userName = users.map(user => user.username.toUpperCase());
+
+                console.log(users)
+                console.log(centerName)
+                console.log(sendTo)
+                console.log(userName.includes(sendTo))
+                console.log("UserName: " + userName)
                 // Check if sendTo exists in either center codes or user codes
-                if (!centerCodes.includes(sendTo) && !userCodes.includes(sendTo)) {
+                if (!centerName.includes(sendTo) && !userName.includes(sendTo)) {
                     // If sendTo doesn't exist in either, return false
                     return false;
                 }

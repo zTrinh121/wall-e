@@ -479,7 +479,7 @@ public class ManagerServiceImpl implements ManagerService {
                 userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
         return users.orElse(Collections.emptyList());
     }
-//bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
+    //bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
     @Override
     public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
         Optional<List<User>> users =
@@ -1146,35 +1146,12 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return results;
-        List<Object[]> resultList = query.getResultList();
-        List<Map<String, Object>> results = new ArrayList<>();
 
-        for (Object[] result : resultList) {
-            Map<String, Object> resultMap = new HashMap<>();
-            resultMap.put("Month", month);
-            resultMap.put("Year", year);// Index 2 corresponds to TeacherId
-            resultMap.put("TotalSalary", result[2]); // Index 3 corresponds to TotalSalary
-            results.add(resultMap);
-        }
 
-        return results;
+
     }
 
-    @Override
-    public Map<String, Object> getMonthlyRevenue(int month, int year, Long centerId) {
-        String sql = "SELECT " +
-                "    SUM(c.C01_COURSE_FEE) AS TotalRevenue " +
-                "FROM " +
-                "    t08_bill b " +
-                "JOIN " +
-                "    t15_enrollment e ON b.c08_enrollment_id = e.C15_ENROLLMENT_ID " +
-                "JOIN " +
-                "    t01_course c ON e.C15_COURSE_ID = c.C01_COURSE_ID " +
-                "WHERE " +
-                "    c.C01_CENTER_ID = :centerId " +
-                "    AND b.c08_status = 1 " + // Assuming status 1 indicates a paid bill
-                "    AND MONTH(b.C08_CREATED_AT) = :month " +
-                "    AND YEAR(b.C08_CREATED_AT) = :year ";
+
     @Override
     public Map<String, Object> getMonthlyRevenue(int month, int year, Long centerId) {
         String sql = "SELECT " +
@@ -1303,10 +1280,5 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
 }
-
-
-
-
-
 
 
