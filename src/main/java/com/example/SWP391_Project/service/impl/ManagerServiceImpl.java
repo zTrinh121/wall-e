@@ -479,7 +479,7 @@ public class ManagerServiceImpl implements ManagerService {
                 userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
         return users.orElse(Collections.emptyList());
     }
-//bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
+    //bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
     @Override
     public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
         Optional<List<User>> users =
@@ -1278,10 +1278,5 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
 }
-
-
-
-
-
 
 

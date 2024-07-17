@@ -11,6 +11,12 @@ document.addEventListener('DOMContentLoaded', function() {
     var requestModal = document.getElementById('requestModal');
     var closeRequestModal = document.getElementById('closeRequestModal');
 
+    function formatTimeRange(date) {
+        let hours = date.getHours();
+        let endHours = hours + 2; 
+        return `${hours}-${endHours}`;
+    }
+
     function renderEventContent(eventInfo) {
         const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
         const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
@@ -54,6 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMinTime: '07:00:00',
         slotMaxTime: '22:00:00',
         slotDuration: '02:00:00',
+        
         events: [],
         eventOverlap: false,
         firstDay: 1,
