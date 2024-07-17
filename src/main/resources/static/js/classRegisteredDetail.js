@@ -597,10 +597,10 @@ document.addEventListener("DOMContentLoaded", async () => {
          myChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Present', 'Absent', 'Future'],
+                labels: ['Present', 'Absent'],
                 datasets: [{
-                    data: [numberPresent, numberAbsent, futureSlot],
-                    backgroundColor: ['#44DE28', '#f42500', '#0358B6'],
+                    data: [numberPresent, numberAbsent],
+                    backgroundColor: ['#44DE28', '#f42500'],
                 }],
             },
         });
