@@ -791,3 +791,11 @@ select#searchType:focus {
 .search.open {
     border-radius: 1rem 1rem 0 0;
 }
+
+#studentSelect{
+    width: 11rem;
+    height: 2rem;
+    border-radius: 0.5rem;
+    
+    margin: 1rem 0rem;
+  }
