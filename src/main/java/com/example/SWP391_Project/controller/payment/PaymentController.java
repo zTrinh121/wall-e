@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -46,7 +47,12 @@ public class PaymentController {
         if (status.equals("00")) {
             EnrollmentDto enrollmentDto = new EnrollmentDto();
             int parentId = (int) session.getAttribute("authid");
-            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, session);
+            int studentId = (int) session.getAttribute("studentId");
+            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, studentId, session);
+
+            // Thiết lập ngày đăng ký
+            enrollment.setEnrollDate(new Date());
+
             PaymentMethod paymentMethod = PaymentMethod.builder()
                     .id(1)
                     .paymentMethod(PaymentMethodEnum.E_Banking)
