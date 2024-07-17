@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 displayStudentSelection(data);  
             }else{
                 studentId = data[0].id;
+                updateURLWithStudentId(studentId);
             }
             
             // After fetching students, proceed to fetch posts
@@ -30,6 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
             noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để truy cập vào khóa học`;
         }
+    }
+
+    function updateURLWithStudentId(studentId) {
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.set('studentId', studentId);
+        history.replaceState(null, '', currentUrl);
     }
 
     function displayStudentSelection(students) {
