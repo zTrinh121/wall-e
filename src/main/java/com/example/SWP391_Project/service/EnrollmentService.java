@@ -7,5 +7,5 @@ import org.springframework.stereotype.Service;
 
 @Service
 public interface EnrollmentService {
-    Enrollment enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId, HttpSession session);
+    Enrollment enrollStudentInCourse(EnrollmentDto enrollmentDto, int parentId, int studentId, HttpSession session);
 }

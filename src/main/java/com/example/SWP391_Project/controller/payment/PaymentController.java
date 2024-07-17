@@ -48,7 +48,8 @@ public class PaymentController {
         if (status.equals("00")) {
             EnrollmentDto enrollmentDto = new EnrollmentDto();
             int parentId = (int) session.getAttribute("authid");
-            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, session);
+            int studentId = (int) session.getAttribute("studentId");
+            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, studentId, session);
 
             // Thiết lập ngày đăng ký
             enrollment.setEnrollDate(new Date());
