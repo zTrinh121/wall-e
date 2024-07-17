@@ -17,6 +17,7 @@
         <section id="content">
             <!-- MAIN -->
             <main>
+                <div th:if="${user.role.getDescription().name() == 'PARENT'}" id="studentSelectionContainer"></div>
                 <p th:text="${user.id}" id="userId"></p>
                 <p th:text="${user.role.getDescription().name()}" id="userRole" style="display: none"></p>
                 <div id="no-result">No result</div>
