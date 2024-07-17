@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             break;
         case "PARENT":
             await fetchStudents();
-            apiGradeUrl = `/api/student/${studentParentId}/grades`;
-            apiCourseDetail = `/api/student/${studentParentId}/courses`;
+            apiGradeUrl = `/api/student/${userId}/grades`;
+            apiCourseDetail = `/api/student/${userId}/courses`;
             break;
     }
 
@@ -47,8 +47,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            studentParentId = data[0].id;
-            console.log(studentParentId + " id student")
+            console.log(data);
+            console.log(userId + " id student")
             // After fetching students, proceed to fetch posts
             await fetchPosts();
         } catch (error) {
@@ -69,7 +69,8 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return response.json();
                 })
                 .then(data => {
-
+                    console.log()
+                    console.log(data);
                     const courseDetail = data.filter(course => course.courseId == courseId);
 
                     if (courseDetail[0]) {
@@ -597,10 +598,10 @@ document.addEventListener("DOMContentLoaded", async () => {
          myChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Present', 'Absent', 'Future'],
+                labels: ['Present', 'Absent'],
                 datasets: [{
-                    data: [numberPresent, numberAbsent, futureSlot],
-                    backgroundColor: ['#44DE28', '#f42500', '#0358B6'],
+                    data: [numberPresent, numberAbsent],
+                    backgroundColor: ['#44DE28', '#f42500'],
                 }],
             },
         });

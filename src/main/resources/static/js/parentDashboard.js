@@ -15,7 +15,13 @@ document.addEventListener("DOMContentLoaded", () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            studentId = data[0].id;
+            console.log(data);
+            if(data.length > 1){
+                displayStudentSelection(data);  
+            }else{
+                studentId = data[0].id;
+            }
+            
             // After fetching students, proceed to fetch posts
             await fetchPosts();
         } catch (error) {
@@ -24,6 +30,32 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
             noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để truy cập vào khóa học`;
         }
+    }
+
+    function displayStudentSelection(students) {
+        const container = document.getElementById('studentSelectionContainer');
+        container.innerHTML = '';
+    
+        const select = document.createElement('select');
+        select.id = 'studentSelect';
+        
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.id;
+            option.textContent = student.name;
+            select.appendChild(option);
+        });
+    
+        select.addEventListener('change', async () => {
+            const selectedStudentId = select.value;
+            if (selectedStudentId) {
+                studentId = selectedStudentId;
+                updateURLWithStudentId(studentId);
+                await fetchPosts();
+            }
+        });
+    
+        container.appendChild(select);
     }
 
     async function fetchPosts() {
