@@ -88,7 +88,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     // -------------------------- Center Post -------------------------------
     @Override
-    public List<CenterPost> getAllCenterPost() {
+            public List<CenterPost> getAllCenterPost() {
         return centerPostRepository
                 .findAll(Sort.by(Sort.Direction.DESC, "createdAt"));
     }
@@ -202,6 +202,7 @@ public class ManagerServiceImpl implements ManagerService {
                 .regulation(centerDto.getRegulation())
                 .createdAt(new Date())
                 .imagePath(centerDto.getImagePath())
+                .status(Status.Wait_to_process)
                 .manager(manager)
                 .build();
         return centerRepository.save(center);
