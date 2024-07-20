@@ -79,6 +79,17 @@ public class PaymentController {
         return new ResponseEntity<>(isAuthenticated, HttpStatus.OK);
     }
 
+    @PostMapping("/studentID")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveStudentIdToSession(@RequestBody StudentIdRequest studentIdRequest, HttpSession session) {
+        int studentId = studentIdRequest.getStudentId();
+        session.setAttribute("studentId", studentId);
+        System.out.println("Student ID in session: " + studentId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "StudentId saved to session: " + studentId);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/courseId")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> saveCourseIdToSession(@RequestBody CourseIdRequest courseIdRequest, HttpSession session) {
@@ -101,5 +112,18 @@ public class PaymentController {
             this.courseId = courseId;
         }
     }
+
+    public class StudentIdRequest {
+        private int studentId;
+
+        public int getStudentId() {
+            return studentId;
+        }
+
+        public void setStudentId(int studentId) {
+            this.studentId = studentId;
+        }
+    }
+
 
 }
