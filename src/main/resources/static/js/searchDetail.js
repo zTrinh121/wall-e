@@ -6,7 +6,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const userId = document.getElementById("userId").innerText.trim();
     const studentApiUrl = `/api/parent/studentsByParent`;
     const userRole = document.getElementById('userRole').innerText;
-    const registerBtn = document.getElementById("registerBtn");
+    var registerBtn = document.getElementById("registerBtn");
+    var courseIdLS = localStorage.getItem('courseId');
     var calendarEl = document.getElementById('calendar');
     var coursePrice;
     var studentId;
@@ -64,6 +65,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     console.log(courseId);
     console.log(centerId);
+    courseIdLS = localStorage.setItem('courseId', courseId);
     if (userRole === "Guest" || userRole == "TEACHER") {
         registerBtn.style.display = "none";
     }
@@ -91,6 +93,8 @@ document.addEventListener("DOMContentLoaded", function () {
                                     .then(response => response.json())
                                     .then(isAuthenticated => {
                                         if (isAuthenticated) {
+                                            
+                                            Thread.sleep(2000);
                                             const paymentUrlEndpoint = `http://localhost:8080/api/v1/payment/vn-pay?amount=${coursePrice}&bankCode=NCB&courseId=${courseId}`;
 
                                             fetch(paymentUrlEndpoint)

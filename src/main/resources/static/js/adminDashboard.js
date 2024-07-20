@@ -299,6 +299,7 @@ document.addEventListener("DOMContentLoaded", function () {
             };
 
             if(notification.sendTo){
+                console.log(notification)
                 fetch(`/admin-individualNotification/update/${updatedNotification.id}`, {
                     method: "PUT",
                     headers: {

@@ -47,8 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            console.log(data);
-            console.log(userId + " id student")
             // After fetching students, proceed to fetch posts
             await fetchPosts();
         } catch (error) {
@@ -74,7 +72,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                     const courseDetail = data.filter(course => course.courseId == courseId);
 
                     if (courseDetail[0]) {
-                        console.log(courseDetail.teacherName)
                         teacherName = courseDetail[0].teacherName;
                         courseName = courseDetail[0].courseName;
                         viewCourseDetails(courseDetail[0]);
@@ -507,7 +504,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     }
 
-    if (roleUser !== 'STUDENT') {
+    if (roleUser !== 'STUDENT' && roleUser !== 'PARENT') {
         btnAttendanceDetails.style.display = 'none';
     }
 
@@ -522,9 +519,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function fetchAttendanceDetails(courseId) {
+        console.log(courseId);
         fetch(`/api/student/checkOverviewAttendance/${courseId}`)
             .then(response => response.json())
             .then(data => {
+                console.log(data);  
                 openAttendanceModal(data);
             })
             .catch(error => console.error("Error fetching attendance details:", error));
@@ -687,7 +686,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         fetchCourseGrades(courseId);
     });
 
-    console.log(closeEvaluationModalBtn)
     closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
 
 
