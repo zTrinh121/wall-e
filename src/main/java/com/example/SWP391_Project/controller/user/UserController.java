@@ -630,12 +630,24 @@ public class UserController {
     }
 
     @GetMapping("/approveManagement")
-    public String approveManagement(HttpSession session) {
+    public String approveManagement(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", user);
         return "approveManagement";
     }
 
     @GetMapping("/centerManagement")
-    public String centerManagement(HttpSession session) {
+    public String centerManagement(HttpSession session, Model model) {
+        User user = (User) session.getAttribute("user");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        model.addAttribute("user", user);
         return "adminCenterManagement";
     }
     @GetMapping("/verify-emaill")

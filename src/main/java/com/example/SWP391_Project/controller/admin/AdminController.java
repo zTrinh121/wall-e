@@ -152,6 +152,8 @@ public class AdminController {
 
     @GetMapping("/individualNotifications")
     public ResponseEntity<List<IndividualNotification>> getAllIndividualNotification(HttpSession httpSession) {
+        System.out.println("Id cua admin");
+        System.out.println(httpSession.getAttribute("authid"));
         int adminId = (int) httpSession.getAttribute("authid");
         List<IndividualNotification> notifications = adminService.getAllIndividualNotifications(adminId);
         if (notifications.isEmpty()) {
@@ -181,6 +183,7 @@ public class AdminController {
     }
 
     @DeleteMapping("/admin-individualNotification/delete/{id}")
+    @ResponseBody
     public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
         boolean deleted = adminService.deleteIndividualNotification(id);
         if (deleted) {

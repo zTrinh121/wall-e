@@ -44,31 +44,31 @@ public class PaymentController {
         String date = request.getParameter("vnp_PayDate");
         String transactionNo = request.getParameter("vnp_TransactionNo");
         String orderInfo = request.getParameter("vnp_OrderInfo");
+
         if (status.equals("00")) {
             EnrollmentDto enrollmentDto = new EnrollmentDto();
             int parentId = (int) session.getAttribute("authid");
-            int studentId = (int) session.getAttribute("studentId");
-            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, studentId, session);
 
-            // Thiết lập ngày đăng ký
+            Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, session);
+
+
             enrollment.setEnrollDate(new Date());
 
             PaymentMethod paymentMethod = PaymentMethod.builder()
                     .id(1)
                     .paymentMethod(PaymentMethodEnum.E_Banking)
                     .build();
-            Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment,paymentMethod);
-            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo ;
+            Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment, paymentMethod);
+            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo;
             return "redirect:" + billUrl;
-        } else if(status.equals("24")){
+        } else if (status.equals("24")) {
             System.out.println("Hủy thanh toán");
             return "redirect:/billFail";
-        }
-        else {
-            String billUrl = "/billFail";
-            return "redirect:" + billUrl;
+        } else {
+            return "redirect:/billFail";
         }
     }
+
 
     @GetMapping("/auth/status")
     @ResponseBody
@@ -90,6 +90,19 @@ public class PaymentController {
         return ResponseEntity.ok(response);
     }
 
+    @PostMapping("/studentID")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveStudentIdToSession(@RequestBody StudentIdRequest studentIdRequest, HttpSession session) {
+        int studentId = studentIdRequest.getStudentId();
+        System.out.println("Id student co duoc luu ");
+        System.out.println(studentId);
+        session.setAttribute("studentId", studentId);
+        System.out.println("Student ID in session: " + studentId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "StudentId saved to session: " + studentId);
+        return ResponseEntity.ok(response);
+    }
+
     static class CourseIdRequest {
         private int courseId;
 
@@ -99,6 +112,18 @@ public class PaymentController {
 
         public void setCourseId(int courseId) {
             this.courseId = courseId;
+        }
+    }
+
+    static class StudentIdRequest {
+        private int studentId;
+
+        public int getStudentId() {
+            return studentId;
+        }
+
+        public void setStudentId(int studentId) {
+            this.studentId = studentId;
         }
     }
 

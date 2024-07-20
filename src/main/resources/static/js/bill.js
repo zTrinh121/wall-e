@@ -74,9 +74,9 @@ function displayBill(data, amount) {
     console.log(amount);
     document.querySelector('.meta tr:nth-child(1) td span').textContent = data.courseName;
     document.querySelector('.meta tr:nth-child(2) td span').textContent = formatDateToDDMMYYYY(data.startTime) + ' - ' + formatDateToDDMMYYYY(data.endTime);
-    document.querySelector('.meta tr:nth-child(3) td span').textContent = formatCurrency(amount);
-    document.querySelector('.meta tr:nth-child(4) td span').textContent = data.teacherName + " - " + data.centerName;
-    document.querySelector('.meta tr:nth-child(5) td span').textContent = data.courseDesc;
+    //document.querySelector('.meta tr:nth-child(3) td span').textContent = formatCurrency(amount);
+    document.querySelector('.meta tr:nth-child(3) td span').textContent = data.teacherName + " - " + data.centerName;
+    document.querySelector('.meta tr:nth-child(4) td span').textContent = data.courseDesc;
 }
 
 function formatDateToDDMMYYYY(dateString) {
