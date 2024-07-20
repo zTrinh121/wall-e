@@ -1,9 +1,7 @@
 document.addEventListener("DOMContentLoaded", function() {
     // Define the subjects
     const subjects = [
-        "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD",
-        "Công nghệ", "Tiếng Anh", "Tiếng Pháp", "Tiếng Nhật", "Thể dục", "Âm nhạc",
-        "Mỹ thuật", "GDQP-AN", "Tin học", "Khác"
+        "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD", "Tiếng Anh", "Tin học"
     ];
 
     // Create grade buttons

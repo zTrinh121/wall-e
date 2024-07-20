@@ -156,7 +156,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 if (postRow) {
                     postRow.remove();
                 }
-                showToast(`Post ${status === 'approve' ? 'Duyệt' : 'Từ chối'} trung tâm thành công!`);
+                showToast(`${status === 'approve' ? 'Duyệt' : 'Từ chối'} trung tâm thành công!`);
                 if (allPosts.length === 0) {
                     noResultDiv.style.display = "block";
                 }
