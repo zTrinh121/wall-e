@@ -834,48 +834,48 @@ StudentServiceImpl implements StudentService {
         Optional<Course> courseOptional = courseRepository.findById(courseId);
 
         // lưu thông tin vào bảng enrollment
-        if (studentOptional.isPresent() && courseOptional.isPresent()) {
-            User student = studentOptional.get();
-            Course course = courseOptional.get();
+        // if (studentOptional.isPresent() && courseOptional.isPresent()) {
+        //     User student = studentOptional.get();
+        //     Course course = courseOptional.get();
 
-            Enrollment enrollment = Enrollment.builder()
-                    .student(student)
-                    .course(course)
-                    .enrollDate(new Date())
-                    .build();
-            enrollmentRepository.save(enrollment);
-        } else {
-            // Xử lý khi không tìm thấy Student hoặc Course
-            if (!studentOptional.isPresent()) {
-                throw new IllegalArgumentException("Student with ID " + studentId + " not found");
-            }
-            if (!courseOptional.isPresent()) {
-                throw new IllegalArgumentException("Course with ID " + courseId + " not found");
-            }
-        }
+        //     Enrollment enrollment = Enrollment.builder()
+        //             .student(student)
+        //             .course(course)
+        //             .enrollDate(new Date())
+        //             .build();
+        //     enrollmentRepository.save(enrollment);
+        // } else {
+        //     // Xử lý khi không tìm thấy Student hoặc Course
+        //     if (!studentOptional.isPresent()) {
+        //         throw new IllegalArgumentException("Student with ID " + studentId + " not found");
+        //     }
+        //     if (!courseOptional.isPresent()) {
+        //         throw new IllegalArgumentException("Course with ID " + courseId + " not found");
+        //     }
+        // }
 
         // lưu thông tin vào bảng Bill
-        Enrollment enrollment = enrollmentRepository
-                .findByStudentIdAndCourseId(studentId, courseId);
-        if (enrollment == null) {
-            throw new RuntimeException("Enrollment not found for student ID " + studentId + " and course ID " + courseId);
-        }
+        // Enrollment enrollment = enrollmentRepository
+        //         .findByStudentIdAndCourseId(studentId, courseId);
+        // if (enrollment == null) {
+        //     throw new RuntimeException("Enrollment not found for student ID " + studentId + " and course ID " + courseId);
+        // }
 
-        Optional<PaymentMethod> optionalPaymentMethod = paymentMethodRepository.findById(2);
-        if (!optionalPaymentMethod.isPresent()) {
-            // Thêm log chi tiết hơn
-            System.err.println("Payment method not found with ID 2");
-            throw new RuntimeException("Payment method not found with ID 2");
-        }
-        PaymentMethod paymentMethod = optionalPaymentMethod.get();
+        // Optional<PaymentMethod> optionalPaymentMethod = paymentMethodRepository.findById(2);
+        // if (!optionalPaymentMethod.isPresent()) {
+        //     // Thêm log chi tiết hơn
+        //     System.err.println("Payment method not found with ID 2");
+        //     throw new RuntimeException("Payment method not found with ID 2");
+        // }
+        // PaymentMethod paymentMethod = optionalPaymentMethod.get();
 
-        Bill bill = Bill.builder()
-                .enrollment(enrollment)
-                .createdAt(new Date())
-                .status(PaymentStatus.Succeeded)
-                .paymentMethod(paymentMethod)
-                .build();
-        billRepository.save(bill);
+        // Bill bill = Bill.builder()
+        //         .enrollment(enrollment)
+        //         .createdAt(new Date())
+        //         .status(PaymentStatus.Succeeded)
+        //         .paymentMethod(paymentMethod)
+        //         .build();
+        // billRepository.save(bill);
 
         // lưu thông tin vào bảng StudentSlot
         if (!studentOptional.isPresent()) {
