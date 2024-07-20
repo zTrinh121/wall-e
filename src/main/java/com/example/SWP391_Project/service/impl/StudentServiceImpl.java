@@ -368,7 +368,7 @@ StudentServiceImpl implements StudentService {
     @Override
     public NotificationResponse getAllNotifications(int studentId) {
         List<IndividualNotification> individualNotifications
-                = individualNotificationRepository.findNotificationsByUserId(studentId);
+                = individualNotificationRepository.findNotificationsByUserId();
         List<CenterNotification> centerNotifications
                 = centerNotificationRepository.findCenterNotificationsByUserId(studentId);
         List<SystemNotification> systemNotifications

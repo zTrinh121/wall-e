@@ -1,49 +1,45 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Thời khóa biểu</title>
+    <title>Điểm danh</title>
     <link rel="stylesheet" href="/css/attendance.css" />
     <script src="/js/attendance.js"></script>
     <script th:src="@{/js/fragments.js}" type="module"></script>
     <script src='https://cdn.jsdelivr.net/npm/fullcalendar@6.1.14/index.global.min.js'></script>
     <th:block th:replace="fragments :: head"></th:block>
-
 </head>
 <body>
 <div class="wrapper">
     <div th:replace="fragments :: header"></div>
-
     <div class="main_container">
         <section id="content">
-            <!-- MAIN -->
             <main>
-                <p th:text="${user.id}" id="userId"></p>
-                <p th:text="${user.role.getDescription().name()}" id="userRole" style="display: none"></p>
                 <h2>Điểm danh</h2>
                 <p th:text="${param.date}" id="urlDate" style="display: none;"></p>
                 <p th:text="${param.courseId}" id="urlCourseId" style="display: none;"></p>
-
                 <table id="attendanceTable">
                     <thead>
+                    <tr>
                         <th>Mã số</th>
                         <th>Tên học sinh</th>
                         <th>Trạng thái</th>
+                    </tr>
                     </thead>
                     <tbody>
-                        <tr>
-
-                        </tr>
+                    <tr th:each="attendance : ${attendanceList}">
+                        <td th:text="${attendance.studentId}"></td>
+                        <td th:text="${attendance.studentName}"></td>
+                        <td class="status-cell"
+                            th:data-student-id="${attendance.studentId}"
+                            th:data-slot-id="${attendance.slotId}"
+                            th:data-status="${attendance.attendanceStatus}"
+                            th:text="${attendance.attendanceStatus == 'Có mặt' ? 'Có mặt' : 'Vắng'}"></td>
+                    </tr>
                     </tbody>
                 </table>
-
-
-                <!-- End timetable -->
             </main>
-            <!-- MAIN -->
         </section>
     </div>
-
-
 </div>
 </body>
 </html>
