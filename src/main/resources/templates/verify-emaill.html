@@ -4,16 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Verify Email Code</title>
+    <link rel="stylesheet" href="/css/authVerifyOTPMapping.css">
 </head>
 <body>
-<h1>Verify Email</h1>
-<form action="/api/student/verify-emaill" method="post">
-    <label for="code">Verification Code:</label>
-    <input type="text" id="code" name="code" required><br><br>
+    <div class="wrapper">
+        <h1>Xác thực email</h1>
+        <p >Vui lòng nhập OTP đã gửi tới email của bạn</p>
 
-    <button type="submit">Verify</button>
-</form>
-<p th:text="${message}"></p>
-<p th:text="${error}"></p>
-</body>
+        <form action="/api/student/verify-emaill" method="post">
+            <input placeholder="Nhập mã OTP" type="text" id="code" name="code" required><br><br>
+        
+            <button class="button" type="submit">Xác thực</button>
+        </form>
+        <p th:text="${message}"></p>
+        <p th:text="${error}"></p>
+        </body>
+    </div>
+
 </html>

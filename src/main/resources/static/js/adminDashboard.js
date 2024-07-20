@@ -43,10 +43,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     function fetchAndDisplayPrivateNotifications() {
         fetch("/individualNotifications")
-            .then(response => response.json())
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`Network response was not ok: ${response.statusText}`);
+                }
+                return response.json();
+            })
             .then(data => {
-                allPrivateNotifications = data;
+                console.log(data);
+                allPrivateNotifications = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date descending
                 currentPage = 1;
+                console.log(allPrivateNotifications)
                 renderTable(allPrivateNotifications);
             })
             .catch(error => console.error("Error fetching private notifications:", error));
@@ -63,9 +70,7 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayNotifications(notifications) {
         notificationTableBody.innerHTML = "";
         var tableHeader = document.querySelector("#notificationTable thead tr");
-        console.log(notifications)
         var isPrivate = notifications.length && (notifications[0].sendToUser);
-        console.log(isPrivate)
         if (isPrivate) {
             tableHeader.innerHTML = `
             <th>Tiêu đề</th>
@@ -85,12 +90,12 @@ document.addEventListener("DOMContentLoaded", function () {
 
         notifications.forEach(function (notification) {
             const formattedDate = formatDate(notification.createdAt);
-
+            console.log(notification.sendToUser);
             var row = `
             <tr id="${notification.id}">
                 <td>${notification.title}</td>
                 <td>${formattedDate}</td></td>
-                ${isPrivate ? `<td>${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}</td>` : ''}
+                ${isPrivate ? `<td>${notification.sendToUser.username}</td>` : ''}
                 <td><button class="view-details" data-title="${notification.title}" data-content="${notification.content}" data-createdat="${notification.createdAt}" ${isPrivate ? `data-sendto="${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}"` : ''}>Xem</button></td>
                 <td>
                     <i class="fas fa-edit" data-id="${notification.id}" ${isPrivate ? `data-sendto="${notification.sendToUser ? notification.sendToUser.username : notification.sendToUser.username}"` : ''}></i>
@@ -154,10 +159,10 @@ document.addEventListener("DOMContentLoaded", function () {
         userName.textContent = notification.title;
         deleteModal.style.display = "block";
         var notificationId = notification.id;
-
         if(notification.sendTo){
+            console.log("Bao")
             deleteConfirmBtn.addEventListener("click", function () {
-                fetch(`/admin-privateNotification/delete/${notificationId}`, {
+                fetch(`/admin-individualNotification/delete/${notificationId}`, {
                     method: "DELETE"
                 })
                     .then(function (response) {
@@ -406,6 +411,7 @@ document.addEventListener("DOMContentLoaded", function () {
         if(data.type === 'private' && isValid){
             for (const recipient of recipients){
                 const newData = { ...data, sendTo: recipient };
+                console.log(newData)
                 var url = "/individualNotification/create";
                 try {
                     const centersValid = await fetchCentersAndUsersAndCompareSendTo(newData.sendTo);

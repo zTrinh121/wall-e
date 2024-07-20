@@ -16,5 +16,5 @@ public class IndividualNotificationDto {
 
     String content;
 
-    String sendToUser;
+    String sendTo;
 }
