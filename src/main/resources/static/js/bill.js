@@ -10,19 +10,19 @@ document.addEventListener('DOMContentLoaded', async function() {
     let courseIdLS = localStorage.getItem("courseId");
     let studentId = localStorage.getItem('studentId');
     console.log(studentId);
-    var urlCourse = `/api/student/${studentId}/courses`;
 
     // Format the date as needed
     function formatDateToDDMMYYYY(dateString) {
-    var date = new Date(dateString);
-    var day = String(date.getUTCDate()).padStart(2, '0');
-    var month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
-    var year = date.getUTCFullYear();
-    return `${day}/${month}/${year}`;
-}
+        var date = new Date(dateString);
+        var day = String(date.getUTCDate()).padStart(2, '0');
+        var month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Months are zero-based
+        var year = date.getUTCFullYear();
+        return `${day}/${month}/${year}`;
+    }
 
-
+    // Call fetchPosts and enrollNewCourse
     await fetchPosts(studentId, courseId, amount);
+    await enrollNewCourse(studentId, courseId);
 
     if (backBtn) {
         backBtn.onclick = function() {
@@ -69,14 +69,31 @@ async function fetchPosts(studentId, courseId, amount) {
     }
 }
 
+async function enrollNewCourse(studentId, courseId) {
+    try {
+        const response = await fetch(`api/student/enroll-new-course?studentId=${studentId}&courseId=${courseId}`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        const message = await response.text();
+        console.log(message);
+    } catch (error) {
+        console.error('Error enrolling new course:', error);
+    }
+}
+
 function displayBill(data, amount) {
     console.log(data);
     console.log(amount);
     document.querySelector('.meta tr:nth-child(1) td span').textContent = data.courseName;
     document.querySelector('.meta tr:nth-child(2) td span').textContent = formatDateToDDMMYYYY(data.startTime) + ' - ' + formatDateToDDMMYYYY(data.endTime);
-    document.querySelector('.meta tr:nth-child(3) td span').textContent = formatCurrency(amount);
-    document.querySelector('.meta tr:nth-child(4) td span').textContent = data.teacherName + " - " + data.centerName;
-    document.querySelector('.meta tr:nth-child(5) td span').textContent = data.courseDesc;
+    document.querySelector('.meta tr:nth-child(3) td span').textContent = data.teacherName + " - " + data.centerName;
+    document.querySelector('.meta tr:nth-child(4) td span').textContent = data.courseDesc;
 }
 
 function formatDateToDDMMYYYY(dateString) {

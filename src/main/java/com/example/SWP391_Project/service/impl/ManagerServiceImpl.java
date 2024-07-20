@@ -554,7 +554,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User manager) {
-        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
+        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendTo());
         if (!sendTo.isPresent()) {
             throw new IllegalArgumentException("User not found when finding by username !");
         }
