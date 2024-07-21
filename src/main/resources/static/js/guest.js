@@ -40,7 +40,7 @@ async function fetchCenters() {
                             ${courseCount > 0 ? `<li>Số lượng khóa học: ${courseCount}</li>` : ''}
                         </ul>
                     </div>
-                    ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Xem chi tiết danh sách khóa học</button>` : ''}
+                    ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Danh sách khóa học</button>` : ''}
                 </div>
             `;
 
@@ -116,10 +116,10 @@ async function displayCoursesModal(centerId) {
         card.classList.add('course-card');
 
         card.innerHTML = `
-            <h3>${course.courseName}</h3>
+            <h3>${course.name}</h3>
             <p>${course.description}</p>
-            <p>Course Fee: ${course.courseFee}.000VNĐ</p>
-            <button onclick="registerCourse(${course.id})">Register</button>
+            <p>Học phí: ${course.courseFee}.000VNĐ</p>
+            <button onclick="registerCourse(${course.id})">Đăng ký</button>
         `;
 
         modalContent.appendChild(card);
