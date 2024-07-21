@@ -169,6 +169,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then((ctn) => {
             document.getElementById("centerDetailName").innerText = "Quản lý giáo viên của trung tâm " + ctn.name;
+            document.getElementById("centerCode").innerText = ctn.code;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
@@ -294,7 +295,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/qlhv?centerId=`;
+                var url = `/manager/centerTime?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -356,17 +357,17 @@ document.addEventListener("DOMContentLoaded", function () {
 // sidebarNoti
 
 //  sidebarTime
-document.addEventListener("DOMContentLoaded", function () {
-    var sidebarTime = document.getElementById("sidebarTime");
-    if (sidebarTime) {
-        sidebarTime.addEventListener("click", function(event) {
-            event.preventDefault();
-                var url = `/manager/centerTime?centerId=`;
-                url += encodeURIComponent(centerIdz);
-                console.log(url);
-                window.location.href = url;
-        });
-    } else {
-        console.error("Element with id 'sidebarTime' not found.");
-    }
-});
+//document.addEventListener("DOMContentLoaded", function () {
+//    var sidebarTime = document.getElementById("sidebarTime");
+//    if (sidebarTime) {
+//        sidebarTime.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                var url = `/manager/centerTime?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url);
+//                window.location.href = url;
+//        });
+//    } else {
+//        console.error("Element with id 'sidebarTime' not found.");
+//    }
+//});

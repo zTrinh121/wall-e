@@ -26,7 +26,9 @@
                 document.getElementById("applicationTitleHead").innerText = data.title + " (" + data.createdAt + ")";
                 document.getElementById("teacherNameApp").innerText ="Tôi là " + data.teacher.name;
                 document.getElementById("applyContent").innerText = data.content;
-                document.getElementById("toCenterN").innerText = "Gửi đến " + data.center.name;
+                document.getElementById("toCenterN").innerText = "Gửi đến trung tâm " + data.center.name;
+                document.getElementById("teaPhone").innerText = "Số điện thoại liên lạc là: " + data.teacher.phone;
+                document.getElementById("teEmail").innerText = "Địa chỉ email liên lạc là:  " + data.teacher.email;
             })
             .catch((erz) => console.error("loi lay ten thong tin: ", erz));
     }
@@ -34,25 +36,25 @@
 //End fetching
 
 //Date
-    document.getElementById("currentDate").innerText = getCurrentDate();
-    function getCurrentDate() {
-            var currentDate = new Date();
-            var dayOfWeek = [
-              "Chủ Nhật",
-              "Thứ Hai",
-              "Thứ Ba",
-              "Thứ Tư",
-              "Thứ Năm",
-              "Thứ Sáu",
-              "Thứ Bảy",
-            ];
-            var day = String(currentDate.getDate()).padStart(2, "0");
-            var month = String(currentDate.getMonth() + 1).padStart(2, "0");
-            var year = currentDate.getFullYear();
-            var dayIndex = currentDate.getDay();
-            var dayName = dayOfWeek[dayIndex];
-            return dayName + ", " + day + "-" + month + "-" + year;
-          }
+//    document.getElementById("currentDate").innerText = getCurrentDate();
+//    function getCurrentDate() {
+//        var currentDate = new Date();
+//        var dayOfWeek = [
+//          "Chủ Nhật",
+//          "Thứ Hai",
+//          "Thứ Ba",
+//          "Thứ Tư",
+//          "Thứ Năm",
+//          "Thứ Sáu",
+//          "Thứ Bảy",
+//        ];
+//        var day = String(currentDate.getDate()).padStart(2, "0");
+//        var month = String(currentDate.getMonth() + 1).padStart(2, "0");
+//        var year = currentDate.getFullYear();
+//        var dayIndex = currentDate.getDay();
+//        var dayName = dayOfWeek[dayIndex];
+//        return dayName + ", " + day + "-" + month + "-" + year;
+//      }
 //End date
 });
 

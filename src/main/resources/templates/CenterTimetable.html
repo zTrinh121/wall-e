@@ -129,6 +129,7 @@
                     </div>
                     <div><button id="openModalBtn">Thêm lịch học</button></div>
                     <div><button id="openAddFull">Thêm lịch học cố định</button></div>
+                    <div><button id="turnBack">Quay lại</button></div>
                 </div>
             </main>
             <!-- MAIN -->
@@ -245,32 +246,48 @@
 <div id="editEventModal" class="modal">
     <div class="modal-content">
         <span id="closeEditModal" class="close">&times;</span>
-        <h2>Edit Event</h2>
+        <h2>Chỉnh sửa tiết học</h2>
         <form id="editEventForm">
             <input type="hidden" id="editEventId" name="editEventId">
 
-            <label for="editEventTitle">Title:</label>
-            <input type="text" id="editEventTitle" name="editEventTitle" required>
+            <label for="editEventTitle">Khoá học hiện tại:</label>
+            <input type="text" id="editEventTitle" name="editEventTitle" readonly>
+            <br>
+            <!--            COURSE-->
+            <div class="form-group">
+                <label for="newCourse">Khóa học:</label>
+                <select id="newCourse" name="newCourse" required>
+                    <option value="">Chọn khóa học...</option>
+                </select>
+            </div>
             <br>
 
-            <label for="editEventDescription">Description:</label>
-            <textarea id="editEventDescription" name="editEventDescription" rows="3"></textarea>
+            <label for="editEventDescription">Phòng học hiện tại:</label>
+            <input type="text" id="editEventDescription" name="editEventDescription" rows="3" readonly></input>
+            <br>
+            <!--            ROOM-->
+            <div class="form-group">
+                <label for="newRoom">Phòng:</label>
+                <select id="newRoom" name="newRoom" required>
+                    <option value="">Chọn phòng...</option>
+                </select>
+            </div>
             <br>
 
-            <label for="editSlotDate">Slot Date:</label>
+            <label for="editSlotDate">Ngày:</label>
             <input type="date" id="editSlotDate" name="editSlotDate" required>
             <br>
 
-            <label for="editSlotStartTime">Start Time:</label>
+            <label for="editSlotStartTime">Bắt đầu:</label>
             <input type="time" id="editSlotStartTime" name="editSlotStartTime" required>
             <br>
 
-            <label for="editSlotEndTime">End Time:</label>
+            <label for="editSlotEndTime">Kết thúc:</label>
             <input type="time" id="editSlotEndTime" name="editSlotEndTime" required>
             <br>
 
-            <button type="submit">Update Event</button>
-            <button type="button" id="deleteEventBtn" class="deleteEventBtn">Delete Event</button>
+            <button type="submit">Cập nhật</button>
+            <button type="button" id="deleteEventBtn" class="deleteEventBtn">Xoá tiết học</button>
         </form>
     </div>
 </div>

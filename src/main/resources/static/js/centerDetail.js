@@ -51,7 +51,7 @@ function fetchCenters(centerIdz) {
             document.getElementById("centerDetailName").innerText = "Chi tiết trung tâm " + data.name;
             document.getElementById("centreDescription").innerText = data.description;
             document.getElementById("centerName").innerText = data.name;
-            document.getElementById
+            document.getElementById("centerCode").innerText = data.code;
         })
         .catch((error) => console.error("Error fetching centers:", error));
 }
@@ -80,7 +80,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/qlhv?centerId=`;
+                var url = `/manager/centerTime?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -128,7 +128,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfom) {
         boxInfom.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/dthu?centerIdn=`;
+                var url = `/manager/dthu?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -142,20 +142,20 @@ document.addEventListener("DOMContentLoaded", function () {
 // sidebarNoti
 
 //  sidebarTime
-document.addEventListener("DOMContentLoaded", function () {
-    var sidebarTime = document.getElementById("sidebarTime");
-    if (sidebarTime) {
-        sidebarTime.addEventListener("click", function(event) {
-            event.preventDefault();
-                var url = `/manager/centerTime?centerId=`;
-                url += encodeURIComponent(centerIdz);
-                console.log(url);
-                window.location.href = url;
-        });
-    } else {
-        console.error("Element with id 'sidebarTime' not found.");
-    }
-});
+//document.addEventListener("DOMContentLoaded", function () {
+//    var sidebarTime = document.getElementById("sidebarTime");
+//    if (sidebarTime) {
+//        sidebarTime.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                var url = `/manager/centerTime?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url);
+//                window.location.href = url;
+//        });
+//    } else {
+//        console.error("Element with id 'sidebarTime' not found.");
+//    }
+//});
 //edit + delete
         //edit
 document.addEventListener("DOMContentLoaded", () => {

@@ -1,4 +1,10 @@
 document.addEventListener('DOMContentLoaded', function() {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
+
     const calendarEl = document.getElementById('calendar');
     const editEventModal = document.getElementById('editEventModal');
     const closeModalAdd = document.querySelector('#addSlotModal .close');
@@ -8,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to fetch events from the server
     const fetchEvents = function(fetchInfo, successCallback, failureCallback) {
-        fetch('/manager/slots/byCenter/1')
+        fetch(`/manager/slots/byCenter/${centerIdz}`)
             .then(response => {
                 if (!response.ok) {
                     throw new Error('Network response was not ok');
@@ -45,19 +51,113 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
             console.log('Event clicked:', info.event);
             openEditModal(info.event); // Call the function to open edit modal
+            console.log(info);
         }
     });
 
-    // Function to open edit modal and populate with event data
-    function openEditModal(event) {
-        document.getElementById('editEventId').value = event.id;
-        document.getElementById('editEventTitle').value = event.title;
-        document.getElementById('editEventDescription').value = event.extendedProps.description;
-        document.getElementById('editSlotDate').value = event.startStr.split('T')[0]; // Splitting datetime to get date
-        document.getElementById('editSlotStartTime').value = event.startStr.split('T')[1]; // Splitting datetime to get time
-        document.getElementById('editSlotEndTime').value = event.endStr.split('T')[1]; // Splitting datetime to get time
-        editEventModal.style.display = 'block'; // Display the edit modal
+    //NEEDED COMPONENTS
+    function formatTime(timeString) {
+        // Assuming timeString is in ISO format like 'HH:mm:ss.SSS'
+        return timeString.split('.')[0]; // Remove milliseconds
     }
+
+    var selectedRoomIdn;
+    function displayNewRoomsInSelectorF(rooms) {
+        var selectElement = document.getElementById("newRoom");
+        selectElement.innerHTML = '<option value="">Chọn phòng học...</option>';
+
+        rooms.forEach((room) => {
+            var option = document.createElement("option");
+            option.value = room.id;
+            option.textContent = room.name;
+            selectElement.appendChild(option);
+        });
+        selectElement.addEventListener("change", function () {
+            selectedRoomIdn = selectElement.value;
+            console.log(selectedRoomIdn);
+        });
+    }
+
+    var selectedCourseIdn;
+    function displayNewCoursesInSelectorF(courses) {
+        var selectElement = document.getElementById("newCourse");
+        selectElement.innerHTML = '<option value="">Chọn khoá học...</option>';
+
+        courses.forEach((course) => {
+            var option = document.createElement("option");
+            option.value = course.id;
+            option.textContent = course.name;
+            selectElement.appendChild(option);
+        });
+        selectElement.addEventListener("change", function () {
+            selectedCourseIdn = selectElement.value;
+            console.log(selectedCourseIdn);
+        });
+    }
+    var centerIdz;
+    //getting centerId
+    const urlParamss = window.location.href;
+    console.log("Current URL:", urlParamss);
+    // Extract centerId from the URL
+    const urlPartss = urlParamss.split("centerId=");
+    centerIdz = urlPartss.length > 1 ? urlPartss[1].split("&")[0] : null;
+    console.log("Center ID:", centerIdz);
+//api get courses
+    function fetchCoursesF(centerIdz) {
+        var URLcourse = `/manager/courses/center/${centerIdz}`;
+        fetch(URLcourse)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Data received from API:", data);
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+                displayNewCoursesInSelectorF(data);
+            })
+            .catch((error) => console.error("Error fetching courses:", error));
+    }
+    fetchCoursesF(centerIdz);
+    //api get rooms
+    function fetchRoomsF(centerIdz) {
+        var URLroom = `/manager/getRooms/${centerIdz}`;
+        fetch(URLroom)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Data received from API:", data);
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+                displayNewRoomsInSelectorF(data);
+            })
+            .catch((error) => console.error("Error fetching rooms:", error));
+    }
+    fetchRoomsF(centerIdz);
+
+
+    function openEditModal(info) {
+        document.getElementById('editEventId').value = info._def.publicId;
+        document.getElementById('editEventTitle').value = info._def.title;
+        document.getElementById('editEventDescription').value = info._def.extendedProps.description;
+
+        // Access start and end times from info._instance.range
+        document.getElementById('editSlotDate').value = info.startStr.split('T')[0]; // Splitting datetime to get date
+//        document.getElementById('editSlotDate').value = info._instance.range.start.toLocaleDateString().split('T')[0]; // Example format
+        document.getElementById('editSlotStartTime').value = info._instance.range.start.toLocaleTimeString(); // Example format
+        document.getElementById('editSlotEndTime').value = info._instance.range.end.toLocaleTimeString(); // Example format
+
+        editEventModal.style.display = 'block';
+    }
+
 
     // Handle right-click context menu (optional)
     calendarEl.addEventListener('contextmenu', function(e) {
@@ -93,18 +193,23 @@ document.addEventListener('DOMContentLoaded', function() {
     editEventForm.addEventListener('submit', function(event) {
         event.preventDefault();
 
-        let formData = new FormData(editEventForm);
+        var formData = new FormData(editEventForm);
+        console.log(formData)
+        var slotDaten = formData.get("editSlotDate"); //+ "T00:00:00.000+00:00";
+        var slotStartTimen = formatTime(formData.get("editSlotStartTime")) + ":00"; ;
+        var slotEndTimen = formData.get("editSlotEndTime") + ":00";
         let eventId = formData.get('editEventId');
         console.log(eventId);
         let eventData = {
-            title: formData.get('editEventTitle'),
-            description: formData.get('editEventDescription'),
-            start: formData.get('editSlotDate') + 'T' + formData.get('editSlotStartTime'),
-            end: formData.get('editSlotDate') + 'T' + formData.get('editSlotEndTime')
+            slotDate: slotDaten,
+            slotStartTime: slotStartTimen,
+            slotEndTime: slotEndTimen,
+            courseId: selectedCourseIdn,
+            roomId: selectedRoomIdn
         };
         console.log(eventData)
 
-        fetch(`/manager/slots/update/${eventId}`, {
+        fetch(`/manager/slots/update/${eventId}`    , {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
@@ -125,7 +230,16 @@ document.addEventListener('DOMContentLoaded', function() {
         })
         .catch(error => {
             console.error('Error updating event:', error);
-            alert('Failed to update event. Please try again later.');
+                alert('Failed to update event. Please try again later.');
+                if (error.response) {
+                    error.response.json().then(data => {
+                        console.error('Server error details:', data);
+                    }).catch(err => {
+                        console.error('Error parsing server response:', err);
+                    });
+                } else {
+                    console.error('Network error:', error.message);
+                }
         });
     });
 
@@ -435,8 +549,6 @@ document.addEventListener("DOMContentLoaded", () => {
             var selectedOption = dayOfWeekSelect.options[dayOfWeekSelect.selectedIndex];
             selectedDayOfWeek = selectedOption.getAttribute("dateOfWeek");
 
-
-
             console.log("Selected day of week:", selectedDayOfWeek);
         });
     }
@@ -516,6 +628,22 @@ document.addEventListener("DOMContentLoaded", () => {
             .catch((error) => console.error("Error fetching rooms:", error));
     }
     fetchRoomsF(centerIdz);
-
 });
 
+
+// TURN BACK CENTER DETAIL
+document.addEventListener('DOMContentLoaded', function() {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
+//turnBack
+    var turnBack = document.getElementById("turnBack");
+    turnBack.addEventListener("click", function(event) {
+        event.preventDefault();
+            var url = `/manager/centerHome?centerIdn=`;
+            url += encodeURIComponent(centerIdz);
+            window.location.href = url;
+    });
+});

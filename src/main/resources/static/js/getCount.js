@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     centerIdzzz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
 
 function fetchCount(centerIdzzz) {
-    var URLs = `/manager/student-count/${centerIdzzz}`;
+    var URLs = `/manager/center/${centerIdzzz}`;
     var URLt = `/manager/teacher-count/${centerIdzzz}`;
     var URLc = `/manager/course-count/${centerIdzzz}`;
 
@@ -19,7 +19,7 @@ function fetchCount(centerIdzzz) {
                 return response.json();
             })
             .then((data) => {
-                document.getElementById("nums").innerText = data;
+                document.getElementById("centerCode").innerText = data.code;
             })
             .catch((error) => console.error("Error fetching centers:", error));
     fetch(URLt)

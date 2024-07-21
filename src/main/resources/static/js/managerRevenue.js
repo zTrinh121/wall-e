@@ -42,10 +42,11 @@ function renderChart(data){
 
 //});
 
-var centerIdz;
 document.addEventListener("DOMContentLoaded", () => {
-    var urlParams = window.location.href;
-    var urlParts = urlParams.split("centerIdn=");
+    const urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    // Extract centerId from the URL
+    const urlParts = urlParams.split("centerId=");
     centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
     console.log("Center ID:", centerIdz);
 });
@@ -65,7 +66,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/qlhv?centerId=`;
+                var url = `/manager/centerTime?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -113,7 +114,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfom) {
         boxInfom.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/dthu?centerIdn=`;
+                var url = `/manager/dthu?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -127,17 +128,68 @@ document.addEventListener("DOMContentLoaded", function () {
 // sidebarNoti
 
 //  sidebarTime
-document.addEventListener("DOMContentLoaded", function () {
-    var sidebarTime = document.getElementById("sidebarTime");
-    if (sidebarTime) {
-        sidebarTime.addEventListener("click", function(event) {
-            event.preventDefault();
-                var url = `/manager/centerTime?centerId=`;
-                url += encodeURIComponent(centerIdz);
-                console.log(url);
-                window.location.href = url;
-        });
-    } else {
-        console.error("Element with id 'sidebarTime' not found.");
-    }
+//document.addEventListener("DOMContentLoaded", function () {
+//    var sidebarTime = document.getElementById("sidebarTime");
+//    if (sidebarTime) {
+//        sidebarTime.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                var url = `/manager/centerTime?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url);
+//                window.location.href = url;
+//        });
+//    } else {
+//        console.error("Element with id 'sidebarTime' not found.");
+//    }
+//});
+
+//lay so luong
+document.addEventListener("DOMContentLoaded", () => {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    // Extract centerId from the URL
+    var urlParts = urlParams.split("centerId=");
+    const centerIdzzz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
+
+function fetchCount(centerIdzzz) {
+    var URLs = `/manager/center/${centerIdzzz}`;
+    var URLt = `/manager/teacher-count/${centerIdzzz}`;
+    var URLc = `/manager/course-count/${centerIdzzz}`;
+
+    fetch(URLs)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                document.getElementById("centerCode").innerText = data.code;
+            })
+            .catch((error) => console.error("Error fetching centers:", error));
+    fetch(URLt)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                document.getElementById("numt").innerText = data;
+            })
+            .catch((error) => console.error("Error fetching centers:", error));
+    fetch(URLc)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                  document.getElementById("numc").innerText = data;
+
+            })
+            .catch((error) => console.error("Error fetching centers:", error));
+}
+fetchCount(centerIdzzz);
 });
