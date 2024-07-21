@@ -5,7 +5,7 @@ import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
-import lombok.ToString;
+
 import java.util.Date;
 import java.util.Set;
 
@@ -30,7 +30,9 @@ public class Slot {
     @Column(name = "C02_SLOT_ID")
     int id;
 
+
     @Column(name = "C02_SLOT_DATE", columnDefinition = "DATE", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
     Date slotDate;
 
     @Column(name = "C02_SLOT_START_TIME", columnDefinition = "TIME", nullable = false)

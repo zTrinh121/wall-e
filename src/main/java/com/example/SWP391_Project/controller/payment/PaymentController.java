@@ -89,7 +89,7 @@ public class PaymentController {
 //        response.put("message", "StudentId saved to session: " + studentId);
 //        return ResponseEntity.ok(response);
 //    }
-//
+
     @PostMapping("/courseId")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> saveCourseIdToSession(@RequestBody CourseIdRequest courseIdRequest, HttpSession session) {

@@ -579,6 +579,8 @@ StudentServiceImpl implements StudentService {
     // ------------------------ STUDENT CHECK ATTENDANCE ---------------------
     @Override
     public List<SlotResponse> getSlotsByStudentIdAndCourseId(int studentId, int courseId) {
+        System.out.println("Ahihi");
+        System.out.println(slotRepository.findSlotsByStudentIdAndCourseId(studentId, courseId));
         return slotRepository.findSlotsByStudentIdAndCourseId(studentId, courseId);
     }
 
