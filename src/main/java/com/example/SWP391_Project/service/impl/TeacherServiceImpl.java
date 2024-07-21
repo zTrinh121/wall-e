@@ -3,6 +3,7 @@ package com.example.SWP391_Project.service.impl;
 import com.example.SWP391_Project.dto.ApplyCenterDto;
 import com.example.SWP391_Project.dto.CenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
+import com.example.SWP391_Project.enums.Status;
 import com.example.SWP391_Project.exception.ResourceNotFoundException;
 import com.example.SWP391_Project.model.*;
 import com.example.SWP391_Project.repository.*;
@@ -466,6 +467,7 @@ public class TeacherServiceImpl implements TeacherService {
                 .title(applyCenterDto.getTitle())
                 .content(applyCenterDto.getContent())
                 .createdAt(new Date())
+                .status(Status.Wait_to_process)
                 .build();
         return applyCenterRepository.save(applyCenter);
     }
