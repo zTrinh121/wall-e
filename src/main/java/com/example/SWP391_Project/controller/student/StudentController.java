@@ -417,6 +417,8 @@ public class StudentController {
         }
 
         List<SlotResponse> slots = studentService.getSlotsByStudentIdAndCourseId(studentId, courseId);
+        System.out.println("hello");
+        System.out.println(slots);
         if (slots.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }
@@ -469,6 +471,23 @@ public class StudentController {
         } catch (RuntimeException e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
         }
+    }
+
+    @GetMapping("/checkOverviewAttendanceParent/{courseId}")
+    @ResponseBody
+    public ResponseEntity<List<SlotResponse>> getSlotByStudentIdAndCourseId(HttpSession session, @PathVariable int courseId) {
+        Integer studentId = (Integer) session.getAttribute("studentId");
+        System.out.println("Hhee");
+        System.out.println(studentId);
+        if (studentId == null) {
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Student ID is not found in the session!");
+        }
+
+        List<SlotResponse> slots = studentService.getSlotsByStudentIdAndCourseId(studentId, courseId);
+        if (slots.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(slots, HttpStatus.OK);
     }
 
 

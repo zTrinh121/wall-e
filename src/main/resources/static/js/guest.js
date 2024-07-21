@@ -23,7 +23,7 @@ async function fetchCenters() {
             const courseCount = await fetchCourseCount(center.id);
             const slide = document.createElement('div');
             slide.classList.add('swiper-slide', 'tranding-slide');
-
+            console.log(center)
             slide.innerHTML = `
                 <div class="tranding-slide-content">
                     <div class="tranding-slide-img">
@@ -40,6 +40,7 @@ async function fetchCenters() {
                             ${courseCount > 0 ? `<li>Số lượng khóa học: ${courseCount}</li>` : ''}
                         </ul>
                     </div>
+                    ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Danh sách khóa học</button>` : ''}
                     ${courseCount > 0 ? `<button class="detail-button" onclick="displayCoursesModal(${center.id})">Danh sách khóa học</button>` : ''}
                 </div>
             `;
