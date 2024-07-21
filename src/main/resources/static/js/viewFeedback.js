@@ -1,5 +1,15 @@
 document.addEventListener('DOMContentLoaded', function() {
-    fetchStudentFeedback();
+    const userRole = document.getElementById('roleUser').innerHTML;
+    console.log(userRole);
+
+    if (userRole === "TEACHER") {
+        fetchTeacherFeedback(userRole);
+    } else if (userRole === "STUDENT") {
+        fetchStudentFeedback(userRole);
+    } else if (userRole === "PARENT") {
+        fetchParentFeedback(userRole);
+    }
+
     const ratingInputs = document.querySelectorAll('input[name="star"]');
     const selectedRatingDiv = document.getElementById('selected-rating');
 
@@ -12,14 +22,59 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function formatDate(dateString) {
-    // Parse the date string and create a Date object
     const [day, month, year] = dateString.split('-');
     const date = new Date(`${year}-${month}-${day}`);
-    // Format the date to 'dd/MM/yyyy'
     const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
     return new Intl.DateTimeFormat('vi-VN', options).format(date);
 }
-function fetchStudentFeedback() {
+
+function fetchParentFeedback(userRole) {
+    fetch('api/parent/view-student-feedback')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch parent feedback');
+            }
+            return response.text();
+        })
+        .then(text => {
+            if (text) {
+                return JSON.parse(text);
+            } else {
+                return [];
+            }
+        })
+        .then(data => {
+            data.sort((a, b) => new Date(b.createdAt.split('-').reverse().join('-')) - new Date(a.createdAt.split('-').reverse().join('-')));
+            console.log(data);
+            renderFeedbackTable(data, userRole);
+        })
+        .catch(error => console.error("Error fetching parent feedback:", error));
+}
+
+function fetchTeacherFeedback(userRole) {
+    fetch('api/student/fetch-teacher-feedback')
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to fetch teacher feedback');
+            }
+            return response.text();
+        })
+        .then(text => {
+            if (text) {
+                return JSON.parse(text);
+            } else {
+                return [];
+            }
+        })
+        .then(data => {
+            data.sort((a, b) => new Date(b.createdAt.split('-').reverse().join('-')) - new Date(a.createdAt.split('-').reverse().join('-')));
+            console.log(data);
+            renderFeedbackTable(data, userRole);
+        })
+        .catch(error => console.error("Error fetching teacher feedback:", error));
+}
+
+function fetchStudentFeedback(userRole) {
     fetch('api/teacher/fetch-student-feedback')
         .then(response => {
             if (!response.ok) {
@@ -31,13 +86,13 @@ function fetchStudentFeedback() {
             if (text) {
                 return JSON.parse(text);
             } else {
-                return []; // Return an empty array if the response is empty
+                return [];
             }
         })
         .then(data => {
             data.sort((a, b) => new Date(b.createdAt.split('-').reverse().join('-')) - new Date(a.createdAt.split('-').reverse().join('-')));
             console.log(data);
-            renderFeedbackTable(data);
+            renderFeedbackTable(data, userRole);
         })
         .catch(error => console.error("Error fetching student feedback:", error));
 }
@@ -50,28 +105,51 @@ function getRatingStars(rating) {
     return starsHtml;
 }
 
-function renderFeedbackTable(feedbacks) {
+function renderFeedbackTable(feedbacks, userRole) {
     const tableBody = document.getElementById('classListBody');
     if (tableBody) {
-        tableBody.innerHTML = ''; // Clear existing content
+        tableBody.innerHTML = ''; 
+        if (userRole === "TEACHER") {
+            feedbacks.forEach(feedback => {
+                const row = document.createElement('tr');
+    
+                const dateCell = document.createElement('td');
+                dateCell.textContent = formatDate(feedback.createdAt); 
+                row.appendChild(dateCell);
+    
+                const contentCell = document.createElement('td');
+                contentCell.textContent = feedback.description; 
+                row.appendChild(contentCell);
+    
+                const ratingCell = document.createElement('td');
+                ratingCell.innerHTML = getRatingStars(feedback.rating); 
+                row.appendChild(ratingCell);
+    
+                tableBody.appendChild(row);
+            });
+        } else if (userRole === "STUDENT" || userRole === "PARENT") {
+            feedbacks.forEach(feedback => {
+                const row = document.createElement('tr');
 
-        feedbacks.forEach(feedback => {
-            const row = document.createElement('tr');
+                const nameCell = document.createElement('td');
+                nameCell.textContent = feedback.actor.name; 
+                row.appendChild(nameCell);
 
-            const dateCell = document.createElement('td');
-            dateCell.textContent = formatDate(feedback.createdAt); // Assuming 'date' is a property in feedback
-            row.appendChild(dateCell);
-
-            const contentCell = document.createElement('td');
-            contentCell.textContent = feedback.description; // Assuming 'content' is a property in feedback
-            row.appendChild(contentCell);
-
-            const ratingCell = document.createElement('td');
-            ratingCell.innerHTML = getRatingStars(feedback.rating); // Assuming 'rating' is a property in feedback
-            row.appendChild(ratingCell);
-
-            tableBody.appendChild(row);
-        });
+                const dateCell = document.createElement('td');
+                dateCell.textContent = formatDate(feedback.createdAt); 
+                row.appendChild(dateCell);
+    
+                const contentCell = document.createElement('td');
+                contentCell.textContent = feedback.description; 
+                row.appendChild(contentCell);
+    
+                const ratingCell = document.createElement('td');
+                ratingCell.innerHTML = getRatingStars(feedback.rating); 
+                row.appendChild(ratingCell);
+    
+                tableBody.appendChild(row);
+            });
+        }
     } else {
         console.error("Element with id 'classListBody' not found.");
     }
