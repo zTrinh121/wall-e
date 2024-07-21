@@ -119,7 +119,7 @@ async function displayCoursesModal(centerId) {
         card.innerHTML = `
             <h3>${course.name}</h3>
             <p>${course.description}</p>
-            <p>Học phí: ${course.courseFee}.000VNĐ</p>
+            <p>Học phí: ${course.courseFee}VNĐ</p>
             <button onclick="registerCourse(${course.id})">Đăng ký</button>
         `;
 
