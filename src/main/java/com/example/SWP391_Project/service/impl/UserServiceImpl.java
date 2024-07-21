@@ -111,7 +111,7 @@ public class UserServiceImpl implements UserService {
     @Override
     @Transactional
     public List<Map<String, Object>> getAllUsersWithSpecificAttributes() {
-        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_NAME as name,  u.c14_acc_status as accStatus " +
+        String query = "SELECT u.C14_USER_ID as userId, u.C14_ROLE_ID as roleId, u.C14_NAME as name,  u.c14_acc_status as accStatus, u.C14_USERNAME as username " +
                 "FROM t14_user u";
         return jdbcTemplate.queryForList(query);
     }

@@ -4,27 +4,38 @@ import com.example.SWP391_Project.dto.ApplyCenterDto;
 import com.example.SWP391_Project.dto.FeedbackDto;
 import com.example.SWP391_Project.dto.MaterialDto;
 import com.example.SWP391_Project.model.*;
+import com.example.SWP391_Project.repository.StudentSlotRepository;
 import com.example.SWP391_Project.response.NotificationResponse;
 import com.example.SWP391_Project.service.TeacherService;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.TimeZone;
 
 @RestController
 @RequestMapping("/api/teacher")
 public class TeacherController {
     @Autowired
     private TeacherService teacherService;
-//mmm
+    @Autowired
+    private StudentSlotRepository studentSlotRepository;
+
+    //mmm
 @GetMapping("/{teacherId}/courses")
 public ResponseEntity<List<Map<String, Object>>> getCoursesByTeacherId(@PathVariable Long teacherId) {
     List<Map<String, Object>> courseNames = teacherService.getCourseNamesByTeacherId(teacherId);
@@ -81,9 +92,15 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó
     @GetMapping("/{teacherId}/schedule")
     public ResponseEntity<List<Map<String, Object>>> getScheduleByTeacherId(@PathVariable Long teacherId) {
+        TimeZone timeZone = TimeZone.getDefault();
+        System.out.println("------Time Zone: " + timeZone.getID());
+
         List<Map<String, Object>> schedule = teacherService.getScheduleByTeacherId(teacherId);
+        System.out.println("-----------");
+        System.out.println(schedule);
         return ResponseEntity.ok(schedule);
     }
+
 
 
     // Lấy ra toàn bộ thời khóa biểu của giáo viên đó theo trung tâm
@@ -316,6 +333,43 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                     .body("Error updating attendance status: " + e.getMessage());
         }
+    }
+
+
+
+    @PostMapping("/attendance/update")
+    public ResponseEntity<String> updateAttendanceStatuss(@RequestParam int studentId, @RequestParam int slotId, @RequestParam boolean status) {
+        try {
+            teacherService.updateAttendanceStatus(studentId, slotId, status);
+            return ResponseEntity.ok("Attendance status updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating attendance status: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/student-slots")
+    public ResponseEntity<List<Map<String, Object>>> getStudentSlots(@RequestParam("courseId") int courseId,
+                                                                     @RequestParam("date") @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<Map<String, Object>> attendanceList = teacherService.getAttendanceByCourseIdAndDate(courseId, date);
+        return ResponseEntity.ok(attendanceList);
+    }
+
+    @PostMapping("/attendance/updateStatus")
+    public ResponseEntity<String> updateAttendanceStatus(@RequestParam int studentId, @RequestParam int slotId, @RequestParam boolean status) {
+        try {
+            teacherService.updateAttendanceStatusBySlotIdAndStatus(studentId, slotId, status);
+            return ResponseEntity.ok("Attendance status updated successfully for studentId: " + studentId);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Error updating attendance status: " + e.getMessage());
+        }
+    }
+
+    @GetMapping("/courses/{courseId}/studentss")
+    public ResponseEntity<List<Map<String, Object>>> getStudentsByCourseIdAndDate(@PathVariable int courseId,
+                                                                                  @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd") Date date) {
+        List<Map<String, Object>> students = teacherService.getStudentsByCourseIdAndDate(courseId, date);
+        return ResponseEntity.ok(students);
     }
 
 }

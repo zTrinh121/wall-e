@@ -34,8 +34,8 @@ document.addEventListener("DOMContentLoaded", async () => {
             break;
         case "PARENT":
             await fetchStudents();
-            apiGradeUrl = `/api/student/${studentParentId}/grades`;
-            apiCourseDetail = `/api/student/${studentParentId}/courses`;
+            apiGradeUrl = `/api/student/${userId}/grades`;
+            apiCourseDetail = `/api/student/${userId}/courses`;
             break;
     }
 
@@ -47,8 +47,6 @@ document.addEventListener("DOMContentLoaded", async () => {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            studentParentId = data[0].id;
-            console.log(studentParentId + " id student")
             // After fetching students, proceed to fetch posts
             await fetchPosts();
         } catch (error) {
@@ -69,11 +67,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     return response.json();
                 })
                 .then(data => {
-
+                    console.log()
+                    console.log(data);
                     const courseDetail = data.filter(course => course.courseId == courseId);
 
                     if (courseDetail[0]) {
-                        console.log(courseDetail.teacherName)
                         teacherName = courseDetail[0].teacherName;
                         courseName = courseDetail[0].courseName;
                         viewCourseDetails(courseDetail[0]);
@@ -506,7 +504,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
     }
 
-    if (roleUser !== 'STUDENT') {
+    if (roleUser !== 'STUDENT' && roleUser !== 'PARENT') {
         btnAttendanceDetails.style.display = 'none';
     }
 
@@ -521,9 +519,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     function fetchAttendanceDetails(courseId) {
+        console.log(courseId);
         fetch(`/api/student/checkOverviewAttendance/${courseId}`)
             .then(response => response.json())
             .then(data => {
+                console.log(data);  
                 openAttendanceModal(data);
             })
             .catch(error => console.error("Error fetching attendance details:", error));
@@ -597,10 +597,10 @@ document.addEventListener("DOMContentLoaded", async () => {
          myChartInstance = new Chart(ctx, {
             type: 'doughnut',
             data: {
-                labels: ['Present', 'Absent', 'Future'],
+                labels: ['Present', 'Absent'],
                 datasets: [{
-                    data: [numberPresent, numberAbsent, futureSlot],
-                    backgroundColor: ['#44DE28', '#f42500', '#0358B6'],
+                    data: [numberPresent, numberAbsent],
+                    backgroundColor: ['#44DE28', '#f42500'],
                 }],
             },
         });
@@ -686,7 +686,6 @@ document.addEventListener("DOMContentLoaded", async () => {
         fetchCourseGrades(courseId);
     });
 
-    console.log(closeEvaluationModalBtn)
     closeEvaluationModalBtn.addEventListener("click", closeEvaluationModal);
 
 

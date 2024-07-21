@@ -10,6 +10,7 @@ import com.example.SWP391_Project.model.PaymentMethod;
 import com.example.SWP391_Project.response.PaymentResponse;
 import com.example.SWP391_Project.service.BillService;
 import com.example.SWP391_Project.service.EnrollmentService;
+import com.example.SWP391_Project.service.ParentService;
 import com.example.SWP391_Project.service.PaymentService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
@@ -36,7 +37,6 @@ public class PaymentController {
     public PaymentResponse<PaymentDto.VNPayResponse> pay(HttpServletRequest request) {
         return new PaymentResponse<>(HttpStatus.OK, "Success", paymentService.createVnPayPayment(request));
     }
-
     @GetMapping("/vn-pay-callback")
     public String payCallbackHandlerParent(HttpServletRequest request, HttpSession session) {
         String status = request.getParameter("vnp_ResponseCode");
@@ -48,25 +48,18 @@ public class PaymentController {
         if (status.equals("00")) {
             EnrollmentDto enrollmentDto = new EnrollmentDto();
             int parentId = (int) session.getAttribute("authid");
+
             Enrollment enrollment = enrollmentService.enrollStudentInCourse(enrollmentDto, parentId, session);
 
-            // Thiết lập ngày đăng ký
+
             enrollment.setEnrollDate(new Date());
 
             PaymentMethod paymentMethod = PaymentMethod.builder()
                     .id(1)
                     .paymentMethod(PaymentMethodEnum.E_Banking)
                     .build();
-
             Bill bill = billService.createBill(PaymentStatus.Succeeded, enrollment, paymentMethod);
-
-            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()
-                    + "&userId=" + parentId
-                    + "&amount=" + amount
-                    + "&date=" + date
-                    + "&transactionNo=" + transactionNo
-                    + "&orderInfo=" + orderInfo;
-
+            String billUrl = "/bill?status=success&courseId=" + enrollment.getCourse().getId()+"&userId="+parentId+"&amount="+amount+"&date="+date+"&transactionNo="+transactionNo+"&orderInfo="+orderInfo;
             return "redirect:" + billUrl;
         } else if (status.equals("24")) {
             System.out.println("Hủy thanh toán");
@@ -75,6 +68,7 @@ public class PaymentController {
             return "redirect:/billFail";
         }
     }
+
 
     @GetMapping("/auth/status")
     @ResponseBody
@@ -85,6 +79,17 @@ public class PaymentController {
         return new ResponseEntity<>(isAuthenticated, HttpStatus.OK);
     }
 
+    @PostMapping("/studentID")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveStudentIdToSession(@RequestBody StudentIdRequest studentIdRequest, HttpSession session) {
+        int studentId = studentIdRequest.getStudentId();
+        session.setAttribute("studentId", studentId);
+        System.out.println("Student ID in session: " + studentId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "StudentId saved to session: " + studentId);
+        return ResponseEntity.ok(response);
+    }
+
     @PostMapping("/courseId")
     @ResponseBody
     public ResponseEntity<Map<String, Object>> saveCourseIdToSession(@RequestBody CourseIdRequest courseIdRequest, HttpSession session) {
@@ -93,6 +98,19 @@ public class PaymentController {
         System.out.println("Course ID in session: " + courseId);
         Map<String, Object> response = new HashMap<>();
         response.put("message", "CourseId saved to session: " + courseId);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/studentID")
+    @ResponseBody
+    public ResponseEntity<Map<String, Object>> saveStudentIdToSession(@RequestBody StudentIdRequest studentIdRequest, HttpSession session) {
+        int studentId = studentIdRequest.getStudentId();
+        System.out.println("Id student co duoc luu ");
+        System.out.println(studentId);
+        session.setAttribute("studentId", studentId);
+        System.out.println("Student ID in session: " + studentId);
+        Map<String, Object> response = new HashMap<>();
+        response.put("message", "StudentId saved to session: " + studentId);
         return ResponseEntity.ok(response);
     }
 
@@ -107,4 +125,22 @@ public class PaymentController {
             this.courseId = courseId;
         }
     }
+
+
+    
+
+    static class StudentIdRequest {
+
+        private int studentId;
+
+        public int getStudentId() {
+            return studentId;
+        }
+
+        public void setStudentId(int studentId) {
+            this.studentId = studentId;
+        }
+    }
+
+
 }

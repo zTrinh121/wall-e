@@ -1,66 +1,73 @@
-document.addEventListener('DOMContentLoaded', function() {
-    const urlDate = document.getElementById('urlDate').textContent;
-    const today = new Date().toISOString().split('T')[0]; // Get today's date in YYYY-MM-DD format
-    const attendanceTable = document.getElementById('attendanceTable');
+document.addEventListener("DOMContentLoaded", function() {
     const courseId = document.getElementById('urlCourseId').textContent;
-    renderAllStudents(courseId);
-    enableAttendanceModification();
-    // if (urlDate === today) {
-    //
-    //     enableAttendanceModification();
-    // } else {
-    //
-    //     disableAttendanceModification();
-    // }
+    const date = document.getElementById('urlDate').textContent;
+    renderAllStudents(courseId, date);
 });
 
-function enableAttendanceModification() {
-    const rows = document.querySelectorAll('#attendanceTable tbody tr');
-    rows.forEach(row => {
-        const statusCell = row.querySelector('th:last-child');
-        const currentStatus = statusCell.textContent;
-
-        const select = document.createElement('select');
-        select.innerHTML = `
-            <option value="Có mặt" ${currentStatus === 'Có mặt' ? 'selected' : ''}>Có mặt</option>
-            <option value="Vắng" ${currentStatus === 'Vắng' ? 'selected' : ''}>Vắng</option>
-        `;
-
-        select.addEventListener('change', function() {
-            // Here you can add logic to save the changed status
-            console.log('Status changed:', this.value);
-        });
-
-        statusCell.textContent = '';
-        statusCell.appendChild(select);
-    });
-}
-
-function disableAttendanceModification() {
-    console.log('View-only mode: Attendance cannot be modified');
-}
-
-function renderAllStudents(courseId) {
-    fetch(`/api/teacher/courses/${courseId}/students`)
+function renderAllStudents(courseId, date) {
+    fetch(`/api/teacher/courses/${courseId}/studentss?date=${date}`)
         .then(response => response.json())
         .then(students => {
             const attendanceTable = document.getElementById('attendanceTable');
-
             attendanceTable.querySelector('tbody').innerHTML = '';
 
             students.forEach(student => {
+                const statusClass = student.attendanceStatus === 'Có mặt' ? 'present' : 'absent';
                 const row = document.createElement('tr');
-                console.log(student)
                 row.innerHTML = `
-                    <td>${student.id}</td>
-                    <td>${student.name}</td>
-                    <td>${student.attendanceStatus}</td>
+                    <td>${student.studentId}</td>
+                    <td>${student.studentName}</td>
+                    <td class="status-cell ${statusClass}"
+                        data-student-id="${student.studentId}"
+                        data-slot-id="${student.slotId}"
+                        data-status="${student.attendanceStatus}"> 
+                        ${student.attendanceStatus === 'Có mặt' ? 'Có mặt' : 'Vắng'}
+                    </td>
                 `;
                 attendanceTable.querySelector('tbody').appendChild(row);
             });
 
+            enableAttendanceModification();
         })
         .catch(error => {
             console.error('Error fetching students:', error);
         });
+}
+
+function enableAttendanceModification() {
+    const statusCells = document.querySelectorAll('.status-cell');
+    statusCells.forEach(cell => {
+        cell.addEventListener('click', function() {
+            const studentId = cell.dataset.studentId;
+            const slotId = cell.dataset.slotId;
+            const currentStatus = cell.dataset.status === 'Có mặt';
+            const newStatus = !currentStatus;
+
+            fetch(`/api/teacher/attendance/updateStatus`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/x-www-form-urlencoded'
+                },
+                body: new URLSearchParams({
+                    studentId: studentId,
+                    slotId: slotId,
+                    status: newStatus
+                })
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error("Failed to update status");
+                    }
+                    return response.text();  // expect text response
+                })
+                .then(data => {
+                    console.log(data);
+                    cell.textContent = newStatus ? 'Có mặt' : 'Vắng';
+                    cell.dataset.status = newStatus ? 'Có mặt' : 'Vắng';
+                    cell.classList.toggle('present', newStatus);
+                    cell.classList.toggle('absent', !newStatus);
+                })
+                .catch(error => console.error('Error:', error));
+        });
+    });
 }

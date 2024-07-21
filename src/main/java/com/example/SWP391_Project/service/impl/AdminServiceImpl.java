@@ -242,18 +242,24 @@ public class AdminServiceImpl implements AdminService {
 
     @Override
     public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User admin) {
-        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
-        if (!sendTo.isPresent()) {
+        // Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
+        // if (!sendTo.isPresent()) {
+        //     throw new IllegalArgumentException("User not found when finding by username !");
+        // }
+        // User user = sendTo.get();
+
+        User sendTo = userRepository.findByUsername(invididualNotificationDto.getSendTo());
+        System.out.println("individualNotification create");
+        System.out.println(invididualNotificationDto);
+        if(sendTo == null){
             throw new IllegalArgumentException("User not found when finding by username !");
         }
-        User user = sendTo.get();
-
         IndividualNotification individualNotification = IndividualNotification.builder()
                         .title(invididualNotificationDto.getTitle())
                         .content(invididualNotificationDto.getContent())
                         .actor(admin)
                         .createdAt(new Date())
-                        .sendToUser(user)
+                        .sendToUser(sendTo)
                         .hasSeen(false)
                         .build();
                 return individualNotificationRepository.save(individualNotification);

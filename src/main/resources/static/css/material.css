@@ -1071,3 +1071,10 @@ button.active {
   border-radius: 0.5rem;
 
 }
+
+
+select{
+  width: 8.5rem;
+  height: 2rem;
+  border-radius: 0.5rem;
+}

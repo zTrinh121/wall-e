@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     };
 
     function buildTable(data) {
+        console.log(data);
         tableBody.innerHTML = ''; // Clear existing table rows
 
         data.forEach((e) => {
@@ -168,7 +169,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     }
     // End show toast
 
-    roleFilter.addEventListener('change', filterTable);
+    //roleFilter.addEventListener('change', filterTable);
 
     pageSizeSelector.addEventListener('change', () => {
         itemsPerPage = parseInt(pageSizeSelector.value);
@@ -184,6 +185,8 @@ document.addEventListener('DOMContentLoaded', async function() {
             currentPage = page;
             renderTable();
             renderPaginationControls();
+        }else{
+            alert("Your page choosen is exceed")
         }
     });
 

@@ -12,14 +12,34 @@ document.addEventListener("DOMContentLoaded", function() {
         "Toán", "Lý", "Hóa", "Sinh học", "Văn", "Sử", "Địa lý", "GDCD", "Tiếng Anh", "Tin học"
     ];
 
-    const gradeButtonsContainer = document.getElementById('grade-buttons');
-    if (gradeButtonsContainer) {
+    const gradeSelect = document.getElementById('grade-select');
+    if (gradeSelect) {
         for (let i = 1; i <= 12; i++) {
-            const button = document.createElement('button');
-            button.textContent = `Khối ${i}`;
-            button.onclick = () => selectGrade(i, button);
-            gradeButtonsContainer.appendChild(button);
+            const option = document.createElement('option');
+            option.value = i;
+            option.textContent = `Khối ${i}`;
+            gradeSelect.appendChild(option);
         }
+
+        gradeSelect.addEventListener('change', function() {
+            const selectedGrade = this.value;
+            selectGrade(selectedGrade);
+        });
+    }
+
+    const subjectSelect = document.getElementById('subject-select');
+    if (subjectSelect) {
+        subjects.forEach(subject => {
+            const option = document.createElement('option');
+            option.value = subject;
+            option.textContent = subject;
+            subjectSelect.appendChild(option);
+        });
+
+        subjectSelect.addEventListener('change', function() {
+            const selectedSubject = this.value;
+            selectSubject(selectedSubject);
+        });
     }
 
     async function getAllMaterials(apiUrl) {
@@ -36,13 +56,12 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
     function filterAndDisplayMaterials(materials) {
-        const urlParams = new URLSearchParams(window.location.search);
-        const grade = urlParams.get('grade');
-        const subject = urlParams.get('subject');
+        const grade = gradeSelect.value;
+        const subject = subjectSelect.value;
 
         const filteredMaterials = materials.filter(material => {
             const [materialSubject, materialGrade] = material.subjectName.split(" ");
-            const matchesGrade = grade ? grade === materialGrade : true;
+            const matchesGrade = grade ? grade.toString() === materialGrade : true;
             const matchesSubject = subject ? subject === materialSubject : true;
             return matchesGrade && matchesSubject;
         });
@@ -131,65 +150,49 @@ document.addEventListener("DOMContentLoaded", function() {
     }
 
 
-    function selectGrade(grade, button) {
+    function selectGrade(grade) {
         const urlParams = new URLSearchParams(window.location.search);
         urlParams.set('grade', grade);
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
-        showSubjectButtons();
-        highlightSelectedButton(button, 'grade');
+        showSubjectSelect();
         fetchMaterials();
     }
 
-    function showSubjectButtons() {
+    function showSubjectSelect() {
         const subjectChoose = document.getElementsByClassName("button-group-subject")[0];
-        const subjectButtonsContainer = document.getElementById('subject-buttons');
+        const subjectSelectContainer = document.getElementById('subject-select');
         subjectChoose.style.display = "block";
-        subjectButtonsContainer.style.display = 'flex';
-        subjectButtonsContainer.innerHTML = '';
-
-        subjects.forEach(subject => {
-            const button = document.createElement('button');
-            button.textContent = subject;
-            button.onclick = () => selectSubject(subject, button);
-            subjectButtonsContainer.appendChild(button);
-        });
+        subjectSelectContainer.style.display = 'block';
 
         const selectedSubject = url.searchParams.get('subject');
         if (selectedSubject) {
-            const subjectButtons = document.querySelectorAll('#subject-buttons button');
-            subjectButtons.forEach(button => {
-                if (button.textContent === selectedSubject) {
-                    button.classList.add('active');
-                }
-            });
+            subjectSelect.value = selectedSubject;
         }
     }
 
-    function selectSubject(subject, button) {
+    function selectSubject(subject) {
         const urlParams = new URLSearchParams(window.location.search);
         const currentSubject = urlParams.get('subject');
 
         if (currentSubject === subject) {
             urlParams.delete('subject');
-            button.classList.remove('active');
+            subjectSelect.value = "";
         } else {
             urlParams.set('subject', subject);
-            highlightSelectedButton(button, 'subject');
         }
 
         window.history.replaceState({}, '', `${window.location.pathname}?${urlParams}`);
         fetchMaterials();
     }
 
-    function highlightSelectedButton(button, type) {
-        const buttons = document.querySelectorAll(`#${type}-buttons button`);
-        buttons.forEach(btn => btn.classList.remove('active'));
-        button.classList.add('active');
+    function fetchMaterials() {
+        if (userRole === "PARENT" || userRole === "STUDENT") {
+            getAllMaterials(`/api/student/allMaterials`);
+        } else if (userRole === "TEACHER") {
+            getAllMaterials(`/api/teacher/allMaterials`);
+        }
     }
 
-    function fetchMaterials() {
-            getAllMaterials(`/api/student/materials`);
-    }
 
     if (gradeValue) {
         showSubjectButtons();
