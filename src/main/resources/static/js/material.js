@@ -47,6 +47,7 @@ document.addEventListener("DOMContentLoaded", function() {
                 throw new Error('Network response was not ok ' + response.statusText);
             }
             const materials = await response.json();
+            console.log(materials);
             filterAndDisplayMaterials(materials);
         } catch (error) {
             console.error('Error fetching materials:', error);

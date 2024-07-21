@@ -22,7 +22,7 @@ public class Material {
     @Column(name = "C07_MATERIALS_NAME", nullable = false, length = 100)
     String materialsName;
 
-    @Column(name = "T07_SUBJECT_NAME", nullable = false, length = 255)
+    @Column(name = "C07_SUBJECT_NAME", nullable = false, length = 255)
     String subjectName;
 
     @Column(name = "C07_PDF_PATH")

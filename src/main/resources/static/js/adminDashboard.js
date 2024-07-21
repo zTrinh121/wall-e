@@ -50,7 +50,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 return response.json();
             })
             .then(data => {
-                console.log(data);
                 allPrivateNotifications = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)); // Sort by date descending
                 currentPage = 1;
                 console.log(allPrivateNotifications)
@@ -70,7 +69,8 @@ document.addEventListener("DOMContentLoaded", function () {
     function displayNotifications(notifications) {
         notificationTableBody.innerHTML = "";
         var tableHeader = document.querySelector("#notificationTable thead tr");
-        var isPrivate = notifications.length && (notifications[0].sendToUser);
+        var isPrivate = notifications.length && (notifications[2].sendToUser);
+        console.log(isPrivate);
         if (isPrivate) {
             tableHeader.innerHTML = `
             <th>Tiêu đề</th>
