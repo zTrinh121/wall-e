@@ -84,6 +84,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .then((ctn) => {
             document.getElementById("centerDetailName").innerText = "Quản lý khoá học của trung tâm " + ctn.name;
+            document.getElementById("centerCode").innerText = ctn.code;
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
@@ -192,13 +193,22 @@ function displayCourseLists(centers, centerIdz) {
 
   //open-by-student-id
 function openModalWithCourseDetails(cid, centerIdz) {
-    console.log(cid);//id cua gv
-    var queryUrl = "/manager/ttkh?";
-    queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
+    // OLD VERSION CODE
+//    console.log(cid);//id cua gv
+//    var queryUrl = "/manager/ttkh?";
+//    queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
+//    console.log(queryUrl);
+//    //chuyen-huong-mode
+//    window.location.href = queryUrl;
+    //==============================================================================================
+
+//    NEW VERSION CODE
+    console.log(cid);
+    var queryUrl = "/manager/qlhv?";
+    queryUrl += "centerId=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
     console.log(queryUrl);
     //chuyen-huong-mode
     window.location.href = queryUrl;
-    //tại trang mới được chuyển qua này ngay từ lúc bắt đầu nó sẽ hiện ra thêm 1 table body ở dưới là in ra danh sách học sinh
 }
 
 var noResultDiv = document.getElementById("no-result");
@@ -211,7 +221,7 @@ document.addEventListener("DOMContentLoaded", function () {
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/qlhv?centerId=`;
+                var url = `/manager/centerTime?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -273,20 +283,20 @@ document.addEventListener("DOMContentLoaded", function () {
 // sidebarNoti
 
 //  sidebarTime
-document.addEventListener("DOMContentLoaded", function () {
-    var sidebarTime = document.getElementById("sidebarTime");
-    if (sidebarTime) {
-        sidebarTime.addEventListener("click", function(event) {
-            event.preventDefault();
-                var url = `/manager/centerTime?centerId=`;
-                url += encodeURIComponent(centerIdz);
-                console.log(url);
-                window.location.href = url;
-        });
-    } else {
-        console.error("Element with id 'sidebarTime' not found.");
-    }
-});
+//document.addEventListener("DOMContentLoaded", function () {
+//    var sidebarTime = document.getElementById("sidebarTime");
+//    if (sidebarTime) {
+//        sidebarTime.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                var url = `/manager/centerTime?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url);
+//                window.location.href = url;
+//        });
+//    } else {
+//        console.error("Element with id 'sidebarTime' not found.");
+//    }
+//});
 
 //create courses
 document.addEventListener("DOMContentLoaded", () => {

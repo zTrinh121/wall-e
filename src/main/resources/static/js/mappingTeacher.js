@@ -97,12 +97,21 @@ document.addEventListener("DOMContentLoaded", () => {
                         <td><p>${map.title}</p></td>
                         <td><p>${map.createdAt}</p></td>
                         <td><p>${map.center.code}</p></td>
-                        <td id="ttct"><a class="open-modal-btn" data-id="${map.id}" href="">Xem</a></td>
+                        <td id="ttct"><a class="open-modal-btn" data-id="${map.id}">Xem</a></td>
                         <td><button class="approve-btn" data-id="${map.id}">Đồng ý</button><button class="reject-btn" data-id="${map.id}">Từ chối</button></td>
                     </tr>
                 `;
                 tableBody.insertAdjacentHTML("beforeend", row);
             });
+            // href in order to view detail
+            document.querySelectorAll(".open-modal-btn").forEach((button) => {
+                button.addEventListener("click", function () {
+                console.log("==============================================");
+                  var applyId = this.getAttribute("data-id");
+                  console.log("Application w ID from button is: " + applyId);
+                  openModalWithMapDetails(applyId);
+                });
+              });
             // reject and approve listen
             document.querySelectorAll(".approve-btn").forEach((button) => {
                 button.addEventListener("click", function () {
@@ -156,18 +165,6 @@ document.addEventListener("DOMContentLoaded", () => {
                     });
                 });
             });
-            document.querySelectorAll(".open-modal-btn").forEach((button) => {
-                if(button){
-                    button.addEventListener("click", function () {
-                        var applyId = this.getAttribute("data-id");
-                        console.log("Application ID is:", applyId);
-                        var queryUrlz = "/manager/mapTeaDetail?";
-                        queryUrlz += "applyId=" + encodeURIComponent(applyId);
-                        console.log(queryUrlz);
-                        window.location.href = queryUrlz;
-                    });
-                }
-            });
         }
     }
 
@@ -181,13 +178,11 @@ document.addEventListener("DOMContentLoaded", () => {
             toast.classList.remove("show");
         }, 2000);
     }
-//    function openModalWithMapDetails(applyId) {
-//        console.log("Application ID is:", applyId);
-//        var queryUrlz = "/manager/mapTeaDetail?";
-//        queryUrlz += "applyId=" + encodeURIComponent(applyId);
-//        console.log(queryUrlz);
-//        window.location.href = queryUrlz;
-//    }
+    function openModalWithMapDetails(applyIdz) {
+        var queryUrlz = "/manager/mapTeaDetail?";
+        queryUrlz += "applyId=" + encodeURIComponent(applyIdz);
+        window.location.href = queryUrlz;
+    }
 
     var noResultDiv = document.getElementById("no-result");
 

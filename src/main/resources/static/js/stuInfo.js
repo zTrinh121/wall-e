@@ -5,15 +5,19 @@ document.addEventListener("DOMContentLoaded", function () {
     console.log("Current URL:", urlParams);
 
     // Extract centerId from the URL
-    var urlCenParts = urlParams.split("centerIdn=");
+    var urlCenParts = urlParams.split("centerId=");
     var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
 
     // Extract stuId from the URL
     var urlStuParts = urlParams.split("stuIdn=");
-    var stuIdz = urlStuParts.length > 1 ? urlStuParts[1].split("&")[0] : null;
+    var stuIdz = urlStuParts.length > 1 ? urlStuParts[1].split(/[?&]/)[0] : null;
+
+    var urlCouParts = urlParams.split("cidn=");
+    var couIdz = urlCouParts.length > 1 ? urlCouParts[1].split("&")[0] : null;
 
     console.log("Center ID:", centerIdz);
     console.log("Student ID:", stuIdz);
+    console.log("Course ID:", couIdz);
 //End getting
 //turnBack
     var turnBack = document.getElementById("turnBack");
@@ -21,7 +25,7 @@ document.addEventListener("DOMContentLoaded", function () {
     turnBack.addEventListener("click", function(event) {
         event.preventDefault();
             var url = `/manager/qlhv?centerId=`;
-            url += encodeURIComponent(centerIdz);
+            url += encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(couIdz);
             window.location.href = url;
     });
 //Ending

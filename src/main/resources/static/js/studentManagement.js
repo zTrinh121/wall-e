@@ -75,16 +75,25 @@ document.addEventListener("DOMContentLoaded", function () {
 });
     //FETCH
 document.addEventListener("DOMContentLoaded", () => {
-    //get-stu-list
-    const urlParams = window.location.href;
+//    -=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=--=-=-=-=-=-=-
+    // Get stu-list => note stuIdz means courseId => for short =DDDD
+    var urlParams = window.location.href;
     console.log("Current URL:", urlParams);
+
     // Extract centerId from the URL
-    const urlParts = urlParams.split("centerId=");
-    centerIdz = urlParts.length > 1 ? urlParts[1].split("&")[0] : null;
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+
+    // Extract teaId from the URL
+    var urlStuParts = urlParams.split("cidn=");
+    var stuIdz = urlStuParts.length > 1 ? urlStuParts[1].split("&")[0] : null;
+
     console.log("Center ID:", centerIdz);
+    console.log("Student ID:", stuIdz);
+
     //fetch-api-for-stu
-    function fetchStudents(centerIdz) {
-      var URL = `/manager/students/${centerIdz}`;
+    function fetchStudents(centerIdz, stuIdz) {
+      var URL = `/manager/students/course/${stuIdz}`;
       var nameURL = `/manager/center/${centerIdz}`;
       console.log(URL);
       fetch(URL)
@@ -116,7 +125,7 @@ document.addEventListener("DOMContentLoaded", () => {
             })
             .catch((err) => console.error("loi lay ten center: ", err));
     }
-    fetchStudents(centerIdz);
+    fetchStudents(centerIdz, stuIdz);
 
     //display-stu-into-list
 function displayStudentLists(centers, centerIdz) {
@@ -193,7 +202,7 @@ function displayStudentLists(centers, centerIdz) {
       button.addEventListener("click", function (event) {
           event.preventDefault();
           deleteModal.style.display = "none";
-          fetchStudents(centerIdz);
+          fetchStudents(centerIdz, stuIdz);
       });
   });
   // Close Delete Modal
@@ -240,7 +249,9 @@ function displayStudentLists(centers, centerIdz) {
 function openModalWithStudentDetails(stuId, centerIdz) {
     console.log(stuId);//id cua hv
     var queryUrl = "/manager/tthv?";
-    queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?stuIdn=" + encodeURIComponent(stuId);
+    queryUrl += "centerId=" + encodeURIComponent(centerIdz)
+             + "?stuIdn=" + encodeURIComponent(stuId)
+             + "?cidn=" +encodeURIComponent(stuIdz);
     console.log(queryUrl);
     //chuyen-huong-mode
     window.location.href = queryUrl;
@@ -252,12 +263,17 @@ var noResultDiv = document.getElementById("no-result");
 //box-info-redirect + sidebar
 //students
 document.addEventListener("DOMContentLoaded", function () {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
     var boxInfos = document.getElementById("boxInfos");
 
     if (boxInfos) {
         boxInfos.addEventListener("click", function(event) {
             event.preventDefault();
-                var url = `/manager/qlhv?centerId=`;
+                var url = `/manager/centerTime?centerId=`;
                 url += encodeURIComponent(centerIdz);
                 console.log(url);
                 window.location.href = url;
@@ -268,18 +284,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //teachers
 document.addEventListener("DOMContentLoaded", function () {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
     var boxInfot = document.getElementById("boxInfot");
 
     if (boxInfot) {
         boxInfot.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlgv?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfot' not found.");
@@ -287,18 +305,20 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //courses
 document.addEventListener("DOMContentLoaded", function () {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
     var boxInfoc = document.getElementById("boxInfoc");
 
     if (boxInfoc) {
         boxInfoc.addEventListener("click", function(event) {
             event.preventDefault();
-                // Construct the correct URL based on centerId
                 var url = `/manager/qlkh?centerId=`;
                 url += encodeURIComponent(centerIdz);
-                console.log(url); // Verify the constructed URL
-
-                // Perform any further actions with the constructed URL
-                window.location.href = url; // Example: Redirect to the constructed URL
+                console.log(url);
+                window.location.href = url;
         });
     } else {
         console.error("Element with id 'boxInfoc' not found.");
@@ -306,6 +326,11 @@ document.addEventListener("DOMContentLoaded", function () {
 });
 //money
 document.addEventListener("DOMContentLoaded", function () {
+    var urlParams = window.location.href;
+    console.log("Current URL:", urlParams);
+    var urlCenParts = urlParams.split("centerId=");
+    var centerIdz = urlCenParts.length > 1 ? urlCenParts[1].split(/[?&]/)[0] : null;
+    console.log("Center ID:", centerIdz);
     var boxInfom = document.getElementById("boxInfom");
 
     if (boxInfom) {
@@ -325,20 +350,20 @@ document.addEventListener("DOMContentLoaded", function () {
 // sidebarNoti
 
 //  sidebarTime
-document.addEventListener("DOMContentLoaded", function () {
-    var sidebarTime = document.getElementById("sidebarTime");
-    if (sidebarTime) {
-        sidebarTime.addEventListener("click", function(event) {
-            event.preventDefault();
-                var url = `/manager/centerTime?centerId=`;
-                url += encodeURIComponent(centerIdz);
-                console.log(url);
-                window.location.href = url;
-        });
-    } else {
-        console.error("Element with id 'sidebarTime' not found.");
-    }
-});
+//document.addEventListener("DOMContentLoaded", function () {
+//    var sidebarTime = document.getElementById("sidebarTime");
+//    if (sidebarTime) {
+//        sidebarTime.addEventListener("click", function(event) {
+//            event.preventDefault();
+//                var url = `/manager/centerTime?centerId=`;
+//                url += encodeURIComponent(centerIdz);
+//                console.log(url);
+//                window.location.href = url;
+//        });
+//    } else {
+//        console.error("Element with id 'sidebarTime' not found.");
+//    }
+//});
 
 
 

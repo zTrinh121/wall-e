@@ -311,12 +311,20 @@ public class ManagerServiceImpl implements ManagerService {
         }
         Course course = courseOtp.get();
 
+        // Find Teacher by id
+        Optional<User> teacherOtp = userRepository.findById(courseDto.getTeacherId());
+        if (!teacherOtp.isPresent()) {
+            throw new IllegalArgumentException("Teacher not found");
+        }
+        User teacher = teacherOtp.get();
+
         // Cập nhật các thuộc tính của Course
         course.setName(courseDto.getName());
         course.setDescription(courseDto.getDescription());
         course.setStartDate(courseDto.getStartDate());
         course.setEndDate(courseDto.getEndDate());
         course.setAmountOfStudents(courseDto.getAmountOfStudents());
+        course.setTeacher(teacher);
         course.setCourseFee(courseDto.getCourseFee());
         // have to pass teacherId roomId as well
         return courseRepository.save(course);
@@ -845,7 +853,7 @@ public class ManagerServiceImpl implements ManagerService {
     public Slot updateSlot(int slotId, SlotDto slotDto) {
         // Find the existing slot entity
         Slot existingSlot = slotRepository.findById(slotId).orElseThrow(() -> new IllegalArgumentException("Slot not found with ID: " + slotId));
-
+        System.out.println(existingSlot);
         // Tìm roomId từ roomName
         Optional<Room> roomOtp = roomRepository.findById(slotDto.getRoomId());
         if (!roomOtp.isPresent()) {
@@ -1154,7 +1162,6 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return results;
-
     }
 
 

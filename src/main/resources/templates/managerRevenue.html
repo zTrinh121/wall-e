@@ -97,13 +97,13 @@
                     <span class="icon"><i class="fas fa-home"></i></span>
                     <span class="title">Trang chủ</span></a>
             </li>
+            <!--            <li>-->
+            <!--                <a href="/manager/noti" id="sidebarNoti">-->
+            <!--                    <span class="icon"><i class="fas fa-bell"></i></span>-->
+            <!--                    <span class="title">Thông báo</span></a>-->
+            <!--            </li>-->
             <li>
-                <a href="/manager/noti">
-                    <span class="icon"><i class="fas fa-bell"></i></span>
-                    <span class="title">Thông báo</span></a>
-            </li>
-            <li>
-                <a href="/manager/mpost">
+                <a href="/manager/mpost" id="sidebarPost">
                     <span class="icon"><i class="fa-regular fa-newspaper"></i></span>
                     <span class="title">Bài đăng</span>
                 </a>
@@ -123,12 +123,12 @@
                 <ul class="box-info">
                     <li>
                         <i class="bx bxs-calendar-check">
-                            <i class="fa-solid fa-graduation-cap" aria-hidden="false"></i>
+                            <i class="fa-solid fa-calendar-day" aria-hidden="false"></i>
                         </i>
                         <span class="text">
-                  <a href="/manager/qlhv" id="boxInfos">
-                    <h3 id="nums">0</h3>
-                    <p>Học viên</p>
+                  <a href="/manager/centerTime" id="boxInfos">
+                    <h3 id="centerCode">0</h3>
+                    <p>Thời khoá biểu </p>
                   </a>
                 </span>
                     </li>
@@ -148,7 +148,7 @@
                             <i class="fa-solid fa-layer-group"></i>
                         </i>
                         <span class="text">
-                    <a href=`/manager/qlkh?centerId=${center.id}` data-id="${center.id}" id="boxInfoc">
+                    <a href="" data-id="${center.id}" id="boxInfoc">
                         <h3 id="numc">0</h3>
                         <p>Khoá học</p>
                     </a>
@@ -159,8 +159,8 @@
                             <i class="fa-solid fa-money-bill-trend-up"></i>
                         </i>
                         <span class="text">
-                    <a href=`/manager/dthu` data-id="${center.id}" id="boxInfom">
-                        <h3 id="moneyC">$420</h3>
+                    <a href="/dthu" data-id="${center.id}" id="boxInfom">
+                        <h3 id="moneyC">0</h3>
                         <p>Doanh thu</p>
                     </a>
                 </span>
@@ -196,37 +196,36 @@
 <div id="toast">
     <p></p>
 </div>
-<script>
-    const ctx = document.getElementById('myChart');
+<!--<script>-->
+<!--    const ctx = document.getElementById('myChart');-->
 
-new Chart(ctx, {
-  type: 'line',
-  data: {
-    labels: ['March', 'April', 'May', 'June', 'July', 'August'],
-    datasets: [
-      {
-        label: 'Teacher Payment',
-        data: [120, 190, 300, 250, 220, 430],
-        borderWidth: 1
-      },
-      {
-        label: 'Course Earning',
-        data: [140, 220, 150, 340, 320, 850],
-        borderWidth: 1
-      }
-    ]
-  },
-  options: {
-    scales: {
-      y: {
-        beginAtZero: true
-      }
-    }
-  }
-});
-</script>
-<script scrc="/js/managerRevenue.js" type="module"></script>
-<script src="/js/getCountIn.js"></script>
+<!--new Chart(ctx, {-->
+<!--  type: 'line',-->
+<!--  data: {-->
+<!--    labels: ['March', 'April', 'May', 'June', 'July', 'August'],-->
+<!--    datasets: [-->
+<!--      {-->
+<!--        label: 'Teacher Payment',-->
+<!--        data: [120, 190, 300, 250, 220, 430],-->
+<!--        borderWidth: 1-->
+<!--      },-->
+<!--      {-->
+<!--        label: 'Course Earning',-->
+<!--        data: [140, 220, 150, 340, 320, 850],-->
+<!--        borderWidth: 1-->
+<!--      }-->
+<!--    ]-->
+<!--  },-->
+<!--  options: {-->
+<!--    scales: {-->
+<!--      y: {-->
+<!--        beginAtZero: true-->
+<!--      }-->
+<!--    }-->
+<!--  }-->
+<!--});-->
+<!--</script>-->
+<script src="/js/managerRevenue.js"></script>
 <script src="/js/dropdown.js"></script>
 
 </body>
