@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 
+import java.sql.Time;
 import java.util.Date; // Thay vì import java.time.LocalDate và java.time.LocalTime
 
 @Data
@@ -11,9 +12,9 @@ import java.util.Date; // Thay vì import java.time.LocalDate và java.time.Loca
 public class SlotDto {
 
     Date slotDate; // Giữ nguyên kiểu dữ liệu là java.util.Date
-    Date slotStartTime; // Giữ nguyên kiểu dữ liệu là java.util.Date
-    Date slotEndTime; // Giữ nguyên kiểu dữ liệu là java.util.Date
+    Time slotStartTime; // Giữ nguyên kiểu dữ liệu là java.util.Date
+    Time slotEndTime; // Giữ nguyên kiểu dữ liệu là java.util.Date
 
-    String courseCode;
-    String roomName;
+    int courseId;
+    int roomId;
 }

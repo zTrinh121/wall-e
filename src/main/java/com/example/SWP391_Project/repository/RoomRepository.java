@@ -37,7 +37,7 @@ public interface RoomRepository extends JpaRepository<Room, Integer> {
             @Param("slotEndTime") Date slotEndTime,
             @Param("centerId") int centerId);
 
-    Optional<List<Room>> findByCenter_Id(int id);
+    Optional<List<Room>> getByCenter_Id(int id);
 
     @Query("SELECT r FROM Room r WHERE UPPER(r.name) = UPPER(:roomName) AND r.center.id = :centerId")
     Optional<Room> findByRoomNameAndCenterId(@Param("roomName") String roomName,

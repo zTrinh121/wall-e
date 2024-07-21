@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.swing.text.html.Option;
 import java.math.BigDecimal;
 import java.math.BigDecimal;
 import java.sql.PreparedStatement;
@@ -241,7 +242,7 @@ public class ManagerServiceImpl implements ManagerService {
             });
 
             // Kiểm tra xem có các Room tham chiếu đến Center này không
-            Optional<List<Room>> roomsOptional = roomRepository.findByCenter_Id(id);
+            Optional<List<Room>> roomsOptional = roomRepository.getByCenter_Id(id);
             roomsOptional.ifPresent(rooms -> {
                 if (!rooms.isEmpty()) {
                     throw new DataIntegrityViolationException("Cannot delete center with ID " + id + " because it is referenced by existing rooms.");
@@ -273,14 +274,14 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Course createCourse(CourseDto courseDto) {
         // Find Center by code
-        Optional<Center> centerOtp = centerRepository.findByCode(courseDto.getCenterCode());
+        Optional<Center> centerOtp = centerRepository.findById(courseDto.getCenterId());
         if (!centerOtp.isPresent()) {
             throw new IllegalArgumentException("Center not found");
         }
         Center center = centerOtp.get();
 
-        // Find Teacher by code
-        Optional<User> teacherOtp = userRepository.findByUsernamee(courseDto.getTeacherCode());
+        // Find Teacher by id
+        Optional<User> teacherOtp = userRepository.findById(courseDto.getTeacherId());
         if (!teacherOtp.isPresent()) {
             throw new IllegalArgumentException("Teacher not found");
         }
@@ -317,7 +318,7 @@ public class ManagerServiceImpl implements ManagerService {
         course.setEndDate(courseDto.getEndDate());
         course.setAmountOfStudents(courseDto.getAmountOfStudents());
         course.setCourseFee(courseDto.getCourseFee());
-
+        // have to pass teacherId roomId as well
         return courseRepository.save(course);
     }
 
@@ -330,7 +331,6 @@ public class ManagerServiceImpl implements ManagerService {
             if (enrollmentsOptional.isPresent() && !enrollmentsOptional.get().isEmpty()) {
                 throw new DataIntegrityViolationException("Cannot delete course with ID " + courseId + " because it is referenced by existing enrollments.");
             }
-
             courseRepository.delete(course);
             return true;
         }
@@ -770,12 +770,20 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Slot createSlot(SlotDto slotDto) {
         // Tìm roomId từ roomName
-        Room room = roomRepository.findByName(slotDto.getRoomName())
-                .orElseThrow(() -> new IllegalArgumentException("Room not found with name: " + slotDto.getRoomName()));
+        System.out.println("ser");
+        System.out.println(slotDto);
+        Optional<Room> roomOtp = roomRepository.findById(slotDto.getRoomId());
+        if (!roomOtp.isPresent()) {
+            throw new IllegalArgumentException("Room is not found");
+        }
+        Room room = roomOtp.get();
 
         // Tìm courseId từ courseCode hoặc courseName
-        Course course = courseRepository.findByCode(slotDto.getCourseCode())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with code or name: " + slotDto.getCourseCode()));
+        Optional<Course> courseOtp = courseRepository.findById(slotDto.getCourseId());
+        if (!courseOtp.isPresent()) {
+            throw new IllegalArgumentException("Course is not found");
+        }
+        Course course = courseOtp.get();
 
         // Kiểm tra xem phòng có sẵn cho khoảng thời gian này không (mình giả sử đã có hàm isRoomAvailable)
         if (!isRoomAvailable(room.getId(), slotDto.getSlotDate(), slotDto.getSlotStartTime(), slotDto.getSlotEndTime())) {
@@ -805,7 +813,6 @@ public class ManagerServiceImpl implements ManagerService {
                     .build();
             studentSlotRepository.save(studentSlot);
         }
-
         return slot;
     }
 
@@ -837,17 +844,21 @@ public class ManagerServiceImpl implements ManagerService {
     @Override
     public Slot updateSlot(int slotId, SlotDto slotDto) {
         // Find the existing slot entity
-        Slot existingSlot = slotRepository.findById(slotId)
-                .orElseThrow(() -> new IllegalArgumentException("Slot not found with ID: " + slotId));
+        Slot existingSlot = slotRepository.findById(slotId).orElseThrow(() -> new IllegalArgumentException("Slot not found with ID: " + slotId));
 
         // Tìm roomId từ roomName
-        Room room = roomRepository.findByName(slotDto.getRoomName())
-                .orElseThrow(() -> new IllegalArgumentException("Room not found with name: " + slotDto.getRoomName()));
+        Optional<Room> roomOtp = roomRepository.findById(slotDto.getRoomId());
+        if (!roomOtp.isPresent()) {
+            throw new IllegalArgumentException("Room is not found");
+        }
+        Room room = roomOtp.get();
 
         // Tìm courseId từ courseCode hoặc courseName
-        Course course = courseRepository.findByCode(slotDto.getCourseCode())
-                .orElseThrow(() -> new IllegalArgumentException("Course not found with code or name: " + slotDto.getCourseCode()));
-
+        Optional<Course> courseOtp = courseRepository.findById(slotDto.getCourseId());
+        if (!courseOtp.isPresent()) {
+            throw new IllegalArgumentException("Course is not found");
+        }
+        Course course = courseOtp.get();
         // Kiểm tra xem phòng có sẵn cho khoảng thời gian mới không (mình giả sử đã có hàm isRoomAvailable)
         if (!isRoomAvailableForUpdate(existingSlot.getId(), room.getId(), slotDto.getSlotDate(), slotDto.getSlotStartTime(), slotDto.getSlotEndTime())) {
             throw new IllegalArgumentException("Room is not available for the given time slot.");
@@ -909,33 +920,29 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Transactional
     @Override
-    public void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, String courseCode, String roomName) {
+    public void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, int courseId, int roomId) {
         // Log các tham số
-        System.out.println("Course Code: " + courseCode);
-        System.out.println("Room Name: " + roomName);
+        System.out.println("Course Code: " + courseId);
+        System.out.println("Room Name: " + roomId);
 
         // Log các tham số
-        System.out.println("Course Code: [" + courseCode + "]");
-        System.out.println("Room Name: [" + roomName + "]");
+        System.out.println("Course Code: [" + courseId + "]");
+        System.out.println("Room Name: [" + roomId + "]");
 
         // Lấy thông tin course và room
-        Optional<Course> course = courseRepository.findByCode(courseCode.trim());
+        Optional<Course> course = courseRepository.findById(courseId);
         if (course.isEmpty()) {
-            throw new IllegalArgumentException("Course not found: " + courseCode);
+            throw new IllegalArgumentException("Course not found: " + courseId);
         }
 
-        int centerId = course.get().getCenter().getId();
-        Optional<Room> room = roomRepository.findByRoomNameAndCenterId(roomName.trim(), centerId);
+        Optional<Room> room = roomRepository.findById(roomId);
         if (room.isEmpty()) {
-            throw new IllegalArgumentException("Room not found: " + roomName);
+            throw new IllegalArgumentException("Room not found: " + roomId);
         }
 
         // Log kết quả tìm kiếm
         System.out.println("Course: " + course);
         System.out.println("Room: " + room);
-
-        int courseId = course.get().getId();
-        int roomId = room.get().getId();
 
         // Chèn slots vào cơ sở dữ liệu
         batchInsertSlots(slotsDtos, course.get().getStartDate(), course.get().getEndDate(), courseId, roomId);
@@ -1278,6 +1285,11 @@ public class ManagerServiceImpl implements ManagerService {
         }
 
         return results;
+    }
+    @Override
+    public List<Room> getRoomsByCenterId(int centerId){
+        Optional<List<Room>> rooms = roomRepository.getByCenter_Id(centerId);
+        return rooms.orElse(Collections.emptyList());
     }
 
 }

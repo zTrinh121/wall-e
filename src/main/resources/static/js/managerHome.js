@@ -72,6 +72,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetchCenters();
 
+    //STT incremental
+      function sttIncreasing(index){
+        if(index === 0){
+          index = 1;
+          return index;
+        } else{
+          return ++index;
+        }
+      };
+
     function displayCenterLists(centers) {
         var tableBody = document.getElementById("tableBody");
         if (!tableBody) {
@@ -83,9 +93,11 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
         } else {
             noResultDiv.style.display = "none";
-            centers.forEach((center) => {
+            centers.forEach((center, index) => {
+            index = sttIncreasing(index);
                 var row = `
                     <tr class="view-details" data-id="${center.id}">
+                        <td><p>${index}</p></td>
                         <td><p>${center.name}</p></td>
                         <td><p>${center.createdAt}</p></td>
                         <td><p>${center.code}</p></td>
@@ -189,7 +201,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 phone: formData.get("addCenterPhone"),
                 email: formData.get("addCenterEmail"),
                 regulation: formData.get("addCenterRule"),
-                imagePath: formData.get("addCenterImg")
+//                imagePath: "formData.get("addCenterImg")"
+                imagePath: "36.png"
             };
 //            console.log(centerData.imagePath.name);
             console.log(centerData);

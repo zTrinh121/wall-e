@@ -228,7 +228,7 @@ public interface ManagerService {
     void deleteSlot(int slotId);
 
     // tạo slots cho toàn bộ khóa học
-    void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, String courseCode, String roomName);
+    void insertSlotsAndStudentSlots(List<SlotsDto> slotsDtos, int courseId, int roomId);
 
     // -----------------------------------------------------
 
@@ -241,4 +241,5 @@ public interface ManagerService {
     Map<String, Object> getMonthlyProfit(int month, int year, Long centerId);
 
     List<Map<String, Object>> getTotalTeacherSalaryForYear(int year, Long centerId);
+    List<Room> getRoomsByCenterId(int centerId);
 }

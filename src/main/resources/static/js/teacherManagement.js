@@ -174,6 +174,15 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     fetchTeachers(centerIdz);
 
+    //STT incremental
+      function sttIncreasing(index){
+        if(index === 0){
+          index = 1;
+          return index;
+        } else{
+          return ++index;
+        }
+      };
     //display-stu-into-list
 function displayTeacherLists(centers, centerIdz) {
     var tableBody = document.getElementById("tableBody");
@@ -192,14 +201,16 @@ function displayTeacherLists(centers, centerIdz) {
       noResultDiv.style.display = "block";
     } else {
       noResultDiv.style.display = "none";
-      centers.forEach((center) => {
+      centers.forEach((center, index) => {
+        index = sttIncreasing(index);
         var row = `
           <tr class="view-details" data-id="${center.id}">
+            <td><p>${index}</p></td>
             <td><p>${center.name}</p></td>
             <td><p>${center.phone}</p></td>
             <td><p>${center.email}</p></td>
             <td><p>${center.code}</p></td>
-            <!-- <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td> -->
+            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
@@ -211,15 +222,15 @@ function displayTeacherLists(centers, centerIdz) {
             button.addEventListener("click", function (event) {
                 event.preventDefault();
                 var row = event.target.closest("tr");
-                var centerName = row.querySelector("td:nth-child(1) p").textContent;
-                var centerId = row.getAttribute("data-id");
-                centerNameElement.textContent = centerName;
+                var teaName = row.querySelector("td:nth-child(2) p").textContent;
+                var teaId = row.getAttribute("data-id");
+                teaNameElement.textContent = teaName;
                 deleteModal.style.display = "block";
                 deleteTarget = {
                     row: row,
-                    id: centerId
+                    id: teaId
                 };
-                console.log("Delete button clicked for center:", centerName, "with ID:", centerId);
+                console.log("Delete button clicked for tea:", teaName, "with ID:", teaId);
             });
         });
 
@@ -234,30 +245,33 @@ function displayTeacherLists(centers, centerIdz) {
     }
   }
   // Confirm delete action
+  // sau khi đc appr thì có số gv ko xoá đc -> lỗi db ???
       var confirmDeleteButton = document.getElementById("confirmDelete");
       var cancelDeleteButton = document.getElementById("cancelDeleteButton");
-      var centerNameElement = document.getElementById("centerName");
+      var teaNameElement = document.getElementById("teaName");
       var deleteTarget = null;
 
       confirmDeleteButton.addEventListener("click", () => {
-          if (deleteTarget, centerIdz) {
-            console.log("Confirm delete for center ID:", deleteTarget.id);
-            fetch(`/manager/teacher/delete/${deleteTarget.id}/${centerIdz}`, {
+          if (deleteTarget) {
+//          console.log("Confirm delete for teacher ID:", deleteTarget.id);
+            var idTea = deleteTarget.id;
+            console.log(idTea);
+            fetch(`/manager/teacher/delete/${idTea}/${centerIdz}`, {
               method: "DELETE"
-          })
-          .then(response => {
-            if (response.ok) {
-              deleteTarget.row.remove();
-              deleteModal.style.display = "none";
-//                      showToast("Xóa thành công giáo viên");
-                console.log(deleteTarget);
-              console.log("Teacher deleted successfully");
-            } else {
-              console.error("Error deleting center:", response.statusText);
-            }
-          })
-          .catch(error => console.error("Error deleting center:", error));
-      }
+            })
+            .then(response => {
+                if (response.ok) {
+                  deleteTarget.row.remove();
+                  deleteModal.style.display = "none";
+//                showToast("Xóa thành công giáo viên");
+                  console.log(deleteTarget);
+                  console.log("Teacher deleted successfully");
+                } else {
+                  console.error("Error deleting teacher:", response.statusText);
+                }
+              })
+              .catch(error => console.error("Error deleting center:", error));
+          }
       });
 
   //open-by-student-id

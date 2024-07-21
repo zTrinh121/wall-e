@@ -6,6 +6,9 @@
     <title>Quản lý khoá học</title>
     <link rel="stylesheet" href="/css/courseManagement.css" />
     <link rel="stylesheet" href="/css/managerHome.css"/>
+<!--    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">-->
+<!--    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" integrity="sha512-L+G4J1BtfI4pHsMxdnsxgWsPdEnYtZt1V7vhPjGmvqhvBLpUu8p0v5Hh6j14grPcAmq9B4P+Jif4EPFWmyH7Aw==" crossorigin="anonymous" referrerpolicy="no-referrer" />-->
+<!--    <link href="https://cdnjs.cloudflare.com/ajax/libs/tempusdominus-bootstrap-4/5.39.0/css/tempusdominus-bootstrap-4.min.css" rel="stylesheet">-->
     <script src="https://kit.fontawesome.com/b99e675b6e.js"></script>
     <script src="https://code.jquery.com/jquery-3.4.1.min.js"></script>
     <script defer src="https://use.fontawesome.com/releases/v6.5.2/js/all.js"></script>
@@ -192,6 +195,9 @@
                             <thead>
                             <tr>
                                 <th>
+                                    <p>STT</p>
+                                </th>
+                                <th>
                                     <p>Tên khoá</p>
                                 </th>
                                 <th>
@@ -203,9 +209,9 @@
                                 <th>
                                     <p>Giáo viên</p>
                                 </th>
-<!--                                <th>-->
-<!--                                    <p>Hành động</p>-->
-<!--                                </th>-->
+                                <th>
+                                    <p>Hành động</p>
+                                </th>
                                 <th>
                                     <p>Chi tiết</p>
                                 </th>
@@ -232,7 +238,7 @@
                                 <td></td>
                                 <td></td>
                                 <td>
-                                    <p><button id="addCentreBtn" class="add-btn">Thêm </button></p>
+                                    <p><button id="addCourseBtn" class="add-btn">Thêm </button></p>
                                 </td>
                             </tr>
                             </tbody>
@@ -263,38 +269,66 @@
         <button id="cancelDeleteButton">Huỷ</button>
     </div>
 </div>
-
-<!-- Add Center Modal -->
-<div id="addCentreModal" class="modal">
+<!-- Adding a Course-->
+<div id="addCourseModal" class="modal">
     <div class="add-modal-content">
         <span id="cancelAdd" class="close">&times;</span>
-        <h4 style="text-align:center">Thêm Trung Tâm</h4>
-        <p>Nhập thông tin của trung tâm mới:</p>
-        <!-- Add Centre Form NOT YET -->
-        <form id="addCentreForm">
-            <div>
-                <label for="addCenterName">Tên trung tâm:</label>
-                <input type="text" id="addCenterName" name="addCenterName" required>
+        <h4 style="text-align:center">Thêm Khoá Học</h4>
+        <p>Nhập thông tin của khoá học mới:</p>
+        <!-- Add Course Form -->
+        <form id="addCourseForm">
+<!--            COURSE NAME-->
+            <div class="form-group">
+                <label for="name">Tên khoá học:</label>
+                <input type="text" id="name" name="name" required>
             </div>
-            <div>
-                <label for="addCenterAddress">Địa chỉ trung tâm:</label>
-                <input type="text" id="addCenterAddress" name="addCenterAddress" required>
+<!--            COURSE CODE-->
+            <div class="form-group">
+                <label for="code">Mã khoá học:</label>
+                <input type="text" id="code" name="code" required>
             </div>
-            <div>
-                <label for="addCenterDesc">Mô tả:</label>
-                <input type="text" id="addCenterDesc" name="addCenterDesc" required>
+<!--            DESC-->
+            <div class="form-group">
+                <label for="description">Mô tả khoá học:</label>
+                <textarea id="description" name="description" rows="4" required></textarea>
             </div>
-            <div>
-                <!--                                nên gửi/ đưa vào đâu-->
-                <label for="addFileInput">File đính kèm:</label>
-                <input type="file" id="addFileInput" accept=".pdf,.doc,.docx,.txt">
-                <!-- <button onclick="chooseFile()">Chọn file</button> -->
+<!--            START-->
+            <div class="form-group">
+                <label for="startDate">Ngày bắt đầu:</label>
+                <input type="date" id="startDate" name="startDate" required>
             </div>
-            <button type="submit" id="confirmAdd">Xác nhận</button>
+<!--            END-->
+            <div class="form-group">
+                <label for="endDate">Ngày kết thúc:</label>
+                <input type="date" id="endDate" name="endDate" required>
+            </div>
+<!--            QUANTITY-->
+            <div class="form-group">
+                <label for="amountOfStudents">Số lượng học viên khoá:</label>
+                <input type="number" id="amountOfStudents" name="amountOfStudents" required>
+            </div>
+<!--            FEE-->
+            <div class="form-group">
+                <label for="courseFee">Học phí:</label>
+                <input type="number" id="courseFee" name="courseFee" required>
+            </div>
+<!--            SUBJECT -->
+            <div class="form-group">
+                <label for="subjectName">Tên môn học:</label>
+                <input type="text" id="subjectName" name="subjectName" required>
+            </div>
+<!--            TEACHERS-->
+            <div class="form-group">
+                <label for="teacherSelect">Giáo Viên:</label>
+                <select id="teacherSelect" name="teacherSelect" required>
+                    <option value="" class="opt">Chọn giáo viên...</option>
+                </select>
+            </div>
+            <button type="submit">Thêm Khoá Học</button>
         </form>
-
     </div>
 </div>
+
 <script src="/js/getCountIn.js"></script>
 <script src="/js/dropdown.js"></script>
 

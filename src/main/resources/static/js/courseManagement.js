@@ -4,38 +4,16 @@ document.addEventListener("DOMContentLoaded", () => {
     closeButton.forEach((button) => {
         button.addEventListener("click", function (event) {
             event.preventDefault();
-            addModal.style.display = "none";
             deleteModal.style.display = "none";
         });
     });
 
     // Modals
-    var addModal = document.getElementById("myModal");
-    var addCentreModal = document.getElementById("addCentreModal");
     var deleteModal = document.getElementById("deleteModal");
 
     // Open Add Centre Modal
-    var addCentreBtn = document.getElementById("addCentreBtn");
-    if (addCentreBtn) {
-        addCentreBtn.addEventListener("click", () => {
-            console.log("Opening Add Centre Modal");
-            addCentreModal.style.display = "block";
-        });
-    }
 
     // Close Add Centre Modal
-    var cancelAddButton = document.getElementById("cancelAdd");
-    if (cancelAddButton) {
-        cancelAddButton.addEventListener("click", () => {
-            addCentreModal.style.display = "none";
-        });
-    }
-
-    window.addEventListener("click", function (e) {
-        if (e.target == addCentreModal) {
-            addCentreModal.style.display = "none";
-        }
-    });
 
     // Close Delete Modal
     var cancelDeleteButton = document.getElementById("cancelDeleteButton");
@@ -52,69 +30,19 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     // Helper function to show toast message - not-working
-    function showToast(message) {
-        var toast = document.getElementById("toast");
-        toast.querySelector("p").textContent = message;
-        toast.classList.add("show");
-        setTimeout(function () {
-            toast.classList.remove("show");
-        }, 2000);
-    }
+//    function showToast(message) {
+//        var toast = document.getElementById("toast");
+//        toast.querySelector("p").textContent = message;
+//        toast.classList.add("show");
+//        setTimeout(function () {
+//            toast.classList.remove("show");
+//        }, 2000);
+//    }
 
     // Add Centre-NOTYET-test w admin - not fix
-    var addCentreForm = document.getElementById("addCentreForm");
-    if (addCentreForm) {
-        addCentreForm.addEventListener("submit", function (event) {
-            event.preventDefault();
-            var formData = new FormData(addCentreForm);
-
-            var centerData = {
-                name: formData.get("addCenterName"),
-                address: formData.get("addCenterAddress"),
-                description: formData.get("addCenterDesc")
-                // Handle file upload if necessary
-            };
-
-            fetch("/manager/center/create", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(centerData)
-            })
-            .then(response => response.json())
-            .then(data => {
-                console.log("Center added:", data);
-                addCentreModal.style.display = "none";
-                fetchCourses();
-                showToast("Thêm khoá học thành công");
-            })
-            .catch(error => console.error("Error adding center:", error));
-        });
-    }
 
     var noResultDiv = document.getElementById("no-result");
 
-    //date
-//    document.getElementById("currentDate").innerText = getCurrentDate();
-//    function getCurrentDate() {
-//            var currentDate = new Date();
-//            var dayOfWeek = [
-//              "Chủ Nhật",
-//              "Thứ Hai",
-//              "Thứ Ba",
-//              "Thứ Tư",
-//              "Thứ Năm",
-//              "Thứ Sáu",
-//              "Thứ Bảy",
-//            ];
-//            var day = String(currentDate.getDate()).padStart(2, "0");
-//            var month = String(currentDate.getMonth() + 1).padStart(2, "0");
-//            var year = currentDate.getFullYear();
-//            var dayIndex = currentDate.getDay();
-//            var dayName = dayOfWeek[dayIndex];
-//            return dayName + ", " + day + "-" + month + "-" + year;
-//          }
 });
 //FETCH
 document.addEventListener("DOMContentLoaded", () => {
@@ -161,7 +89,18 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     fetchCourses(centerIdz);
 
-    //display-stu-into-list
+
+    //STT incremental
+      function sttIncreasing(index){
+        if(index === 0){
+          index = 1;
+          return index;
+        } else{
+          return ++index;
+        }
+      };
+
+    //display-cou-into-list
 function displayCourseLists(centers, centerIdz) {
     var tableBody = document.getElementById("tableBody");
     if (!tableBody) {
@@ -179,14 +118,16 @@ function displayCourseLists(centers, centerIdz) {
       noResultDiv.style.display = "block";
     } else {
       noResultDiv.style.display = "none";
-      centers.forEach((center) => {
+      centers.forEach((center, index) => {
+        index = sttIncreasing(index);
         var row = `
           <tr class="view-details" data-id="${center.id}">
+            <td><p>${index}</p></td>
             <td><p>${center.name}</p></td>
             <td><p>${center.startDate}</p></td>
             <td><p>${center.courseFee}</p></td>
             <td><p>${center.teacher.name}</p></td>
-            <!-- <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td> -->
+            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
@@ -198,7 +139,7 @@ function displayCourseLists(centers, centerIdz) {
             button.addEventListener("click", function (event) {
                 event.preventDefault();
                 var row = event.target.closest("tr");
-                var centerName = row.querySelector("td:nth-child(1) p").textContent;
+                var centerName = row.querySelector("td:nth-child(2) p").textContent;
                 var centerId = row.getAttribute("data-id");
                 centerNameElement.textContent = centerName;
                 deleteModal.style.display = "block";
@@ -214,7 +155,7 @@ function displayCourseLists(centers, centerIdz) {
       document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
           var cid = this.getAttribute("data-id");
-          console.log("teacher id from button is: " + cid);
+          console.log("Course id from button is: " + cid);
           openModalWithCourseDetails(cid, centerIdz);
         });
       });
@@ -227,9 +168,11 @@ function displayCourseLists(centers, centerIdz) {
       var deleteTarget = null;
 
       confirmDeleteButton.addEventListener("click", () => {
-          if (deleteTarget, centerIdz) {
-            console.log("Confirm delete for center ID:", deleteTarget.id);
-            fetch(`/manager/teacher/delete/${deleteTarget.id}/${centerIdz}`, {
+          if (deleteTarget) {
+//            console.log("Confirm delete for center ID:", deleteTarget.id);
+            var idCourse = deleteTarget.id;
+            console.log(idCourse);
+            fetch(`/manager/course/delete/${idCourse}`, {
               method: "DELETE"
           })
           .then(response => {
@@ -238,24 +181,24 @@ function displayCourseLists(centers, centerIdz) {
               deleteModal.style.display = "none";
 //                      showToast("Xóa thành công giáo viên");
                 console.log(deleteTarget);
-              console.log("Teacher deleted successfully");
+              console.log("Course deleted successfully");
             } else {
-              console.error("Error deleting center:", response.statusText);
+              console.error("Error deleting course:", response.statusText);
             }
           })
-          .catch(error => console.error("Error deleting center:", error));
+          .catch(error => console.error("Error deleting course:", error));
       }
       });
 
   //open-by-student-id
 function openModalWithCourseDetails(cid, centerIdz) {
     console.log(cid);//id cua gv
-        var queryUrl = "/manager/ttkh?";
-        queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
-        console.log(queryUrl);
-        //chuyen-huong-mode
-        window.location.href = queryUrl;
-        //tại trang mới được chuyển qua này ngay từ lúc bắt đầu nó sẽ hiện ra thêm 1 table body ở dưới là in ra danh sách học sinh
+    var queryUrl = "/manager/ttkh?";
+    queryUrl += "centerIdn=" + encodeURIComponent(centerIdz) + "?cidn=" + encodeURIComponent(cid);
+    console.log(queryUrl);
+    //chuyen-huong-mode
+    window.location.href = queryUrl;
+    //tại trang mới được chuyển qua này ngay từ lúc bắt đầu nó sẽ hiện ra thêm 1 table body ở dưới là in ra danh sách học sinh
 }
 
 var noResultDiv = document.getElementById("no-result");
@@ -343,4 +286,128 @@ document.addEventListener("DOMContentLoaded", function () {
     } else {
         console.error("Element with id 'sidebarTime' not found.");
     }
+});
+
+//create courses
+document.addEventListener("DOMContentLoaded", () => {
+    // Close modal
+        var closeButton = document.querySelectorAll(".close");
+        closeButton.forEach((button) => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                var modal = button.closest(".modal");
+                modal.style.display = "none";
+            });
+        });
+
+        var addCourseModal = document.getElementById("addCourseModal");
+        var addCourseBtn = document.getElementById("addCourseBtn");
+
+        // Hide modal
+        if (addCourseModal) {
+            addCourseModal.style.display = "none";
+        }
+
+        // Open modal
+        if (addCourseBtn) {
+            addCourseBtn.addEventListener("click", () => {
+                console.log("Opening Add Course Modal");
+                addCourseModal.style.display = "block";
+            });
+        }
+        // Close/Cancel
+        var cancelAddButton = document.getElementById("cancelAdd");
+        if (cancelAddButton) {
+            cancelAddButton.addEventListener("click", () => {
+                addCourseModal.style.display = "none";
+            });
+        }
+        window.addEventListener("click", function (event) {
+            if (event.target === addCourseModal) {
+                addCourseModal.style.display = "none";
+            }
+        });
+    //Main adding
+    var addCourseForm = document.getElementById("addCourseForm");
+    if (addCourseForm) {
+        addCourseForm.addEventListener("submit", function (event) {
+            event.preventDefault();
+            var formData = new FormData(addCourseForm);
+
+            var courseData = {
+                name: formData.get("name"),
+                code: formData.get("code"),
+                description: formData.get("description"),
+                startDate: formData.get("startDate"),
+                endDate: formData.get("endDate"),
+                amountOfStudents: parseInt(formData.get("amountOfStudents")),
+                courseFee: parseFloat(formData.get("courseFee")),
+                subjectName: formData.get("subjectName"),
+                centerId: centerIdz,
+                teacherId: selectedTeacherId
+            };
+            console.log(courseData);
+            fetch("/manager/course/create", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify(courseData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then(data => {
+                console.log("Course added:", data);
+                addCourseModal.style.display = "none";
+//                showToast("Course added successfully");
+            })
+            .catch(error => console.error("Error adding course:", error));
+        });
+    }
+    //get teacher id by option selector
+
+
+    //Teachers Selector
+    var selectedTeacherId;
+    function displayTeachersInSelector(teachers) {
+        var selectElement = document.getElementById("teacherSelect");
+        selectElement.innerHTML = '<option value="">Chọn giáo viên...</option>';
+
+        teachers.forEach((teacher) => {
+            var option = document.createElement("option");
+            option.value = teacher.id;
+            option.textContent = teacher.name;
+            selectElement.appendChild(option);
+        });
+        selectElement.addEventListener("change", function () {
+            selectedTeacherId = selectElement.value;
+            console.log(selectedTeacherId);
+        });
+    }
+    //api get teachers
+    function fetchTeachers(centerIdz) {
+        var URLtea = `/manager/getTeachers/${centerIdz}`;
+        fetch(URLtea)
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error("Network response was not ok");
+                }
+                return response.json();
+            })
+            .then((data) => {
+                console.log("Data received from API:", data);
+                if (!Array.isArray(data)) {
+                    data = [data];
+                }
+                displayTeachersInSelector(data);
+            })
+            .catch((error) => console.error("Error fetching centers:", error));
+    }
+
+    fetchTeachers(centerIdz);
+
 });
