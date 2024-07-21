@@ -1018,6 +1018,13 @@ public class UserController {
         return "searchDetail";
     }
 
+    @GetMapping("/viewfeedback")
+    public String viewFeedbacksearchDetail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "viewFeedback";
+    }
+
 
 
 

@@ -258,6 +258,7 @@ public ResponseEntity<List<Map<String, Object>>> getResultsByCourseIdAndStudentI
         }
 
         List<Feedback> feedbacks = teacherService.fetchStudentFeedback(teacherId);
+        
         if (feedbacks.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.NO_CONTENT);
         }

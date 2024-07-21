@@ -38,35 +38,37 @@
     </div>
 
     <div id="requestModal" class="modal">
-
         <form action="" id="contact-form">
             <span class="close" id="closeRequestModal">&times;</span>
-<!--            <div class="input mb">-->
-<!--                <div class="hidden"><label for="name" class="required">Name</label></div>-->
-<!--                <div class="icon-container"><input type="text" name="name" id="name" placeholder="Name" class="icon-content" required><span class="fas fa-user icon"></span></div>-->
-<!--            </div>-->
-
+            <div>Gửi đơn ứng tuyển</div>
             <div class="input mb">
-                <div class="hidden"><label for="email" class="required">Email</label></div>
-                <div class="icon-container"><input type="email" name="email" id="email" placeholder="Email" class="icon-content" required><span class="fas fa-envelope icon"></span></div>
+                <div class="hidden"><label class="required">Title</label></div>
+                <div class="icon-container"><input type="text" name="title" id="title" placeholder="Tiêu đề" class="icon-content" required><span class="fas fa-envelope icon"></span></div>
             </div>
-
-            <div class="input mb">
-                <div class="hidden"><label for="subject" class="required">Tiêu đề</label></div>
-                <div class="icon-container"><input type="text" name="subject" id="subject" placeholder="Subject" class="icon-content" required><span class="fas fa-pencil-alt icon"></span></div>
-            </div>
-
+    
             <div class="input mb">
                 <div class="hidden"><label for="message" class="required">Nội dung</label></div>
-                <div class="icon-container"><textarea name="message" id="message" cols="10" rows="5" placeholder="Message..." class="icon-content" required></textarea><span class="fas fa-quote-left icon"></span></div>
+                <div class="icon-container"><textarea name="content" id="content" cols="10" rows="5" placeholder="Nội dung..." class="icon-content" required></textarea><span class="fas fa-quote-left icon"></span></div>
             </div>
-
+    
+            <div class="input mb">
+                <div class="hidden"><label for="center" class="required">Trung tâm</label></div>
+                <div class="icon-container">
+                    <select name="centerId" id="centerSelect" class="icon-content" required>
+                        <option value="">Chọn trung tâm</option>
+                        <!-- Options will be added here dynamically -->
+                    </select>
+                    <span class="fas fa-building icon"></span>
+                </div>
+            </div>
+    
             <div class="input mb">
                 <button type="submit" class="btn text-center">Gửi yêu cầu</button>
             </div>
         </form>
     </div>
-
+    
+    <div id="toastContainer" class="toast-container"></div>
 </div>
 </body>
 </html>
