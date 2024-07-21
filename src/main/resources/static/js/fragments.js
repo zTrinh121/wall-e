@@ -261,6 +261,11 @@ document.addEventListener("DOMContentLoaded", async function () {
                 time.classList.add('notification-time');
                 time.textContent = timeAgo(notification.createdAt);
 
+
+                // const time = document.createElement('span');
+                // time.classList.add('notification-time');
+                // time.textContent = timeAgo(notification.createdAt);
+
                 textContainer.appendChild(text);
                 textContainer.appendChild(time);
 
@@ -349,14 +354,29 @@ document.addEventListener("DOMContentLoaded", async function () {
         const minutes = timeParts[1];
         const seconds = timeParts[2];
 
-        return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}`;
+        return new Date(Date.UTC(year, month - 1, day, hours - 7, minutes, seconds));
+
     }
 
 
     function timeAgo(date) {
         const parsedDate = parseDateString(date);
         const now = new Date();
-        const diff = now - new Date(parsedDate);
+        const vietnamTimeNow = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+        const vietnamTimeDate = new Date(parsedDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+
+        // Cộng thêm 7 tiếng
+        vietnamTimeDate.setHours(vietnamTimeDate.getHours() + 7);
+
+        // In ra giờ hiện tại và ngày truyền vào cộng thêm 7 tiếng
+        const currentTimeString = vietnamTimeNow.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
+        const dateTimeString = vietnamTimeDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
+
+        console.log("Current time in Vietnam: ", currentTimeString);
+        console.log("Input date in Vietnam (plus 7 hours): ", dateTimeString);
+
+        // Tính toán khoảng cách thời gian giữa giờ hiện tại và ngày cộng thêm 7 giờ
+        const diff = vietnamTimeNow - vietnamTimeDate;
         const seconds = Math.floor(diff / 1000);
         const minutes = Math.floor(seconds / 60);
         const hours = Math.floor(minutes / 60);
@@ -365,14 +385,40 @@ document.addEventListener("DOMContentLoaded", async function () {
         const months = Math.floor(days / 30);
         const years = Math.floor(days / 365);
 
+        let timeDifference;
+        if (years > 0) timeDifference = `${years} year${years > 1 ? 's' : ''}`;
+        else if (months > 0) timeDifference = `${months} month${months > 1 ? 's' : ''}`;
+        else if (weeks > 0) timeDifference = `${weeks} week${weeks > 1 ? 's' : ''}`;
+        else if (days > 0) timeDifference = `${days} day${days > 1 ? 's' : ''}`;
+        else if (hours > 0) timeDifference = `${hours} hour${hours > 1 ? 's' : ''}`;
+        else if (minutes > 0) timeDifference = `${minutes} minute${minutes > 1 ? 's' : ''}`;
+        else timeDifference = `${seconds} second${seconds > 1 ? 's' : ''}`;
+
+        console.log(`Time difference between now and the input date (plus 7 hours): ${timeDifference}`);
+
+        // Trả về chuỗi thời gian theo khoảng cách
+        const diffInSeconds = Math.floor((now - parsedDate) / 1000);
+        const diffMinutes = Math.floor(diffInSeconds / 60);
+        const diffHours = Math.floor(diffMinutes / 60);
+        const diffDays = Math.floor(diffHours / 24);
+        const diffWeeks = Math.floor(diffDays / 7);
+        const diffMonths = Math.floor(diffDays / 30);
+        const diffYears = Math.floor(diffDays / 365);
+
         if (years > 0) return `${years} year${years > 1 ? 's' : ''} ago`;
         if (months > 0) return `${months} month${months > 1 ? 's' : ''} ago`;
         if (weeks > 0) return `${weeks} week${weeks > 1 ? 's' : ''} ago`;
         if (days > 0) return `${days} day${days > 1 ? 's' : ''} ago`;
         if (hours > 0) return `${hours} hour${hours > 1 ? 's' : ''} ago`;
         if (minutes > 0) return `${minutes} minute${minutes > 1 ? 's' : ''} ago`;
-        return `${seconds} second${seconds > 1 ? 's' : ''} ago`;
+        return `${timeDifference} second${timeDifference > 1 ? 's' : ''} ago`;
     }
+
+
+
+
+
+
 
 
     window.addEventListener('click', (event) => {
@@ -444,6 +490,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function writeMessage() {
         const today = new Date();
+        const vietnamTime = new Date(today.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+
         let message = `
             <div class="chatbox-message-item sent">
                 <span class="chatbox-message-item-text">
@@ -463,6 +511,8 @@ document.addEventListener("DOMContentLoaded", async function () {
 
     function autoReply() {
         const today = new Date();
+        const vietnamTime = new Date(today.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' }));
+
         let message = `
             <div class="chatbox-message-item received">
                 <span class="chatbox-message-item-text">

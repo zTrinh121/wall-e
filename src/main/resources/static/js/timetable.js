@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     var closeRequestModal = document.getElementById('closeRequestModal');   
     var studentName = localStorage.getItem('studentName');
     var studentId = localStorage.getItem('studentId');
+    fetchCenters();
 
     function formatTimeRange(date) {
         let hours = date.getHours();
@@ -19,8 +20,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderEventContent(eventInfo) {
-        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === false ? 'red' : 'green';
 
         if (userRole === 'TEACHER') {
             return {
@@ -38,6 +39,60 @@ document.addEventListener('DOMContentLoaded', function() {
                 `
             };
         }
+    }
+
+    const form = document.getElementById('contact-form');
+    form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent default form submission
+        
+        const formData = new FormData(form);
+        const data = {
+            title: formData.get('title'),
+            content: formData.get('content'),
+            centerId: formData.get('centerId')
+        };
+        
+        // Send data to server
+        fetch('api/teacher/create-applyCenter-form-to-manager', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => {
+            if (!response.ok) {
+                throw new Error('Failed to submit application');
+            }
+            return response.json();
+        })
+        .then(result => {
+            console.log('Success:', result);
+            requestModal.style.display = "none";
+            showToast(`<div class="success-toast"><i class="fas fa-check"></i> Gửi đơn thành công</div>`);
+            // Handle success (e.g., show a message or close the modal)
+        })
+        .catch(error => console.error('Error:', error));
+    });
+
+    function fetchCenters() {
+        fetch('/centers')
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch centers');
+                }
+                return response.json();
+            })
+            .then(data => {
+                const centerSelect = document.getElementById('centerSelect');
+                data.forEach(center => {
+                    const option = document.createElement('option');
+                    option.value = center.id;
+                    option.textContent = center.name;
+                    centerSelect.appendChild(option);
+                });
+            })
+            .catch(error => console.error('Error fetching centers:', error));
     }
 
     async function displayStudentSelection(students) {
@@ -88,18 +143,27 @@ document.addEventListener('DOMContentLoaded', function() {
             
         }
     }
+
+    function showToast(message) {
+        const toastContainer = document.getElementById("toastContainer");
+        toastContainer.innerHTML = `${message}`;
+        toastContainer.classList.add("show");
+        setTimeout(() => {
+            toastContainer.classList.remove("show");
+        }, 3000);
+    }
     
 
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
-        haeaderToolbar: {
+        headerToolbar: {
             start: 'prev,next',
             center: 'title',
             end: userRole === 'TEACHER' ? 'RequestChangingTimetable' : ''
         },
         customButtons: {
             RequestChangingTimetable: {
-                text: "Gửi yêu cầu",
+                text: "Gửi đơn ứng tuyển",
                 click: function() {
                     document.getElementById('requestModal').style.display = 'block';
                 }
@@ -119,8 +183,9 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
 
             const event = info.event;
-            const attendanceText = event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-            const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+            console.log(event);
+            const attendanceText = event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+            const attendanceColor = event.extendedProps.attendanceStatus === false ? 'red' : 'green';
             console.log(info.event.start)
             const startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             console.log(startTime)
@@ -131,14 +196,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 <p>Phòng: ${event.extendedProps.location}</p>
                 <p>Giáo viên: ${event.extendedProps.teacherName}</p>
                 <p>Từ: ${startTime} đến ${endTime}</p>
-                
+                <p>Ngày: ${event.extendedProps.date}</p>
                 <p style="color: ${attendanceColor};">${attendanceText}</p>
             `;
             }else{
                 eventDetailContent.innerHTML = `
                 <p>${event.title}</p>
                 <p>Phòng: ${event.extendedProps.location}</p>
-                <p>Thời gian: ${startTime} - ${endTime}</p>
+                <p>Thời gian: ${startTime} - ${endTime} </p>
+                <p>Ngày: ${event.extendedProps.date}</p>
                 <a href="course-details?userId=${userId}&courseId=${event.extendedProps.courseId}">Xem khóa học</a> 
                 | <a href="attendance?courseId=${event.extendedProps.courseId}&date=${event.extendedProps.date}">Điểm danh</a>
             `;
@@ -187,11 +253,12 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
+                console.log(data);
                 var events;
                 if (userRole !== "TEACHER") {
                     events = data.map(item => {
                         const attendanceColor = item.attendanceStatus === 0 ? 'red' : 'green';
-
+                        const slotDateISO = dateObj.toISOString().split('T')[0];
                         return {
                             title: item.courseName,
                             start: item.slotDate + 'T' + item.slotStartTime,
@@ -203,6 +270,7 @@ document.addEventListener('DOMContentLoaded', function() {
                             extendedProps: {
                                 attendanceStatus: item.attendanceStatus,
                                 teacherName: item.teacherName,
+                                date: slotDateISO
 
                             }
                         };
@@ -211,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
                     events = data.map(item => {
                         const dateObj = new Date(item.slotDate);
                         const slotDateISO = dateObj.toISOString().split('T')[0];
-
                         return {
                             title: item.courseName,
                             start: slotDateISO + 'T' + item.slotStartTime,

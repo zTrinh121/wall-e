@@ -26,18 +26,17 @@ public class Feedback {
     @Column(name = "C06_FEEDBACK_DESC", columnDefinition = "TEXT", nullable = false)
     String description;
 
-    @Column(name = "C06_CREATED_AT", columnDefinition = "DATE", nullable = false)
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(name = "C06_CREATED_AT", columnDefinition = "DATETIME", nullable = false)
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     Date createdAt;
 
-    @Column(name = "C06_UPDATED_AT", columnDefinition = "DATE")
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd-MM-yyyy")
+    @Column(name = "C06_UPDATED_AT", columnDefinition = "DATETIME")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd HH:mm:ss")
     Date updatedAt;
 
     @ManyToOne
     @JoinColumn(name = "C06_ACTOR_ID", referencedColumnName = "C14_USER_ID")
     @JsonManagedReference
-//    @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
     User actor;
 
     @ManyToOne

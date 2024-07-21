@@ -63,4 +63,7 @@ public interface TeacherRepository extends JpaRepository<Course, Long> {
     List<Object[]> findScheduleByTeacherIdAndCenterId(@Param("teacherId") Long teacherId, @Param("centerId") Long centerId);
 
 
+    List<Feedback> findByTeacherId(int teacherId);
+
+
 }

@@ -9,6 +9,7 @@ import com.example.SWP391_Project.service.impl.EmailServiceImpl;
 import jakarta.mail.*;
 
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 import jakarta.mail.internet.InternetAddress;
@@ -745,6 +746,11 @@ public class UserController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+
+        model.addAttribute("currentDate", formattedDate);
         return "classRegisteredDetail";
     }
 
@@ -995,6 +1001,13 @@ public class UserController {
             return "redirect:/login";
         }
         model.addAttribute("user", user);
+        LocalDate currentDate = LocalDate.now();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        String formattedDate = currentDate.format(formatter);
+
+        model.addAttribute("currentDate", formattedDate);
+        System.out.println("Ngay");
+        System.out.println(formattedDate);
         return "attendance";
     }
 
@@ -1003,6 +1016,13 @@ public class UserController {
         User user = (User) session.getAttribute("user");
         model.addAttribute("user", user);
         return "searchDetail";
+    }
+
+    @GetMapping("/viewfeedback")
+    public String viewFeedbacksearchDetail(Model model, HttpSession session) {
+        User user = (User) session.getAttribute("user");
+        model.addAttribute("user", user);
+        return "viewFeedback";
     }
 
 

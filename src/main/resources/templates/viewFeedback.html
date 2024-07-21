@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Xem đánh giá</title>
+    <link rel="stylesheet" href="/css/viewFeedback.css" />
+    <script src="/js/viewFeedback.js"></script>
+    <script th:src="@{/js/fragments.js}" type="module"></script>
+    <th:block th:replace="fragments :: head"></th:block>
+</head>
+<body>
+<div class="wrapper">
+    <div th:replace="fragments :: header"></div>
+
+    <div class="main_container">
+        <section id="content">
+            <main>
+                <i class="return fas fa-arrow-left" onclick="history.back()"></i>
+                <div class="header">
+
+                    <div>
+                        Đánh giá 
+                       
+                    </div>
+                    <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
+                   
+                </div>
+
+
+                
+                <div class="container">
+                    <div>
+                        <div id="class-list">
+                                    <table id="classListTable">
+                                        <thead>
+                                        <tr>
+                                            <th th:unless="${user.role.getDescription().name() == 'TEACHER'}">Giáo viên</th>
+                                            <th>Ngày</th>
+                                            <th>Nội dung</th>
+                                            <th>Rating</th>
+                                            
+                                        </tr>
+                                        </thead>
+                                        <tbody id="classListBody">
+                                        </tbody>
+                                    </table>
+                                </div>
+                        </div>
+                    </div>
+                </div>
+                    
+            </main>
+        </section>
+    </div>
+</div>
+<div id="toast" class="toast">
+    <p id="toast-info"><i class="fas fa-check-circle"></i> Notification created successfully</p>
+</div>
+
+
+</body>
+</html>

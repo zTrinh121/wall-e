@@ -14,7 +14,10 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnAttendanceDetails = document.getElementById("btn-attendance-details");
     const roleUser = document.getElementById("role-user").innerHTML;
     const report = document.getElementsByClassName("report")[0];
+    const feedbackForm = document.getElementById('feedbackForm');
+
     let apiGradeUrl;
+    let studentId = localStorage.getItem("studentId");
     let apiCourseDetail;
     let studentParentId;
     let myChartInstance;
@@ -518,16 +521,69 @@ document.addEventListener("DOMContentLoaded", async () => {
         attendanceModal.style.display = "none";
     }
 
+
+
     function fetchAttendanceDetails(courseId) {
         console.log(courseId);
-        fetch(`/api/student/checkOverviewAttendance/${courseId}`)
-            .then(response => response.json())
-            .then(data => {
-                console.log(data);  
-                openAttendanceModal(data);
+        if (roleUser === 'PARENT') {
+            fetch('api/v1/payment/studentID', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ studentId: parseInt(studentId) })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Payment request failed');
+                }
+                // Proceed to the next fetch call
+                console.log("CourseId:" + courseId);
+                return fetch(`/api/student/checkOverviewAttendanceParent/${courseId}`);
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Failed to fetch attendance details');
+                }
+                return response.text(); // Use text() instead of json() to handle empty responses
+            })
+            .then(text => {
+                if (text) {
+                    const data = JSON.parse(text);
+                    console.log(data);
+                    openAttendanceModal(data);
+                } else {
+                    showToast(`<div class="error-toast">
+                        <i class="fas fa-xmark"></i> Chưa có dữ liệu về điểm danh
+                    </div>`);
+                    console.log('No attendance data available');
+                }
             })
             .catch(error => console.error("Error fetching attendance details:", error));
+        } else {
+            fetch(`/api/student/checkOverviewAttendanceParent/${courseId}`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Failed to fetch attendance details');
+                    }
+                    return response.text(); // Use text() instead of json() to handle empty responses
+                })
+                .then(text => {
+                    if (text) {
+                        const data = JSON.parse(text);
+                        console.log(data);
+                        openAttendanceModal(data);
+                    } else {
+                        showToast(`<div class="error-toast">
+                            <i class="fas fa-xmark"></i> Chưa có dữ liệu về điểm danh
+                        </div>`);
+                        console.log('No attendance data available');
+                    }
+                })
+                .catch(error => console.error("Error fetching attendance details:", error));
+        }
     }
+    
 
     function formatDateToDDMMYYYY(isoDate) {
         const date = new Date(isoDate);
@@ -611,6 +667,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+    
 
     function openEvaluationModal(grades) {
         const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
@@ -648,6 +705,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             tableBody.appendChild(row);
         };
+
+        
 
         const feedbackMessages = [];
 
@@ -690,3 +749,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 });
+
+
+

@@ -42,7 +42,7 @@
                             </div>
                         </div>
                         <div class="report">
-                            <h3 style="font-weight: 600" class="report-header">Kết quả/đánh giá</h3>
+                            <h3 style="font-weight: 600" class="report-header">Kết quả</h3>
                             <div class="report-detail">
                                 <button id="btn-evaluation-details">Xem chi tiết</button>
                             </div>
@@ -54,13 +54,13 @@
                             </div>
                         </div>
 
-                        <div class="attendance" th:if="${user.role.getDescription().name() == 'TEACHER'}">
+                        <!-- <div class="attendance" th:if="${user.role.getDescription().name() == 'TEACHER'}">
                             <h3 style="font-weight: 600" class="attendance-header">Tình trạng điểm danh</h3>
                             <div id="attendance-all">
-                                <a th:href="@{/attendance(courseId=${param.courseId}, date='all')}">Xem chi tiết</a>
+                                <a th:href="@{/attendance(courseId=${param.courseId}, date=${currentDate})}">Xem chi tiết</a>
                             </div>
 
-                        </div>
+                        </div> -->
                     </div>
                     <div>
                         <div id="class-list">
@@ -129,41 +129,44 @@
                     </div>
                 </div>
 
-                    <!--Modal create feedback-->
-                    <div id="feedbackModal" class="modal">
-                        <div class="modal-content">
-                            <span class="close" id="closeFeedbackModal">&times;</span>
-                            <h2>Teacher Feedback</h2>
-                            <form id="feedbackForm">
-                                <div class="nameTeacher">
-                                    <label for="teacherName">Teacher Name:</label>
-                                    <input type="text" id="teacherName" name="teacherName" readonly>
-                                </div>
-                                <div class="feedbackDetail">
-                                    <label for="feedbackContent">Feedback:</label>
-                                    <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
-                                </div>
-                                <div class="rating-container">
-                                    <span class="rating-label">Rating:</span>
-                                    <div class="rate-box">
-                                        <input type="radio" name="star" id="star1" />
-                                        <label class="star" for="star1">&#9733;</label>
-                                        <input type="radio" name="star" id="star2" />
-                                        <label class="star" for="star2">&#9733;</label>
-                                        <input type="radio" name="star" id="star3" />
-                                        <label class="star" for="star3">&#9733;</label>
-                                        <input type="radio" name="star" id="star4" />
-                                        <label class="star" for="star4">&#9733;</label>
-                                        <input type="radio" name="star" id="star5" />
-                                        <label class="star" for="star5">&#9733;</label>
-                                    </div>
-                                </div>
 
-                                <button type="submit">Submit</button>
-                            </form>
-                        </div>
+                <!-- Modal tạo feedback cho giáo viên -->
+                <div id="feedbackModal" class="modal">
+                    <div class="modal-content">
+                        <span class="close" id="closeFeedbackModal">&times;</span>
+                        <h2>Gửi Feedback cho Giáo Viên</h2>
+                        <form id="feedbackForm">
+                            <div class="nameTeacher">
+                                <label for="teacherName">Tên giáo viên:</label>
+                                <input type="text" id="teacherName" name="teacherName" readonly>
+                            </div>
+                            <div class="feedbackDetail">
+                                <label for="feedbackContent">Nội dung feedback:</label>
+                                <textarea id="feedbackContent" name="feedbackContent" rows="4" cols="50" required></textarea>
+                            </div>
+                            <div class="rating-container">
+                                <span class="rating-label">Đánh giá:</span>
+                                <div class="rate-box">
+                                    <input type="radio" name="star" id="star1" value="1" />
+                                    <label class="star" for="star1">&#9733;</label>
+                                    <input type="radio" name="star" id="star2" value="2" />
+                                    <label class="star" for="star2">&#9733;</label>
+                                    <input type="radio" name="star" id="star3" value="3" />
+                                    <label class="star" for="star3">&#9733;</label>
+                                    <input type="radio" name="star" id="star4" value="4" />
+                                    <label class="star" for="star4">&#9733;</label>
+                                    <input type="radio" name="star" id="star5" value="5" />
+                                    <label class="star" for="star5">&#9733;</label>
+                                </div>
+                            </div>
+                            <button type="submit">Gửi</button>
+                        </form>
+                        <p id="feedbackSuccessMessage" style="display:none; color: green;">Cảm ơn bạn đã gửi feedback!</p>
                     </div>
-                    <!--Toast-->
+                </div>
+
+
+                <!--Toast-->
                     <div id="toastContainer" class="toast-container"></div>
 
             </main>
@@ -173,5 +176,8 @@
 </div>
 
 
+
 </body>
 </html>
+
+

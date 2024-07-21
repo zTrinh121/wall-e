@@ -45,6 +45,33 @@ document.addEventListener("DOMContentLoaded", function () {
             return [];
         }
     }
+    
+
+    function fetchDuplicateWeekdays(studentId, courseId) {
+        const url = `/api/duplicate-weekdays/${studentId}/${courseId}`;
+        
+        fetch(url)
+            .then(response => {
+                if (!response.ok) {
+                    if (response.status === 404) {
+                        throw new Error('Không có ngày nào bị trùng bạn có thể đăng ký.');
+                    } else {
+                        throw new Error('Có ngày bị trùng lịch thời khóa biểu. Bạn vẫn muốn đăng ký');
+                    }
+                }
+                return response.json();
+            })
+            .then(data => {
+                // Handle the fetched data here
+                console.log(data);
+                //displayDuplicateWeekdays(data);
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                // Optionally, handle the error in the UI
+                alert(error.message);
+            });
+    }
 
     async function fetchStudents() {
         try {
@@ -162,6 +189,7 @@ document.addEventListener("DOMContentLoaded", function () {
         }
     
         function handleRegistration() {
+         fetchDuplicateWeekdays(studentId, courseId);
         console.log("Student ID from local")
         console.log(studentId);
             // Fetch to save courseId to the session
@@ -219,9 +247,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         function loadTeachersTable(centerId) {
+            console.log(centerId);
             fetch(`/teachers-in-center/${centerId}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     const tableBody = document.getElementById('teachers-table-body');
                     tableBody.innerHTML = '';
     
