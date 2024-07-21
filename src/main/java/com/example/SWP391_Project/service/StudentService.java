@@ -72,7 +72,7 @@ public interface StudentService {
     // xem những feedback mà teacher gửi đến
     List<Feedback> fetchTeacherFeedback(int studentId);
     // ------------------------------------------------------------------
-     Feedback createFeedback(Feedback feedback);
+    Feedback createFeedback(int actorId, Integer sendToUserId, Integer sendToCourseId, String description, int rating);
 
     Course findCourseById(int courseId);
 
@@ -99,6 +99,8 @@ public interface StudentService {
 
 
     // -----------------------------------------------------------------------
+
+     Feedback saveFeedback(String description, int rating, User actor, User sendToUser, Course sendToCourse);
 
 
 }

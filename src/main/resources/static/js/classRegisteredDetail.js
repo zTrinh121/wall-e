@@ -14,6 +14,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     const btnAttendanceDetails = document.getElementById("btn-attendance-details");
     const roleUser = document.getElementById("role-user").innerHTML;
     const report = document.getElementsByClassName("report")[0];
+    const feedbackForm = document.getElementById('feedbackForm');
+
     let apiGradeUrl;
     let studentId = localStorage.getItem("studentId");
     let apiCourseDetail;
@@ -744,3 +746,6 @@ document.addEventListener("DOMContentLoaded", async () => {
 
 
 });
+
+
+

@@ -793,8 +793,21 @@ StudentServiceImpl implements StudentService {
         return !(slot1.getSlotEndTime().before(slot2.getSlotStartTime()) || slot1.getSlotStartTime().after(slot2.getSlotEndTime()));
     }
 
-    @Override
-    public Feedback createFeedback(Feedback feedback) {
+    public Feedback createFeedback(int actorId, Integer sendToUserId, Integer sendToCourseId, String description, int rating) {
+        User actor = userRepository.findById(actorId).orElseThrow(() -> new RuntimeException("User not found"));
+        User sendToUser = sendToUserId != null ? userRepository.findById(sendToUserId).orElse(null) : null;
+        Course sendToCourse = sendToCourseId != null ? courseRepository.findById(sendToCourseId).orElse(null) : null;
+
+        Feedback feedback = Feedback.builder()
+                .description(description)
+                .actor(actor)
+                .sendToUser(sendToUser)
+                .sendToCourse(sendToCourse)
+                .rating(rating)
+                .createdAt(new Date())
+                .updatedAt(new Date())
+                .build();
+
         return feedbackRepository.save(feedback);
     }
 
@@ -922,6 +935,25 @@ StudentServiceImpl implements StudentService {
     public boolean existsByUserIdAndCenterId(int userId, int centerId) {
         UserCenter userCenter = userCenterRepository.findByUserIdAndCenterId(userId, centerId);
         return userCenter != null; // Trả về true nếu tìm thấy, false nếu không tìm thấy
+    }
+
+
+
+
+
+
+
+    public Feedback saveFeedback(String description, int rating, User actor, User sendToUser, Course sendToCourse) {
+        Feedback feedback = Feedback.builder()
+                .description(description)
+                .rating(rating)
+                .actor(actor)
+                .sendToUser(sendToUser)
+                .sendToCourse(sendToCourse)
+                .createdAt(new Date())
+                .build();
+
+        return feedbackRepository.save(feedback);
     }
 
 }
