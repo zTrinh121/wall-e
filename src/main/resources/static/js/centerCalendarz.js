@@ -243,20 +243,20 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    function handleDeleteClick(event) {
-        let eventId = event.target.dataset.eventId;
-        if (eventId) {
-            if (confirm('Are you sure you want to delete this event?')) {
-                deleteEvent(eventId);
-            }
-        }
-    }
 
-    document.addEventListener('click', function(event) {
-        if (event.target && event.target.classList.contains('deleteEventBtn')) {
-            handleDeleteClick(event);
-        }
-    });
+//    DELETE A SLOT IN CENTER
+    var deleteBtn = document.getElementById('deleteEventBtn');
+
+    if (deleteBtn) {
+        deleteBtn.addEventListener('click', function() {
+            var formData = new FormData(editEventForm);
+            let eventId = formData.get('editEventId');
+            console.log(eventId);
+            deleteEvent(eventId);
+        });
+    } else {
+        console.error('Delete button not found.');
+    }
 
     function deleteEvent(eventId) {
         fetch(`/manager/slots/delete/${eventId}`, {
@@ -271,7 +271,7 @@ document.addEventListener('DOMContentLoaded', function() {
         .then(data => {
             console.log('Event deleted successfully:', data);
             alert('Event deleted successfully!');
-            calendar.refetchEvents(); // Refresh calendar events
+            calendar.refetchEvents();
         })
         .catch(error => {
             console.error('Error deleting event:', error);
@@ -488,22 +488,22 @@ document.addEventListener("DOMContentLoaded", () => {
             var slotStartTimeF = formData.get("slotStartTimeF") + ":00";
             var slotEndTimeF = formData.get("slotEndTimeF") + ":00";
                 initializeEventListeners();
-//            var slotData = {
-//                dayOfWeek: selectedDayOfWeek,
-//                startTime: slotStartTimeF,
-//                endTime: slotEndTimeF
-//            };
-            var slotData = [{
+            var slotData = {
                 dayOfWeek: selectedDayOfWeek,
                 startTime: slotStartTimeF,
                 endTime: slotEndTimeF
-            }];
+            };
+//            var slotData = [{
+//                dayOfWeek: selectedDayOfWeek,
+//                startTime: slotStartTimeF,
+//                endTime: slotEndTimeF
+//            }];
 //                            roomId: selectedRoomIdz,
 //                            courseId: selectedCourseIdz
 
-//            if (!Array.isArray(slotData)) {
-//                slotData = [slotData];
-//            }
+            if (!Array.isArray(slotData)) {
+                slotData = [slotData];
+            }
             console.log(slotData);
             console.log(selectedRoomIdz);
             console.log(selectedCourseIdz);
