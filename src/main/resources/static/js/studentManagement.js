@@ -144,11 +144,29 @@ function displayStudentLists(centers, centerIdz) {
             <td><p>${center.name}</p></td>
             <td><p>${center.email}</p></td>
             <td><p>${center.address}</p></td>
+            <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>
         `;
         tableBody.insertAdjacentHTML("beforeend", row);
       });
+        // Attach event listeners for delete buttons
+        var deleteButtons = document.querySelectorAll(".delete-user");
+        deleteButtons.forEach((button) => {
+            button.addEventListener("click", function (event) {
+                event.preventDefault();
+                var row = event.target.closest("tr");
+                var stuName = row.querySelector("td:nth-child(2) p").textContent;
+                var stuId = row.getAttribute("data-id");
+                stuNameElement.textContent = stuName;
+                deleteModal.style.display = "block";
+                deleteTarget = {
+                    row: row,
+                    id: stuId
+                };
+                console.log("Delete button clicked for stu:", stuName, "with ID:", stuId);
+            });
+        });
       // Reattach event listeners for new buttons
       document.querySelectorAll(".openModalBtn").forEach((button) => {
         button.addEventListener("click", function () {
@@ -168,6 +186,55 @@ function displayStudentLists(centers, centerIdz) {
       return ++index;
     }
   };
+  //deletion
+  var deleteModal = document.getElementById("deleteModal");
+  var closeButton = document.querySelectorAll(".close");
+  closeButton.forEach((button) => {
+      button.addEventListener("click", function (event) {
+          event.preventDefault();
+          deleteModal.style.display = "none";
+          fetchStudents(centerIdz);
+      });
+  });
+  // Close Delete Modal
+  var cancelDeleteButton = document.getElementById("cancelDeleteButton");
+  if (cancelDeleteButton) {
+      cancelDeleteButton.addEventListener("click", () => {
+          deleteModal.style.display = "none";
+      });
+  }
+  window.addEventListener("click", function (e) {
+    if (e.target == deleteModal) {
+          deleteModal.style.display = "none";
+    }
+  });
+  // Confirm delete action
+  // vì sao có số đứa xoá được số đứa lại không
+  var confirmDeleteButton = document.getElementById("confirmDelete");
+    var stuNameElement = document.getElementById("stuName");
+      var deleteTarget = null;
+      confirmDeleteButton.addEventListener("click", () => {
+          if (deleteTarget) {
+              console.log(centerIdz);
+              console.log("Confirm delete for stu ID:", deleteTarget.id);
+              var idStu = deleteTarget.id;
+              console.log(deleteTarget);
+              fetch(`/manager/student/delete/${idStu}/${centerIdz}`, {
+                  method: "DELETE"
+              })
+              .then(response => {
+                  if (response.ok) {
+                      deleteTarget.row.remove();
+                      deleteModal.style.display = "none";
+  //                  showToast("Xóa thành công trung tâm");
+                      console.log("Student deleted successfully");
+                  } else {
+                      console.error("Error deleting student:", response.statusText);
+                  }
+              })
+              .catch(error => console.error("Error deleting student:", error));
+          }
+      });
 
   //open-by-student-id
 function openModalWithStudentDetails(stuId, centerIdz) {

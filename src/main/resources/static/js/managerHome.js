@@ -72,6 +72,16 @@ document.addEventListener("DOMContentLoaded", () => {
 
     fetchCenters();
 
+    //STT incremental
+      function sttIncreasing(index){
+        if(index === 0){
+          index = 1;
+          return index;
+        } else{
+          return ++index;
+        }
+      };
+
     function displayCenterLists(centers) {
         var tableBody = document.getElementById("tableBody");
         if (!tableBody) {
@@ -83,9 +93,11 @@ document.addEventListener("DOMContentLoaded", () => {
             noResultDiv.style.display = "block";
         } else {
             noResultDiv.style.display = "none";
-            centers.forEach((center) => {
+            centers.forEach((center, index) => {
+            index = sttIncreasing(index);
                 var row = `
                     <tr class="view-details" data-id="${center.id}">
+                        <td><p>${index}</p></td>
                         <td><p>${center.name}</p></td>
                         <td><p>${center.createdAt}</p></td>
                         <td><p>${center.code}</p></td>
@@ -139,7 +151,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (response.ok) {
                     deleteTarget.row.remove();
                     deleteModal.style.display = "none";
-                    showToast("Xóa thành công trung tâm");
+//                    showToast("Xóa thành công trung tâm");
                     console.log("Center deleted successfully");
                 } else {
                     console.error("Error deleting center:", response.statusText);
@@ -149,15 +161,15 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    // Helper function to show toast message
-    function showToast(message) {
-        var toast = document.getElementById("toast");
-        toast.querySelector("p").textContent = message;
-        toast.classList.add("show");
-        setTimeout(function () {
-            toast.classList.remove("show");
-        }, 2000);
-    }
+//    // Helper function to show toast message
+//    function showToast(message) {
+//        var toast = document.getElementById("toast");
+//        toast.querySelector("p").textContent = message;
+//        toast.classList.add("show");
+//        setTimeout(function () {
+//            toast.classList.remove("show");
+//        }, 2000);
+//    }
     // Function to fetch center details and open modal
     function openModalWithCenterDetails(centerId) {
         var url = `/manager/center/${centerId}`;
@@ -183,10 +195,17 @@ document.addEventListener("DOMContentLoaded", () => {
 
             var centerData = {
                 name: formData.get("addCenterName"),
+                code: formData.get("addCentreCode"),
                 address: formData.get("addCenterAddress"),
-                description: formData.get("addCenterDesc")
-                // Handle file upload if necessary
+                description: formData.get("addCenterDesc"),
+                phone: formData.get("addCenterPhone"),
+                email: formData.get("addCenterEmail"),
+                regulation: formData.get("addCenterRule"),
+//                imagePath: "formData.get("addCenterImg")"
+                imagePath: "36.png"
             };
+//            console.log(centerData.imagePath.name);
+            console.log(centerData);
 
             fetch("/manager/center/create", {
                 method: "POST",
@@ -200,7 +219,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 console.log("Center added:", data);
                 addCentreModal.style.display = "none";
                 fetchCenters();
-                showToast("Thêm trung tâm thành công");
+//                showToast("Thêm trung tâm thành công");
             })
             .catch(error => console.error("Error adding center:", error));
         });

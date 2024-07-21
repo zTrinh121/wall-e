@@ -166,6 +166,14 @@ public class ManagerLearningController {
         }
         return new ResponseEntity<>(teachers, HttpStatus.OK);
     }
+    @GetMapping("/getRooms/{centerId}")
+    public ResponseEntity<List<Room>> getRoomsInCenter(@PathVariable int centerId) {
+        List<Room> rooms = managerService.getRoomsByCenterId(centerId);
+        if (rooms.isEmpty()) {
+            return new ResponseEntity<>(HttpStatus.NO_CONTENT);
+        }
+        return new ResponseEntity<>(rooms, HttpStatus.OK);
+    }
 
 //    @GetMapping("/view-applyCenter-form")
 //    public ResponseEntity<List<ApplyCenter>> getTeachersInCenter(HttpSession session) {
@@ -327,6 +335,7 @@ public class ManagerLearningController {
         }
 
         @PostMapping("/slots/create")
+        @ResponseBody
         public ResponseEntity<Slot> createSlot(@RequestBody SlotDto slotDto) {
             try {
                 Slot createdSlot = managerService.createSlot(slotDto);
@@ -358,9 +367,9 @@ public class ManagerLearningController {
 
         @PostMapping("/overallSlots/certainCourse/insert")
         public void insertSlots(@RequestBody List<SlotsDto> slotsDtos,
-                                @RequestParam String courseCode,
-                                @RequestParam String roomName) {
-            managerService.insertSlotsAndStudentSlots(slotsDtos, courseCode, roomName);
+                                @RequestParam int courseId,
+                                @RequestParam int roomId) {
+            managerService.insertSlotsAndStudentSlots(slotsDtos, courseId, roomId);
         }
     // -------------------------------------------------------------------------------------
 
