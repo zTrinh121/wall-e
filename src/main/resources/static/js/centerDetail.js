@@ -35,6 +35,11 @@ $(document).ready(function () {
 
 });
 // Define fetchCenters function in the global scope
+            var cName = "data.name";
+            var addressc = "data.address";
+            var phonec = "data.phone";
+            var emailc = "data.email";
+            var regulationc = "data.regulation";
 function fetchCenters(centerIdz) {
     let URL = `/manager/center/${centerIdz}`;
     console.log(URL);
@@ -52,6 +57,13 @@ function fetchCenters(centerIdz) {
             document.getElementById("centreDescription").innerText = data.description;
             document.getElementById("centerName").innerText = data.name;
             document.getElementById("centerCode").innerText = data.code;
+//            HIDDEN INFO DIV
+            cName = data.name;
+            addressc = data.address;
+            phonec = data.phone;
+            emailc = data.email;
+            regulationc = data.regulation;
+//            document.getElementById("imagePathc").innerText = data.imagePath;
         })
         .catch((error) => console.error("Error fetching centers:", error));
 }
@@ -188,14 +200,25 @@ document.addEventListener("DOMContentLoaded", () => {
         saveDescriptionAPI(newDescription, centerIdzz);
     });
 
+
+
 // put api passing newDesc
     function saveDescriptionAPI(description, centerIdzz) {
+        var changeDesc = {
+            name: cName,
+            description: description,
+            address: addressc,
+            phone: phonec,
+            email: emailc,
+            regulation: regulationc
+        };
+        console.log(changeDesc);
         fetch(`/manager/center/update/${centerIdzz}`, {
             method: "PUT",
             headers: {
                 "Content-Type": "application/json"
             },
-            body: JSON.stringify({ description: description })
+            body: JSON.stringify(changeDesc)
         })
         .then(response => {
             if (!response.ok) {
