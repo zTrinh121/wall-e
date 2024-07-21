@@ -551,6 +551,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                     console.log(data);
                     openAttendanceModal(data);
                 } else {
+                    showToast(`<div class="error-toast">
+                        <i class="fas fa-xmark"></i> Chưa có dữ liệu về điểm danh
+                    </div>`);
                     console.log('No attendance data available');
                 }
             })
@@ -569,6 +572,9 @@ document.addEventListener("DOMContentLoaded", async () => {
                         console.log(data);
                         openAttendanceModal(data);
                     } else {
+                        showToast(`<div class="error-toast">
+                            <i class="fas fa-xmark"></i> Chưa có dữ liệu về điểm danh
+                        </div>`);
                         console.log('No attendance data available');
                     }
                 })
