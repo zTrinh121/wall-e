@@ -667,6 +667,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
         });
     }
+    
 
     function openEvaluationModal(grades) {
         const shortTestScores = grades.filter(grade => grade.resultType === 1).map(grade => grade.resultValue);
@@ -704,6 +705,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
             tableBody.appendChild(row);
         };
+
+        
 
         const feedbackMessages = [];
 

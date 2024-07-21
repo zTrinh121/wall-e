@@ -18,7 +18,7 @@
                 <div class="header">
 
                     <div>
-                        Đánh giá từ học sinh
+                        Đánh giá 
                        
                     </div>
                     <p th:text="${user.role.getDescription().name()}" id="roleUser" style="display: none"></p>
@@ -33,9 +33,11 @@
                                     <table id="classListTable">
                                         <thead>
                                         <tr>
+                                            <th th:unless="${user.role.getDescription().name() == 'TEACHER'}">Giáo viên</th>
                                             <th>Ngày</th>
                                             <th>Nội dung</th>
                                             <th>Rating</th>
+                                            
                                         </tr>
                                         </thead>
                                         <tbody id="classListBody">
