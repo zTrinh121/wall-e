@@ -219,9 +219,11 @@ document.addEventListener("DOMContentLoaded", function () {
         }
         
         function loadTeachersTable(centerId) {
+            console.log(centerId);
             fetch(`/teachers-in-center/${centerId}`)
                 .then(response => response.json())
                 .then(data => {
+                    console.log(data)
                     const tableBody = document.getElementById('teachers-table-body');
                     tableBody.innerHTML = '';
     

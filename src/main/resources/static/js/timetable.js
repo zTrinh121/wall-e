@@ -19,8 +19,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     function renderEventContent(eventInfo) {
-        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+        const attendanceText = eventInfo.event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+        const attendanceColor = eventInfo.event.extendedProps.attendanceStatus === false ? 'red' : 'green';
 
         if (userRole === 'TEACHER') {
             return {
@@ -119,8 +119,8 @@ document.addEventListener('DOMContentLoaded', function() {
         eventClick: function(info) {
 
             const event = info.event;
-            const attendanceText = event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
-            const attendanceColor = event.extendedProps.attendanceStatus === 0 ? 'red' : 'green';
+            const attendanceText = event.extendedProps.attendanceStatus === false ? 'Vắng' : 'Có mặt';
+            const attendanceColor = event.extendedProps.attendanceStatus === false ? 'red' : 'green';
             console.log(info.event.start)
             const startTime = new Date(info.event.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
             console.log(startTime)
@@ -187,6 +187,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 return response.json();
             })
             .then(data => {
+                console.log(data);
                 var events;
                 if (userRole !== "TEACHER") {
                     events = data.map(item => {
