@@ -210,7 +210,7 @@ function displayTeacherLists(centers, centerIdz) {
             <td><p>${center.name}</p></td>
             <td><p>${center.phone}</p></td>
             <td><p>${center.email}</p></td>
-            <td><p>${center.code}</p></td>
+            <!-- <td><p>${center.code}</p></td> -->
             <td><p><a class="delete-user"><i class="fas fa-trash"></i></a></p></td>
             <td><p><button class="openModalBtn" data-id="${center.id}">Xem</button></p</td>
           </tr>

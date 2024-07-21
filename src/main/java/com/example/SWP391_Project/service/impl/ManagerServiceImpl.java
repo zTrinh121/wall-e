@@ -9,9 +9,8 @@ import com.example.SWP391_Project.repository.*;
 import com.example.SWP391_Project.response.*;
 import com.example.SWP391_Project.service.ManagerService;
 import com.example.SWP391_Project.utils.FileUploadUtil;
-import jakarta.persistence.EntityManager;
-import jakarta.persistence.PersistenceContext;
-import jakarta.persistence.Query;
+import com.fasterxml.jackson.annotation.JsonFormat;
+import jakarta.persistence.*;
 import org.hibernate.service.spi.ServiceException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -209,7 +208,6 @@ public class ManagerServiceImpl implements ManagerService {
         return centerRepository.save(center);
     }
 
-
     @Override
     @Transactional
     public Center updateCenterInfo(int id, CenterDto centerDto) {
@@ -222,7 +220,7 @@ public class ManagerServiceImpl implements ManagerService {
         center.setPhone(centerDto.getPhone());
         center.setEmail(centerDto.getEmail());
         center.setRegulation(centerDto.getRegulation());
-        center.setImagePath(centerDto.getImagePath());
+//        center.setImagePath(centerDto.getImagePath());
 
         return centerRepository.save(center);
     }

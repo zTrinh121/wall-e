@@ -815,3 +815,7 @@ form#addCentreForm textarea {
     text-decoration: none;
     cursor: pointer;
 }
+
+#newOrder{
+    background-color: red;
+}

@@ -520,7 +520,7 @@ body {
 
 #content main .table-data .order table tr td:last-child {
 	display: flex;
-	justify-content: center;
+	justify-content: left;
 }
 
 #content main .table-data .order table tr td:last-child button {
