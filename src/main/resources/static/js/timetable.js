@@ -257,6 +257,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 var events;
                 if (userRole !== "TEACHER") {
                     events = data.map(item => {
+                        const dateObj = new Date(item.slotDate);
                         const attendanceColor = item.attendanceStatus === 0 ? 'red' : 'green';
                         const slotDateISO = dateObj.toISOString().split('T')[0];
                         return {

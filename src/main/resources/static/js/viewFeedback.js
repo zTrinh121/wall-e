@@ -20,13 +20,18 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
 function formatDate(dateString) {
-    const [day, month, year] = dateString.split('-');
-    const date = new Date(`${year}-${month}-${day}`);
-    const options = { day: '2-digit', month: '2-digit', year: 'numeric' };
-    return new Intl.DateTimeFormat('vi-VN', options).format(date);
+    const date = new Date(dateString);
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // Months are zero-based
+    const year = date.getFullYear();
+    return `${day}/${month}/${year}`;
 }
+
+// Example usage
+const formattedDate = formatDate("2024-06-23 02:15:00");
+console.log(formattedDate); // Output: 23
+
 
 function fetchParentFeedback(userRole) {
     fetch('api/parent/view-student-feedback')
