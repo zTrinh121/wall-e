@@ -480,7 +480,7 @@ public class ManagerServiceImpl implements ManagerService {
                 userRepository.findStudentsWithPaidFeesInCenter(PaymentStatus.Succeeded, year, month, centerId);
         return users.orElse(Collections.emptyList());
     }
-//bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
+    //bổ sung giáo diện nút tìm hs chưa nộp fee ở trong khoá học ở trong trung tâm
     @Override
     public List<User> findStudentsWithUnpaidFeesInCenter(Year year, Month month, int centerId) {
         Optional<List<User>> users =
@@ -555,7 +555,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     @Override
     public IndividualNotification createIndividualNotification(IndividualNotificationDto invididualNotificationDto, User manager) {
-        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendToUser());
+        Optional<User> sendTo = userRepository.findByUsernamee(invididualNotificationDto.getSendTo());
         if (!sendTo.isPresent()) {
             throw new IllegalArgumentException("User not found when finding by username !");
         }
@@ -1293,10 +1293,5 @@ public class ManagerServiceImpl implements ManagerService {
     }
 
 }
-
-
-
-
-
 
 

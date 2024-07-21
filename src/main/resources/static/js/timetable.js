@@ -3,13 +3,20 @@ document.addEventListener('DOMContentLoaded', function() {
     const userId = document.getElementById("userId").innerHTML.trim();
     const studentApiUrl = `/api/parent/studentsByParent`;
     const userRole = document.getElementById("userRole").innerHTML.trim();
-    var studentId;
     const noResultDiv = document.getElementById("no-result");
     var calendarDisplay = document.getElementById("calendar");
     var eventDetailModal = document.getElementById('eventDetailModal');
     var eventDetailContent = document.getElementById('eventDetailContent');
     var requestModal = document.getElementById('requestModal');
-    var closeRequestModal = document.getElementById('closeRequestModal');
+    var closeRequestModal = document.getElementById('closeRequestModal');   
+    var studentName = localStorage.getItem('studentName');
+    var studentId = localStorage.getItem('studentId');
+
+    function formatTimeRange(date) {
+        let hours = date.getHours();
+        let endHours = hours + 2; 
+        return `${hours}-${endHours}`;
+    }
 
     function renderEventContent(eventInfo) {
         const attendanceText = eventInfo.event.extendedProps.attendanceStatus === 0 ? 'Vắng' : 'Có mặt';
@@ -33,6 +40,56 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    async function displayStudentSelection(students) {
+        const container = document.getElementById('studentSelectionContainer');
+        container.innerHTML = '';
+        console.log(students);
+    
+        const select = document.createElement('select');
+        select.id = 'studentSelect';
+    
+        // Create options for the select element
+        students.forEach(student => {
+            const option = document.createElement('option');
+            option.value = student.id;
+            option.textContent = student.name;
+            select.appendChild(option);
+        });
+    
+        // Check for saved studentId and studentName in local storage
+        const savedStudentId = localStorage.getItem('studentId');
+        const savedStudentName = localStorage.getItem('studentName');
+    
+        if (savedStudentId && savedStudentName) {
+            select.value = savedStudentId;
+        }
+    
+        // Add event listener for change event
+        select.addEventListener('change', async () => {
+            const selectedStudentId = select.value;
+            const selectedStudentName = select.options[select.selectedIndex].text;
+            console.log(selectedStudentId, selectedStudentName);
+            if (selectedStudentId) {
+                console.log("Print at firs time")
+                studentId = selectedStudentId;
+                studentName = selectedStudentName;
+                localStorage.setItem('studentId', studentId);
+                localStorage.setItem('studentName', studentName);
+                await fetchEvents(`/api/student/${studentId}/slots`);
+            }
+        });
+    
+        container.appendChild(select);
+    
+        // Fetch posts if a student is already selected
+        if (savedStudentId && savedStudentName) {
+            studentId = savedStudentId;
+            studentName = savedStudentName;
+            
+        }
+    }
+    
+
     var calendar = new FullCalendar.Calendar(calendarEl, {
         initialView: 'timeGridWeek',
         haeaderToolbar: {
@@ -54,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
         slotMinTime: '07:00:00',
         slotMaxTime: '22:00:00',
         slotDuration: '02:00:00',
+        
         events: [],
         eventOverlap: false,
         firstDay: 1,
@@ -85,8 +143,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 | <a href="attendance?courseId=${event.extendedProps.courseId}&date=${event.extendedProps.date}">Điểm danh</a>
             `;
             }
-
-
             eventDetailModal.style.display = 'block';
         }
     });
@@ -102,13 +158,23 @@ document.addEventListener('DOMContentLoaded', function() {
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
             const data = await response.json();
-            studentId = data[0].id;
+            console.log(data);
+            if(data.length > 1){
+                displayStudentSelection(data);  
+            } else {
+                studentId = data[0].id;
+                studentName = data[0].name;
+                localStorage.setItem('studentId', studentId);
+                localStorage.setItem('studentName', studentName);
+
+            }
+            
             await fetchEvents(`/api/student/${studentId}/slots`);
         } catch (error) {
             console.error("Error fetching students:", error);
-            calendarDisplay.style.display = "none";
+            header.style.display = "none";
             noResultDiv.style.display = "block";
-            noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để xem thời khóa biểu`;
+            noResultDiv.innerHTML = `Hãy <a class="mapping" href="/mapping"> kết nối </a> với con bạn để truy cập vào khóa học`;
         }
     }
 

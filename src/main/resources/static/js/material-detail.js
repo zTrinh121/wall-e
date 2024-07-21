@@ -1,3 +1,26 @@
+
+function deletePdf(materialId) {
+    if (confirm(`Do you want to delete this ${materialId} file?`)) {
+        const url = `/api/teacher/${materialId}/pdf/delete`;
+        
+        fetch(url, {
+            method: 'DELETE',
+        })
+        .then(response => {
+            if (response.ok) {
+                alert('File deleted successfully');
+                // Optionally, you can reload the page or remove the element from the DOM
+                window.location.href = "http://localhost:8080/my-material";
+            } else {
+                alert('Failed to delete the file');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('An error occurred while deleting the file');
+        });
+    }
+}
 document.addEventListener("DOMContentLoaded", function() {
     const urlParams = new URLSearchParams(window.location.search);
     const materialId = parseInt(urlParams.get('id'), 10);
@@ -39,18 +62,20 @@ document.addEventListener("DOMContentLoaded", function() {
         });
     }
 
+    
+
     function displayMaterialDetail(material) {
+        console.log(material);
         const detailContainer = document.getElementById('material-detail');
         if(modify){
             detailContainer.innerHTML = `
             
-            <embed src="${material.pdfPath}" width="800px" height="500px" />
+            <embed src="${material.pdfPath}" width="800px" height="650px" />
             <div class="detail-material-intro">
                 <p> <span style="font-weight: 600">Tên tài liệu: </span> ${material.materialsName}</p>
                 <p> <span style="font-weight: 600">Phân loại : </span> ${material.subjectName}</p>
                 <div class="button-container">
-                    <button id="saveButton">Save</button>
-                    <button id="deleteButton">Delete</button>
+                    <button onclick="deletePdf(${material.id})" id="deleteButton">Delete</button>
                 </div>
             </div>
             

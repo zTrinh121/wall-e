@@ -81,8 +81,8 @@
             <input type="text" id="notificationTitle" name="title" required>
             <label>Loại thông báo</label>
             <select id="notificationType" name="notificationType">
-                <option value="private">Riêng tư</option>
                 <option value="public">Công khai</option>
+                <option value="private">Riêng tư</option>
             </select>
             <label for="notificationSendTo" id="notifcationLabelSendTo">Gửi tới:</label>
             <input type="text" id="notificationSendTo" name="send-to">
@@ -91,7 +91,7 @@
             <label for="notificationContent">Nội dung:</label>
             <textarea id="notificationContent" name="content" required></textarea>
 
-            <button type="submit">Tạo</button>
+            <button id="createNewNotification" type="submit">Tạo</button>
         </form>
     </div>
 </div>

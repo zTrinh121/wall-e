@@ -152,12 +152,11 @@ document.addEventListener("DOMContentLoaded", function () {
                 }
 
                 allPosts = allPosts.filter(post => String(post.id) !== id);
-                console.log("POst sau khi thay doi" + allPosts.name);
                 var postRow = document.getElementById(id);
                 if (postRow) {
                     postRow.remove();
                 }
-                showToast(`Post ${status === 'approve' ? 'approved' : 'rejected'} successfully!`);
+                showToast(`${status === 'approve' ? 'Duyệt' : 'Từ chối'} trung tâm thành công!`);
                 if (allPosts.length === 0) {
                     noResultDiv.style.display = "block";
                 }

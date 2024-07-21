@@ -28,6 +28,11 @@
 span[contenteditable] { display: inline-block; }
 
 /* heading */
+article{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
 
 h1 { font: bold 100% sans-serif; letter-spacing: 0.5em; text-align: center; text-transform: uppercase; }
 
@@ -45,7 +50,7 @@ td { border-color: #DDD; }
 html { font: 16px/1 'Open Sans', sans-serif; overflow: auto; padding: 0.5in; }
 html { background: #999; cursor: default; }
 
-body { box-sizing: border-box; height: 4in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }
+body { box-sizing: border-box; height: 10.5in; margin: 0 auto; overflow: hidden; padding: 0.5in; width: 8.5in; }
 body { background: #FFF; border-radius: 1px; box-shadow: 0 0 1in -0.25in rgba(0, 0, 0, 0.5); }
 
 /* header */
@@ -63,15 +68,15 @@ header input { cursor: pointer; -ms-filter:"progid:DXImageTransform.Microsoft.Al
 
 /* article */
 
-article, article address, table.meta, table.inventory { margin: 0 0 3em; }
+article, article address, table.meta, table.inventory { margin: 0 0 1em; }
 article:after { clear: both; content: ""; display: table; }
 article h1 { clip: rect(0 0 0 0); position: absolute; }
 
-article address { float: left; font-size: 175%; font-weight: bold; }
+article address { float: left; font-size: 175%; font-weight: bold; width: 100%; }
 
 /* table meta & balance */
 
-table.meta, table.balance { float: right; width: 36%; }
+table.meta, table.balance { float: right; width: 100%; }
 table.meta:after, table.balance:after { clear: both; content: ""; display: table; }
 
 /* table meta */
@@ -95,6 +100,9 @@ table.inventory td:nth-child(5) { text-align: right; width: 12%; }
 table.balance th, table.balance td { width: 50%; }
 table.balance td { text-align: right; }
 
+.meta td span{
+    line-height: normal;
+}
 /* aside */
 
 aside h1 { border: none; border-width: 0 0 1px; margin: 0 0 1em; }

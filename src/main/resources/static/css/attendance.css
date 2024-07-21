@@ -439,3 +439,14 @@ th select{
     width: 100%;
 }
 
+.status-cell {
+    cursor: pointer;
+}
+
+.status-cell.present {
+    color: #2121c2;
+}
+
+.status-cell.absent {
+    color: red;
+}

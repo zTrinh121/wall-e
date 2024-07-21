@@ -19,6 +19,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.util.*;
 
 import java.util.ArrayList;
@@ -190,7 +192,7 @@ public class TeacherServiceImpl implements TeacherService {
         List<Map<String, Object>> schedules = new ArrayList<>();
         for (Object[] result : results) {
             Map<String, Object> schedule = new HashMap<>();
-            schedule.put("slotDate", result[0]);
+            schedule.put("slotDate", new SimpleDateFormat("yyyy-MM-dd").format(result[0]));
             schedule.put("slotStartTime", result[1]);
             schedule.put("slotEndTime", result[2]);
             schedule.put("courseName", result[3]);
@@ -199,6 +201,8 @@ public class TeacherServiceImpl implements TeacherService {
 
             schedules.add(schedule);
         }
+        System.out.println("TKB cua service");
+        System.out.println(schedules);
         return schedules;
     }
 
@@ -509,6 +513,67 @@ public class TeacherServiceImpl implements TeacherService {
         nativeUpdateQuery.setParameter("slotId", slotId);
         nativeUpdateQuery.executeUpdate();
     }
+
+
+
+
+    @Override
+    public List<Map<String, Object>> getAttendanceByCourseIdAndDate(int courseId, Date date) {
+        List<StudentSlot> slots = studentSlotRepository.findByCourseIdAndDate(courseId, date);
+        List<Map<String, Object>> attendanceList = new ArrayList<>();
+
+        for (StudentSlot slot : slots) {
+            Map<String, Object> attendance = new HashMap<>();
+            attendance.put("studentId", slot.getStudent().getId());
+            attendance.put("studentName", slot.getStudent().getName());
+            attendance.put("attendanceStatus", slot.getAttendanceStatus() ? "Có mặt" : "Vắng");
+            attendance.put("slotId", slot.getSlot().getId());
+            attendanceList.add(attendance);
+        }
+
+        return attendanceList;
+    }
+
+    @Override
+    public void updateAttendanceStatusBySlotIdAndStatus(int studentId, int slotId, boolean status) {
+        StudentSlot studentSlot = studentSlotRepository.findByStudentIdAndSlotId(studentId, slotId)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentSlot not found"));
+        studentSlot.setAttendanceStatus(status);
+        studentSlotRepository.save(studentSlot);
+    }
+
+
+
+
+
+
+
+    @Override
+    public void updateAttendanceStatus(int studentId, int slotId, boolean status) {
+        StudentSlot studentSlot = studentSlotRepository.findByStudentIdAndSlotId(studentId, slotId)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentSlot not found"));
+        studentSlot.setAttendanceStatus(status);
+        studentSlotRepository.save(studentSlot);
+    }
+
+
+    @Override
+    public List<Map<String, Object>> getStudentsByCourseIdAndDate(int courseId, Date date) {
+        List<StudentSlot> slots = studentSlotRepository.findByCourseIdAndDate(courseId, date);
+        List<Map<String, Object>> students = new ArrayList<>();
+
+        for (StudentSlot slot : slots) {
+            Map<String, Object> student = new HashMap<>();
+            student.put("studentId", slot.getStudent().getId());
+            student.put("studentName", slot.getStudent().getName());
+            student.put("attendanceStatus", slot.getAttendanceStatus() ? "Có mặt" : "Vắng");
+            student.put("slotId", slot.getSlot().getId());
+            students.add(student);
+        }
+
+        return students;
+    }
+
 
 
 
