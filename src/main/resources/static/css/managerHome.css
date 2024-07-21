@@ -803,18 +803,30 @@ box-shadow: var(--shadow); */
     z-index: 1;
     top: 10%;
     right: 1%;
-    width: 84.33%;
+    width: 20%;
     height: 85%;
     overflow: auto;
     background-color: transparent;
 }
 
 .modal-content {
-    background-color: #fefefe;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    max-width: 420px;
+    z-index: 9999;
+    border-radius: 17px;
+    background-color: #b8cedad4;
+    background-color: #ffffffcc;
     margin: auto;
     padding: 20px;
-    border: 1px solid #888;
+    border: 2px dotted #132868;
     width: 100%;
+}
+
+button{
+
 }
 
 .close, closeD {
@@ -838,12 +850,13 @@ box-shadow: var(--shadow); */
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fefefe;
     border: 1px solid #888;
     width: 80%;
-    max-width: 400px;
+    max-width: 420px;
     padding: 20px;
     z-index: 9999;
+    border-radius: 17px;
+    background-color: #1f367be0;
 }
 
 form#addCentreForm div {
@@ -851,16 +864,59 @@ form#addCentreForm div {
     flex-wrap: wrap;
     margin-bottom: 10px;
 }
+form#addCourseForm div {
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
 
 form#addCentreForm label {
     flex: 1;
+    color: white;
+    background-color: #2e4ead00;
+    border-radius: 4px;
+}
+form#addCourseForm label {
+    flex: 1;
+    color: white;
+    background-color: #2e4ead00;
+    border-radius: 4px;
 }
 
 form#addCentreForm input[type="text"],
-form#addCentreForm input[type="file"],
+form#addCentreForm input[type="file"] {
+    flex: 2;
+    margin-top: 0px;
+    margin-left: 3px;
+    padding-left: 4px;
+    border-color: #87a0e9;
+    background-color: #e1ecf2;
+}
+form#addCourseForm input[type="text"],
+form#addCourseForm input[type="file"] {
+    flex: 2;
+    margin-top: 0px;
+    margin-left: 3px;
+    padding-left: 4px;
+    border-color: #87a0e9;
+    background-color: #e1ecf2;
+}
+
 form#addCentreForm button {
     flex: 2;
-    margin-top: 5px;
+    margin-top: 0px;
+    background-color: #FFFFFF;
+    border-radius: 2px;
+    color: darkblue;
+    align-self: center;
+}
+form#addCourseForm button {
+    flex: 2;
+    margin-top: 0px;
+    background-color: #FFFFFF;
+    border-radius: 2px;
+    color: darkblue;
+    align-self: center;
 }
 
 form#addCentreForm textarea {
@@ -869,6 +925,14 @@ form#addCentreForm textarea {
     resize: vertical; /* Cho phép thay đổi kích thước theo chiều dọc */
 }
 form#addCentreForm label[for="centreDesc"] {
+    flex-basis: 100%; /* Sử dụng toàn bộ chiều rộng của container */
+}
+form#addCourseForm textarea {
+    flex: 2;
+    min-height: 100px; /* Thiết lập chiều cao tối thiểu */
+    resize: vertical; /* Cho phép thay đổi kích thước theo chiều dọc */
+}
+form#addCourseForm label[for="description"] {
     flex-basis: 100%; /* Sử dụng toàn bộ chiều rộng của container */
 }
 
@@ -883,6 +947,17 @@ form#addCentreForm textarea {
     resize: vertical;
 }
 form#addCentreForm textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+    word-wrap: break-word; /* Tự động xuống hàng khi cần thiết */
+}
+form#addCourseForm textarea {
+    width: 100%;
+    min-height: 100px;
+    resize: vertical;
+}
+form#addCourseForm textarea {
     width: 100%;
     min-height: 100px;
     resize: vertical;

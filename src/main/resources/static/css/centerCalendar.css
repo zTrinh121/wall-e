@@ -736,6 +736,8 @@ box-shadow: var(--shadow); */
     max-width: 400px;
     padding: 20px;
     z-index: 9999;
+        border: 2px dotted #132868;
+        border-radius: 25px;
 }
 
 form#addCentreForm div {
@@ -795,11 +797,32 @@ form#addCentreForm textarea {
 }
 
 .modal-content {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    align-content: flex-start;
+    justify-content: normal;
+    align-items: center;
     background-color: #fefefe;
-    margin: 15% auto; /* 15% from the top and centered */
+    margin: 0% auto; /* 15% from the top and centered */
     padding: 20px;
     border: 1px solid #888;
     width: 80%; /* Could be more or less, depending on screen size */
+    position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fefefe;
+        border: 1px solid #888;
+        width: 80%;
+        max-width: 400px;
+        padding: 20px;
+        z-index: 9999;
+            border: 2px dotted #132868;
+            border-radius: 25px;
+            align-items:center;
+            margin: 0px;
+
 }
 
 .close {
@@ -816,6 +839,4 @@ form#addCentreForm textarea {
     cursor: pointer;
 }
 
-#newOrder{
-    background-color: red;
-}
+

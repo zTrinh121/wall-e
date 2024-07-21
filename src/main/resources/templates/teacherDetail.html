@@ -148,7 +148,7 @@
                             <i class="fa-solid fa-layer-group"></i>
                         </i>
                         <span class="text">
-                    <a href=`/manager/qlkh?centerId=${center.id}` data-id="${center.id}" id="boxInfoc">
+                    <a href="" data-id="${center.id}" id="boxInfoc">
                         <h3 id="numc">0</h3>
                         <p>Khoá học</p>
                     </a>
@@ -159,8 +159,8 @@
                             <i class="fa-solid fa-money-bill-trend-up"></i>
                         </i>
                         <span class="text">
-                    <a href=`/dthu` data-id="${center.id}" id="boxInfom">
-                        <h3 id="moneyC">0</h3>
+                    <a href="/dthu" data-id="${center.id}" id="boxInfom">
+                        <h3 id="moneyC"></h3>
                         <p>Doanh thu</p>
                     </a>
                 </span>
@@ -170,14 +170,14 @@
                     <div class="order">
                         <div class="head">
                             <h3>Danh sách giáo viên</h3>
-                            <form action="#" class="search">
+                            <form action="#" class="search" style="display: none">
                                 <i class="bx bxs-calendar-check">
                                     <i class="fa fa-search"></i>
                                 </i>
                                 <input type="text" placeholder="Tìm kiếm giáo viên">
                                 <button onclick="" type="submit">Tìm</button>
                             </form>
-                            <div class="filter">
+                            <div class="filter" style="display: none">
                                 <select name="subjects" id="subject">
                                     <option value="all">Tất cả</option>
                                     <option value="Maths">Toán</option>
@@ -259,9 +259,9 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <p>Bạn có chắc chắn muốn loại bỏ giáo viên <span id="teaName"></span>?</p>
-        <button id="confirmDelete">Xác nhận</button>
-        <button id="cancelDeleteButton">Huỷ</button>
+        <b style="color: darkblue;"><p>Bạn có chắc chắn muốn loại bỏ giáo viên <span id="teaName"></span>?</p></b>
+        <button id="confirmDelete" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Xác nhận</button>
+        <button id="cancelDeleteButton" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Huỷ</button>
     </div>
 </div>
 

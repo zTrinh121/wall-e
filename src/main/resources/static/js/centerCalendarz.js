@@ -145,18 +145,33 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     function openEditModal(info) {
+        // Setting event ID, title, and description
         document.getElementById('editEventId').value = info._def.publicId;
         document.getElementById('editEventTitle').value = info._def.title;
         document.getElementById('editEventDescription').value = info._def.extendedProps.description;
 
-        // Access start and end times from info._instance.range
-        document.getElementById('editSlotDate').value = info.startStr.split('T')[0]; // Splitting datetime to get date
-//        document.getElementById('editSlotDate').value = info._instance.range.start.toLocaleDateString().split('T')[0]; // Example format
-        document.getElementById('editSlotStartTime').value = info._instance.range.start.toLocaleTimeString(); // Example format
-        document.getElementById('editSlotEndTime').value = info._instance.range.end.toLocaleTimeString(); // Example format
+        // Accessing start and end times from info._instance.range
+        var startDate = new Date(info._instance.range.start);
+        var endDate = new Date(info._instance.range.end);
 
+        // Subtracting 7 hours from start and end times
+        startDate.setHours(startDate.getHours() - 7);
+        endDate.setHours(endDate.getHours() - 7);
+
+        // Formatting date and time strings
+        var startDateString = startDate.toISOString().split('T')[0]; // YYYY-MM-DD format
+        var startTimeString = startDate.toTimeString().split(' ')[0]; // HH:MM:SS format
+        var endTimeString = endDate.toTimeString().split(' ')[0]; // HH:MM:SS format
+
+        // Setting values in modal fields
+        document.getElementById('editSlotDate').value = startDateString;
+        document.getElementById('editSlotStartTime').value = startTimeString;
+        document.getElementById('editSlotEndTime').value = endTimeString;
+
+        // Displaying the edit event modal
         editEventModal.style.display = 'block';
     }
+
 
 
     // Handle right-click context menu (optional)
