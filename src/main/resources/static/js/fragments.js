@@ -372,8 +372,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         const currentTimeString = vietnamTimeNow.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
         const dateTimeString = vietnamTimeDate.toLocaleString('en-US', { timeZone: 'Asia/Ho_Chi_Minh' });
 
-        console.log("Current time in Vietnam: ", currentTimeString);
-        console.log("Input date in Vietnam (plus 7 hours): ", dateTimeString);
 
         // Tính toán khoảng cách thời gian giữa giờ hiện tại và ngày cộng thêm 7 giờ
         const diff = vietnamTimeNow - vietnamTimeDate;
@@ -394,7 +392,6 @@ document.addEventListener("DOMContentLoaded", async function () {
         else if (minutes > 0) timeDifference = `${minutes} minute${minutes > 1 ? 's' : ''}`;
         else timeDifference = `${seconds} second${seconds > 1 ? 's' : ''}`;
 
-        console.log(`Time difference between now and the input date (plus 7 hours): ${timeDifference}`);
 
         // Trả về chuỗi thời gian theo khoảng cách
         const diffInSeconds = Math.floor((now - parsedDate) / 1000);

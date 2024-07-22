@@ -211,7 +211,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             })
             .then(data => {
                 console.log("Feedback submitted:", data);
-                showToast(`<i class="fas fa-check"></i> Đánh giá giáo viên thành công`);
+                showToast(`<i class="fas fa-check success-toast" ></i> Đánh giá giáo viên thành công`);
                 closeFeedbackModalFunc();
             })
             .catch(error => console.error("Error submitting feedback:", error));
@@ -554,14 +554,14 @@ document.addEventListener("DOMContentLoaded", async () => {
                     openAttendanceModal(data);
                 } else {
                     showToast(`<div class="error-toast">
-                        <i class="fas fa-xmark"></i> Chưa có dữ liệu về điểm danh
+                        <i class="fas fa-xmark"></i> Chưa có dữ liệu điểm danh
                     </div>`);
                     console.log('No attendance data available');
                 }
             })
             .catch(error => console.error("Error fetching attendance details:", error));
         } else {
-            fetch(`/api/student/checkOverviewAttendanceParent/${courseId}`)
+            fetch(`/api/student/checkOverviewAttendance/${courseId}`)
                 .then(response => {
                     if (!response.ok) {
                         throw new Error('Failed to fetch attendance details');
@@ -635,9 +635,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 <div>
                     <span>Ngày:</span> ${dateFormat} - 
                 </div>
-                <div>
-                    <span>Buổi học:</span> ${session.slotId}
-                </div>
+                
                 <div></div>
             </div>
             

@@ -618,7 +618,7 @@ tr:hover {
 #feedbackForm input, #feedbackForm textarea{
   width: 52vw;
   border-radius: 1rem;
-  padding-left: 0.5rem;
+  padding: 0.5rem;
 }
 
 .nameTeacher label{
@@ -627,7 +627,7 @@ tr:hover {
 
 #feedbackForm .feedbackDetail{
   display: flex;
-  gap: 1.8rem;
+  /* gap: 1.8rem; */
   margin-top: 0.5rem;
   justify-content: space-between;
 }
@@ -681,7 +681,7 @@ tr:hover {
   top: 4rem;
   right: 1.2rem;
   z-index: 1000;
-  /*background: red;*/
+  /* background: red; */
   color: #fff;
   height: 3rem;
   border-radius: 0.5rem;
@@ -699,7 +699,7 @@ tr:hover {
 }
 
 error-toast{
-  background: red;
+  background: red !important;
   padding: 1rem;
 }
 
