@@ -123,9 +123,11 @@
                     </div>
                 </div>
                 <div class="table-data" id="newOrder">
-                    <div><button id="openModalBtn">Thêm lịch học</button></div>
-                    <div><button id="openAddFull">Thêm lịch học cố định</button></div>
-                    <div><button id="turnBack">Quay lại</button></div>
+
+                    <div><button id="openModalBtn" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Thêm lịch học</button></div>
+                    <div style="display: none"><button id="openAddFull" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Thêm lịch học cố định</button></div>
+                    <div style="display: none"><button id="turnBack" >Quay lại</button></div>
+
                 </div>
             </main>
             <!-- MAIN -->
@@ -174,7 +176,7 @@
                     </select>
             </div>
             <br>
-            <button type="submit">Thêm Slot</button>
+            <button type="submit" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Thêm Slot</button>
         </form>
     </div>
 </div>
@@ -242,7 +244,7 @@
 <div id="editEventModal" class="modal">
     <div class="modal-content">
         <span id="closeEditModal" class="close">&times;</span>
-        <h2>Chỉnh sửa tiết học</h2>
+        <h2>Thông tin tiết học</h2>
         <form id="editEventForm">
             <input type="hidden" id="editEventId" name="editEventId">
 
@@ -250,25 +252,25 @@
             <input type="text" id="editEventTitle" name="editEventTitle" readonly>
             <br>
             <!--            COURSE-->
-            <div class="form-group">
-                <label for="newCourse">Khóa học:</label>
-                <select id="newCourse" name="newCourse" required>
-                    <option value="">Chọn khóa học...</option>
-                </select>
-            </div>
-            <br>
+<!--            <div class="form-group">-->
+<!--                <label for="newCourse">Khóa học:</label>-->
+<!--                <select id="newCourse" name="newCourse" required>-->
+<!--                    <option value="">Chọn khóa học...</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <br>-->
 
             <label for="editEventDescription">Phòng học hiện tại:</label>
             <input type="text" id="editEventDescription" name="editEventDescription" rows="3" readonly></input>
             <br>
             <!--            ROOM-->
-            <div class="form-group">
-                <label for="newRoom">Phòng:</label>
-                <select id="newRoom" name="newRoom" required>
-                    <option value="">Chọn phòng...</option>
-                </select>
-            </div>
-            <br>
+<!--            <div class="form-group">-->
+<!--                <label for="newRoom">Phòng:</label>-->
+<!--                <select id="newRoom" name="newRoom" required>-->
+<!--                    <option value="">Chọn phòng...</option>-->
+<!--                </select>-->
+<!--            </div>-->
+<!--            <br>-->
 
             <label for="editSlotDate">Ngày:</label>
             <input type="date" id="editSlotDate" name="editSlotDate" required>
@@ -282,8 +284,8 @@
             <input type="time" id="editSlotEndTime" name="editSlotEndTime" required>
             <br>
 
-            <button type="submit">Cập nhật</button>
-            <button type="button" id="deleteEventBtn" class="deleteEventBtn">Xoá tiết học</button>
+            <button type="submit" style="display: none">Cập nhật</button>
+            <button type="button" id="deleteEventBtn" class="deleteEventBtn" style="display: none">Xoá tiết học</button>
         </form>
     </div>
 </div>

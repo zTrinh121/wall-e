@@ -148,7 +148,7 @@
                             <i class="fa-solid fa-layer-group"></i>
                         </i>
                         <span class="text">
-                    <a href=`/manager/qlkh?centerId=${center.id}` data-id="${center.id}" id="boxInfoc">
+                    <a href="" data-id="${center.id}" id="boxInfoc">
                         <h3 id="numc">0</h3>
                         <p>Khoá học</p>
                     </a>
@@ -159,8 +159,8 @@
                             <i class="fa-solid fa-money-bill-trend-up"></i>
                         </i>
                         <span class="text">
-                    <a href=`/dthu` data-id="${center.id}" id="boxInfom">
-                        <h3 id="moneyC">0</h3>
+                    <a href="/dthu" data-id="${center.id}" id="boxInfom">
+                        <h3 id="moneyC"></h3>
                         <p>Doanh thu</p>
                     </a>
                 </span>
@@ -170,14 +170,14 @@
                     <div class="order">
                         <div class="head">
                             <h3>Danh sách khoá học</h3>
-                            <form action="#" class="search">
+                            <form action="#" class="search" style="display: none">
                                 <i class="bx bxs-calendar-check">
                                     <i class="fa fa-search"></i>
                                 </i>
                                 <input type="text" placeholder="Tìm kiếm khoá học">
                                 <button onclick="" type="submit">Tìm</button>
                             </form>
-                            <div class="filter">
+                            <div class="filter" style="display: none">
                                 <select name="subjects" id="subject">
                                     <option value="all">Tất cả</option>
                                     <option value="Maths">Toán</option>
@@ -260,17 +260,17 @@
 <!-- Delete Modal -->
 <div id="deleteModal" class="modal">
     <div class="modal-content">
-        <p>Bạn có chắc chắn muốn loại bỏ khoá học <span id="centerName"></span>?</p>
-        <button id="confirmDelete">Xác nhận</button>
-        <button id="cancelDeleteButton">Huỷ</button>
+        <b style="color: darkblue;"><p>Bạn có chắc chắn muốn loại bỏ khoá học <span id="centerName"></span>?</p></b>
+        <button id="confirmDelete" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Xác nhận</button>
+        <button id="cancelDeleteButton" style="border-radius: 5px; background-color: #2e4ead; color: white; ">Huỷ</button>
     </div>
 </div>
 <!-- Adding a Course-->
 <div id="addCourseModal" class="modal">
     <div class="add-modal-content">
         <span id="cancelAdd" class="close">&times;</span>
-        <h4 style="text-align:center">Thêm Khoá Học</h4>
-        <p>Nhập thông tin của khoá học mới:</p>
+        <h4 style="text-align:center; color: white;">Thêm Khoá Học</h4>
+        <h4 style="color: #cbcbcb">Nhập thông tin của khoá học mới:</h4>
         <!-- Add Course Form -->
         <form id="addCourseForm">
 <!--            COURSE NAME-->
@@ -320,7 +320,7 @@
                     <option value="" class="opt">Chọn giáo viên...</option>
                 </select>
             </div>
-            <button type="submit">Thêm Khoá Học</button>
+            <div><button type="submit">Thêm Khoá Học</button></div>
         </form>
     </div>
 </div>

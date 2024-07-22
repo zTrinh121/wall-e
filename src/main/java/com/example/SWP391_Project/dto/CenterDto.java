@@ -21,5 +21,5 @@ public class CenterDto {
     String imagePath;
 
     // manager's detail
-    int managerId;
+//    int managerId;
 }
