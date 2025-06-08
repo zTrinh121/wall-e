@@ -95,7 +95,6 @@ public class UserController {
             mess.setContent("This is verify code: " + code, "text/plain");
 
             Transport.send(mess);
-
             test = true;
 
         } catch (Exception e) {

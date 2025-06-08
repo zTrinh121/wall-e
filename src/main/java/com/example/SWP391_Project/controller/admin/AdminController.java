@@ -182,7 +182,7 @@ public class AdminController {
         }
     }
 
-    @DeleteMapping("/admin-individualNotification/delete/{id}")
+        @DeleteMapping("/admin-individualNotification/delete/{id}")
     @ResponseBody
     public ResponseEntity<String> deletePrivateNotification(@PathVariable int id) {
         boolean deleted = adminService.deleteIndividualNotification(id);
